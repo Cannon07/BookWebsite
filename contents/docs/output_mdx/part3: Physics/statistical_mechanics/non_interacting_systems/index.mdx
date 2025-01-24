@@ -1,0 +1,269 @@
+# Partition Functions for Non-Interacting Systems \{#chap:noninteracting\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:stat_thermo\]](#chap:stat_thermo)\{reference-type="ref+label"
+reference="chap:stat_thermo"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+From the principles of statistical mechanics we determine the partition
+functions for different ensembles, such as $$\begin\{aligned\}
+Z &=\sum_\nu \exp(-E_\nu/k_BT)\\
+\Xi &= \sum_\nu \exp[-(E_\nu -\mu N_\nu)/k_BT]
+\end\{aligned\}$$ for the canonical and grand canonical ensemble,
+respectively. These are the Boltzmann weighted sums over all possible
+fluctuations, that is, all microscopic states permitted by the
+constraints with which the system is controlled. In the first sum,
+energy fluctuates and only the states with same number number of
+particles are allowed; in the second, particles and energy fluctuates,
+and the chemical potential term accounts for the energy of changing
+particle number.
+
+Generally speaking, in order to determine the partition functions, a
+systematic study of all possible fluctuations must be carried out,
+together with an adequate characterization of these states, which is
+usually a complicated task. However, there are a number of practical
+methods for sampling relevant fluctuations. The simplest of these
+approximation is when the system is composed of non-interacting degrees
+of freedom.
+
+In this chapter we will study systems of non-interacting particles.
+Later in this chapter, we will use our derivations for the analysis of a
+two-state, non-interacting particle system.
+
+## Non-interacting particles
+
+A system of non-interacting particles can be regarded as a system of
+*distinguishable particles*, meaning that they can be uniquely
+identified according to some criterion (*e.g.* fixed spatial position of
+particles on a surface or in space); or *indistinguishable particles*
+where particles cannot be distinguished from each other (*e.g.*
+particles in the gas phase cannot be distinguished from each other).
+
+## Distinguishable particles
+
+Consider a system of 2 distinguishable particles. The two particles
+contain energy levels $\epsilon_i^A$ (with $i=1,2,...,a$) and
+$\epsilon_i^B$ (with $i=1,2,...,b$). In the canonical ensemble, the
+partition function $Z$ is given by: $$\begin\{aligned\}
+Z &= \sum_\mu \exp \left(-\frac\{E_\mu\}\{k_BT\}\right)\notag\\ 
+&= \sum_\{i=1\}^a \sum_\{j=1\}^b \exp \left[-\frac\{\varepsilon_i^A+\varepsilon_j^B\}\{k_BT\}\right] \notag\\
+ &= \left[\sum_\{i=1\}^a \exp \left(-\frac\{\varepsilon_i^A\}\{k_BT\}\right)\right] \left[\sum_\{j=1\}^b \exp \left(-\frac\{\varepsilon_j^B\}\{k_BT\}\right)\right] \notag\\
+ &= z_Az_B \notag
+\end\{aligned\}$$
+
+where $z_A$ and $z_B$ are the single-particle partition functions for
+the two particles.
+
+Generally, for a system with N non-interacting, distinguishable
+particles, each with a single-particle partition function $z$, the
+partition function is given by: $$\begin\{aligned\}
+ \label\{part_dist\}
+Z = z^N
+\end\{aligned\}$$
+
+## Indistinguishable particles
+
+For a system of $N$ non-interacting, indistinguishable particles, the
+partition function summation contains instances where particles exist in
+different states but cannot be distinguished. On one extreme, if all
+particles exist in different states, the over-counting factor is $N!$
+(number of ways of reassigning $N$ particle labels). On the opposite
+extreme, if all particles are in the same state, the
+indistinguishability and the degeneracy are the same, so there is no
+over-counting factor.
+
+At finite temperature, the particles are more likely to exist in a
+diversity of states that are over-counted by the factor $N!$. Thus to
+correct for the indistinguishability at finite temperature, the
+partition function is given by: $$\begin\{aligned\}
+ \label\{part_indist\}
+Z = \frac\{1\}\{N!\} z^N
+\end\{aligned\}$$
+
+## Two-state, non-interacting particles
+
+Consider a collection of non-interacting, distinguishable particles that
+can exist in two states: the ground state (with zero energy) and the
+excited state (with energy $\varepsilon_0$). We will analyze this system
+using two of the ensembles derived in the previously to show
+equivalence.
+
+## Microcanonical Ensemble
+
+For a system of N particles, we consider a state with a fixed energy
+$E = \varepsilon_0 n$, where $n$ is the number of particles in the
+excited state. The degeneracy in the number of states with this fixed
+energy $E$ is given by: $$\begin\{aligned\}
+\Omega = \frac\{N!\}\{n!\left(N-n\right)!\} \notag
+\end\{aligned\}$$
+
+which is the number of permutations of $n$ in $N$ ($N$ choose $n$).
+
+Therefore, the entropy of the system is given by: $$\begin\{aligned\}
+S = k_B \log \left[\frac\{N!\}\{n!(N-n)!\}\right] \notag
+\end\{aligned\}$$
+
+To approximate the entropy for large number of particles $N$
+(*thermodynamic limit*), we use *Stirling's approximation* [^1]
+
+The entropy is now written as: $$\begin\{aligned\}
+S &= k_B\log \left[\frac\{N!\}\{n!\left(N-n\right)!\}\right] \notag\\
+&\approx k_B \left[N\log N -N -n\log n+n-(N-n)\log (N-n) + (N-n)\right] \notag\\
+&= -k_B N [(1-x) \log (1-x) + x \log x] \notag
+\end\{aligned\}$$
+
+where $x=n/N = E/\left(\varepsilon_0 N\right)$ is the fraction in the
+excited state.
+
+Using thermodynamic relations, the temperature is found to be:
+$$\begin\{aligned\}
+\frac\{1\}\{T\} &= \left(\frac\{\partial S\}\{\partial E\}\right)_\{V,N\} = \left(\frac\{\partial x\}\{\partial E\}\right)_\{V,N\} \left(\frac\{\partial S\}\{\partial x\}\right)_\{V,N\} \notag\\ 
+&= \frac\{k_B N\}\{\varepsilon_0 N\} [\log (1-x) - \log x] \notag
+\end\{aligned\}$$
+
+Thus: $$\begin\{aligned\}
+\frac\{x\}\{1-x\} &= \exp \left(-\frac\{\varepsilon_0\}\{k_B T\}\right) = \alpha
+ \hspace\{0.2cm\} \text\{or\} \hspace\{0.2cm\} x = \frac\{\alpha\}\{1+\alpha\} \notag
+\end\{aligned\}$$
+
+The Helmholtz free energy per particle $f = F/N$ is given by:
+$$\begin\{aligned\}
+f &= e-Ts \notag\\ 
+&=\varepsilon_0x+k_BT\left[\frac\{1\}\{1+\alpha\}\log \left(\frac\{1\}\{1+\alpha\}\right) + \frac\{\alpha\}\{1+\alpha\}\log \left( \frac\{\alpha\}\{1+\alpha\}\right)\right] \notag\\
+&= -k_BT\frac\{\alpha\}\{1+\alpha\} \log \alpha + k_BT\log (1+\alpha) +k_BT \frac\{\alpha\}\{1+\alpha\} \log \alpha \notag\\
+&= -k_BT \log \left[ 1+\exp \left(-\frac\{\varepsilon_0\}\{k_BT\}\right)\right] \notag \\
+&= -k_B T \log z\label\{Helmholtz_Cano\}
+\end\{aligned\}$$
+
+::: marginfigure
+![image](figures/Physics/statistical_mechanics/non_interacting_systems/Fig1b.png)\{width="\\linewidth"\}
+[]\{#fig1a label="fig1a"\}
+:::
+
+::: marginfigure
+![image](figures/Physics/statistical_mechanics/non_interacting_systems/Fig1a.png)\{width="\\linewidth"\}
+:::
+
+where we define $z = 1+\exp \left(-\frac\{\varepsilon_0\}\{k_BT\}\right)$,
+which will become the single-particle canonical partition function.
+
+## Canonical ensemble
+
+The canonical partition has a fixed temperature $T$ and number of
+particles $N$, thus the energy states fluctuate according to the
+Boltzmann distribution found in the previously. For this system, the
+partition function $Z$ is written as: $$\begin\{aligned\}
+Z &= \sum_\{m_1\}\sum_\{m_2\}...\sum_\{m_N\} \exp \left(-\frac\{\varepsilon_0 m_1\}\{k_BT\}-\frac\{\varepsilon_0 m_2\}\{k_BT\} ... -\frac\{\varepsilon_0 m_N\}\{k_BT\}\right) \notag\\
+&= \left[\sum_\{m=0\}^1\exp \left(-\frac\{\varepsilon_0 m\}\{k_BT\}\right)\right]^N \notag\\ 
+&= \left[ 1+\exp \left(-\frac\{\varepsilon_0\}\{k_BT\}\right)\right]^N = z^N \notag
+\end\{aligned\}$$
+
+where we again define the single-particle partition function $z$.
+
+An alternative method to derive the partition function is to extend the
+microcanonical solution to the canonical solution, such that:
+$$\begin\{aligned\}
+Z &= \sum_E \Omega (E) \exp \left(-\frac\{E\}\{k_BT\}\right) \\ 
+&= \sum_\{n=0\}^N \frac\{N!\}\{n!(N-n)!\}\exp \left(-\frac\{\varepsilon_0\}\{k_BT\}\right)^n 1^\{N-n\} \\
+&= \left[ 1 + \exp \left( -\frac\{\varepsilon_0\}\{k_BT\} \right)\right]^N = z^N 
+\end\{aligned\}$$
+
+which makes use of the binomial expansion.
+
+The Helmholtz free energy is found to be: $$\begin\{aligned\}
+F &= -k_BT\log Z = -Nk_BT \log z \\ 
+&= -N k_B T \log \left[ 1+ \exp \left(-\frac\{\varepsilon_0\}\{k_BT\}\right)\right] \\
+&= -Nk_BT \log z 
+\end\{aligned\}$$
+
+which is in agreement with
+([\[Helmholtz_Cano\]](#Helmholtz_Cano)\{reference-type="ref"
+reference="Helmholtz_Cano"\}) from the microcanonical approach.
+
+Using $Z$ as a generating function, the average energy is given by:
+$$\begin\{aligned\}
+e &= \frac\{\langle E \rangle\}\{N\} =-\frac\{1\}\{N\} \left(\frac\{\partial \log Z\}\{\partial \beta\}\right)_\{V,N\} \\ 
+&= - \left(\frac\{\partial \log z\}\{\partial \beta\}\right)_\{V,N\} \\
+&= \frac\{\varepsilon_0 e^\{-\beta \varepsilon_0\}\}\{1+e^\{-\beta \varepsilon_0\}\} 
+\end\{aligned\}$$
+
+where $\beta = 1/(k_BT)$.
+
+## Non-interacting particles obeying Bose and Fermi statistics
+
+Consider a system of non-interacting, indistinguishable particles that
+can have energies $\varepsilon_\alpha$ $(\alpha = 1,2,...)$ associated
+with their quantum mechanical states. The state of the system can be
+specified by the number of particles at each energy level, *i.e.*
+$n_\alpha$ is the number of particles at energy state $\alpha$.
+
+-   Total number of particles is $\sum_\alpha n_\alpha=N$.
+
+-   Total system energy is
+    $\sum_\alpha n_\alpha \varepsilon_\alpha = E$.
+
+In the canonical ensemble, we write the partition function:
+$$\begin\{aligned\}
+\label\{Eq1\}
+Z(T,V,N) = \sum_\{n_1,n_2,...\}\delta \left(N-\sum_\alpha n_\alpha\right) \exp \left(-\beta \sum_\alpha n_\alpha \varepsilon_\alpha\right)
+\end\{aligned\}$$
+
+where we include the delta-function constraint on the summation in order
+to fix $\sum_\alpha n_\alpha=N$, and we define $\beta = 1/(k_BT)$.
+
+The indistinguishability of the particles is properly accounted for in
+this representation since any given set of $n_\alpha$ contributes a
+single term without over-counting indistinguishable states. In the grand
+canonical ensemble, we write the grand canonical partition function:
+$$\begin\{aligned\}
+\Xi(T,V,\mu) &=\sum_\{N=0\}^\infty Z(T,V,N) \exp(\beta \mu N) \notag\\
+  &= \sum_\{N=0\}^\infty \sum_\{n_1,n_2,...\} \delta \left(N-\sum_\alpha n_\alpha\right) \exp \left(-\beta \sum_\alpha n_\alpha \varepsilon_\alpha -\beta \mu N\right) \notag\\
+  &= \sum_\{n_1,n_2,...\} e^\{-\beta \sum_\alpha n_\alpha \varepsilon_\alpha +\beta \mu \sum_\alpha n_\alpha\} = \prod_\alpha \left(\sum_\{n_\alpha\} e^\{-\beta n_\alpha \varepsilon_\alpha -\beta \mu n_\alpha\} \right) \notag
+\end\{aligned\}$$
+
+The Landau potential is written as: $$\begin\{aligned\}
+\label\{Eq2\}
+pV &= k_BT \log \Xi \\
+&= k_BT\sum_\alpha \log \left(\sum_\{n_\alpha\} e^\{-\beta n_\alpha \varepsilon_\alpha -\beta \mu n_\alpha\} \right)
+\end\{aligned\}$$
+
+If the particles are bosons, there are no restrictions on the number of
+particles in a given state $n_\alpha$ $(\alpha = 1,2,...)$, thus:
+$$\begin\{aligned\}
+\label\{Eq3\}
+\sum_\{n_\alpha = 0\}^\infty \left(e^\{-\beta \varepsilon_\alpha + \beta \mu \}\right)^\{n_\alpha\} = \frac\{1\}\{1 - e^\{-\beta \varepsilon_\alpha + \beta \mu \}\}
+\end\{aligned\}$$
+
+If the particles are fermions, any given state can only have either
+$n_\alpha = 0$ or $n_\alpha = 1$ particles, thus: $$\begin\{aligned\}
+\label\{Eq4\}
+\sum_\{n_\alpha = 0\}^1 \left(e^\{-\beta \varepsilon_\alpha + \beta \mu \}\right)^\{n_\alpha\} = 1 + e^\{-\beta \varepsilon_\alpha + \beta \mu \}
+\end\{aligned\}$$
+
+Therefore, we generally write: $$\begin\{aligned\}
+\label\{Eq5\}
+pV = \mp k_BT\sum_\alpha \log \left(1 \mp e^\{-\beta \varepsilon_\alpha + \beta \mu\} \right)
+\end\{aligned\}$$
+
+where \"-\" is for Bosons, and \"+\" is for Fermions.
+
+From this, we find the average number of particles: $$\begin\{aligned\}
+\label\{Eq6\}
+\langle N \rangle = \left(\frac\{\partial \log \Xi\}\{\partial \beta
+\mu\}\right)_\{\beta\} = \sum_\alpha \frac\{e^\{-\beta \varepsilon_\alpha + \beta \mu\}\}\{1 \mp e^\{-\beta \varepsilon_\alpha + \beta \mu\}\} = \sum_\alpha \langle n_\alpha \rangle
+\end\{aligned\}$$
+
+where $\langle n_\alpha \rangle$ is the average occupation number in the
+$\alpha$ state.
+
+[^1]: For large $N$: $$\begin\{aligned\}
+    \log N! &= \sum\limits_\{n=1\}^N \log n \\
+    & \approx \int\limits_1^N \log n dn \\ 
+    &= N \log N - N +1 \\
+    & \approx N \log N -N
+    \end\{aligned\}$$

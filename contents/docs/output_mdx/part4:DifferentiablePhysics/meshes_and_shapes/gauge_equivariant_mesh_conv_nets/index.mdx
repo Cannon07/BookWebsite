@@ -1,0 +1,34 @@
+# Gauge Equivariant Mesh Convolutional Networks \{#chap:gauge_equivariant_convnet\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:qft_basics\]](#chap:qft_basics)\{reference-type="ref+label"
+reference="chap:qft_basics"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+Meshes are of fundamental importance in applied engineering or graphics
+task. They provide for a breakdown of a three dimensional object into a
+discrete shape defined by the mesh graph.
+
+Designing a mesh convolution operation is tricky since a naive
+implementation flattens the mesh and loses the local geometric structure
+of the mesh. The core idea is that using an \"anisotropic\" filter
+allows for preserving the local geometric structure on the mesh.
+
+## Algorithmic Definition
+
+Let $M$ represent a mesh. Let $\theta_\{p,q\}$ be an orientation. We
+consider an orientation dependent kernel $K(\theta)$. We also consider a
+transport operator $$\begin\{aligned\}
+\rho(g_\{q \to p\}) \in \mathbb\{R\}^\{C \times C\}
+\end\{aligned\}$$ that maps from the feature space at node $q$ to the
+feature space at node $p$. The gauge equivariant mesh convolution is
+then defined by the following equation $$\begin\{aligned\}
+(K \star f)_p &= K_\{\textrm\{self\}\} f_p + \sum_\{q \in \mathcal\{N\}(p)\} K_\{\textrm\{neigh\}\}(\theta) \rho(g_\{q \to p\}) f_q
+\end\{aligned\}$$ This is a linear convolution. In order to build a full
+architecture, we also need to construct gauge equivariant
+nonlinearities.

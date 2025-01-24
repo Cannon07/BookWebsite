@@ -1,0 +1,43 @@
+# OpenKIM and ColabFit \{#chap:hamiltonian_nn\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:hamiltonians_mechanics\]](#chap:hamiltonians_mechanics)\{reference-type="ref+label"
+reference="chap:hamiltonians_mechanics"\},
+[\[chap:neural_ode\]](#chap:neural_ode)\{reference-type="ref+label"
+reference="chap:neural_ode"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+## Introduction
+
+New computers have enabled more accurate predictions with more rigorous
+models for molecular simulations. Post HF to DFT to Multi-body
+potentials to Pair potentials provide a ladder of approximations.
+
+There are many possibilities. For example, over 60 interatomic
+potentials have been designed for silicon alone. For example, the
+Stillinger-Weber silicon approximation predicts silicon is ductile while
+it is actually brittle. Choice of interatomic potential is important.
+
+The major challenge for ML potential development is data. OpenKim is
+online infrastructure for testing and deploying interatomic potentials.
+Colabfit is a database of data for interatomic potential fitting. Many
+databases only store ground state energies, while we need access to
+non-equilibrium energies to train non-equilibrium energies. See at
+[colabfit.org](colabfit.org)\{.uri\}. The database includes 50 datasets.
+Builds on the OpenCatalyst database. All of this is stored in MongoDB.
+
+KLIFF (Kim-based Learning Integrated Fitting Framework) is a new
+framework that finds a niche between DeepMDKit and Torch/Jax MD. It
+supports deployment to LAMMPS and multi-GPU training. It also support
+uncertainty quantification techniques. Includes LibDescriptor, a
+differentiable descriptor library written in C++. OpenKim
+[openkim.org](openkim.org)\{.uri\} has been running since 2009. Has a
+chat-system ChatKIM to help the user select an appropriate recommender
+system.
+
+## Couple Electrochemo-mechanical Batter Models

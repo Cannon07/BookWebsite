@@ -1,0 +1,234 @@
+# new
+
+Advances in both scientific computing and machine learning have led to
+techniques to improve, replace, or speed up methods to solve problems in
+the physical sciences. For many nonlinear systems, traditional methods
+of calculation often carry a heavy computational burden due to complex
+dynamics, physical constraints, or multi-scale behavior. We introduce a
+machine learning approach to vastly decrease computational complexity of
+modeling spatiotemporal systems, leveraging prior physical knowledge of
+the system with flexible reduced representations of the underlying
+dynamics. We demonstrate this technique on three-dimensional turbulent
+fluid flow, wherein the modeling of such systems continues to be a
+formidable problem for engineers and physicists. We merge convolutional
+layers with a Neural ODE approach to form a differentiable ML
+architecture to build a system model. Here, we test the applicability of
+this method to model homogeneous isotropic turbulence, as well as the
+effect of different architectural elements on turbulence statistics. We
+find that the largest scales of the flow, which are relevant to
+engineering applications, are well-approximated and some dynamic
+characteristics of interest are maintained. Acknowledge Varun's work for
+this chapter; Neurips paper
+
+# Aerodynamics and its importance
+
+When we think about electric vehicles, one of the first things we do is
+to try to understand some of the energy and power requirements for the
+vehicle. because when we talking about the battery, this energy and
+power consumption is critical. Knowing the energy requirements, we can
+say given a battery chemistry, with the battery of a given size or
+weight, what's the range of the battery, how does the battery degrade
+over time, what does it mean for the vehicle's lifetime, can we create a
+BMS that makes sure that during this power cycles that the battery is
+operating in a safe state. We can also break down this energy
+consumption into its various components , and see if we can gain some
+insights there. We can run some vehicle simulations that simulate
+driving in certain conditions and we can gather some statistics on where
+that power draw is ultimately coming from. For a typical electric sedan
+driving on the highway, by far the energy consumption is coming from the
+aerodynamic drag. Therefore, the aerodynamic term is of interest to
+anyone who works with cars, and certainly to us when we think about
+quantifying these components and values of energy.
+
+# How do we evaluate drag today
+
+Wind Tunnels -- experimental data can be obtained by constructing models
+of the objects we are interested in and place them in a wind tunnel, and
+record the forces, but this is naturally expensive in terms of the cost
+and time and overheads, which makes it impractical if you want to
+evaluate many different designs. Therefore, majority of aerodynamics and
+fluid dynamic analysis done today is done with computer simulations. The
+reason we are able to do this well today is because we have a very good
+idea of the physics behind the aerodynamics. We can very accurately
+describe the system with equations and it's just a matter of solving the
+equations. Of course, the physics is very complex and coupled, which
+makes obtaining solutions very difficult. We use this domain knowledge,
+we construct numerical methods, to solve these problems, of course we
+have some parameters that are unique to the specific case we are looking
+at. Maybe the parameters are the geometry of the vehicles, speed its
+traveling at, and with that we can compute the solution. This really all
+falls under computational fluid dynamics, which is a very mature field
+in simulation with many decades of research that have gone into creating
+these methods. There's a lot of choice in terms of the models we can use
+with associated trade-offs between computational cost and accuracy. If
+you want to obtain a high-fidelity solution, it's going to take
+ultimately a lot of time. It's sort of up to the engineer to make these
+choices based on what's appropriate for the specific problem. Questions
+emerge such as is it okay to have a less accurate solution because you
+want to evaluate lots of designs? Do we want to have the most accurate
+solution and wait a few days for the simulation to run? Regardless, what
+we end up computing is the flow field in our domain of interest, and
+from this flow information we can calculate quantities that we really
+care about such as drag forces.
+
+# Usefulness of Scientific ML in the context of fluid flow fields
+
+As we aim to improve these methods, one thing that researchers are
+looking at is including AI directly into the mix to see if we can
+improve the process. This is part of the rapidly developing field of
+scientific machine learning wherein researchers are using these ML tools
+and applying them to scientific problems. The nice part about solving
+scientific problems with AI is that we have a lot of the domain
+knowledge in terms of how these systems operate, and so when we think
+about designing AI, we definitely want to take that into account so that
+we can incorporate all the physical behaviour we know and understand
+into our ML architectures. ML is often been treated as a black box and
+there are ways within SciML to remove some of that opaqueness.
+
+AI needs a source of data, and with CFD a natural thing to do is train
+with high-fidelity data and this goes back to the fact that we can very
+accurately describe a system through high-fidelity results which is a
+matter of having enough compute to do so. Therefore, there's some
+initial cost to creating this training data but the hope is that AI is
+able to take that and fill in the gaps to produce an overall streamlined
+process, which in our case ultimately speeds up our simulations.
+
+# Background on CFD and Turbulence
+
+Everyone is familiar with turbulence in the common sense of the word. If
+you are on an airplane, turbulence is characterized by seemingly random
+fluctuations in the fluid. These are called eddies and they can be
+small, large, and can happen in any direction, and this unpredictability
+that creates the complex behavior that's very difficult to simulate.
+Despite the randomness, there actually is some structure to these
+fluctuations, and the sketch below shows the relationship between the
+energy of the eddies and the length scale. The largest scale eddies gain
+the most energies, and when we think about the relative importance of
+the scales, the large scales will be deriving the majority of the
+overall behavior we are interested in such as the drag.
+
+![Typical relationship between the length scale of eddies and the
+associated energy](figures/eddies.png)\{#fig:eddies_energy\}
+
+![Fluid Velocity](figures/fluidVelocityField.png)\{#fig:velocityField\}
+
+The small scale eddies are relatively less important. The tricky part
+though is that they are interacting with the large scales. The large
+eddies are producing small eddies and sometimes even the reverse can
+happen. In order to resolve the flow, we actually need to resolve the
+smallest features. When we are discretizing the data so that we can
+perform computer simulations, if we are are only interested in large
+eddies, we can go with course grid with fewer points but since we need
+to resolve these small-scale eddies we need a grid that is small and
+dense-enough to capture the small eddies. So, what we end up with is
+lots of data and because turbulence is local in space that means that we
+can do parallelization. So, CFD is very well suited to HPC applications.
+Yet, even with current HPC capabilities, we still cannot resolve the
+smallest features of engineering flows. An example is the if we were
+looking at a vehicle driving on the highway, the largest scales would be
+about the size of the vehicle, and the smallest scales would be less
+than a mm. So, when we think about a grid that would be required for
+that we are talkign about billion of points, which is not feasible with
+out current computational capabilities. Hence, turbulence models that
+make some approximations to ultimately reduce the complexity of these
+equations are useful in this context to bring down the computational
+complexity. Within these turbulence models, since we really only care
+about the large scale eddies, we make some approximations about the
+small-scales enabling us to use a coarse grid since we are only
+calculating the large scales. This makes things a lot more tractable,
+but yet even with all of this work, to get to a problem that we can
+finally solve with engineering flow with these models, it takes days a
+couple of days to solve even on a HPC cluster. In order to evaluate
+multiple designs, perhaps thousands, it really is a time consuming
+process and may not be feasible even with HPC.
+
+# Physics Description of the Problem
+
+To evaluate this approach with regards to fluid dynamics, an idealized
+case of turbulent flow is considered -- homogeneous isotropic
+turbulence. The convolutional neural ODE method stems from the fact that
+we wish to model the temporal dynamics of the system. For an
+incompressible fluid, there are two governing equations, a momentum
+balance and a mass balance, shown here in their non-dimensional form:
+
+$$\frac\{\partial \mathbf\{u\}\}\{\partial t\} + (\mathbf\{u\}\cdot \nabla)\mathbf\{u\}=\frac\{1\}\{Re\}\nabla^2\mathbf\{u\}-\nabla p + \mathbf\{f\}$$
+
+$$\nabla\cdot\mathbf\{u\}=0$$
+
+where $\mathbf\{u\}$ is the velocity vector, defined $\{u, v, w\}$, $p$ is
+the pressure, $\mathbf\{f\}$ is a forcing function, and $Re$ is a Reynolds
+number, a non-dimensional flow parameter which broadly describes the
+intensity of inertial forces over viscous ones. We can see from the
+momentum balance that the dynamics of the velocity field are both
+autonomous and a function of local spatial gradient information of the
+field. Given a spatially discrete field, then, we can construct an ODE
+system to describe the dynamics using a neural network. We note that
+making this neural network a convolutional neural network will
+incorporate the spatial information (derivatives) necessary to
+accurately approximate the true function. The problem is constructed
+such that the model is provided with an initial snapshot of the flow.
+The continuous dynamics are forecasted with the model, and a series of
+temporal snapshots within a specified time window are saved and analyzed
+with regards to the ground truth data. The results can be compared using
+a series of three important turbulent statistics -- energy spectra,
+velocity probability density functions (PDFs), and turbulent kinetic
+energy (TKE). The turbulent kinetic energy is defined as one half of the
+sum of the mean-square fluctuations of the velocity components:
+
+$$e=\frac\{1\}\{2\}(\langle u^2\rangle+\langle v^2\rangle+\langle w^2\rangle)$$
+
+# Convolutional Neural ODEs: An Approach to Build a ML Surrogate to Forecast Turbulence Dynamics
+
+The goal of the recent work was to build an ML surrogate to forecast
+turbulence dynamics. The data-driven model can ultimately a lot faster
+but still retain important features especially at large-scales. The
+scientific machine learning approach can be described as a serial
+combination of **Convolutional AutoEncoders and Neural ODEs**.
+
+![Schematic of the overall model architecture. Initial conditions are
+given and encoded into a latent space. Augmented channels are
+concatenated and the dynamics are forecasted through the neural ODE
+approximator. The sequence is decoded and the divergence-free condition
+is enforced through the last
+layer.](figures/architecture_Fluids_NODEs.png)\{#fig:architecture_convNODEs\}
+
+The model is provided with an initial velocity field, which is the
+solution to these equations, and then the model forecasts that velocity
+field evolution over a certain time window. The model has been tested on
+a canonical fluid dynamics problem of three-dimensional homogeneous
+isotropic turbulence. This is a well studied problem in fluids in
+physics, so there's a lot that's already known about the problem and we
+can make a lot of physical insights into the model based on the
+predictions. It's a bit of a simpler idealistic version of turbulence
+but even so we are looking at a contained problem that's based on the
+physics, and so there's a lot that we can learn from the problem. Also,
+since this is simpler in nature, we can actually use direct numerical
+simulation data (no approximations), which is the highest fidelity data
+and the closest to the physics as possible. Of course, this is hugely
+beneficial when we are creating AI-based models.
+
+# Analyzing the Performance of the Model
+
+The design of our ConvAE + Neural ODE system is sketched in the
+schematic diagram above. Here, the latent space dynamics
+$\frac\{d\mathbf\{z\}\}\{dt\}$ are approximated using a 4 layer convolutional
+network with dropout prior to the last layer.
+
+![convNet for fluids](figures/convNet_fluids.png)\{#fig:convNet_fluids\}
+
+## Divergence-Free Constraint Through Spectral Projection
+
+# Results: Fluid Flow Field Statistics
+
+![The two plots show the energy of the flow as a function of wavenumber.
+Left: Two snapshots corresponding to the initial and ending time steps
+are shown. The vertical line represents the compression ratio of 6
+defined by the latent space size. Right: The energy spectra averaged
+over the entire time window is shown. Low wavenumbers show better
+agreement with DNS, which are sufficient for many practical
+flows.](figures/predictionsNODEs.png)\{#fig:convNet_predictions2\}
+
+![Distributions of the velocity gradients in the flow at initial and end
+temporal snapshots. Predictions exhibit tighter distributions, but they
+are consistent over
+time.](figures/predictionsNODEs2.png)\{#fig:convNet_predictions2\}

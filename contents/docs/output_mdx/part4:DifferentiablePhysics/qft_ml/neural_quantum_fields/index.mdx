@@ -1,0 +1,162 @@
+# Neural Field Theory \{#chap:neural_quantum_fields\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:neural_operators\]](#chap:neural_operators)\{reference-type="ref+label"
+reference="chap:neural_operators"\},
+[\[chap:dft\]](#chap:dft)\{reference-type="ref+label"
+reference="chap:dft"\},\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+The physical theories we've considered so far all have had finite sets
+of parameters. But for many more complex physical systems, we find that
+we're interested in modeling systems with an infinite number of
+parameters. Neural Field Theory provides a mechanism to directly model
+fields, both classical and quantum, with differentiable programs.
+
+We define a scalar field $$\begin\{aligned\}
+\varphi: \mathbb\{R\}^4 \to \mathbb\{R\}
+\end\{aligned\}$$ where we use $\mathbb\{R\}^4$ to denote spacetime. This
+function can be directly approximate by a suitable neural architecture
+$$\begin\{aligned\}
+\varphi &= f_\theta
+\end\{aligned\}$$
+
+We call such a representation a neural field.
+
+## Electromagnetic Neural Fields
+
+We can represent the electric and magnetic fields $E(x)$ and $B(x)$ as
+neural fields. We can also represent the electromagnetic tensor
+$F^\{\mu \nu\}$ as a field. This formulation is Lorentz equivariant by
+construction. Maxwell's equations can be placed as a PINNs-style
+constraint upon the learned field.
+
+## Neural Quantum Fields
+
+Neural quantum fields provide a technology to approximate quantum
+fields. Recall that a quantum field is given to first approximation by
+an element of type $$\begin\{aligned\}
+    \mathbb\{R\}^4_+ \to \mathcal\{B\}(\mathcal\{H\})
+\end\{aligned\}$$ where $\mathbb\{R\}^4_+$ is Minkowski space. A quantum
+field associates to each point of Minkowski space a bounded operator on
+Hilbert space.
+
+Recall that neural operators provide a technology for approximating
+operators on function spaces. A neural quantum field is thus given by a
+function
+
+$$\begin\{aligned\}
+    \mathbb\{R\}^4_+ &\to \textrm\{NeuralOperator\} \\
+    (x, y, z, t) &\mapsto A_\{\theta, (x,y,z, t)\}(\cdot)
+\end\{aligned\}$$ where $A_\{\theta, (x,y,z, t)\}(\cdot)$ is a parameterized
+neural operator. The neural operator can be defined so that it is not
+dependent on the choice of discretization as we have seen in earlier
+chapters.
+
+The core insight of the neural quantum field theory approach is that
+quantization is a much less mysterious construction in a differentiable
+program than in traditional physics. Quantization simply inserts a
+$\lambda$ (in the sense of programming language theory). This technique
+enables direct study of the fields with simple technology.
+
+### Neural Distributions
+
+The discussion in the previous section is only an approximation, since
+quantum fields are more accurately described as operator valued
+distributions rather than operator valued functions.
+
+Before tackling the problem of learning an operator valued distribution,
+we consider the simpler problem of learning the Dirac delta. Recall that
+the Dirac delta is itself a distribution or a generalized function that
+maps an input function to its value at the origin $$\begin\{aligned\}
+\delta: f \mapsto f(0)
+\end\{aligned\}$$
+
+We can encode an approimate Dirac delta as a differentiable program
+$$\begin\{aligned\}
+\delta(f) \approx g^\{\delta\}_\theta 
+\end\{aligned\}$$ where $g$ is convolution against a narrow Gaussian.
+
+## Klein Gordon Equation
+
+We can use our framework of neural operators to learn solutions to the
+Klein-Gordon equation. The classical Klein-Gordon equation satifies the
+equation
+
+$$\begin\{aligned\}
+(\partial_t^2 - \nabla^2 + m^2)\psi(t, x) &= 0
+\end\{aligned\}$$
+
+Solutions to this equation satisfy Lorentz invariance and $U(1)$
+symmetry by construction. We can then quantize these solutions as in the
+classical solution to the quantized Klein-Gordon equation.
+
+The usual solution to the Klein-Gordon equation converts the equation to
+Fourier space and notes that at each momentum value, the equation
+reduces to the simple harmonic oscillator. The quantization is then
+performed by using the ladder operators, just as the harmonic oscillator
+is quantized. In our case, we can learn an approximate solution to the
+Klein-Gordon equation $$\begin\{aligned\}
+f_\theta
+\end\{aligned\}$$ We can then use the classical commutation rules
+$$\begin\{aligned\}
+[\phi(x), \phi(y)] &= [\pi(x), \pi(y)] = 0 \\
+[\phi(x), \pi(y)] &= i \delta^3(x-y)
+\end\{aligned\}$$ to perform the commutation by the following steps. We
+can introduce the following forms for $\phi$ and $\pi$ $$\begin\{aligned\}
+\phi(x) &= \lambda \psi. f_\theta(x)(\psi) \\
+\pi(x) &= \lambda \psi. g_\theta(x)(\psi) \\
+\end\{aligned\}$$ We can then introduce a loss that penalizes deviations
+from the commutation relations $$\begin\{aligned\}
+\mathcal\{L\}_1 &= \int_x \int_y \|[\phi(x), \phi(y)]\|^2 \\
+\mathcal\{L\}_2 &= \int_x \int_y \|[\pi(x), \pi(y)]\|^2 \\
+\mathcal\{L\}_3 &= \int_x \int_\{y \neq x\} \|[\phi(x), \phi(y)]\|^2 + \int_x \|[\phi(x), \phi(y)] - i\|^2\\
+\mathcal\{L\} &= \mathcal\{L\}_1 + \mathcal\{L\}_2 + \mathcal\{L\}_3 + \mathcal\{L\}_4
+\end\{aligned\}$$
+
+As a more complex example, we can consider the Klein-Gordon system with
+an added vector potential.
+
+$$\begin\{aligned\}
+\Box \psi + \frac\{\partial V\}\{\partial \psi\} &= 0
+\end\{aligned\}$$
+
+We can use the neural field to learn solutions in cases with a vector
+potential just as we learned the free field above..
+
+## Dirac Equation
+
+We can use the same methdology to construct a neural field theory for
+the Dirac equation
+
+$$\begin\{aligned\}
+i \hslash \gamma^\mu \partial_\mu \psi(x) - m c\psi(x) &= 0
+\end\{aligned\}$$
+
+One complication here is that $\psi(x)$ takes values in spinors, so we
+have to place spinorial constraint on our original PINNs-style solver.
+Each component of the Dirac equation satisfies the Klein-Gordon field,
+so we can use that constraint to help guide the solver.
+
+We can also introduce electromagnetic coupling into the Dirac equation
+in a natural way, providing a pathway to apply our methodology to more
+complex quantum fields.
+
+## Quantum Electrodynamics
+
+The QED field is a gauge field (consisting of the Dirac field plus
+electromagnetic coupling). The Dyson series for the perturbation
+expansion can be directly implemented as a differentiable program.
+
+## Quantum Chromodynamics
+
+This same approach can be applied to the Lagrangian for quantum
+chromodynamics. A powerful result of this theory is that this
+formulation is naturally mesh-free, allowing for the natural
+construction of a mesh-free approximate theory of quantum
+chromodynamics.

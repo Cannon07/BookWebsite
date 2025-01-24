@@ -1,0 +1,33 @@
+# Deep Tensor Neural Networks \{#chap:dtnn\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:graphconvs\]](#chap:graphconvs)\{reference-type="ref+label"
+reference="chap:graphconvs"\},\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+Deep Tensor Neural Networks (DTNN) are adaptable extensions of the
+Coulomb matrix featurizer.[@schutt2017quantum] The core idea is to
+directly use nuclear charge (atom number) and the distance matrix to
+predict energetic, electronic or thermodynamic properties of small
+molecules. To build a learnable system, the model first maps atom
+numbers to trainable embeddings (randomly initialized) as atomic
+features. Then each atomic feature $a_i$ is updated based on distance
+info $d_\{ij\}$ and other atomic features $a_j$. Comparing with Weave
+models, DTNNs share the same idea in terms of updating based on both
+atomic and pair features, while the difference is using physical
+distance instead of graph distance. Note that the use of 3D coordinates
+to calculate physical distances limits DTNNs to quantum mechanical (or
+perhaps biophysical) datasets. We reimplement the model proposed by
+Schütt et al.[@schutt2017quantum] in a more generalized fashion. Atom
+numbers and a distance matrix are calculated by
+RDKit,[@landrum2006rdkit] using the Coulomb matrix featurizer. After
+embedding atom numbers into feature vectors $a_i$, we update $a_i$ in
+each convolutional layer by adding the outputs from all network layers
+which use $d_\{ij\}$ and $a_j$ ($i$ $\neq$ $j$) as input. After several
+layers of convolutions, all atomic features are summed together to form
+molecular features, used for classification and regression tasks.

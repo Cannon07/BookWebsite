@@ -1,0 +1,36 @@
+# Quantum Programming \{#chap:quantum_programmiing\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:physika\]](#chap:physika)\{reference-type="ref+label"
+reference="chap:physika"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+Quantum computing has spawned a large number of new programming
+languages to design sophisticated quantum algorithms. While quantum
+circuits are themselves a simple language for quantum algorithms,
+circuits can become verbose. Most quantum algorithms also have repeated
+patterns within circuits suggesting that there are higher order patterns
+which can be encapsulated and re-sued in circuit design.
+
+In this section, we will discuss a simple extension to Physika that
+performs quantum programming. We will design this quantum extension to
+enable variational quantum programs which will require us to merge
+classical and quantum computations in the same program.
+
+## Syntax for Quantum Gates
+
+Basic gates are provided by simple functions
+
+    X : $H_2 \to H_2$
+    Y : $H_2 \to H_2$
+    $\sigma_x$ : $H_2 \to H_2$
+
+These operators can be chained together into basic algorithms and
+executed the same as any other algorithm. The key differentiator is that
+the type must be from a specified Hilbert space to another specified
+Hilbert space.

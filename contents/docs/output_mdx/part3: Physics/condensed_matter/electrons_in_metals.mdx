@@ -1,0 +1,217 @@
+# Electrons in Metals \{#chap:electrons_in_metals\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:ideal_gas\]](#chap:ideal_gas)\{reference-type="ref+label"
+reference="chap:ideal_gas"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+Electrons are fundamental elementary particles that are fermions. With
+this information, together with a correct quantum-mechanical model for
+the energy levels of electrons, we can derive the thermodynamic
+properties of electrons present inside metals. These electrons can
+modeled as an ideal gas of fermions with high densities, assuring the
+occupation of many single particle energy levels due to the Pauli
+exclusion principle, and making the interaction between particles
+negligible.
+
+In this chapter we will develop the thermodynamic description of
+electrons in metals.
+
+## Fermi-Dirac statistics for conducting electrons in a metal
+
+Electrons in a metal can be modeled as a gas of non-interacting fermions
+considering the following assumptions:
+
+-   Electrons in a metal have high densities (many atoms per unit volume
+    each contribute to the conducting electrons).
+
+-   Since no two electrons (fermions) can exist in the same state, a
+    high density system fills many of the single particle energy levels
+
+-   The lowest unoccupied state will have a kinetic energy much larger
+    than $k_BT$, thus thermal excitations result in energetics with
+    large kinetic energy and comparatively negligible potential energy
+    of interaction.
+
+-   The large kinetic energy associated with these electrons results in
+    large conductivity of electrons in metals
+
+Using the results for the thermodynamic behavior of non-interacting
+fermions, we want to find the behavior of an ideal gas of electrons in a
+metal. Based on the previous assumptions, electrons in a metal act as
+non-interacting particles with quantized energies given by:
+$$\begin\{aligned\}
+E_\{\vec\{n\}\} = \frac\{h^2\}\{8mL^2\}\left(n_x^2+n_y^2+n_z^2\right) \hspace\{1.0cm\} \text\{(translational modes)\} \notag
+\end\{aligned\}$$
+
+which are the energy levels for a particle in a box for a particles with
+mass $m$.
+
+The average number of electrons in the $\vec\{n\}$ state is:
+$$\begin\{aligned\}
+\label\{Eq7\}
+\langle n_\{\vec\{n\}\} \rangle = \frac\{1\}\{e^\{\beta (E_\{\vec\{n\}\} - \mu)\} + 1\} = f(E_\{\vec\{n\}\})
+\end\{aligned\}$$
+
+where we have defined the Fermi function $$\begin\{aligned\}
+f(\varepsilon) = \frac\{1\}\{e^\{\beta(\varepsilon - \mu)\} + 1\}
+\end\{aligned\}$$.
+
+The total number of electrons is given by: $$\begin\{aligned\}
+\langle N \rangle = 2 \sum_\{n_x = 1\}^\infty \sum_\{n_y = 1\}^\infty \sum_\{n_z = 1\}^\infty \frac\{1\}\{e^\{\beta (E_\{\vec\{n\}\} - \mu)\} + 1\} =  2 \sum_\{n_x = 1\}^\infty \sum_\{n_y = 1\}^\infty \sum_\{n_z = 1\}^\infty f(E_\{\vec\{n\}\})
+\end\{aligned\}$$
+
+where we include a factor of 2 since the electrons can exist in spin-up
+and a spin-down states.
+
+For sufficiently large $V$, the spectrum of translational wavemodes is
+effectively a continuum. Therefore, we can convert this summation to an
+integral over $\vec\{n\}$, resulting in: $$\begin\{aligned\}
+\langle N \rangle &= 2 \int_0^\infty dn_x \int_0^\infty dn_y \int_0^\infty dn_z f(E_\{\vec\{n\}\})\\
+&= 2 \int_0^\infty dk_x \frac\{L\}\{\pi\} \int_0^\infty dk_y \frac\{L\}\{\pi\} \int_0^\infty dk_z \frac\{L\}\{\pi\} f[\varepsilon (\vec\{k\})] \notag\\
+&= 2 \frac\{L^3\}\{\pi^3\} \frac\{1\}\{2^3\} \int_\{-\infty\}^\infty dk_x \int_\{-\infty\}^\infty dk_y \int_\{-\infty\}^\infty dk_z f[\varepsilon (\vec\{k\})] \\ 
+&= \frac\{2V\}\{(2\pi)^3\} \int d\vec\{k\} F[\varepsilon (\vec\{k\})] 
+\end\{aligned\}$$
+
+where we have used a coordinate change from $\vec\{n\}$ to
+$\vec\{k\} = \frac\{\pi\}\{L\}\vec\{n\}$, and the energy is now written as
+$$\begin\{aligned\}
+\varepsilon(\vec\{k\}) = \frac\{\hslash^2 k^2\}\{2m\}
+\end\{aligned\}$$
+
+Define the chemical potential at $T =0$ to be $$\begin\{aligned\}
+ \mu(T=0)=\varepsilon_F
+\end\{aligned\}$$ This is referred to as the Fermi energy. Consider the
+form of the Fermi function at $T=0$, $$\begin\{aligned\}
+f(\varepsilon) = \begin\{cases\}
+1 & \textrm\{ for \}\varepsilon \le \varepsilon_F \\ 
+0 & \textrm\{ for \}\varepsilon > \varepsilon_F
+\end\{cases\}
+\end\{aligned\}$$ Define the Fermi momentum $p_F$ according to
+$$\begin\{aligned\}
+\varepsilon_F &= \frac\{p^2_F\}\{2m\} = \frac\{\hslash^2 k_F^2\}\{2m\}
+\end\{aligned\}$$ Thus, at $T = 0$, $\langle N \rangle$ is found to be:
+$$\begin\{aligned\}
+ \label\{AveN_electrons\}
+\langle N \rangle = \frac\{2V\}\{(2\pi)^3\} \frac\{4\}\{3\}\pi k_F^3 = \frac\{8\}\{3\}\pi\frac\{V(2m)^\{3/2\}\}\{h^3\}\varepsilon_F^\{3/2\}
+\end\{aligned\}$$ where the fermi energy $\varepsilon_F$ is given
+explicitly by: $$\begin\{aligned\}
+ \label\{FermiEnergy\}
+\varepsilon_F = \left(\frac\{3\rho\}\{8\pi\}\right)^\{2/3\} \frac\{h^2\}\{2m\}
+\end\{aligned\}$$
+
+A typical metal (*Cu*) has a mass density of $9g/cm^3$. Assuming each
+atom donates a single electron to the conducting electron gas, this
+density has a Fermi temperature: $$\begin\{aligned\}
+\theta_F = \frac\{\varepsilon_F\}\{k_B\} \approx 80,000K
+\end\{aligned\}$$
+
+this verifies that the Fermi energy $\varepsilon_F$ is sufficiently
+large to make the ideal gas approximation valid at room temperature. At
+room temperature, only states with energy very near
+$\varepsilon \approx \varepsilon_F$ will be affected by thermal energy
+$k_BT$. The spread in the distribution is approximately $2k_BT$
+(Fig. [\[fig1\]](#fig1)\{reference-type="ref" reference="fig1"\}).
+
+::: marginfigure
+![image](figures/Physics/statistical_mechanics/electrons_in_metals/Fig1.png)\{width="\\linewidth"\}
+:::
+
+The pressure is found using the relationship for Fermi particles
+$$\label\{Eq9\}
+pV = 2k_BT\sum_\alpha \log \left(1 + e^\{-\beta \varepsilon_\alpha + \beta \mu\} \right)$$
+
+Following a similar derivation as before, we write $$\begin\{aligned\}
+\label\{Eq10\}
+pV &= \frac\{2V\}\{(2\pi)^3\} \int d\vec\{k\} \log \{ 1 + e^\{-\beta [ \varepsilon (\vec\{k\}) - \mu]\} \} \\
+&= \frac\{4\pi V (2m)^\{2/3\}\}\{h^3\} \int_0^\infty d\varepsilon \varepsilon^\{1/2\} \log \left[ 1 + e^\{-\beta ( \varepsilon - \mu)\} \right]
+\end\{aligned\}$$
+
+where we have used $\varepsilon = \frac\{\hslash^2 k^2\}\{2m\}$.
+
+In the limit $T \rightarrow 0$ or $\beta \rightarrow \infty$, we have
+$$\begin\{aligned\}
+1 + e^\{-\beta ( \varepsilon - \mu)\} \rightarrow  e^\{\beta ( \varepsilon_F - \varepsilon)\}
+\end\{aligned\}$$ for $\varepsilon < \varepsilon_F$ and $$\begin\{aligned\}
+ 1 + e^\{-\beta ( \varepsilon - \mu)\} \rightarrow 1
+\end\{aligned\}$$ for $\varepsilon > \varepsilon_F$. Therefore, the
+pressure is written as:
+
+$$\begin\{aligned\}
+pV &= \frac\{4\pi V (2m)^\{3/2\}\}\{h^3\} \int_0^\{\varepsilon_F\} d\varepsilon \varepsilon^\{1/2\} (\varepsilon_F - \varepsilon)\\
+&= \frac\{16\pi V (2m)^\{2/3\}\}\{15h^3\} \varepsilon_F^\{5/2\} 
+\end\{aligned\}$$
+
+This pressure at $T = 0$ is approximately $10^6 \textrm\{ atm\}$. This
+large pressure plays an important role in halting the collapse of a star
+(white dwarf) because this enormous pressure offsets the gravitational
+forces that otherwise drive the collapse.
+
+The average energy $\langle E \rangle$ is found using: $$\begin\{aligned\}
+\label\{Eq12\}
+\langle E \rangle = 2\sum_\alpha \varepsilon_\alpha \frac\{e^\{-\beta \varepsilon_\alpha + \beta \mu\}\}\{1 + e^\{-\beta \varepsilon_\alpha + \beta \mu\}\}
+\end\{aligned\}$$
+
+Following a similar derivation as before, we write $$\begin\{aligned\}
+\langle E \rangle &= \frac\{2V\}\{(2\pi)^3\} \int d\vec\{k\} \varepsilon(\vec\{k\}) \frac\{1\}\{e^\{\beta [ \varepsilon(\vec\{k\}) - \mu]\}+1\} \notag\\
+&= \frac\{4\pi V (2m)^\{2/3\}\}\{h^3\} \int_0^\infty d\varepsilon \varepsilon^\{3/2\} \frac\{1\}\{e^\{\beta [ \varepsilon - \mu]\}+1\} \notag\\
+&= \frac\{4\pi V (2m)^\{2/3\}\}\{h^3\} \int_0^\infty d\varepsilon \varepsilon^\{3/2\} F(\varepsilon) \notag
+\end\{aligned\}$$
+
+where we have used $\varepsilon = \frac\{\hslash^2 k^2\}\{2m\}$.
+
+::: marginfigure
+![image](figures/Physics/statistical_mechanics/electrons_in_metals/Fig2.png)\{width="\\linewidth"\}
+:::
+
+We apply integration by parts to this equation and use
+([\[AveN_electrons\]](#AveN_electrons)\{reference-type="ref"
+reference="AveN_electrons"\}) to get: $$\begin\{aligned\}
+\langle E \rangle = - \frac\{3\langle N \rangle\}\{5\varepsilon_F^\{3/2\}\} \int_0^\{\infty\} d\varepsilon \varepsilon^\{5/2\} \frac\{df\}\{d\varepsilon\}
+\end\{aligned\}$$
+
+where $$\begin\{aligned\}
+\frac\{df\}\{d\varepsilon\} &= -\frac\{\beta e^\{\beta (\varepsilon - \mu)\}\}\{[e^\{\beta (\varepsilon - \mu)\} + 1]^2\}
+\end\{aligned\}$$
+
+In the limit $T\rightarrow0$, the function $-\frac\{df\}\{d\varepsilon\}$
+becomes peaked near $\varepsilon \approx \varepsilon_F$
+(Fig. [\[fig2\]](#fig2)\{reference-type="ref" reference="fig2"\}), and we
+can effectively expand the integrand near $\varepsilon = \varepsilon_F$
+to get: $$\begin\{aligned\}
+\varepsilon^\{5/2\} \approx \varepsilon_F^\{5/2\} + \frac\{5\}\{2\}\varepsilon_F^\{3/2\}(\varepsilon - \varepsilon_F) + \frac\{15\}\{8\}\varepsilon_F^\{1/2\}(\varepsilon - \varepsilon_F)^2 + ...
+\end\{aligned\}$$
+
+Since $\frac\{df(\varepsilon)\}\{d\varepsilon\}$ is even about
+$\varepsilon_F$ in this limit, the odd-order terms will integrate to
+zero, leaving only the even terms. Thus, the final form of the average
+energy is going to be: $$\begin\{aligned\}
+\langle E \rangle = \langle N \rangle \varepsilon_F \left[A +B\left(\frac\{T\}\{\theta_F\}\right)^2 +...\right]
+\end\{aligned\}$$
+
+A precise calculation of this low-temperature expansion gives:
+$$\begin\{aligned\}
+\
+\langle E \rangle = \frac\{3\}\{5\}\langle N \rangle \varepsilon_F \left[1 +\frac\{5\pi^2\}\{12\}\left(\frac\{T\}\{\theta_F\}\right)^2 +...\right]
+\end\{aligned\}$$
+
+Therefore, the heat capacity for a metal in the limit of small
+temperature is given by
+
+$$\begin\{aligned\}
+C_V = \frac\{3\}\{5\}\langle N \rangle \varepsilon_F \frac\{5\pi^2\}\{12\}2\frac\{T\}\{\theta_F^2\} = \frac\{\pi^2\}\{2\}\langle N \rangle k_B\frac\{T\}\{\theta_F\}
+\end\{aligned\}$$
+
+giving a linear temperature dependence in the small-$T$ limit.
+
+The limiting behavior in the small-$T$ limit suggests that a plot of
+$C_V/T$ approaches a constant as $T\rightarrow 0$. This proves to be the
+behavior of the heat capacity for metals in the limit of small $T$. As
+temperature increases, the fluctuations in the metal nuclei also
+contribute to the heat capacity
+(Fig. [\[fig3\]](#fig3)\{reference-type="ref" reference="fig3"\}).

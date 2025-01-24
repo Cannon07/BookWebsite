@@ -1,0 +1,84 @@
+# Optimizing Mechanics Models in Cartesian Coordinates \{#chap:hamiltonian_nn\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:hamiltonians_mechanics\]](#chap:hamiltonians_mechanics)\{reference-type="ref+label"
+reference="chap:hamiltonians_mechanics"\},
+[\[chap:neural_ode\]](#chap:neural_ode)\{reference-type="ref+label"
+reference="chap:neural_ode"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+The Hamiltonian and Lagrangian mechanics models we have learned about in
+previous chapters only hold for simple systems with an energy
+conservation law. However many real world mechanics problems require
+modeling of friction, contacts and collisions. Modeling such events
+introduces mathematical complexities since they introduce constraints
+and discontinuities into the system that standard differential equations
+cannot easily model. To solve such systems, we introduce a constrained
+optimizer into the differentiable program that models these systems
+[@finzi2020generalizing], [@zhong2021benchmarking],
+[@zhong2021extending].
+
+## Embedding the System into Cartesian Coordinates
+
+We first study methods to explicitly encode constraints into Hamiltonian
+and Lagrangian neural networks. A core technique is to embed a system
+description into Cartesian coordinates and then enforce a constraint via
+a Lagrangian multiplier. This technique simplifies the optimization
+difficulty for the problem.
+
+We can model a system in Cartesian coordinates by a vector of Cartesian
+coordinates
+
+$$\begin\{aligned\}
+    x(t) &= (x_1(t), \dotsc, x_D(t))
+\end\{aligned\}$$ where $D$ is the dimensionality of the system. The
+Lagrangian for this system is given by $$\begin\{aligned\}
+    L(x, \dot\{x\}) &= \frac\{1\}\{2\}\dot\{x\}^T M \dot\{x\}
+\end\{aligned\}$$ where the constant mass matrix $M$ is given by
+$$\begin\{aligned\}
+    M&= \nabla_\{\dot\{x\}\}\nabla_\{\dot\{x\}\}^TL
+\end\{aligned\}$$ Newton's second law for this system is given by
+$$\begin\{aligned\}
+\delta x^T \left [ \frac\{d\}\{dt\}\frac\{\partial L\}\{\partial \dot\{x\}\} - \frac\{\partial L\}\{\partial x\} \right ] &= 0
+\end\{aligned\}$$ If a system has $M$ degrees of freedom where $M < D$,
+then there must be $D - M$ constraints. We assume that all constraints
+are holonomic, which means that we can thus express the constraint in
+the form $$\begin\{aligned\}
+\Phi_k(x) &= 0
+\end\{aligned\}$$ where $\Phi_k$ is some constraint function. The updated
+Newton's law is then given by $$\begin\{aligned\}
+\delta x^T \left [ \frac\{d\}\{dt\}\frac\{\partial L\}\{\partial \dot\{x\}\} - \frac\{\partial L\}\{\partial x\}   + (D_x \Phi)^T \lambda_L\right ] &= 0
+\end\{aligned\}$$ where $\lambda_L$ is a Lagrange multiplier.
+
+A Symplectic ODENet learns $M$, $V$ $$\begin\{aligned\}
+\begin\{pmatrix\}
+    \dot\{q\} \\
+    \dot(p)
+\end\{pmatrix\} &= \begin\{pmatrix\}
+    \frac\{\partial H\}\{\partial p\} \\
+    -\frac\{\partial H\}\{\partial q\}
+\end\{pmatrix\}
+\end\{aligned\}$$ $$\begin\{aligned\}
+H(p, q) &= \frac\{1\}\{2\}M^\{-1\}(q)p + V(q)
+\end\{aligned\}$$ $$\begin\{aligned\}
+\dot\{z\} &= f_\theta(z) \\
+\hat\{z\} &= \textrm\{ODESolve\}(z_\{t_\theta\}, f_\theta, t_1,\dotsc,t_n) \\
+\mathcal\{L\} &= \|Z - \hat\{Z\} \|
+\end\{aligned\}$$
+
+## Limitations
+
+Collision and contact events cannot be easily modeled by Lagrangian and
+Hamiltonian networks.
+
+## Constrained Lagrangian and Hamiltonian NNs
+
+Cartesian coordinates are easier to learn than natural angular
+coordinates for a gyroscope or other systems of similar complexity. The
+Cartesian coordinates are referred to as constrained Hamiltonian and
+Lagrangian neural networks.

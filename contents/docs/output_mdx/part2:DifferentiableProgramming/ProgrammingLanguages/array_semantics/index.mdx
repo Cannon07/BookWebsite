@@ -1,0 +1,69 @@
+# Semantics for Array Programs \{#chap:grammar\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:autodiff\]](#chap:autodiff)\{reference-type="ref+label"
+reference="chap:autodiff"\},
+[\[chap:hindley_milner\]](#chap:hindley_milner)\{reference-type="ref+label"
+reference="chap:hindley_milner"\}\
+**Difficulty Level:** \*\*\*\
+
+------------------------------------------------------------------------
+
+Modern scientific programs are written to operate on arrays of numbers.
+These arrays provide a natural representation for numerical
+calculations. In this chapter, we consider a type theory for array
+calculations
+
+## Syntax
+
+Physika has two types of `for` loops. The first `for` loop behaves as a
+control structure.
+
+``` \{.python language="python"\}
+sum = 0
+for i in 100:
+  sum += i
+```
+
+We also make use of a second `for` which acts as an array builder. These
+`for` loops must feature only a single expression within the `for` loop
+which acts as an array constructor.
+
+``` \{.python language="python"\}
+A = for i in N: i
+```
+
+We also allow Physika to perform indexed access to array elements
+
+``` \{.python language="python"\}
+A[i]
+```
+
+## Types and Semantics
+
+Typing rules for array creation and indexing are defined as follows
+
+$$\begin\{aligned\}
+\{2\}
+    &\inference[1.]
+    \{
+     x: \tau_1, \quad \Gamma \vdash e : \tau_2
+    \}
+    \{
+    \Gamma \vdash (\textrm\{for\}\ x : \tau_1. e) : \tau_1 \Rightarrow \tau_2
+    \} \ \textrm\{[For]\} &&\qquad
+    \inference[2.]
+    \{
+     \Gamma \vdash v_1: (\tau_1 \Rightarrow \tau_2), \quad v_2 : \tau_1
+    \}
+    \{
+     \Gamma \vdash v_1[v_2] : \tau_2 
+    \} \ \textrm\{[Index]\} \\
+\end\{aligned\}$$
+
+For loops which operate as control structures are also governed by these
+same rules. Stateful update operations in a for-loop are wrapped up as
+an array \"effect\" objects which is automatically evaluated.

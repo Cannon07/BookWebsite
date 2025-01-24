@@ -1,0 +1,47 @@
+# First Principles Derivation of MixtureNet
+
+In this note, I attempt a first principles derivation of the MixtureNet
+Architecture. We assume that we seek to construct a model that predicts
+some property $P$ of a mixture. Assume for now that the mixture is made
+up of two molecules $m_1$, $m_2$. Let $G$ denote the Gibbs free energy.
+We assume that the property $P$ is a function of the Gibbs free energy.
+
+$$\begin\{aligned\}
+P_\{m_1,m_2\} &= f(G_\{m_1, m_2\})
+\end\{aligned\}$$ We assume for simplicity that temperature $T$, pressure
+$P$, volume $V$ and other relevant thermodynamic quantities are kept
+fixed. Let $x_1, x_2$ denote the proportions of $m_1$ and $m_2$ in our
+mixture. The simplest mixing rule is given by the linear estimate
+$$\begin\{aligned\}
+G_\{m_1,m_2\} \approx x_1 G_\{m_1\} + x_2 G_\{m_2\}
+\end\{aligned\}$$ This approximation has an error term. We hypothesize
+that the error term can only depend on the difference between the two
+proportions $x_1$, $x_2$. We then gain the power series approximation
+$$\begin\{aligned\}
+G_\{m_1, m_2\} &= x_1 G_\{m_1\} + x_2 G_\{m_2\} + \sum_\{k=0\}^\infty (x_1 - x_2)^k L_k(m_1, m_2)
+\end\{aligned\}$$ Here the functions $L_k$ depend on $m_1$ and $m_2$. We
+place a second inductive constraint on function $L_k$ that it must be
+symmetric; if we swap the labels $m_1$ and $m_2$, we would reasonably
+expect that $L_k$ should not change (beyond possibly a sign change). We
+can represent this constraint in the form $$\begin\{aligned\}
+L_k(m_1, m_2) &= \textrm\{Sym\}(h_1(m_1), h_2(m_2))
+\end\{aligned\}$$ where we take $\textrm\{Sym\}$ to be some function that is
+permutation invariant in its arguments
+
+Elsewhere in the literature, researchers have developed powerful graph
+neural networks which operate directly on the molecular structure of a
+molecule. It follows to reason that we can define $h_1$ and $h_2$ to be
+graph neural networks. We could also reasonably approximate the solo
+Gibbs energies $G_\{m_1\}$ and $G_\{m_2\}$ as graph neural networks. We can
+then write $$\begin\{aligned\}
+G_\{m_1,m_2\} &= x_1 \textrm\{GNN\}_\theta(m_1) + x_2 \textrm\{GNN\}_\theta(m_2) + \sum_\{k=0\}^\infty (x_1 - x_2)^k  \cdot \textrm\{Sym\}(\textrm\{GNN\}_\{\theta_k\}(m_1), \textrm\{GNN\}_\{\theta_k\}(m_2))
+\end\{aligned\}$$ Here we have used $\theta$, $\theta_k$ to denote the
+learnable parameters for the graph neural networks. We can then write
+the arbitrary property we seek to compute as $$\begin\{aligned\}
+P_\{m_1,m_2\} &= f\left (x_1 \textrm\{GNN\}_\theta(m_1) + x_2 \textrm\{GNN\}_\theta(m_2) + \sum_\{k=0\}^\infty (x_1 - x_2)^k  \cdot \textrm\{Sym\}(\textrm\{GNN\}_\{\theta_k\}(m_1), \textrm\{GNN\}_\{\theta_k\}(m_2))\right )
+\end\{aligned\}$$
+
+This formula provides a differentiable, correct in principle derivation
+of the computation of any mixture property. It can be extended to
+multicomponent mixtures by using a suitable generalization of the
+Redlich-Kister polynomials to multivariate mixtures.

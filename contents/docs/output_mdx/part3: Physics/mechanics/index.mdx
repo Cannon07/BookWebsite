@@ -1,0 +1,1340 @@
+# The Heat Equation \{#chap:heat_equation\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:** [\[chap:pde\]](#chap:pde)\{reference-type="ref+label"
+reference="chap:pde"\},
+[\[chap:simple_physics\]](#chap:simple_physics)\{reference-type="ref+label"
+reference="chap:simple_physics"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+The heat equation is a fundamental partial differential equation that
+models systems with dissipating heat.
+
+Let $u(x,y,z,t)$ be a function of spatial coordinates and time. The heat
+equation is given by
+$$\frac\{\partial u\}\{\partial t\} = \alpha \left ( \frac\{\partial^2 u\}\{\partial x^2\} + \frac\{\partial^2 u\}\{\partial y^2\} + \frac\{\partial^2 u\}\{\partial z^2\} \right )$$
+
+$$\frac\{\partial u\}\{\partial t\} = \alpha \nabla^2 u$$
+
+The $\nabla^2$ operator is a general \"averaging\" operator. So the heat
+equation takes a point and moves it to the average of its neighbors over
+time.
+
+We're going to take some time to study solutions to the heat equation in
+some depth. While the transmission of heat is indeed an interesting
+problem, the heat equation is also the simplex example of a physical
+partial differential equation that we will encounter in this book so it
+serves as a neat test bed to learn the core principles of solving
+physical equations.
+
+### Linearity
+
+One of the most important properties of the heat equation is that its
+solutions satisfy a linearity property. That is, assume that $u_1$ and
+$u_2$ are both solutions. Then we know that $$\begin\{aligned\}
+    \frac\{\partial u_1\}\{\partial t\} &= \alpha \nabla^2 u_1 \\
+    \frac\{\partial u_2\}\{\partial t\} &= \alpha \nabla^2 u_2 
+\end\{aligned\}$$ By the fact that partial derivatives and $\nabla^2$ are
+both linear operators, we find that a linear combination of $u_1$ and
+$u_2$ is also a solution
+$$\frac\{\partial (c_1 u_1 + c_2 u_2)\}\{\partial t\} = \alpha \nabla^2(c_1 u_1 + c_2 u_2)$$
+This observation provides a powerful tool for solving the heat equation
+in greater generality, since if we can find some solutions, we can find
+more solutions by linear combinations.
+
+### Separation of Variables
+
+The idea of separation of variables is simple. We're going to posit that
+there exists a solution to the heat equation which has the following
+special structure.
+
+$$u(x, t) = X(x)T(t)$$
+
+That is, the solution is \"separable\". Note that if we have a family of
+separable solutions of the form $X_i(x)T_i(t)$, we can construct more
+general solutions by linear combinations
+$$u(x, t) = \sum_i X_i(x)T_i(t)$$ Note that $u$ need not be separable
+now! So the separable solutions form a sort of \"basis\" which we can
+use to solve for the general case of this equation.
+
+Let's now plug in separable equations into the heat equation
+
+$$\begin\{aligned\}
+    \frac\{\partial u\}\{\partial t\} &= \alpha \nabla^2 u \\
+    X(x) T'(t) &= \alpha T(t) \nabla^2 X \\
+    \frac\{T'(t)\}\{T(t)\} &= \alpha \frac\{(\nabla^2 X)(x)\}\{X(x)\}
+\end\{aligned\}$$ This last set of equations has an interesting form. Note
+that the left hand side is a function of $t$ while the right hand side
+is a function of $x$. As $x$ and $t$ independently vary, this equality
+must hold. The only way this can be the case is if both sides equal
+constants. So we can factor this equation into two separate equations
+$$\begin\{aligned\}
+    \frac\{T'(t)\}\{T(t)\} &= c \\
+    \alpha \frac\{(\nabla^2 X)(x)\}\{X(x)\} &= c
+\end\{aligned\}$$ Multiplying through we recover the two ordinary
+differential equations $$\begin\{aligned\}
+    T'(t) &= cT(t) \\
+    \alpha (\nabla^2 X)(x) &= cX(x) 
+\end\{aligned\}$$ For simplicity, let's work with these equations in 1D.
+Then our equations reduce to $$\begin\{aligned\}
+    T'(t) &= cT(t) \\
+    X''(x) &= \frac\{c\}\{\alpha\}X(x) \label\{1d_X_eqn\}
+\end\{aligned\}$$ The solution to the equation for $T$ should recognizably
+be the exponential function $$T(t) = d e^\{ct\}
+    \label\{1d_X_soln\}$$ The solution for the order two differential
+equation is a little trickier though. We can start from a guess that the
+solution perhaps should look like $e^\{\lambda t\}$ since we have that
+$X''$ and $X$ are multiple of one another. Let's try substituting in
+$X = e^\{\lambda t\}$ into our equation and seeing what happens
+$$\begin\{aligned\}
+    \lambda^2 e^\{\lambda t\} &= \frac\{c\}\{\alpha\} e^\{\lambda t\} \\
+    \lambda^2 &= \frac\{c\}\{\alpha\}
+\end\{aligned\}$$ Note that cancelling the $e^\{\lambda t\}$ term is allowed
+since this term is never 0. We now see that equality holds when
+$$\lambda = \pm \sqrt\{\frac\{c\}\{\alpha\}\}$$ Note that Equation
+[\[1d_X_eqn\]](#1d_X_eqn)\{reference-type="ref" reference="1d_X_eqn"\}
+satisfies the property (like the heat equation itself) that its
+solutions space is linear. It follows that we have a family of equations
+$$X(x) = c_1 e^\{\sqrt\{\frac\{c\}\{\alpha\}\}t\} + c_2 e^\{-\sqrt\{\frac\{c\}\{\alpha\}\}t\}$$
+In fact, every solution to Equation
+[\[1d_X_eqn\]](#1d_X_eqn)\{reference-type="ref" reference="1d_X_eqn"\} is
+of this form, but we won't prove that fact here. We now have a family of
+separable solutions for the heat equation in 1D
+$$u(x, t) = \left (c_1 e^\{\sqrt\{\frac\{c\}\{\alpha\}\}t\} + c_2 e^\{-\sqrt\{\frac\{c\}\{\alpha\}\}t\} \right ) \left (d e^\{ct\} \right)
+    \label\{heat_1d_general\}$$
+
+## Boundary Conditions
+
+While we've identified a general class of solutions to the heat
+equation, in practice we'll have some additional information about the
+physical system that we're trying to model. This type of information in
+general is termed *boundary conditions.*.
+
+In this section, we'll work through a simple 1D example of boundary
+conditions to see how we can turn the generic solution form in Equation
+[\[heat_1d_general\]](#heat_1d_general)\{reference-type="ref"
+reference="heat_1d_general"\} into solutions that meet our boundary
+conditions. In particular, let's suppose that we have a 1D rod whose
+endpoints are constrained to have a fixed temperature of $0$ for all
+time
+
+$$\begin\{aligned\}
+u(0, t) &= 0 \qquad \textrm\{for all \} t > 0 \\
+u(\ell, t) &= 0 \qquad \textrm\{for all \} t > 0
+\end\{aligned\}$$
+
+We'll also assume that we know the initial temperature of the rod
+everywhere.
+
+$$u(x, 0) = f(x) \qquad \textrm\{for all \} 0 < x < \ell$$
+
+Let's now impose our boundary conditions onto our general solutions.
+Let's start with the condition that the boundary temperature must be $0$
+for all time. Note that under our separation of variables setting, we
+can enforce boundary conditions by requiring that $X(0) = 0$ and
+$X(\ell) = 0$ for a separable solution $X(x)T(t)$. Note that a more
+general solution will have the form $$u(x, t) = \sum_i X_i(x)T_i(t)$$ If
+we enforce $X_i(0) = 0$ and $X_i(\ell) = 0$, we will have that $u$
+satisfies the endpoint conditions for boundary temperature.
+
+## Exercises
+
+1.  Given the differential equation $T'(t) = cT(t)$ verify that
+    $$T(t) = d \exp\{ct\}$$ is a solution where $d$ is an arbitrary
+    constant. Prove that all solutions must be of this form.
+
+2.  Given the differential equation $$X''(x) = \frac\{c\}\{\alpha\} X$$ Show
+    that if $f_1$ and $f_2$ are solutions to this equation, so too is
+    $c_1 f_1 + c_2 f_2$
+
+
+# Special Relativity \{#chap:special_relativity\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:lorentz_group\]](#chap:lorentz_group)\{reference-type="ref+label"
+reference="chap:lorentz_group"\}
+[\[chap:newtons_laws\]](#chap:newtons_laws)\{reference-type="ref+label"
+reference="chap:newtons_laws"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+Previously in physical theories we consiered, we limited the range of
+speeds addressable by a physical theory, blaming relativistic effects.
+What precisely is a relativistic effect? Broadly, relativity addresses
+the problem of changing reference frames correctly in physics.
+
+Here, a reference frame is a point in spacetime (typically modeled as
+$\mathbb\{R\}^4$) and denoted by $$\begin\{aligned\}
+(t, x, y, z) \in \mathbb\{R\}^4
+\end\{aligned\}$$ By convention, the first parameter denotes the time, and
+the remaining parameters the spatial coordinates. Each reference frame
+is also attached to a basis for $\mathbb\{R\}^4$ called a coordinate
+system.
+
+You can think of the reference frame and coordinate system as hidden
+parameters in all the models we've dealt with so far. Often, it is
+useful to switch between two reference frames. Let's consider an example
+of a change of reference frame in Figure
+[1.1](#fig:standard_conf)\{reference-type="ref"
+reference="fig:standard_conf"\}.
+
+![Changing the reference
+frame.](figures/Physics/mechanics/special_relativity/Changing ref frame.png)\{#fig:standard_conf
+width="80%"\}
+
+This figure corresponds to the transformation $$\begin\{aligned\}
+    x' &= x - vt \\
+    y' &= y \\
+    z' &= z \\
+    t' &= t
+\end\{aligned\}$$ This type of transformation is typically called a
+uniform motion. In this case, the uniform motion is purely in the $x$
+coordinate direction. There are in general 3 types of transformations
+allowed in classical physics.
+
+-   Uniform Motion: A uniform motion with velocity
+    $\vec\{v\} \in \mathbb\{R\}^3$ performs the the transformation.
+    $$(\vec\{x\}, t) \to (\vec\{x\}+t\vec\{v\}, t)$$
+
+-   Translation: A translation is given by position shift
+    $\vec\{a\} \in \mathbb\{R\}^3$ and time shift $s \in \mathbb\{R\}$ and
+    performs the transformation
+    $$(\vec\{x\}, t) \to (\vec\{x\} + \vec\{a\}, t + s)$$
+
+-   Rotation: A rotation is given by an orthogonal matrix
+    $G: \mathbb\{R\}^3 \to \mathbb\{R\}^3$ and performs the transformation
+    $$(\vec\{x\}, t) \to (G\vec\{x\}, t)$$
+
+## Galilean Transformations
+
+Galilean transformations are the set of transformations which can be
+written as the compositions of uniform motions, translations, and
+rotations.
+
+The collection of Galilean transformations forms a mathematical group.
+You will show that this group is a Lie group of dimension 10 in the
+exercises.
+
+## Lorentzian Transformations
+
+One of the great discoveries in physics was Einstein's realization that
+Galilean transformations were not sufficient to describe physical
+phenomena at high speeds. It turned out that a more general class of
+transformations, called Lorentz transformations were needed for this.
+
+The Lorentz group $\mathcal\{L\}$ is the set of transformations $O(3, 1)$
+that leave the Minkowski metric of a 4-vector unchanged. A Lorentz boost
+is one such transformation
+
+$$\begin\{aligned\}
+    x' &= \gamma(x - vt) \\
+    y' &= y \\
+    z' &= z \\
+    t' &= \gamma \left ( t - \frac\{vx\}\{c^2\} \right )
+\end\{aligned\}$$ where $$\begin\{aligned\}
+\gamma &= \frac\{1\}\{\sqrt\{1 - \frac\{v^2\}\{c^2\}\}\}
+\end\{aligned\}$$
+
+Note that in the case that $v \ll c$, we have that $\gamma \approx 1$,
+in which case the Lorentzian transformation reduces to a Galilean
+transformation. Similar transformations can be defined in the $y$ and
+$z$ directions as well. In general, it is possible to define a
+Lorentzian boost in an arbitrary direction $n$ $$\begin\{aligned\}
+    t' &= \gamma \left ( t - \frac\{v n \cdot r\}\{c^2\} \right ) \\
+    r' &= r + (\gamma - 1)(r \cdot n)n - \gamma t v n
+\end\{aligned\}$$
+
+### Exercises
+
+1.  Prove that the set of Galilean transformations forms a Lie Group.
+
+
+# Lagrangian Mechanics \{#chap:lagrangian_mechanics\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:newtons_laws\]](#chap:newtons_laws)\{reference-type="ref+label"
+reference="chap:newtons_laws"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+Newtonian mechanics provides an extremely powerful framework to model
+mechanical systems, but has some limitations for more complex systems.
+According to the Newtonian approach, the trajectory of a mass $m$ can be
+completely determined by solving the second law given an initial
+position and velocity. This framing may not be the most convenient to
+solve a complex physical system. Luckily, the Newtonian scheme is only
+one of many different formalism that can be used to solve a problem in
+classical mechanics. These different formulations are essentially the
+same theory, in the sense their domains and predictions are identical.
+Nevertheless, one or the other may be more effective for conceptual,
+computational or simply aesthetic reasons.
+
+In this chapter, we'll introduce the basics of the Lagrangian formalism,
+which provides an alternative mathematical representations of classical
+systems. In some cases, these alternative representations can be
+dramatically simpler than the Newtonian version. Looking ahead,
+Lagrangians and Hamiltonians (which we will introduce shortly) will
+prove useful for modeling more complex thermodynamical and quantum
+mechanical systems.
+
+We may solve the mechanical problem considering the following approach:
+given the initial and final position of a mass, what distinguishes the
+real trajectory from all the other possible paths that connects these
+two points? We call this approach the Lagrangian formalism, and the
+answer to this question is based on the *principle of stationary
+action*. Later in the book, we will see that in quantum mechanics,
+unlike classical mechanics, the evolution of a system is not restricted
+to a just single path, but rather to a number of trajectories, each one
+having a different probability.
+
+## Lagrangian Mechanics \{#lagrangian-mechanics\}
+
+One limitation of the Newtonian framework is that it requires explicitly
+tracking all the forces in a system. This can can get challenging to
+handle for complex systems, so we will often find it useful to swap to
+Lagrangian mechanics, which centers its model of reality around energy
+rather than forces.
+
+As a first guess, we define the type of the Lagrangian as a function
+$$\begin\{aligned\}
+L: \mathcal\{S\} \times T \mathcal\{S\} \times \mathbb\{R\} \to \mathbb\{R\}
+\end\{aligned\}$$ That is, the Lagrangian is a function of the state
+space, derivative of the state space, and time to energy. In general we
+define the Lagrangian for the system as the difference between its
+kinetic energy, $T$, and potential energy, $V$ $$\begin\{aligned\}
+L = T - V
+\end\{aligned\}$$ where $T$ is the kinetic energy and $V$ is the potential
+energy. Using generalized coordinates for space,
+$q = (q_x,q_y,q_z,....)$, and time, $t$, we obtain
+
+$$\begin\{aligned\}
+\label\{lagrangian\}
+L(q, \dot\{q\}, t) &= T(q, \dot\{q\}, t) -V(q, t) \\
+&= \frac\{m\}\{2\}\dot\{q\}^\{2\}-V(q,t)
+\end\{aligned\}$$
+
+The *action*, $S$, is defined as the integral of the lagrangian between
+two given instants of time (where $\dot\{q\}=\frac\{dq\}\{dt\}$) as:
+
+$$\begin\{aligned\}
+\label\{action\}
+S = \int_\{t_1\}^\{t_2\}\!L(\dot\{q\},q,t)\,dt
+\end\{aligned\}$$
+
+Note that the action is the integral of the Lagrangian over time. We see
+then that the action is a real valued quantity given $q$ and $\dot\{q\}$,
+so the action has a function type as follows $$\begin\{aligned\}
+    S: \mathcal\{S\} \times T\mathcal\{S\} \mapsto \mathbb\{R\}
+\end\{aligned\}$$
+
+The principle of stationary (or least) action states that the path taken
+by the system between times $t_1$ and $t_2$, as shown in
+Fig. [\[fig:posa\]](#fig:posa)\{reference-type="ref"
+reference="fig:posa"\}, is the one for which the action is stationary (no
+change) to first order. Mathematically, for $\delta$ indicating a small
+change, this principle states:
+
+$$\begin\{aligned\}
+\label\{posaction\}
+\delta S = S[\bar\{q\}+\delta q]-S[\bar\{q\}] = 0
+\end\{aligned\}$$
+
+As the end points are fixed at $q_1$ and $q_2$, the perturbation has the
+condition $\delta q_1 = \delta q_2 = 0$. Using the definition of $S$ as
+in Eq. [\[action\]](#action)\{reference-type="eqref" reference="action"\},
+we have:
+
+$$\begin\{aligned\}
+S[q+\delta q] &= \int_\{t_1\}^\{t_2\} L(\dot\{q\}+\delta \dot\{q\},q+\delta q,t)dt \\
+&\approx \int_\{t_1\}^\{t_2\}L(\dot\{q\},q,t)+\delta \dot\{q\} \frac\{\partial L\}\{\partial \dot\{q\}\}+\delta q \frac\{\partial L\}\{\partial q\}dt \\
+&= S[q] + \int_\{t_1\}^\{t_2\}\delta \dot\{q\} \frac\{\partial L\}\{\partial \dot\{q\}\}+\delta q \frac\{\partial L\}\{\partial q\}dt
+\end\{aligned\}$$
+
+::: marginfigure
+![image](figures/Physics/mechanics/lagrangian_mechanics/posa0.png)\{width="\\linewidth"\}
+:::
+
+Therefore, using integration by parts, the variation $\delta S$ can be
+written as:
+
+$$\begin\{aligned\}
+\label\{posaction2\}
+\delta S &= \int_\{t_1\}^\{t_2\}\!\delta \dot\{q\} \frac\{\partial L\}\{\partial \dot\{q\}\}+\delta q \frac\{\partial L\}\{\partial q\}\,dt = \delta q \left. \frac\{\partial L\}\{\partial \dot\{q\}\} \right|_\{t_1\}^\{t_2\}  - \int_\{t_1\}^\{t_2\}\!\delta q \left[\frac\{d\}\{dt\} \frac\{\partial L\}\{\partial \dot\{q\}\}- \frac\{\partial L\}\{\partial q\}\right]\,dt
+\end\{aligned\}$$
+
+The first term in Eq. [\[posaction2\]](#posaction2)\{reference-type="ref"
+reference="posaction2"\} is zero as $\delta q_1 = \delta q_2 = 0$.
+Therefore, regardless of $\delta q$, the path with the minimum action
+will satisfy the condition:
+
+$$\begin\{aligned\}
+\label\{zeroaction\}
+\frac\{d\}\{dt\} \frac\{\partial L\}\{\partial \dot\{q\}\} - \frac\{\partial L\}\{\partial q\} = 0
+\end\{aligned\}$$
+
+This equation is known as Lagrange's equations or the Euler-Lagrange
+equations. Note that above we treat $q$ and $\dot\{q\}$ as independent
+arguments to $L$. Finally, using the definition of $L$, we have the
+equation of motion as:
+
+$$\begin\{aligned\}
+\label\{motion\}
+m \frac\{d^2q\}\{dt^2\} + \frac\{\partial V\}\{\partial q\}= 0
+\end\{aligned\}$$
+
+Defining the force due to the external potential to be
+$\vec\{F\} =- \frac\{\partial V\}\{\partial q\}$ we have
+$- \frac\{\partial V\}\{\partial q\} = m\vec\{a\}$, which is Newton's second
+law of motion. Now, we consider example problems to draw some
+conclusions about classical mechanics.
+
+### A free particle
+
+Consider a free particle with 1-D motion along the $x$ axis and the
+external potential $V(x,t)=0$. In this case, the state space is
+$\mathcal\{S\} : \mathbb\{R\}$. The Lagrangian is then given by
+$$\begin\{aligned\}
+L(x, \dot\{x\}) &= \frac\{1\}\{2\} m \dot\{x\}^2
+\end\{aligned\}$$
+
+Therefore, its equation of motion will be:
+
+$$\begin\{aligned\}
+\label\{exmp1\}
+\frac\{d\}\{dt\} \frac\{\partial L\}\{\partial \dot\{x\}\} - \frac\{\partial L\}\{\partial x\} &= 0 \\
+m \frac\{d^2x\}\{dt^2\} &= 0 \\ x(t) &= C_1t + C_2 
+\end\{aligned\}$$
+
+Where $C_1$, $C_2$ are constants determined using the initial
+conditions. Considering $x=0$ at $t=0$ and $\dot\{x\}=v=0$ at $t=0$, we
+get $x=vt$ as the equation describing the particle's motion. This result
+is in agreement with Newton's law of motion.
+
+### A particle in a harmonic potential field
+
+Consider the same particle as in the previous section, but with the
+external potential $V(x,t)= \frac\{k\}\{2\}x^2$. The Lagrangian is now given
+by $$\begin\{aligned\}
+    L(x, \dot\{x\}) &= \frac\{1\}\{2\}m\dot\{x\}^2 - \frac\{k\}\{2\}x^2
+\end\{aligned\}$$
+
+This will result in an equation of motion given by:
+
+$$\begin\{aligned\}
+\frac\{d\}\{dt\}\frac\{\partial L\}\{\partial \dot\{x\}\} - \frac\{\partial L\}\{\partial x\} &= 0 \\
+m \frac\{d^2x\}\{dt^2\} + kx &= 0 \\ \frac\{d^2x\}\{dt^2\} + \nu^2x &= 0 
+\end\{aligned\}$$
+
+Where $\nu = \sqrt\{\frac\{k\}\{m\}\}$ is called the characteristic frequency.
+Let's quickly consider the units of $k$ to verify that it has the
+dimensions for a frequency::
+
+        [$\nu$] = $\sqrt\{\frac\{\textrm\{[k]\}\}\{\textrm\{[m]\}\}\}$ = $\sqrt\{\frac\{\textrm\{[M]\}\}\{\textrm\{[T]\}^2 \textrm\{[M]\}\}\}$ = $\sqrt\{\frac\{1\}\{\textrm\{[T]\}^2\}\}$ = [T]$^\{-1\}$
+
+This is the same equation as we saw earlier. Considering $x=0$ at $t=0$
+and $\dot\{x\}=v=v_0$ at $t=0$, we get the equations describing the
+particle's motion as:
+
+$$\begin\{aligned\}
+x(t) &= A\sin(\nu t)+B\cos(\nu t) = \frac\{v_0\}\{\nu\}\sin(\nu t) \\
+v(t) &= \frac\{dx\}\{dt\} = v_0\cos(\nu t) 
+\end\{aligned\}$$
+
+### A box sliding down a ramp
+
+![A frictionless box on a
+ramp.](figures/Physics/mechanics/lagrangian_mechanics/Frictionless Box.png)\{#fig:box_on_ramp
+width="50%"\}
+
+Let's now introduce a physical theory for a simple system with a box
+moving down a ramp. This simple model has no friction, but both the ramp
+and box in question can move. The state space $\mathcal\{S\}$ for this
+system is given by $$\begin\{aligned\}
+    \mathcal\{S\} = \mathbb\{R\} \times \mathbb\{R\} 
+\end\{aligned\}$$ Each state consists of a tuples $(x_1, x_2)$ of
+positions for the ramp and the box. Note that for this system, position
+is one dimensional and not three dimensional since there's only 1 axis
+of motion for both box and ramp. Note this will constrain the domain of
+applicability for this physical theory, but will give us the nice side
+effect of simplicity.
+
+Let $v_1$ be the velocity of the ramp, and $v_2$ the velocity of the box
+relative to the ramp. The energy is given by $$\begin\{aligned\}
+E = \frac\{1\}\{2\}Mv_1^2 + \frac\{1\}\{2\}mv_2^2 \sin^2 \theta + \frac\{1\}\{2\} m(v_2 \cos \theta + v_1)^2 + mg(H - x_2 \sin \theta)
+\label\{ramp_energy\}
+\end\{aligned\}$$ Here $\theta$ is the angle of the ramp. In the
+Lagrangian formulation, the time evolution equations are derived from
+the Lagrangian. $$\begin\{aligned\}
+\mathcal\{L\}(x_1, x_2, v_1, v_2, t) &= T - V\\
+&= \frac\{1\}\{2\}Mv_1^2 + \frac\{1\}\{2\}mv_2^2 \sin^2 \theta + \frac\{1\}\{2\} m(v_2 \cos \theta + v_1)^2  - mg(H - x_2 \sin \theta)
+\end\{aligned\}$$ With this Lagrangian, the evolution is governed by the
+solutions to the Euler-Lagrange equations $$\begin\{aligned\}
+    \frac\{d\}\{dt\} \frac\{\partial \mathcal\{L\}\}\{\partial v_1\} &= \frac\{\partial \mathcal\{L\}\}\{\partial x_1\} \\
+    \frac\{d\}\{dt\} \left ( Mv_1 + m(v_2\cos \theta +v_1) \right ) &= 0 \\
+    M a_1 + ma_2 \cos \theta + m a_1 &= 0 \\
+    (M + m) a_1 + m \cos \theta a_2 &= 0
+\label\{ramp:euler:lagrange\}
+\end\{aligned\}$$
+
+$$\begin\{aligned\}
+\frac\{d\}\{dt\} \frac\{\partial \mathcal\{L\}\}\{\partial v_2\} &= \frac\{\partial L\}\{\partial x_2\} \\
+\frac\{d\}\{dt\} \left ( m v_2 \sin^2 \theta + m(v_2 \cos \theta + v_1) \right ) &= mg\sin \theta \\
+m a_2 \sin^2 \theta + m a_2 \cos \theta + m a_1  &= mg \sin \theta \\
+m a_1 + (m \sin^2 \theta + m \cos \theta) a_2 &= mg \sin \theta
+\end\{aligned\}$$ We consequently have a pair of coupled nonlinear
+differential equations. We can solve these equations using the
+techniques we have learned about previously.
+
+For the domain of applicability, we must have $$\begin\{aligned\}
+x_2 < \frac\{H\}\{\sin \theta\}
+\end\{aligned\}$$ since the theory is only valid when the box is on the
+ramp. We also assume that $\|v_1\|, \|v_2\| < C$ where $C$ is some
+constant. As usual, this is done to avoid relativistic effects.
+Parameters are given by $$\begin\{aligned\}
+\mathcal\{W\} = \{M, m, \theta, H, g, \vec\{x_1\}(0), \vec\{x_2\}(0)\}
+\end\{aligned\}$$ where $m$ is the mass of the box, $M$ the mass of the
+ramp, $\theta$ the angle of inclination of the ramp, $H$ the height of
+the ramp, and $g$ is the gravitational constant on earth. $\vec\{x_1\}(0)$
+and $\vec\{x_2\}(0)$ are the initial positions of the box and ramp.
+Hyperparameters are given by $$\begin\{aligned\}
+\mathcal\{H\} = \{C\}
+\end\{aligned\}$$
+
+How can we solve this physical theory? In order to solve this theory, we
+need to solve Equations
+[\[ramp:euler:lagrange\]](#ramp:euler:lagrange)\{reference-type="ref"
+reference="ramp:euler:lagrange"\} to find equations for $x_1(t)$ and
+$x_2(t)$. We leave this solution to the exercises.
+
+### Exercises
+
+1.  Derive the equation for energy in Equation
+    [\[ramp_energy\]](#ramp_energy)\{reference-type="ref"
+    reference="ramp_energy"\}.
+
+2.  Solve the Equations
+    [\[ramp:euler:lagrange\]](#ramp:euler:lagrange)\{reference-type="ref"
+    reference="ramp:euler:lagrange"\} for $x_1(t)$ and $x_2(t)$. Hint:
+    Derive the following equations for the acceleration by solving the
+    Euler-Lagrange equations. $$\begin\{aligned\}
+        a_1(t) &= \frac\{-g \sin \theta \cos \theta\}\{\frac\{m+M\}\{m\} - \cos^2(\theta)\} \\
+        a_2(t) &= \frac\{g \sin \theta\}\{1 - \frac\{m\cos^2(\theta)\}\{m+M\}\}
+    \end\{aligned\}$$
+
+
+# Newton's Laws \{#chap:newtons_laws\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:physika\]](#chap:physika)\{reference-type="ref+label"
+reference="chap:physika"\},
+[\[chap:simple_physics\]](#chap:simple_physics)\{reference-type="ref+label"
+reference="chap:simple_physics"\}\
+**Difficulty Level:** \*\
+
+------------------------------------------------------------------------
+
+In
+[\[chap:simple_physics\]](#chap:simple_physics)\{reference-type="ref+label"
+reference="chap:simple_physics"\}, we introduced simple physical theories
+for a static particle and a particle with constant velocity. These
+theories introduced the formalism of differentiable programs for simple
+systems.
+
+In this chapter we introduce Newton's laws. These simple mathematical
+relationships allow scientists to model a vast range of physical
+phenomena. Translating these laws into differentiable programs will give
+us building blocks that we can apply later in the book to more
+sophisticated physical systems.
+
+Classical mechanics, also called Newtonian mechanics, is based Newton's
+laws of motion which govern the motion of macroscopic objects. It allows
+a continuous spectrum of energies and a continuous spatial distribution
+of matter. As a sneak peek, Newton's laws of motion are:
+
+::: marginfigure
+![image](figures/Physics/mechanics/newtons_laws/newton.jpg)\{width="\\linewidth"\}
+:::
+
+## The Three Laws
+
+Let's now formulate these laws precisely. In order to define Newton's
+laws, we first have to define force and acceleration. We define
+acceleration as the rate of change of velocity with respect to time.
+$$\begin\{aligned\}
+\vec\{a\} = \frac\{d\vec\{v\}\}\{dt\}
+\end\{aligned\}$$
+
+What is the type of acceleration? Well, we've so far seen that velocity
+$\vec\{v\}$ at time $t$ has type $\mathbb\{R\}^3$. Since we're taking the
+time derivative, it follows that $\vec\{a\}$ at time $t$ also has type
+$\mathbb\{R\}^3$. If we wanted the type of acceleration over all time, we
+would instead use the type $\mathbb\{R\} \to \mathbb\{R\}^3$ (convince
+yourself that this makes sense.) The next natural question then is to
+ask what causes acceleration? The simple answer is that forces cause
+acceleration.
+
+You already know what forces are. Picture yourself pushing something, or
+kicking it. Or a little more abstractly, the effect of gravity on a
+thrown ball. All of these are forces. There is a fundamental
+relationship between the force acting on an object and its current
+acceleration. This relation is *Newton's Second Law,* which states that
+the force $\vec\{F\}$ on an object is a vector defined by
+$$\begin\{aligned\}
+\vec\{F\} = m \vec\{a\}
+\end\{aligned\}$$ []\{#newton2 label="newton2"\}
+
+We know that $m \in \mathbb\{R\}^+$, so it follows that the type of
+$\vec\{F\}$ at time $t$ is $\mathbb\{R\}^3$. Expressed in more standard
+physics language, force is a vector. Newton's second law describes the
+motion of a particle with a force acting upon it. Let's take a look at
+what happens when there is no force:
+
+Netwon's First Law states that an object either remains at rest or
+continues to move at a constant velocity unless acted on by a force.
+Note that Newton's First Law follows from Newton's Second Law in our
+framing, since if $\vec\{F\} = 0$, then $\vec\{a\} = 0$, implying that
+velocity must remain constant. If an object was at rest ($\vec\{v\} = 0$),
+then it would continue to remain at rest and if it was in motion
+($\vec\{v\} \neq  0$), then it would continue to move at that same
+velocity. For the physicists in the audience, we're ignoring
+non-inertial reference frames to simplify our presentation here. We'll
+return to the question of different reference frames later in the book.
+
+Newton's first two laws give us powerful tools to understand the motion
+of moving particles, but they don't give us any tools yet to understand
+the interactions between particles (or larger bodies). Luckily, Newton's
+third law does this for us
+
+Newton's Third Law states that when one body exerts a force on a second
+body, the second body simultaneously exerts a force equal in magnitude
+and opposite in direction on the first body.
+
+Newton's Third Law is a little different from the other laws in that
+introduces a new principle. To explain what's happening here more
+deeply, we'll find it useful to introduce the concept of momentum. We
+will say that the momentum of an object is a vector $\vec\{p\}$ defined by
+$$\begin\{aligned\}
+\vec\{p\} = m\vec\{v\}
+\end\{aligned\}$$
+
+Note that we can restate Newton's second law in terms of momentum: the
+force $\vec\{F\}$ on an object is a vector defined by $$\begin\{aligned\}
+    \vec\{F\} = m \frac\{d \vec\{p\}\}\{dt\}
+\end\{aligned\}$$ []\{#newton2momentum label="newton2momentum"\}
+
+You will derive this variant in the exercises. With this framework in
+place, let's return to Newton's third law. From our reworked Newton's
+second law, we know that force $\vec\{F\}$ is a scaled version of the rate
+of change of momentum $\vec\{p\}$ for an object. Let's suppose we have two
+objects that exert equal and opposite forces on one another. Let's write
+this as
+
+$$\begin\{aligned\}
+    \vec\{F_1\} = -\vec\{F_2\} 
+\end\{aligned\}$$ Let's now rewrite this equation using Definition
+[\[newton2momentum\]](#newton2momentum)\{reference-type="ref"
+reference="newton2momentum"\}. $$\begin\{aligned\}
+\frac\{d\vec\{p_1\}\}\{dt\} = -\frac\{d\vec\{p_2\}\}\{dt\}
+\end\{aligned\}$$ Let's factor out the derivative and bring both equations
+onto the same side $$\begin\{aligned\}
+    \frac\{d\}\{dt\}(\vec\{p_1\} + \vec\{p_2\}) = 0
+\end\{aligned\}$$ This equation has a particular intriguing form. It's
+stating that the total momentum of the system
+$\vec\{p\} = \vec\{p_1\} + \vec\{p_2\}$ doesn't change with respect to time.
+You can think of this as an *invariant* of the system. Or put another
+way, a symmetry the system must obey.
+
+## A Particle Moving Under Gravity
+
+It's possible to use Newton's three laws to model a wide variety of
+physical systems. Before we move into examples, we'll introduce one
+additional law, Newton's law of universal gravitation. The basic idea of
+Newtonian gravity is that every point mass attracts every other point
+mass by a force acting along the line connecting the two points.
+Mathematically, we say that the attractive force $\vec\{F\}_\{12\}$ has
+magnitude given by
+
+$$\begin\{aligned\}
+    \|\vec\{F\}_\{12\}\| = G \frac\{m_1 m_2\}\{r^2\}
+\end\{aligned\}$$ where $m_1, m_2$ are the masses of the two objects, and
+$r$ the distance between the two point masses. $G$ here is a constant
+known as the *gravitational constant*.
+
+For objects on earth, it is useful to combine terms to get a simpler
+equation. There are two observations that we can make here. First, the
+mass of earth $M_\{\textrm\{earth\}\}$ is a fixed quantity. Second, the
+radius of earth $r_\{\textrm\{earth\}\}$ is known. So long as an object is
+close to the surface of earch, we can approximate
+$r \approx r_\{\textrm\{earth\}\}$. Combining these two facts, let's define
+the gravitational constant $g$ by $$\begin\{aligned\}
+    g = G \frac\{M_\{\textrm\{earth\}\}\}\{r_\{\textrm\{earth\}\}^2\}
+\end\{aligned\}$$ The gravitational force on Earth's surface can then be
+written $$\begin\{aligned\}
+    \|\vec\{F\}\| = mg
+\end\{aligned\}$$ where $m$ is the mass of a given object.
+
+We can define a form of potential energy on earth's surface provided by
+gravity. In particular, the gravitational potential energy on Earth's
+surface is given by $$\begin\{aligned\}
+    V(h) = mgh
+\end\{aligned\}$$ where $m$ is the mass of the object, $g$ is Earth's
+gravitational constant, and $h$ is the height of the object above the
+surface of the earth.
+
+## A Particle on Earth's Surface
+
+We've introduced a lot of concepts in the last few pages. Let's tie
+these all together and construct a new physical theory for the motion of
+a particle on Earth's surface acting under gravity.
+
+As usual, let's start with the state space. As before, we will want to
+track the position and velocity of the particle. The difference is that
+now we will want to track the acceleration as well. That suggests that
+our state space would be the tuple $$\begin\{aligned\}
+    \mathcal\{S\} =\mathbb\{R\}^3 \times \mathbb\{R\}^3 \times \mathbb\{R\}^3
+\end\{aligned\}$$
+
+Let's move now to symmetries. As before, we have conservation of energy
+in our model. However, our energy function will be more complex than
+previously since we consider the potential energy for gravity that we
+have introduced. In particular, we define our energy
+
+$$\begin\{aligned\}
+    E &= \frac\{1\}\{2\}m\|\vec\{v\}\|^2 + mgh
+\end\{aligned\}$$
+
+Those of you with physics experience will note that this means our
+particle can't land on the ground since we don't have terms that govern
+the interaction of the particle bouncing or dissipating its energy. But
+no need to address all these complications yet. Let's keep going. The
+next thing we need to address is the creation of a time evolution rule
+for the system. The first thing that we need to determine in this case
+is the acceleration of the system. Let's apply the simplified form of
+Newton's law of gravitation for particles near earth's surface. This
+means we can define acceleration by
+
+$$\begin\{aligned\}
+    \|\vec\{a\}\| = g
+\end\{aligned\}$$
+
+The direction of this vector must point down towards earth by common
+sense. Let's follow a convention that the $z$-axis corresponds to height
+and the $0$-plane corresponds to the earth. (We're ignoring the
+curvature of earth in this model of course.). We can then define more
+carefully that $$\begin\{aligned\}
+\vec\{a\} = - g \hat\{k\}
+\end\{aligned\}$$ These conventions actually call into our question our
+original definition of the state space $\mathcal\{S\}$. We can't deal with
+objects at negative heights as we already noted. To be careful, we'd
+need to define the position space as $$\begin\{aligned\}
+    (\mathbb\{R\}^3)^+ := \{\vec\{x\} \in \mathbb\{R\}^3 | x_3 \geq 0 \}
+\end\{aligned\}$$ Let us now return to the definition of the time
+evolution rule. The idea is that we can integrate forward from the
+acceleration to the velocity. In particular, the velocity at any given
+time $t$ is $$\begin\{aligned\}
+\vec\{v\}_t &= \vec\{v\}_0 + \int_\{0\}^t (-g \hat\{k\}) dt \\
+&= \vec\{v\}_0 - g t \hat\{k\}
+\end\{aligned\}$$ We can reapply this same reasoning to say that the
+position at time $t$ is given by $$\begin\{aligned\}
+    \vec\{x\}_t &= \vec\{x\}_0 + \int_\{0\}^t \vec\{v\}_t dt \\
+    &= \vec\{x\}_0 + \int_\{0\}^t \left (\vec\{v_0\} + \int_\{0\}^t (- g \hat\{k\}) dt \right ) dt \\
+    &= \vec\{x\}_0 + \int_\{0\}^t \left (\vec\{v_0\} - g t \hat\{k\} \right ) dt \\
+    &= \vec\{x\}_0 + t \vec\{v\}_0 - \frac\{1\}\{2\}gt^2 \hat\{k\}
+\end\{aligned\}$$
+
+There are still a couple more constraints we need to add to this system
+to make it realistic. The first is that we need to acknowledge a
+limitation of Newtonian mechanics that it doesn't deal with particles
+that are moving very fast. Let $c$ be the speed of light, then we would
+want to say $$\begin\{aligned\}
+    \|\vec\{v\}\| \ll c
+\end\{aligned\}$$ That is, the velocity is much less than the speed of
+light. We can also formalize our constraint that particles can't be too
+far from earth's surface as follows $$\begin\{aligned\}
+    \|\vec\{x\}\| \ll r_\{\textrm\{earth\}\}
+\end\{aligned\}$$ Note also finally that in our model, we initially let
+acceleration be any value in $\mathbb\{R\}^3$. However, it turns out that
+acceleration is set by Newton's laws to be a fixed value. This means we
+can simplify our state space by removing the acceleration term. Finally,
+as before, we will also want to specify that the mass of the object is
+neither too large nor too small. We can saw $$\begin\{aligned\}
+    M_\{\textrm\{min\}\} \ll m \ll M_\{\textrm\{earth\}\}
+\end\{aligned\}$$ The final thing we have to do is put together an
+observation model for this system. Let's borrow the same observation
+model as we used previously. This yields $$\begin\{aligned\}
+    f(\vec\{x\}, \vec\{v\}) = \vec\{x\} + \mathcal\{N\}(0,1)^3
+\end\{aligned\}$$ (We're using shorthand for the normal distribution in 3
+dimensions above.)
+
+::: center
+       States         $\mathcal\{S\} = (\mathbb\{R\}^3)^+ \times \mathbb\{R\}^3 \times \mathbb\{R\}^3$
+  ----------------- -----------------------------------------------------------------------------
+     Symmetries         $\mathcal\{G\} = \{E = \frac\{1\}\{2\}m\|\vec\{v\}\|^2 + mgh\}$ is conserved
+      Operators      $\mathcal\{O\} = \{U(t) = \vec\{x_0\} + t \vec\{v\}_0 - \frac\{1\}\{2\}gt^2\hat\{k\}$ \}
+     Parameters                    $\mathcal\{W\} = \{m, g, \vec\{x_0\}, \vec\{v_0\}\}$.
+     Constraints       $\mathcal\{C\} = \{\|\vec\{v\}\| \ll c, \|\vec\{x\}\| < r_\{\textrm\{earth\}\}\}$
+   Hyperparameters       $\mathcal\{HP\} = \{M_\{\textrm\{min\}\} \ll m \ll M_\{\textrm\{earth\}\}, c\}$
+     Observables                $\mathcal\{B\} = \{f(x, v) = x + \mathcal\{N\}(0, 1) \}$
+
+[]\{#phs:theory:moving:particle label="phs:theory:moving:particle"\}
+:::
+
+This physical theory is more complex than our previous theory. We've
+also introduced a new concept here, that of the \"Domain of
+Applicability.\" The reason is that our model uses the approximate form
+for gravitation on the surface of earth. This domain of applicability is
+controlled by a \"hyperparameter\" $c$. We call $c$ a hyperparameter
+since it is a parameter of the model that can't be directly learned from
+experimental measurements the way the other parameters are.
+
+Let's now try to write down a differentiable program that models this
+physical system in a general form.
+
+    $x_0$, $v_0$, $a_0$: $\mathbb\{R\}^3$
+    def state(t: $\mathbb\{R\}^+$) -> $\mathbb\{R\}^3$:
+      return $x_0$ + $\int$($v_0$ + $\int$(a(v), 0, u, dv), 0, t, du)
+
+Of course in our case, we know the analytical update rule already, but
+this general form will prove later for more complex systems.
+
+## Rigid Body Motion
+
+In this section, we consider a rigid body in space. For simplicity, we
+consider an infinitesimally stick of length 1.
+
+The state space of this would be $$\begin\{aligned\}
+\mathcal\{S\} = \mathbb\{R\}^3 \times \textrm\{SO\}(3)
+\end\{aligned\}$$ since we have to consider the position of the object
+along with possible orientations. The base position of one side is given
+by a point in $\mathbb\{R\}^3$ while the three dimensional orientation is
+given by a matrix in $SO(3)$ that rotates the unit axis (without loss of
+generality the $x$-axis) to the direction of stick.
+
+The motion of the stick is given by the velocity of the center of the
+mass and by any potential rotation around the center of mass. We leave
+the problem of creating a full physical theory for rigid body motion to
+the exercises.
+
+## Exercises
+
+1.  Derive Newton's Second Law in momentum form (Definition
+    [\[newton2momentum\]](#newton2momentum)\{reference-type="ref"
+    reference="newton2momentum"\}) from Newton's Second Law (Definition
+    [\[newton2\]](#newton2)\{reference-type="ref" reference="newton2"\}).
+
+2.  Turn our earlier description of rigid body motion into a full
+    physical theory.
+
+
+# Units, Types and Dimensional Analysis \{#chap:units_and_types\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:simple_physics\]](#chap:simple_physics)\{reference-type="ref+label"
+reference="chap:simple_physics"\},
+[\[chap:type_theory\]](#chap:type_theory)\{reference-type="ref+label"
+reference="chap:type_theory"\}\
+**Difficulty Level:** \*\
+
+------------------------------------------------------------------------
+
+One of the most useful applications of type theory is to track units and
+dimensional analysis for physical systems. In this chapter, we will
+explain how to use a type system to track units and perform dimensional
+analysis with Physika.
+
+We start by considering mass. We say that mass $m$ is in kilograms by
+assigning it the type
+
+    m: kg
+
+Here `kg` is a modified version of type $\mathbb\{R\}^+$ with a modified
+unit (the unit corresponds to one kilogram). Let's next consider length.
+We say length `l` is denoted in meters by assigning type
+
+    l: meter
+
+Here `m` is a modified version of $\mathbb\{R\}^+$ with a modified unit
+(the unit corresponds to one meter). Similarly, we say `t` is a time
+interval measured in seconds by saying
+
+    t: seconds
+
+Units form a mathematical algebra. That is, the following quantities are
+all units
+
+    m * s, m / s, m / s^2, kg * m / s^2
+
+Physika's type system allows us to track the units of expressions.
+
+An alternative method for facilitating dimensional analysis is to have
+units have more basic types
+
+    l: [L]
+    t: [T]
+    m: [M]
+
+Here we use `[L],[T], [M]` to denote the most basic types for distance,
+time and mass rather than a specific instantiation such as meters,
+seconds, or kilograms. This more abstract level of analysis can prove
+useful when doing abstract analyses of systems.
+
+An important concept that arises is that units can cancel. We can model
+this by stating that for example
+
+    a : meter / meter $\sim a$ : $\mathbb\{R\}$
+
+That is, a quantity that is of type `meter/meter` is just a scalar
+quantity. We can then proceed to write down types for common physical
+quantities
+
+    Area: [L]$^2$
+    Speed: [L][T]$^\{-1\}$
+    Acceleration: [L][T]$^\{-2\}$
+    Force: [M][L][T]$^\{-2\}$
+    Energy: [M][L]$^2$[T]$^\{-2\}$
+
+This type of decomposition can be very useful when studying the behavior
+of physical systems. For example, we can derive the types of physical
+constants from this analysis. Consider Newton's gravitational equation
+$$\begin\{aligned\}
+    F &= - \frac\{G m_1 m_2\}\{r^2\}
+\end\{aligned\}$$ We can consider the types on both sides to obtain the
+equation
+
+    [M][L][T]$^\{-2\}$ = [G][M]$^2$[L]$^\{-2\}$
+
+Solving, we obtain
+
+    [G] = [M]$^\{-1\}$[L]$^3$[T]$^\{-2\}$
+
+We can solve similarly for the types of other physical constants.
+
+## Buckingham $\pi$ Theorem
+
+Suppose that we have a physical equation given by
+
+$$\begin\{aligned\}
+    f(q_1,\dotsc,q_n) &= 0
+\end\{aligned\}$$
+
+Assume that the $q_i$ are physically independent variables and assume
+there are $k$ units (mass, time, etc) in this equation. Then the
+Buckingham-$\pi$ theorem states that there are $p = n - k$ dimensionless
+terms $$\begin\{aligned\}
+    \pi_i &= q_1^\{a_1\}\dotsc q_n^\{a_n\}
+\end\{aligned\}$$ where the $a_i$ are rational terms such that the
+original equation can be restated as
+
+$$\begin\{aligned\}
+    F(\pi_1,\dotsc,\pi_p) &= 0
+\end\{aligned\}$$ Philosophically, the Buckingham-$\pi$ theorem
+demonstrates that the laws of physics are independent of particular
+choices of units.
+
+
+# Angular Momentum \{#chap:angular_momentum\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:harmonic\]](#chap:harmonic)\{reference-type="ref+label"
+reference="chap:harmonic"\}\
+**Difficulty Level:** \*\
+
+------------------------------------------------------------------------
+
+In this chapter, we study the basics of angular momentum. Angular
+momentum is a quantity, akin to the momentum we have learned about
+already, but which arises in rotating systems.
+
+## Defining Angular Momentum
+
+When defining angular momentum, we will find it useful to start by
+defining the center of mass. Suppose that we have $n$ particles with
+masses $m_1,\dotsc, m_n$ at positions $r_1,\dotsc,r_n$. We define the
+center of mass of this system to be $$\begin\{aligned\}
+    r_\{\textrm\{cent\}\} &= \frac\{\sum_\{i=1\}^n m_i r_i\}\{\sum_\{i=1\}^n m_i\}
+\end\{aligned\}$$ For a contiguous body, we would have to convert this
+equation into an integral. Let us now let $r$ define the position of a
+particle relative to the origin. Then we can define the angular momentum
+as
+
+$$\begin\{aligned\}
+    L &= r \times p
+\end\{aligned\}$$
+
+where $p$ is the linear momentum. We can write down a dimensional type
+equation for angular momentum
+
+        [L] = [M][L]$^2$[T]$^\{-1\}$
+
+We will find it useful for our later discussion of quantum mechanics to
+define spin angular momentum and orbital angular momentum. Spin angular
+momentum is the angular momentum arising from rotation around the center
+of mass $r_c$ of an object, while orbital angular momentum arises from
+rotation around a central point of rotation denoted as the origin. A
+planet orbiting the sun has both spin and orbital angular momentum for
+example.
+
+We next define the torque $\tau$ as the rate of change of angular
+momentum $$\begin\{aligned\}
+    \frac\{dL\}\{dt\} &= \tau
+\end\{aligned\}$$
+
+
+# Hamiltonian Mechanics \{#chap:hamiltonians_mechanics\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:newtons_laws\]](#chap:newtons_laws)\{reference-type="ref+label"
+reference="chap:newtons_laws"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+Like the Lagrangian formulation, the Hamiltonian formulation of
+classical mechanics describes the the equations of motion, using a
+different quantity, $H$, called the Hamiltonian, which is generally
+defined as the sum of the kinetic and potential energies.
+
+## Basic Formulation
+
+Let $q$ be the position and $p$ the momentum. The general form of the
+Hamiltonian for a system is given by
+
+$$\begin\{aligned\}
+\label\{hamiltonian\}
+\mathcal\{H\} &= T+V\\
+&= \frac\{p^2\}\{2m\} + V(q,t)
+\end\{aligned\}$$
+
+Here $T$ is the kinetic energy, and $V$ is the potential energy with
+$\dot\{q\}$ is the velocity. The Hamiltonian of the harmonic oscillator in
+one dimension would hence be
+
+$$\begin\{aligned\}
+\label\{soln2c\}
+\mathcal\{H\} &= \frac\{1\}\{2\}mv^2 + \frac\{1\}\{2\}kx^2 
+\end\{aligned\}$$
+
+From these two simple examples we can infer some key conclusions.
+Classical mechanics predicts particle motion to be deterministic, i.e.
+the conditions of a particle at a given time will chart out its future
+trajectory. The Lagrangian formulation teaches us that a particle
+traverses along a path where action $S$ is an extremum. A particle that
+is free from the influence of any external potential (and thus forces)
+will maintain a constant velocity, as proposed by Newton's first law of
+motion. Finally, the motion of a particle in a stationary or time
+independent potential will be governed by the constraint of maintaining
+constant total energy $H = T + V$, as described by the Hamiltonian
+formulation.
+
+## A Mathematical Formulation
+
+Suppose that we have a set of coordinates $(p, q)$ where
+$p=(p_1,\dotsc,p_N)$ is a set of generalized position variables and
+$q = (q_1, \dotsc, q_N)$ is a set of generalized momentum variables.
+Recall that generalized position and momentum coordinates have to
+satisfy a set of constraints given by Poisson brackets
+
+$$\begin\{aligned\}
+    \{q_i, q_j\} &= 0 \\
+    \{p_, p_j\} &= 0 \\
+    \{q_i, p_j\} &= \delta_\{ij\}
+\end\{aligned\}$$
+
+Recall here that the Poisson bracket is given by $$\begin\{aligned\}
+    \{f, g\} &= \sum_i \left ( \frac\{\partial f\}\{\partial q_i\} \frac\{\partial g\}\{\partial p_i\} - \frac\{\partial f\}\{\partial p_i\} \frac\{\partial g\}\{\partial q_i\} \right )
+\end\{aligned\}$$
+
+The Hamiltonian $\mathcal\{H\}$ is a function such that
+
+$$\begin\{aligned\}
+    \frac\{dq\}\{dt\} &= \frac\{\partial \mathcal\{H\}\}\{d p\} \\
+    \frac\{dp\}\{dt\} &= -\frac\{\partial \mathcal\{H\}\}\{d q\}
+\end\{aligned\}$$ These equations tell us that the system evolves in the
+direction $$\begin\{aligned\}
+    \Delta S &= (\frac\{dq\}\{dt\}, \frac\{dp\}\{dt\}) \\ 
+    &= \left (\frac\{\partial \mathcal\{H\}\}\{d p\}, -\frac\{\partial \mathcal\{H\}\}\{d q\}\right )
+\end\{aligned\}$$
+
+This form of the time update rules can prove very effective for modeling
+some classes of physical systems.
+
+## A Spherical Pendulum
+
+A spherical pendulum features an object with mass $m$ that is moving on
+the surface of a sphere while suspended from a point. The Lagrangian for
+this system is given by
+
+$$\begin\{aligned\}
+L &= T - V \\
+&= \frac\{1\}\{2\}ml^2(\dot\{\theta\}^2 + \sin^2 \theta \dot\{\phi\}^2) - (-mgl\cos \theta)
+\end\{aligned\}$$
+
+The canonical coordinates here are $\theta, \phi$, the angles on the
+sphere. The Hamiltonian is then given by $$\begin\{aligned\}
+H &= \frac\{dL\}\{d \dot\{\theta\}\} \dot\{\theta\} + \frac\{dL\}\{d\dot\{\phi\}\} \dot\{\phi\} - L
+\end\{aligned\}$$
+
+![A spherical
+pendulum.](figures/Physics/mechanics/hamiltonian_mechanics/Spherical Pendulum.png)\{#fig:spherical_pendulum
+width="110%"\}
+
+
+# Harmonic Oscillation \{#chap:harmonic\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:newtons_laws\]](#chap:newtons_laws)\{reference-type="ref+label"
+reference="chap:newtons_laws"\}\
+**Difficulty Level:** \*\
+
+------------------------------------------------------------------------
+
+Harmonic oscillators model systems that move back and forth. You can
+roughly think of a harmonic oscillator as a simple weight on a spring.
+
+![A simple spring
+oscillator.](figures/Physics/mechanics/harmonic_oscillation/Simple spring_oscillator.png)\{#fig:classical_oscillator
+width="30%"\}
+
+Imagine in your head pulling on the weight and letting it go. You'd
+imagine that the weight moves up and down and eventually stops with
+time. In this chapter, we will learn how to mathematically model such a
+harmonic oscillator and convert it into a differentiable program. This
+exercise will be particularly important since harmonic oscillators will
+appear repeatedly in our study of physical systems.
+
+## Hooke's Law
+
+To model these systems correctly, we will have to introduce one more
+concept, *Hooke's Law*. This law states that the force needed to expand
+or compress a spring scales linearly with the distance from the neutral
+state of the spring. If this distance is $x$, then the force is given
+by. $$\begin\{aligned\}
+    F(x) = -k x
+\end\{aligned\}$$ Where $k$ is the spring stiffness constant, and the
+negative sign indicates that the direction of the force is towards the
+spring's neutral position, which we will assume is at $x = 0$. Note that
+here we're modelling the spring as a 1 dimensional system. The potential
+energy stored in a spring is given by $$\begin\{aligned\}
+    V(x) = \frac\{1\}\{2\}kx^2
+\end\{aligned\}$$ What is the type of $k$? We can apply the dimensional
+type analysis we learned about in the previous equation to solve
+
+    [F] = [-k][x]
+    [M][L][T]$^\{-2\}$ = [k][L]
+    [k] = [M][T]$^\{-2\}$
+
+## A Physical Theory for a Weight on a Spring
+
+We've done the exercise of putting together a physical theory a few
+times now so hopefully the process should be starting to feel more
+instinctual. Let's start first by specifying our state space. As we
+mentioned previously, this system is one dimensional, so it stands to
+reason that we would model our position space by $\mathbb\{R\}$. Velocity
+and acceleration would also be scalars then and should also live in
+$\mathbb\{R\}$ so our state space would be
+
+$$\begin\{aligned\}
+    \mathcal\{S\} = \mathbb\{R\} \times \mathbb\{R\} \times \mathbb\{R\}
+\end\{aligned\}$$
+
+Let's go now to symmetries. As before we will dictate energy
+conservation for this system. Energy will be the sum of the kinetic
+energy and the spring potential energy from Hooke's law.
+
+$$\begin\{aligned\}
+    E = \frac\{1\}\{2\}mv^2 + \frac\{1\}\{2\}k x^2
+\end\{aligned\}$$
+
+Let's now consider how we can solve for the time evolution of this
+system. We know the force on the weight at any position $x$, so we use
+Newton's laws to solve for the time evolution of the system.
+
+$$\begin\{aligned\}
+    F &= - k x \\
+    m a &= -k x \\
+    m \frac\{d^2x\}\{dx^2\} &= - k x
+\end\{aligned\}$$
+
+You learned in Part 1 how to solve second order differential equations.
+Let's give this one a try by assuming that the solution takes on the
+following form
+
+$$\begin\{aligned\}
+    x(t) &= e^\{ct\}
+\end\{aligned\}$$ where $c \in \mathbb\{C\}$ is a complex number. The reason
+for this is that the complex exponential $e^\{ix\}$ satisfies the equation
+$$\begin\{aligned\}
+    e^\{ix\} &= \cos(x) + i \sin(x)
+\end\{aligned\}$$ We expect there to be oscillatory motion, suggesting a
+sine or cosine, but by using the complex exponential form, we are able
+to retain the simplicity of differentiating exponential functions rather
+than having to mess around with complicated trigonometry. This
+\"complexification\" trick is a standard tool in mathematical physics
+and one that we shall encounter again later in the book. Let's return
+now to our actual equation and plug in our proposal $$\begin\{aligned\}
+    mc^2 e^\{ct\} &= -k e^\{ct\} \\
+    (mc^2 + k)e^\{ct\} &= 0 
+\end\{aligned\}$$ Since the term $e^\{ct\}$ is never 0, we can solve for $c$
+to obtain $$\begin\{aligned\}
+    mc^2 + k &= 0 \\
+    c &= \pm i\sqrt\{\frac\{k\}\{m\}\}
+\end\{aligned\}$$ Since our differential equation is of second order, we
+can write the general solution as a linear combination $$\begin\{aligned\}
+    x(t) = a e^\{i\sqrt\{\frac\{k\}\{m\}\}t\} + b e^\{-i\sqrt\{\frac\{k\}\{m\}\}t\}
+\end\{aligned\}$$
+
+This is the general form of all solutions to our Newton's law equation,
+but how do we find the specific time evolution rule for a given spring
+system? The basic idea is that we need to specify the initial conditions
+of the system, $x_0, v_0$ and use them to solve for $a$ and $b$.
+$$\begin\{aligned\}
+    x(0) &= x_0 \\
+    v(0) = \frac\{dx\}\{dt\}(0) &= v_0
+\end\{aligned\}$$ If $k$ and $m$ are known, this is a linear system of
+equations. The harmonic oscillator is an interesting system since it's
+more challenging to model than the simpler systems we've seen thus far.
+How can we write down the time evolution rule? We've explained in words
+so we can just proceed to specifying the time evolution operator as a
+simple differentiable program.
+
+``` \{.python language="python"\}
+def U(k: $\mathbb\{R\}$, m: $\mathbb\{R\}$, t: $\mathbb\{R\}$):
+  $x_0$, $a$, $b$, $v_0$: Symbol
+  eq1 = `$x_0 = a + b$`
+  eq2 = `$v_0 = a i \sqrt\{k/m\} - bi\sqrt\{k/m\}$`
+  $a$, $b$ = solve(eq2, eq2)
+  return $a \exp(it\sqrt\{k/m\}) + b  \exp(-it\sqrt\{k/m\})$
+```
+
+The parameters for this system are given by
+$\mathcal\{W\} = \{m, k, x_0\}$ where $m$ is the mass of the box, $k$ the
+spring constant, and $x_0$ is the initial position of the weight. The
+domain of applicability is $$\begin\{aligned\}
+\mathcal\{C\} = \{x < L\}
+\end\{aligned\}$$
+
+where $L$ where $L$ is a constant that describes how far the spring can
+stretch. We also assume that $\|v_1\|, \|v_2\| < C$ where $C$ is some
+constant. As usual, this is done to avoid relativistic effects.
+Hyperparameters are given by $\mathcal\{H\} = \{L, C, \epsilon \}$
+
+Observables aregiven by $\mathcal\{B\} = \{f\}$ where
+$f(x, v) = x + \mathcal\{N\}(0, \epsilon)$ is a noisy observation function
+for the current position. (We use shorthand notation
+$x + \mathcal\{N\}(0, 1)$ to indicate the addition of Gaussian noise.)
+
+::: center
+       States                  $\mathcal\{S\} = \mathbb\{R\} \times \mathbb\{R\} \times \mathbb\{R\}$
+  ----------------- -------------------------------------------------------------------------------------
+     Symmetries                   $\mathcal\{G\} = \{E = \frac\{1\}\{2\}mv^2 + \frac\{1\}\{2\}kx^2\}$
+      Operators      $\mathcal\{O\} = \{U(t) = ae^\{i\sqrt\{\frac\{k\}\{m\}\}t\} + b e^\{-i\sqrt\{\frac\{k\}\{m\}\} t\}$ \}
+     Parameters                         $\mathcal\{W\} = \{m, \vec\{x_0\}, \vec\{v_0\}\}$.
+     Constraints                                $\mathcal\{C\} = \vec\{v\} \ll c$
+   Hyperparameters             $\mathcal\{HP\} = \{M_\{\textrm\{min\}\} \ll m \ll M_\{\textrm\{max\}\}\}$
+     Observables                    $\mathcal\{B\} = \{f(x, v) = x + \mathcal\{N\}(0, 1) \}$
+
+[]\{#phs:theory:spring label="phs:theory:spring"\}
+:::
+
+## A Simple Pendulum
+
+In this section, we study a slightly more complex oscillating system,
+the pendulum.
+
+![A simple
+pendulumm.](figures/Physics/mechanics/harmonic_oscillation/pendulum0.png)\{#fig:simple_pendulum
+width="30%"\}
+
+As shown in Figure [1.2](#fig:simple_pendulum)\{reference-type="ref"
+reference="fig:simple_pendulum"\}, there are two forces acting on the
+pendulum: the tension $T$ from the string and gravity $mg$. The pendulum
+is a slightly more complex harmonic oscillator with motion in two
+dimensions rather than just one. We can then write down the $x,y$
+coordinates in terms of $\theta$ and $l$ $$\begin\{aligned\}
+    x &= l \sin \theta \\
+    y &= l \cos \theta
+\end\{aligned\}$$ We can then compute that the forces in the $x$ and $y$
+directions are given respectively by $$\begin\{aligned\}
+    -T \sin \theta, T\cos \theta - mg
+\end\{aligned\}$$ We can then directly write down Newton's equations
+$$\begin\{aligned\}
+    -T \sin \theta &= m \ddot\{x\}  \\
+    T \cos \theta - mg &= m \ddot\{y\}
+\end\{aligned\}$$ Solving the general differential equation for the
+pendulum's motion is tricky, so the sytem is often solved with a small
+angle approximation which assumes that the angle of rotation is small
+$$\begin\{aligned\}
+    \theta < 15^\circ
+\end\{aligned\}$$
+
+
+# The Wave Equation \{#chap:wave_equation\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:** [\[chap:pde\]](#chap:pde)\{reference-type="ref+label"
+reference="chap:pde"\},
+[\[chap:simple_physics\]](#chap:simple_physics)\{reference-type="ref+label"
+reference="chap:simple_physics"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+The wave equation is the fundamental mathematical model for travelling
+waves. The equation can be used to model physical waves on a rope,
+electromagnetic waves, and even solutions to quantum field theories.
+
+$$\begin\{aligned\}
+    \frac\{\partial^2 u\}\{\partial t^2\} &= c^2 \left ( \frac\{\partial^2 u\}\{\partial x_1^2\} + \frac\{\partial^2 u\}\{\partial x_2^2\} + \dotsc + \frac\{\partial^2 u\}\{\partial x_n^2\}  \right )
+\end\{aligned\}$$ We can simplify this expression to $$\begin\{aligned\}
+\frac\{\partial^2 u\}\{\partial t^2\} &= c^2 \nabla^2 u
+\end\{aligned\}$$ The wave equation is our first example of a hyperbolic
+differential equation. Hyperbolic equations have a propagation speed
+(here $c$) that their solutions must obey.
+
+## Solving the Wave Equation
+
+We perform a change of variable to $$\begin\{aligned\}
+\xi &= x - ct \\
+\eta &= x + ct
+\end\{aligned\}$$
+
+Under this change of variable, the wave equation transforms to
+$$\begin\{aligned\}
+\frac\{\partial^2 u\}\{\partial \xi \partial \eta\}
+\end\{aligned\}$$ This equation follows the separated form we studied
+earlier, so we can write the general solution as $$\begin\{aligned\}
+u(\xi, \eta) &= F(\xi) + G(\eta)
+\end\{aligned\}$$ where $F$ and $G$ are arbitrary functions. Changing
+variables back we can write $$\begin\{aligned\}
+u(x, t) &= F(x-ct) + G(y+ct)
+\end\{aligned\}$$ $F$ can be viewed as a right-traveling wave and $G$ as a
+left-traveling wave.

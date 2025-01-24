@@ -1,0 +1,275 @@
+# Lagrangian Mechanics \{#chap:lagrangian_mechanics\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:newtons_laws\]](#chap:newtons_laws)\{reference-type="ref+label"
+reference="chap:newtons_laws"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+Newtonian mechanics provides an extremely powerful framework to model
+mechanical systems, but has some limitations for more complex systems.
+According to the Newtonian approach, the trajectory of a mass $m$ can be
+completely determined by solving the second law given an initial
+position and velocity. This framing may not be the most convenient to
+solve a complex physical system. Luckily, the Newtonian scheme is only
+one of many different formalism that can be used to solve a problem in
+classical mechanics. These different formulations are essentially the
+same theory, in the sense their domains and predictions are identical.
+Nevertheless, one or the other may be more effective for conceptual,
+computational or simply aesthetic reasons.
+
+In this chapter, we'll introduce the basics of the Lagrangian formalism,
+which provides an alternative mathematical representations of classical
+systems. In some cases, these alternative representations can be
+dramatically simpler than the Newtonian version. Looking ahead,
+Lagrangians and Hamiltonians (which we will introduce shortly) will
+prove useful for modeling more complex thermodynamical and quantum
+mechanical systems.
+
+We may solve the mechanical problem considering the following approach:
+given the initial and final position of a mass, what distinguishes the
+real trajectory from all the other possible paths that connects these
+two points? We call this approach the Lagrangian formalism, and the
+answer to this question is based on the *principle of stationary
+action*. Later in the book, we will see that in quantum mechanics,
+unlike classical mechanics, the evolution of a system is not restricted
+to a just single path, but rather to a number of trajectories, each one
+having a different probability.
+
+## Lagrangian Mechanics \{#lagrangian-mechanics\}
+
+One limitation of the Newtonian framework is that it requires explicitly
+tracking all the forces in a system. This can can get challenging to
+handle for complex systems, so we will often find it useful to swap to
+Lagrangian mechanics, which centers its model of reality around energy
+rather than forces.
+
+As a first guess, we define the type of the Lagrangian as a function
+$$\begin\{aligned\}
+L: \mathcal\{S\} \times T \mathcal\{S\} \times \mathbb\{R\} \to \mathbb\{R\}
+\end\{aligned\}$$ That is, the Lagrangian is a function of the state
+space, derivative of the state space, and time to energy. In general we
+define the Lagrangian for the system as the difference between its
+kinetic energy, $T$, and potential energy, $V$ $$\begin\{aligned\}
+L = T - V
+\end\{aligned\}$$ where $T$ is the kinetic energy and $V$ is the potential
+energy. Using generalized coordinates for space,
+$q = (q_x,q_y,q_z,....)$, and time, $t$, we obtain
+
+$$\begin\{aligned\}
+\label\{lagrangian\}
+L(q, \dot\{q\}, t) &= T(q, \dot\{q\}, t) -V(q, t) \\
+&= \frac\{m\}\{2\}\dot\{q\}^\{2\}-V(q,t)
+\end\{aligned\}$$
+
+The *action*, $S$, is defined as the integral of the lagrangian between
+two given instants of time (where $\dot\{q\}=\frac\{dq\}\{dt\}$) as:
+
+$$\begin\{aligned\}
+\label\{action\}
+S = \int_\{t_1\}^\{t_2\}\!L(\dot\{q\},q,t)\,dt
+\end\{aligned\}$$
+
+Note that the action is the integral of the Lagrangian over time. We see
+then that the action is a real valued quantity given $q$ and $\dot\{q\}$,
+so the action has a function type as follows $$\begin\{aligned\}
+    S: \mathcal\{S\} \times T\mathcal\{S\} \mapsto \mathbb\{R\}
+\end\{aligned\}$$
+
+The principle of stationary (or least) action states that the path taken
+by the system between times $t_1$ and $t_2$, as shown in
+Fig. [\[fig:posa\]](#fig:posa)\{reference-type="ref"
+reference="fig:posa"\}, is the one for which the action is stationary (no
+change) to first order. Mathematically, for $\delta$ indicating a small
+change, this principle states:
+
+$$\begin\{aligned\}
+\label\{posaction\}
+\delta S = S[\bar\{q\}+\delta q]-S[\bar\{q\}] = 0
+\end\{aligned\}$$
+
+As the end points are fixed at $q_1$ and $q_2$, the perturbation has the
+condition $\delta q_1 = \delta q_2 = 0$. Using the definition of $S$ as
+in Eq. [\[action\]](#action)\{reference-type="eqref" reference="action"\},
+we have:
+
+$$\begin\{aligned\}
+S[q+\delta q] &= \int_\{t_1\}^\{t_2\} L(\dot\{q\}+\delta \dot\{q\},q+\delta q,t)dt \\
+&\approx \int_\{t_1\}^\{t_2\}L(\dot\{q\},q,t)+\delta \dot\{q\} \frac\{\partial L\}\{\partial \dot\{q\}\}+\delta q \frac\{\partial L\}\{\partial q\}dt \\
+&= S[q] + \int_\{t_1\}^\{t_2\}\delta \dot\{q\} \frac\{\partial L\}\{\partial \dot\{q\}\}+\delta q \frac\{\partial L\}\{\partial q\}dt
+\end\{aligned\}$$
+
+::: marginfigure
+![image](figures/Physics/mechanics/lagrangian_mechanics/posa0.png)\{width="\\linewidth"\}
+:::
+
+Therefore, using integration by parts, the variation $\delta S$ can be
+written as:
+
+$$\begin\{aligned\}
+\label\{posaction2\}
+\delta S &= \int_\{t_1\}^\{t_2\}\!\delta \dot\{q\} \frac\{\partial L\}\{\partial \dot\{q\}\}+\delta q \frac\{\partial L\}\{\partial q\}\,dt = \delta q \left. \frac\{\partial L\}\{\partial \dot\{q\}\} \right|_\{t_1\}^\{t_2\}  - \int_\{t_1\}^\{t_2\}\!\delta q \left[\frac\{d\}\{dt\} \frac\{\partial L\}\{\partial \dot\{q\}\}- \frac\{\partial L\}\{\partial q\}\right]\,dt
+\end\{aligned\}$$
+
+The first term in Eq. [\[posaction2\]](#posaction2)\{reference-type="ref"
+reference="posaction2"\} is zero as $\delta q_1 = \delta q_2 = 0$.
+Therefore, regardless of $\delta q$, the path with the minimum action
+will satisfy the condition:
+
+$$\begin\{aligned\}
+\label\{zeroaction\}
+\frac\{d\}\{dt\} \frac\{\partial L\}\{\partial \dot\{q\}\} - \frac\{\partial L\}\{\partial q\} = 0
+\end\{aligned\}$$
+
+This equation is known as Lagrange's equations or the Euler-Lagrange
+equations. Note that above we treat $q$ and $\dot\{q\}$ as independent
+arguments to $L$. Finally, using the definition of $L$, we have the
+equation of motion as:
+
+$$\begin\{aligned\}
+\label\{motion\}
+m \frac\{d^2q\}\{dt^2\} + \frac\{\partial V\}\{\partial q\}= 0
+\end\{aligned\}$$
+
+Defining the force due to the external potential to be
+$\vec\{F\} =- \frac\{\partial V\}\{\partial q\}$ we have
+$- \frac\{\partial V\}\{\partial q\} = m\vec\{a\}$, which is Newton's second
+law of motion. Now, we consider example problems to draw some
+conclusions about classical mechanics.
+
+### A free particle
+
+Consider a free particle with 1-D motion along the $x$ axis and the
+external potential $V(x,t)=0$. In this case, the state space is
+$\mathcal\{S\} : \mathbb\{R\}$. The Lagrangian is then given by
+$$\begin\{aligned\}
+L(x, \dot\{x\}) &= \frac\{1\}\{2\} m \dot\{x\}^2
+\end\{aligned\}$$
+
+Therefore, its equation of motion will be:
+
+$$\begin\{aligned\}
+\label\{exmp1\}
+\frac\{d\}\{dt\} \frac\{\partial L\}\{\partial \dot\{x\}\} - \frac\{\partial L\}\{\partial x\} &= 0 \\
+m \frac\{d^2x\}\{dt^2\} &= 0 \\ x(t) &= C_1t + C_2 
+\end\{aligned\}$$
+
+Where $C_1$, $C_2$ are constants determined using the initial
+conditions. Considering $x=0$ at $t=0$ and $\dot\{x\}=v=0$ at $t=0$, we
+get $x=vt$ as the equation describing the particle's motion. This result
+is in agreement with Newton's law of motion.
+
+### A particle in a harmonic potential field
+
+Consider the same particle as in the previous section, but with the
+external potential $V(x,t)= \frac\{k\}\{2\}x^2$. The Lagrangian is now given
+by $$\begin\{aligned\}
+    L(x, \dot\{x\}) &= \frac\{1\}\{2\}m\dot\{x\}^2 - \frac\{k\}\{2\}x^2
+\end\{aligned\}$$
+
+This will result in an equation of motion given by:
+
+$$\begin\{aligned\}
+\frac\{d\}\{dt\}\frac\{\partial L\}\{\partial \dot\{x\}\} - \frac\{\partial L\}\{\partial x\} &= 0 \\
+m \frac\{d^2x\}\{dt^2\} + kx &= 0 \\ \frac\{d^2x\}\{dt^2\} + \nu^2x &= 0 
+\end\{aligned\}$$
+
+Where $\nu = \sqrt\{\frac\{k\}\{m\}\}$ is called the characteristic frequency.
+Let's quickly consider the units of $k$ to verify that it has the
+dimensions for a frequency::
+
+        [$\nu$] = $\sqrt\{\frac\{\textrm\{[k]\}\}\{\textrm\{[m]\}\}\}$ = $\sqrt\{\frac\{\textrm\{[M]\}\}\{\textrm\{[T]\}^2 \textrm\{[M]\}\}\}$ = $\sqrt\{\frac\{1\}\{\textrm\{[T]\}^2\}\}$ = [T]$^\{-1\}$
+
+This is the same equation as we saw earlier. Considering $x=0$ at $t=0$
+and $\dot\{x\}=v=v_0$ at $t=0$, we get the equations describing the
+particle's motion as:
+
+$$\begin\{aligned\}
+x(t) &= A\sin(\nu t)+B\cos(\nu t) = \frac\{v_0\}\{\nu\}\sin(\nu t) \\
+v(t) &= \frac\{dx\}\{dt\} = v_0\cos(\nu t) 
+\end\{aligned\}$$
+
+### A box sliding down a ramp
+
+![A frictionless box on a
+ramp.](figures/Physics/mechanics/lagrangian_mechanics/Frictionless Box.png)\{#fig:box_on_ramp
+width="50%"\}
+
+Let's now introduce a physical theory for a simple system with a box
+moving down a ramp. This simple model has no friction, but both the ramp
+and box in question can move. The state space $\mathcal\{S\}$ for this
+system is given by $$\begin\{aligned\}
+    \mathcal\{S\} = \mathbb\{R\} \times \mathbb\{R\} 
+\end\{aligned\}$$ Each state consists of a tuples $(x_1, x_2)$ of
+positions for the ramp and the box. Note that for this system, position
+is one dimensional and not three dimensional since there's only 1 axis
+of motion for both box and ramp. Note this will constrain the domain of
+applicability for this physical theory, but will give us the nice side
+effect of simplicity.
+
+Let $v_1$ be the velocity of the ramp, and $v_2$ the velocity of the box
+relative to the ramp. The energy is given by $$\begin\{aligned\}
+E = \frac\{1\}\{2\}Mv_1^2 + \frac\{1\}\{2\}mv_2^2 \sin^2 \theta + \frac\{1\}\{2\} m(v_2 \cos \theta + v_1)^2 + mg(H - x_2 \sin \theta)
+\label\{ramp_energy\}
+\end\{aligned\}$$ Here $\theta$ is the angle of the ramp. In the
+Lagrangian formulation, the time evolution equations are derived from
+the Lagrangian. $$\begin\{aligned\}
+\mathcal\{L\}(x_1, x_2, v_1, v_2, t) &= T - V\\
+&= \frac\{1\}\{2\}Mv_1^2 + \frac\{1\}\{2\}mv_2^2 \sin^2 \theta + \frac\{1\}\{2\} m(v_2 \cos \theta + v_1)^2  - mg(H - x_2 \sin \theta)
+\end\{aligned\}$$ With this Lagrangian, the evolution is governed by the
+solutions to the Euler-Lagrange equations $$\begin\{aligned\}
+    \frac\{d\}\{dt\} \frac\{\partial \mathcal\{L\}\}\{\partial v_1\} &= \frac\{\partial \mathcal\{L\}\}\{\partial x_1\} \\
+    \frac\{d\}\{dt\} \left ( Mv_1 + m(v_2\cos \theta +v_1) \right ) &= 0 \\
+    M a_1 + ma_2 \cos \theta + m a_1 &= 0 \\
+    (M + m) a_1 + m \cos \theta a_2 &= 0
+\label\{ramp:euler:lagrange\}
+\end\{aligned\}$$
+
+$$\begin\{aligned\}
+\frac\{d\}\{dt\} \frac\{\partial \mathcal\{L\}\}\{\partial v_2\} &= \frac\{\partial L\}\{\partial x_2\} \\
+\frac\{d\}\{dt\} \left ( m v_2 \sin^2 \theta + m(v_2 \cos \theta + v_1) \right ) &= mg\sin \theta \\
+m a_2 \sin^2 \theta + m a_2 \cos \theta + m a_1  &= mg \sin \theta \\
+m a_1 + (m \sin^2 \theta + m \cos \theta) a_2 &= mg \sin \theta
+\end\{aligned\}$$ We consequently have a pair of coupled nonlinear
+differential equations. We can solve these equations using the
+techniques we have learned about previously.
+
+For the domain of applicability, we must have $$\begin\{aligned\}
+x_2 < \frac\{H\}\{\sin \theta\}
+\end\{aligned\}$$ since the theory is only valid when the box is on the
+ramp. We also assume that $\|v_1\|, \|v_2\| < C$ where $C$ is some
+constant. As usual, this is done to avoid relativistic effects.
+Parameters are given by $$\begin\{aligned\}
+\mathcal\{W\} = \{M, m, \theta, H, g, \vec\{x_1\}(0), \vec\{x_2\}(0)\}
+\end\{aligned\}$$ where $m$ is the mass of the box, $M$ the mass of the
+ramp, $\theta$ the angle of inclination of the ramp, $H$ the height of
+the ramp, and $g$ is the gravitational constant on earth. $\vec\{x_1\}(0)$
+and $\vec\{x_2\}(0)$ are the initial positions of the box and ramp.
+Hyperparameters are given by $$\begin\{aligned\}
+\mathcal\{H\} = \{C\}
+\end\{aligned\}$$
+
+How can we solve this physical theory? In order to solve this theory, we
+need to solve Equations
+[\[ramp:euler:lagrange\]](#ramp:euler:lagrange)\{reference-type="ref"
+reference="ramp:euler:lagrange"\} to find equations for $x_1(t)$ and
+$x_2(t)$. We leave this solution to the exercises.
+
+### Exercises
+
+1.  Derive the equation for energy in Equation
+    [\[ramp_energy\]](#ramp_energy)\{reference-type="ref"
+    reference="ramp_energy"\}.
+
+2.  Solve the Equations
+    [\[ramp:euler:lagrange\]](#ramp:euler:lagrange)\{reference-type="ref"
+    reference="ramp:euler:lagrange"\} for $x_1(t)$ and $x_2(t)$. Hint:
+    Derive the following equations for the acceleration by solving the
+    Euler-Lagrange equations. $$\begin\{aligned\}
+        a_1(t) &= \frac\{-g \sin \theta \cos \theta\}\{\frac\{m+M\}\{m\} - \cos^2(\theta)\} \\
+        a_2(t) &= \frac\{g \sin \theta\}\{1 - \frac\{m\cos^2(\theta)\}\{m+M\}\}
+    \end\{aligned\}$$

@@ -1,0 +1,83 @@
+# Neurosymbolic Learning for Dynamical Systems \{#chap:symbolic_physics\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:hamiltonians_and_langrangians\]](#chap:hamiltonians_and_langrangians)\{reference-type="ref+label"
+reference="chap:hamiltonians_and_langrangians"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+Deep representations of physical systems can be difficult to interpret
+and tie to back to classical physical theories. A line of research has
+investigated methods to extract classical symbolic formulas from deep
+architectures. These methods can proceed by using sparsity constraints
+to extract exact physical formulas, or alternatively by using genetic
+algorithms or other generative approaches to propose formulas and then
+test their goodness of fit. These simple formulas can potentially
+generalize more broadly than complex deep representations due to the
+pruning of spurious degrees of freedom [@cranmer2019learning],
+[@cranmer2020discovering], [@cranmer2020lagrangian].
+
+## AI Poincaré
+
+This technique provides a numerical way of extracting equations from
+given observational data. We start from differential equations for a
+dynamic system. Manifold learning extracts conservation laws.
+
+$$\begin\{aligned\}
+ \frac\{dz\}\{dt\} &= f(z)
+\end\{aligned\}$$ A conserved quantity is a scalar $H(z)$ which remains
+constant along the trajectory given by the differential equation.
+$$\begin\{aligned\}
+    \frac\{d H\}\{dt\} &= \nabla H \cdot \frac\{dz\}\{dt\} \\
+    &= \nabla H \cdot f(z) \\
+    &= 0
+\end\{aligned\}$$ Thus $H \cdot f(z)$ is a conserved quantity. The goal is
+to discover the conserved quantities of neural networks.
+
+We find conserved quantities by minimizing the following objective for
+$H$. $$\begin\{aligned\}
+\mathcal\{L\}(\theta) &= \frac\{1\}\{P\} \sum_\{i=1\}^P |\hat\{f\}(z^\{(i)\}) - \hat\{\nabla H\}(z^i, \theta)|^2
+\end\{aligned\}$$ Each learned neural network $H$ represents a conserved
+quantity. How can we learn multiple conserved quantities? Training
+multiple networks just learns correlated quantities so we need to use an
+alternative approach to learn multiple conserved quantities.
+
+$$\begin\{aligned\}
+\hat\{R\}(\theta_1, \theta_2) &= \frac\{1\}\{P\} \sum_\{i=1\}^P |\hat\{\nabla H_1\}(z^i, \theta_1) \cdot \hat\{\nabla H_2\}(z^i, \theta_2)|^2\\
+\mathcal\{L\} &= \frac\{1\}\{n\} \sum_\{i=1\}^n \mathcal\{L\}(\theta_1) + \lambda \sum_\{i,j\} R(\theta_i, \theta_j)
+\end\{aligned\}$$
+
+Minimizing the inner product encourages maximum orthogonality. We want
+to encourage functional independence
+
+$$\begin\{aligned\}
+    f(H_1(\theta),\dotsc, H_n(\theta)) &= 0
+\end\{aligned\}$$ We want to count the number of independent quantities.
+We define a matrix $$\begin\{aligned\}
+    \begin\{bmatrix\}
+    H_1(z^1) & \dotsc & H_n(z^1) \\
+    \dotsc & \dotsc & \dotsc \\
+    H_n(z^P) & \dotsc & H_n(z^P)
+    \end\{bmatrix\}
+\end\{aligned\}$$ We find the rank of this matrix to find the linearly
+conserved quantities using SVD.
+
+We can do an enumeration over a series of formulas using a genetic
+algorithm, generative model, or other procedure for constructing sample
+formulas. One popular approach, the AI-Feynman algorithm, recursively
+tries symbolic expressions of state variables. The system uses a fast
+rejection check. We select $n_p$ test examples and evaluate
+$$\begin\{aligned\}
+    |f(z_p) \cdot \nabla H| = e_p
+\end\{aligned\}$$ Formulas that survive fast rejection are tried
+numerically on the full dataset.
+
+## Potential Limitations
+
+It is not yet clear whether this approach can work for noisy datasets.
+Future work will need to extend the robustness of the recovery to make
+the methods have larger impact.

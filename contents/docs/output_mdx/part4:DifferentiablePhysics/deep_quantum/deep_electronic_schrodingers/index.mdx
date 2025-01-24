@@ -1,0 +1,142 @@
+# Deep Electronic Schrödinger Equations \{#chap:deep_schrodinger\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:molecular_hamiltonian\]](#chap:molecular_hamiltonian)\{reference-type="ref+label"
+reference="chap:molecular_hamiltonian"\},
+[\[chap:dft\]](#chap:dft)\{reference-type="ref+label"
+reference="chap:dft"\},
+[\[chap:hartree_fock\]](#chap:hartree_fock)\{reference-type="ref+label"
+reference="chap:hartree_fock"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+The electronic Schrödinger equation can only be solved analytically for
+the hydrogen atom, and the numerically exact full
+configuration-interaction method is exponentially expensive in the
+number of electrons. Quantum Monte Carlo methods provide a potential
+approach that scales well for large molecules, can be parallelized and
+has, accuracy only limited by the flexibility of the wavefunction ansatz
+used. PauliNet [@foulkes2001quantum] [@hermann2020deep] is a
+deep-learning wavefunction ansatz that achieves nearly exact solutions
+of the electronic Schrödinger equation for molecules with up to 30
+electrons. PauliNet has a multireference Hartree--Fock solution built in
+as a baseline, incorporates the physics of valid wavefunctions and is
+trained using variational quantum Monte Carlo.
+
+### Representing Correlated Wavefunctions
+
+Machine learning methods have had strong success at predicting
+electronic energies electron densities and molecular orbitals. This
+approach entirely avoids the solution of the
+Schr$\mathrm\{\ddot\{o\}\}$dinger equation, at the price of requiring
+datasets of preexisting solutions, obtained by DFT or the
+coupled-cluster methods.
+
+By contrast, the direct representation of correlated wavefunctions with
+neural networks and their unsupervised training via the variational
+principle is an ab initio approach that requires no preexisting data and
+has no fundamental limits to its accuracy. It is motivated by the fact
+that neural networks are universal function approximators and can in
+theory provide more efficient means for approximating the exponentially
+scaling complexity of many-body quantum systems.
+
+### Deep Jastrow Factors
+
+PauliNet, a deep-learning QMC approach, replaces existing ad hoc
+functional forms used in the standard Jastrow factor and backflow
+transformation with more powerful deep neural network representations.
+Besides gain in expressive power, the neural network architecture is
+designed to encode the physics of valid wavefunctions and incorporates
+the multireference HF method as a baseline.
+
+This neural network ansatz can substantially outperform the accuracy of
+state-of-the-art wavefunction ansatzes using a similar number of
+determinants. Thanks to the trainable backflow ansatz, high accuracy can
+be obtained with orders of magnitude fewer determinants compared to
+traditional QMC methods. The method has the asymptotic scaling of
+$O(N^4)$.
+
+![A Diagram of the PauliNet
+Ansatz](figures/Differentiable Physics/Deep Quantum/Deep Electronic Schrodingers/paulinet Ansatz.png)\{#fig:enter-label
+width="70%"\}
+
+The FermiNet architecture follows the same basic idea, but differs in
+one important aspect. This architecture does not encode any physical
+knowledge about wavefunctions besides the essential antisymmetry, which
+is compensated by a much larger number of optimized parameters. This
+difference likely leads to the higher computational cost per iteration.
+In addition, the architecture is trained substantially longer and as a
+consequence reaches higher accuracy for some systems.
+
+![A Diagram of the FermiNet
+Ansatz](figures/Differentiable Physics/Deep Quantum/Deep Electronic Schrodingers/Ferminet Ansatz.png)\{#fig:enter-label
+width="\\linewidth"\}
+
+### Deep Electronic Wavefunction Ansatz
+
+At the core of the deep-learning approach to the electronic Schrödinger
+equation is a wavefunction ansatz which incorporates both the
+well-established essential physics of electronic wavefunctions---Slater
+determinants, multideterminant expansion, Jastrow factor, backflow
+transformation and cusp conditions---as well as deep networks capable of
+encoding the complex features of the electronic motion in heterogeneous
+molecular systems. The proposed trial wavefunction, $$\begin\{aligned\}
+\psi_\{\theta\}(r_1, \dotsc, r_N)
+\end\{aligned\}$$ is of the multideterminant Slater--Jastrow--backflow
+type, where both the Jastrow factor, $J$, and the backflow, $f$, are
+represented by deep networks with trainable parameters $\theta$,
+
+$$\begin\{aligned\}
+\psi_\{\theta\}(r) &= \mathrm\{e\}^\{\gamma (r)+J_\{\theta\}(r)\}\sum_\{p\} c_p \det \left [\tilde\{\varphi\}_\{\theta, \mu_p i\}^\{\uparrow\}(r) \right ]\det \left [\tilde\{\varphi\}_\{\theta,\mu_p i\}^\{\downarrow\}(r)\right ]\\ 
+\tilde\{\varphi\}_\{\mu i\}(r) &= \varphi_\{\mu \}(r_i)\{f\}_\{\theta,\mu i\}(r)
+\end\{aligned\}$$
+
+While the expressiveness of PauliNet is contained in the Jastrow factor
+and backflow deep networks, the physics is encoded by the determinant
+form; the one-electron molecular orbitals, $\phi_\{\mu\}$; and the
+electronic cusps, $\gamma$, in the following way.
+
+Every valid electronic wavefunction must be antisymmetric with respect
+to the exchange of same-spin electrons,
+
+$$\begin\{aligned\}
+\psi(\ldots,r_\{i\},\ldots,r_\{j\},\ldots) &=-\psi (\ldots ,r_\{j\},\ldots,r_\{i\},\ldots)
+\end\{aligned\}$$
+
+This anti-symmetry is enforced by the use of the matrix determinant in
+the ansatz for $\psi_\theta$. The model is trained using the variational
+approach to quantum mechanics. Note that this technique allows for
+training without having to utilize training data from a higher level of
+quantum theory.
+
+### Robust Deep Jastrow Factor and Backflow
+
+As we mentioned before, the Jastrow factor and backflow functions are
+represented by deep networks. The PauliNet architecture constrains these
+deep networks to be invariant or equivariant to the operation $P_\{ij\}$
+of exchanging same-spin electrons.
+
+$$\begin\{aligned\}
+J(P_\{ij\}r) &= J(\vec\{r\}), \quad P_\{ij\}\{f\}_\{\mu i\}(\vec\{r\})=f_\{\mu j\}(P_\{ij\}\vec\{r\})
+\end\{aligned\}$$
+
+The SchNet architecture provides a natural framework for providing this
+invariance. SchNet as we covered earlier is a graph neural network that
+performs updates based on the distance to neighboring nodes. Here $\chi$
+is a trainable convolution and the $x$ are feature vectors
+
+$$\begin\{aligned\}
+\{\{\bf\{x\}\}\}_\{i\}^\{(n+1)\}:=\{\{\bf\{x\}\}\}_\{i\}^\{(n)\}+\{\boldsymbol\{\chi \}\}_\{\{\boldsymbol\{\theta \}\}\}^\{(n)\}\left(\left\{\{\{\bf\{x\}\}\}_\{\{\{j\}\}\}^\{(\{\{n\}\})\},\{| \{\{\bf\{r\}\}\}_\{j\}-\{\{\bf\{r\}\}\}_\{k\}| \}\right\}\right)
+\end\{aligned\}$$
+
+The Jastrow factor and backflow functions are given by learnable
+transformations $\eta_\theta$ and $\kappa_\theta$ applied on top of the
+learned feature vectors from the final output layer of SchNet
+
+$$\begin\{aligned\}
+J =\{\eta\}_\{\theta\}\left(\sum_\{i\}\{\bf\{x\}\}_i^\{(L)\}\right),\quad \{\bf\{f\}\}_\{i\} = \kappa_\{\theta\}\left(\{\bf\{x\}\}_i^\{(L)\}\right).
+\end\{aligned\}$$

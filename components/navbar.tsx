@@ -8,7 +8,7 @@ import { page_routes } from "@/lib/routes-config";
 export const NAVLINKS = [
   {
     title: "GitHub",
-    href: "https://github.com/nisabmohd/Aria-Docs/tree/minimal-docs",
+    href: "https://github.com/Cannon07/BookWebsite",
   },
 ];
 

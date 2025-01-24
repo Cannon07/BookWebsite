@@ -1,0 +1,117 @@
+# Crystal Graph Convolutions \{#chap:cgcnns\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:graphconvs\]](#chap:graphconvs)\{reference-type="ref+label"
+reference="chap:graphconvs"\},
+[\[chap:molecular_ml\]](#chap:molecular_ml)\{reference-type="ref+label"
+reference="chap:molecular_ml"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+In this chapter, we introduce some foundations for applying geometric
+deep learning to crystal structures and lattices. In particular, we
+introduce crystal graph convolutions[@Xie2018CrystalProperties], which
+provide a variant of graph convolutions suited to directly predicting
+materials properties from the crystal structure for the molecule. By
+contrast, applying traditional featurization methods to crystalline
+material discovery can become complicated. Transforming a unit cell of a
+crystal into a feature vector either requires manual feature transforms
+or complex input transformations. Graph convolutional methods hold out
+the promise of allowing models to learn directly from the crystal
+structure of the material.
+
+Figure [1.1](#fig:crystal_conv_structure)\{reference-type="ref"
+reference="fig:crystal_conv_structure"\} represents the basic structure
+of a crystal graph convolutional network. The $R$-convolutional layers
+take the crystal structure as input, passing into hidden layers, then
+pooling layers. Crystal graph convolutional techniques can achieve
+accuracy similar to density functional theory on representative
+benchmark tasks [@Xie2018CrystalProperties].
+
+![The basic architecture of a
+crystal-graph-convolution.](figures/Differentiable Physics/Materials ML/crystal_graph_convolution/crystal graph conv.png)\{#fig:crystal_conv_structure
+width="70%"\}
+
+## Multigraphs to Represent Unit Cells
+
+The basic mathematical idea is to treat crystal structure as a
+*multigraph* $\mathcal\{G\}$. Recall that a multigraph is a graph where
+nodes are permitted to have multiple edges between one another. In this
+multigraph, atoms are nodes and bonding interactions are edges. The
+multigraph aspect arises since the crystal graphs are periodic, which
+means that there could be "wrap-around" edges which lead to multiple
+connections between two nodes in the graph. For each node $i$, we have a
+feature vector $v_i$ and for each edge $(i,j)_k$ (representing the
+$k$-th bond between nodes $i$ and $j$) we have edge feature vector
+$u_\{(i,j)_k\}$).
+
+## Crystal Graph Convolutional and Pooling Layers
+
+The crystal graph convolutions consist of convolutional layers and
+pooling layers. The basic update equation for the convolutional layers
+is as follows:
+
+$$\begin\{aligned\}
+v_i^\{(t+1)\} &= \textrm\{Conv\}\left ( v_i^t, v_j^t, u_\{(i,j)_k\} \right ), \qquad (i,j)_k \in \mathcal\{G\} 
+\end\{aligned\}$$
+
+The convolutional layers iteratively update the atom feature vectors.
+Note that this update is performed multiple times, for all values of
+$j, k$ for a given atom $i$. After $R$ convolutional layers, the pooling
+layer is used to produce a joint feature vector $v_c$ for the crystal as
+a whole:
+
+$$\begin\{aligned\}
+v_c &= \textrm\{Pool\} \left (v_0^\{(0)\},v_1^\{(0)\},\dotsc,v_N^\{(0)\}, \dotsc, v_N^\{(R)\}\right ) 
+\end\{aligned\}$$
+
+Here $\textrm\{Pool\}$ is a permutationally invariant, size invariant
+operation such as $\textrm\{Max\}$ or $\textrm\{Sum\}$. A normalized
+summation operation can also be used. The crystal feature vector is then
+passed into a number of hidden fully connected layers to effect
+additional transformations.
+
+Let $\mathcal\{L\}(y, \hat\{y\})$ be the cost-function. The model is trained
+by minimizing distance between the prediction and a density function
+theory calculated property for that molecule.
+
+We now study the convolutional equations in more detail. The form of the
+convolutional update is given by $$\begin\{aligned\}
+v_\{i\}^\{(t+1)\} &= g \left [ \left ( \sum_\{j,k\} v_j^\{(t)\} \oplus u_\{(i,j)_k\} \right ) W_c^\{(t)\} + v_\{i\}^\{(t)\} W_s^\{(t)\} + b^\{(t)\} \right ] 
+\end\{aligned\}$$
+
+Where $\oplus$ denotes concatenation of atom and bond feature
+vectors,and $W_c^\{(t)\}$, $W_s^\{(t)\}$, $b^\{(t)\}$ are the convolutional
+weight matrix, self-weight matrix, and bias term respectively. The
+figure below displays with this convolution. This basic equation does
+not perform well empirically, possibly due to the fact that $W_c^\{(t)\}$
+is shared across all neighbors of node $i$ which neglects differences in
+interaction strength for different neighbors. Consider instead a
+modified convolution operator that first concatenates neighbor vectors
+
+$$\begin\{aligned\}
+z_\{(i,j)_k\}^\{(t)\} &= v_i^\{(t)\} \oplus v_j^\{(t)\} \oplus u_\{(i,j)_k\} 
+\end\{aligned\}$$
+
+And then performs convolution with the equation
+
+$$\begin\{aligned\}
+v_i^\{(t+1)\} &= v_i^\{(t)\} + \sum_\{j,k\} \sigma \left ( z_\{(i,j)_k\}^\{(t)\} W_f^\{(t)\} + b_f^\{(t)\} \right ) \odot g \left ( z_\{(i,j)_k\}^\{(t)\} W_s^\{(t)\} + b_s^\{(t)\} \right ) 
+\end\{aligned\}$$
+
+Where $\odot$ denotes element-wise multiplication and $\sigma$ is the
+sigmoid function. The addition of the multiplicative $\sigma$ functions
+as a learned weight matrix that differentiates interactions between
+neighbors.
+
+## Interpreting Predictions
+
+To interpret the output of a crystal graph convolutional network, we can
+extract the last $v_i^\{(R)\}$ per-atom feature vectors, compress to a
+per-atom scalar $\tilde\{v_i\}$, and use these scalars to directly predict
+target properties via linear pooling. This linear pooling makes it
+possible to extract atom contributions to the model.

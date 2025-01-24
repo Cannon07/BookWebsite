@@ -1,0 +1,270 @@
+# Convolutional Neural Networks \{#chap:convnets\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:ml_basics\]](#chap:ml_basics)\{reference-type="ref+label"
+reference="chap:ml_basics"\},
+[\[chap:grad_descent\]](#chap:grad_descent)\{reference-type="ref+label"
+reference="chap:grad_descent"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+Convolutional networks are designed to process grid structured inputs
+such as images more efficiently than fully connected networks. The core
+idea is to make use of translational invariance in images (e.g. a dog in
+a picture should still remain a dog if shifted in the picture).
+Convolutional networks achieve this by using the mathematical operation
+of convolution which is natively translation invariant.
+
+Each convolution in a convolutional network has a set of learned weights
+called a filter. Each filter is applied to the entire input grid by
+sliding the filter over the image. The use of these filters reduces the
+number of parameters when compared with a fully connected network. The
+output of a convolutional layer is a new output grid with a possibly
+different set of dimensions.
+
+![A convolutional network accepts a grid of input with width, height,
+and depth. Each convolutional layer transforms an input grid into an
+output grid.
+](figures/Differentiable Models/conv_nets/convolutional network241.jpg)\{#fig:my_label
+width="90%"\}
+
+## The Convolution Operation
+
+In its most general form, convolution is an operation on two functions
+of a real$-$valued argument. To motivate the definition of convolution,
+the following two functions are shown as examples.
+
+Suppose a user is interested in tracking the location of a spaceship
+with a laser sensor. The laser sensor provides a single output $x(t)$,
+the position of the spaceship at time $t$. Both $x$ and $t$ are
+real$-$valued, there can be a different reading from the laser sensor at
+any instant in time.
+
+Now suppose that the laser sensor is somewhat noisy. To obtain a less
+noisy estimate of the spaceship's position, an average of several
+measurements can be taken. Of course, more recent measurements are more
+relevant, so this should be a weighted average that gives more weight to
+recent measurements. This is done with a weighting function $w(a)$,
+where $a$ is the age of a measurement. If this is applied such that
+there is a weighted average operation at every moment, there is a new
+function s providing a smoothed estimate of the position of the
+spaceship: $$\begin\{aligned\}
+s(t) &= \int x(a)w(t-a)da
+\end\{aligned\}$$ This operation is called convolution. The convolution
+operation is typically denoted with an asterisk: $$\begin\{aligned\}
+s(t) &= (x * w)(t)
+\end\{aligned\}$$ In general, convolution is defined for any functions for
+which the above integral is defined, and may be used for other purposes
+besides taking weighted averages. In convolutional network terminology,
+the first argument (in this example, the function $x$) to the
+convolution is often referred to as the input and the second argument
+(in this example, the function $w$) as the kernel. The output is
+sometimes referred to as the feature map. Usually, for data on a
+computer, time will be discretized, and the sensor will provide data at
+regular intervals. In the example above, it might be more realistic to
+assume that the laser provides a measurement once per second. The time
+index t can then take on only integer values. If it is now assumed that
+$x$ and $w$ are defined only on integer $t$, the discrete convolution is
+then defined as: $$\begin\{aligned\}
+s(t) &= (x*w)(t) = \sum^\infty_\{a=-\infty\} x(a)w(t-a)
+\end\{aligned\}$$ In machine learning applications, the input is usually a
+multidimensional array (tensor) of data and the kernel is usually a
+multidimensional array (tensor) of parameters that are adapted by the
+learning algorithm. Because each element of the input and kernel must be
+explicitly stored separately, it is usually assumed that these functions
+are zero everywhere but the finite set of points for which we store the
+values. This means that in practice, the infinite summation can be
+implemented as a summation over a finite number of array elements. Since
+convolutions are used over more than one axis at a time, a larger
+dimension kernel $K$ is generally needed. The convolution for the
+example of a two$-$ dimensional image $I$ is
+
+$$\begin\{aligned\}
+S(i,j) &=(I*K)(i,j) = \sum_m \sum_n I(m,n)K(i-m,j-n)
+\end\{aligned\}$$ A convolution is commutative thus the following is
+equivalently true: $$\begin\{aligned\}
+S(i,j) &= (K*I)(i,j)=\sum_m \sum_n I(i-m,j-n)K(m,n)
+\end\{aligned\}$$ Usually the latter formula is more straightforward to
+implement in a machine learning library, because there is less variation
+in the range of valid values of $m$ and $n$.
+
+It may be necessary to skip over some positions of the kernel in order
+to reduce the computational cost (at the expense of not extracting the
+features as finely). This can be thought of as downsampling the output
+of the full convolution function. If only every s pixels in each
+direction in the output are sampled, then a downsampled convolution
+function c is defined such that: $$\begin\{aligned\}
+Z_\{i,j,k\} &= c(K,V,s)_\{i,j,k\} = \sum_\{l,m,n\}[V_\{l,(j-1)*s+m,(k-1)*s+n\}K_\{i,l,m,n\}]
+\end\{aligned\}$$ where $Z$ is the output, $K$ is the kernel, and $V$ is
+the observed data. $s$ in this equation is referred to as the stride of
+the downsampled convolution. It is possible to have separate strides for
+each direction of motion.
+
+### Motivating the Definitions
+
+Convolution leverages three important ideas that can help improve a
+machine learning system: sparse interactions, parameter sharing and
+equivariant representations. Moreover, convolution provides a means for
+working with inputs of variable size. There is also a natural connection
+to differential equations.
+
+Convolutional networks typically have sparse interactions (also referred
+to as sparse connectivity or sparse weights). This is accomplished by
+making the kernel smaller than the input. For example, when processing
+an image, the input image might have thousands or millions of pixels,
+however small, meaningful features such as edges can be detected with
+kernels that occupy only tens or hundreds of pixels.
+
+Parameter sharing refers to using the same parameter for more than one
+function in a model. In a fully connected neural net, each element of
+the weight matrix is used exactly once when computing the output of a
+layer. It is multiplied by one element of the input and then never
+revisited. As a synonym for parameter sharing, one can say that a
+network has tied weights, because the value of the weight applied to one
+input is tied to the value of a weight applied elsewhere. In a
+convolutional neural net, each member of the kernel is used at every
+position of the input (except perhaps some of the boundary pixels,
+depending on the design decisions regarding the boundary). The parameter
+sharing used by the convolution operation means that rather than
+learning a separate set of parameters for every location, only one set
+is learned. This further improves the memory requirements and
+statistical efficiency.
+
+In the case of convolution, the particular form of parameter sharing
+causes the layer to have a property called equivariance to translation.
+For example, let $I$ be a function giving image brightness at integer
+coordinates. Let g be a function mapping one image function to another
+image function, such that $I' = g(I)$ is the image function with
+$$\begin\{aligned\}
+I'(x, y) = I(x-1,y)
+\end\{aligned\}$$ This shifts every pixel of $I$ one unit to the right. If
+this transformation is applied to $I$, then convolution is applied, the
+result will be the same as if the convolution is applied to $I'$, then
+applied the transformation $g$ to the output. When processing time
+series data, this means that convolution produces a sort of timeline
+that shows when different features appear in the input. Similarly with
+images, convolution creates a 2-D map of where certain features appear
+in the input. Convolution is not naturally equivariant to some other
+transformations, such as changes in the scale or rotation of an image.
+Other mechanisms are necessary for handling these kinds of
+transformations.
+
+## Formalizing the Convolutional Network
+
+Suppose that we have a $N \times N$ dimensional input $X_\{ij\}$. Suppose
+that we have a $m \times m$ weight filter $w_\{ij\}$. For simplicity, let
+us suppose that we take steps of size $1$. We can compute the $i,j$-th
+element of output $X'$ as follows
+
+$$\begin\{aligned\}
+    X'_\{ij\} &= \sum_\{a=0\}^\{m-1\} \sum_\{b=0\}^\{m-1\} w_\{ab\} X_\{i+a,j+b\}
+\end\{aligned\}$$ Note the indices carefully. Our definition means that
+the size of the output $X'$ will be $(N - m +1)\times(N - m + 1)$ due to
+edge effects. Let's transform this update rule into Physika code
+
+``` \{.python language="python"\}
+class conv2d(w: $\mathbb\{R\}[m, m]$):
+  def $\lambda$(X: $\mathbb\{R\}[N, N]$) $\to$ $\mathbb\{R\}[N-m+1,N-m+1]$:
+    X$'$ = zeros(N-m+1, n-m+1)
+    for i j a b:
+      X$'$[i, j] += w[a, b]*X[i, j]
+    X$'$
+```
+
+Implementations of convolutions don't usually use nested for-loops in a
+high level language, since in practice, very efficient hardware
+operations are used under the hood to parallelize these calculations to
+the degree possible on modern hardware.
+
+### Pooling Layers
+
+A typical layer of a convolutional network consists of three stages. In
+the first stage, the layer performs several convolutions in parallel to
+produce a set of linear activations. In the second stage, each linear
+activation is run through a nonlinear activation function, such as the
+rectified linear activation function. This stage is sometimes called the
+detector stage. In the third stage, we use a pooling function to modify
+the output of the layer further.
+
+A pooling function replaces the output of the net at a certain location
+with a summary statistic of the nearby outputs. For example, the max
+pooling operation reports the maximum output within a rectangular
+neighborhood. Other popular pooling functions include the average of a
+rectangular neighborhood, the $L^2$ norm of a rectangular neighborhood,
+or a weighted average based on the distance from the central pixel. In
+all cases, pooling helps to make the representation become approximately
+invariant to small translations of the input. Invariance to translation
+means that if the input is translated by a small amount, the values of
+most of the pooled outputs do not change. This is important for
+detecting whether or not a feature is present and not caring about its
+exact location (i.e. identifying a human face). Pooling over spatial
+regions produces invariance to translation, but the pool is applied over
+the outputs of separately parameterized convolutions, the features can
+learn which transformations to become invariant to.
+
+Since pooling summarizes the responses over a whole neighborhood, it is
+possible to use fewer pooling units than detector units, by reporting
+summary statistics for pooling regions spaced $k$ pixels apart rather
+than $1$ pixel apart. This improves the computational efficiency of the
+network because the next layer has roughly $k$ times fewer inputs to
+process. This reduction in the input size can also result in improved
+statistical efficiency and reduced memory requirements for storing the
+parameters.
+
+For many tasks, pooling is essential for handling inputs of varying
+size. For example, if the goal is to classify images of variable size,
+the input to the classification layer must have a fixed size. This is
+usually accomplished by varying the size of an offset between pooling
+regions so that the classification layer always receives the same number
+of summary statistics regardless of the input size. For example, the
+final pooling layer of the network may be defined to output four sets of
+summary statistics, one for each quadrant of an image, regardless of the
+image size.
+
+## Deep Convolutional Networks
+
+One of the most powerful parts of a convolutional architecture is
+composability. For example, we can chain a series of convolutions
+together that performs the following series of shape changes by chaining
+together $k$ convolutional layers $$\begin\{aligned\}
+\mathbb\{R\}^\{N \times N\} \to \mathbb\{R\}^\{(N-m+1)\times(N-m+1)\}  \to \dotsc \to \mathbb\{R\}^\{(N-km+1)\times(N-km+1)\}
+\end\{aligned\}$$ The shapes in the sequence above are shrinking
+continuously, placing a natural limit on the depth of any such network.
+Is there a way to prevent shrinkage? One trick is to perform
+zero-padding which pads the original array with zeros before convolving.
+
+    def pad(X: $\mathbb\{R\}[N, N]$, m) $\to$ $\mathbb\{R\}[N+m-1,N+m-1]$:
+      X' = zeros(N+m-1, N+m-1)
+      X'[:N, :N] = X
+      X'
+
+By zero-padding before applying convolution, we get the following
+sequence of shape transformations $$\begin\{aligned\}
+\mathbb\{R\}^\{N \times N\} \to \mathbb\{R\}^\{(N+m-1)\times(N+m-1)\} \to
+\mathbb\{R\}^\{N \times N\}
+\end\{aligned\}$$ We can chain as many of these padded convolutions in a
+sequence as we would like. Convolutions can also be applied to 1
+dimensional inputs, 3 dimensional inputs or to arbitrary $d$ dimensional
+input. We simply need to change the number of nested for-loops we
+perform.
+
+## Residual Networks
+
+The residual network is a common motif in convolutional (and
+non-convolutional) architectures that we briefly introduce here. It
+provides a mechanism to preserve a copy of the original input to the
+layer in addition to applying a learned transformation.
+
+::: marginfigure
+![image](figures/Differentiable Models/conv_nets/residual_0.png)
+:::
+
+``` \{.python language="python"\}
+class Residual(sublayer: Module, M: $\mathbb\{N\}$, dropout: $\mathbb\{R\}$):
+    def $\lambda$(tensors: [Tensor]) $\to$ Tensor:
+      tensors[0] + Dropout(sublayer(tensors))    
+```

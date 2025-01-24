@@ -1,0 +1,37 @@
+# Meta Variational Quantum Eigensolver \{#chap:meta_vqe\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:molecular_hamiltonian\]](#chap:molecular_hamiltonian)\{reference-type="ref+label"
+reference="chap:molecular_hamiltonian"\},
+[\[chap:dft\]](#chap:dft)\{reference-type="ref+label"
+reference="chap:dft"\},
+[\[chap:hartree_fock\]](#chap:hartree_fock)\{reference-type="ref+label"
+reference="chap:hartree_fock"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+Suppose we have a system of $n$ qubits along with a parameterized
+Hamiltonian of the form
+
+$$\begin\{aligned\}
+    H &= H(\vec\{\lambda\})
+\end\{aligned\}$$ where $$\begin\{aligned\}
+\vec\{\lambda\} &= (\lambda_1, \dotsc, \lambda_q)
+\end\{aligned\}$$ are the parameters. These are subsampled during the
+meta-training process.
+
+The meta-variational quantum eigensolver[@cervera2020meta] aims to find
+the ground state energy of a parameterized Hamiltonian. The circuit is
+initialized as $$\begin\{aligned\}
+    |0\rangle^\{\otimes n\}
+\end\{aligned\}$$ The circuit itself is factorized into unitary
+$\mathcal\{S\}$ which depends on $\lambda_i$ and $\Phi$. This is followed
+by unitary $\mathcal\{U\}$ that depends on $\Theta$.
+
+![Architectural Diagram of Meta-Variational Quantum
+Solver](figures/Differentiable Physics/Quantum Computing ML/meta-vqe/meta_vqe1.png)\{#fig:meta_vqe_diagram
+width="100%"\}

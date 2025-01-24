@@ -1,0 +1,56 @@
+# Renormalization and the Renormalization Group \{#chap:renormalization_group\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:qft_basics\]](#chap:qft_basics)\{reference-type="ref+label"
+reference="chap:qft_basics"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+Renormalization provides systematic tools for handling the infinities
+that arise in Feynman integrals. The renormalization group provides a
+structured method for looking at a physical system at multiple length
+scales and serves as a structural explanation of the techniques that
+arise in renormalization. The mathematical tools of the renormalization
+group come up in statistical mechanics and quantum field theory in
+particular.
+
+## Renormalization
+
+There exist a number of methods to systematically cancel the infinities
+by the introduction of counterterms. Such counterterms are closely tied
+to the regularization methods that we learned about in the previous
+chapter, with counterterms typically dependent on the cutoff parameter
+$\Lambda$. In this section, we briefly survey such infinities.
+
+### On-shell Scheme
+
+In the on-shell renormalization scheme, parameters in the Lagrangian are
+replaced with "physical" parameters that are set by reference to
+experimental data.
+
+### Minimal Subtraction Scheme
+
+The minimal subtraction scheme follows a similar procedure, but only
+absorbs divergent terms into the counterterms.
+
+## Basic Formulation of Renormalization Group
+
+Suppose that we have state variables $\{s_i\}$ and coupling constants
+$\{J_k\}$. Let us suppose the system state is then defined by a
+Hamiltonian $$\begin\{aligned\}
+    H(\{s_i\}, \{J_k\})
+\end\{aligned\}$$ Suppose then that we have a transformation
+$$\begin\{aligned\}
+    \{s_i\} \mapsto \{\tilde\{s_i\}\}
+\end\{aligned\}$$ where $$\begin\{aligned\}
+    |\{s_i\}| > |\{\tilde\{s\}_i\}|
+\end\{aligned\}$$ That is, the transformation shrinks the number of state
+variables. If we have a function $\beta$ $$\begin\{aligned\}
+    \beta(\{Z_k\}) = \{\tilde\{Z\}_k\}
+\end\{aligned\}$$ such that $$\begin\{aligned\}
+    H(\{s_i\}, \{Z_k\}) = H(\{\tilde\{s\}_i\}, \{\tilde\{Z\}_k\})
+\end\{aligned\}$$ then we say that the system is renormalizable.

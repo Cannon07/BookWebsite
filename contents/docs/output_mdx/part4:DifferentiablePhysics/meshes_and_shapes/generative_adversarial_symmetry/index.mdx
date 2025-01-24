@@ -1,0 +1,72 @@
+# Generative Adversarial Symmetry Discovery \{#chap:gauge_equivariant_convnet\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:qft_basics\]](#chap:qft_basics)\{reference-type="ref+label"
+reference="chap:qft_basics"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+By symmetry here, we mean the invariance or equivariance of a function
+under a particular group.
+
+## Meta Learning Symmetries by Reparameterization
+
+## Symmetry Discovery
+
+![LieGAN
+Architecture](figures/Differentiable Physics/Meshes ML/generative_adversarial_symmetry/liegan.png)\{#fig:enter-label\}
+
+Optimize the KL divergence.
+
+### Parameterizing Distribution
+
+Parameterize the distribution over the continuous Lie group.
+$$\begin\{aligned\}
+    w &= \exp \left [ \sum_i w_i L_i \right ]
+\end\{aligned\}$$
+
+### Discovering Symmetry in Predictions
+
+Symmetries in form of Lie algebra bases. Can be plugged into many
+existing designs.
+
+E-GNN enforces $E(n)$ symmetry by invariant features. This is restricted
+to Euclidean groups only, but we want a more general implementation.
+
+We can compute a group invariant metric tensor. $$\begin\{aligned\}
+    \|u\|_J &= \sqrt\{u^T J u\}
+\end\{aligned\}$$
+
+## Discovering Symmetry in 2-Body Trajectory
+
+This has $SO(2)$ symmetry. LieGAN discovers the correct symmetry from
+trajectories. The discovered symmetry can be used in prediciton.
+
+## Discovering Lorentz Symmetry in Top Quark Tagging
+
+The LieGAN can recover the Lorentz symmetry in this case as an
+approximate restricted group symmetry. Reaches near the performance of
+LorentzNet
+
+## Regularize Latent Representation
+
+Use an orthogonal output layer.
+
+### Reaction-Diffusion Systems
+
+### Lotke-Volterra Equations
+
+There are no linear-symmetries of this system.
+
+### Joint Discovery of Governing Equations
+
+Want to find a symbolic and parsimonious governing equation. Use the
+SINDy Autoencoder to find a latent space.
+
+## Future Works
+
+Extend to local symmetry groups. Also want to study conservation

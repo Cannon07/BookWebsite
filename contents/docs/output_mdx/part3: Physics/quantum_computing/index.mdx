@@ -1,0 +1,399 @@
+# Quantum Machine Learning \{#chap:quantum_machine_learning\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:quantum_mechanics\]](#chap:quantum_mechanics)\{reference-type="ref+label"
+reference="chap:quantum_mechanics"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+Quantum machine learning applies quantum methods to solve machine
+learning tasks. Intriguing early results suggest that large speedups may
+be possible in some cases but much work remains for these methods to
+mature.
+
+
+# Quantum Fourier Transform \{#chap:quantum_fourier_transform\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:quantum_circuits\]](#chap:quantum_circuits)\{reference-type="ref+label"
+reference="chap:quantum_circuits"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+The quantum Fourier transform implements the Fourier transform as a
+quantum circuit and is a fundamental part of many circuits. The quantum
+fourier transform acts on an input state $$\begin\{aligned\}
+    |X\rangle &= \sum_\{j=0\}^\{N-1\} x_j |j \rangle
+\end\{aligned\}$$ and maps it to the state $$\begin\{aligned\}
+|Y\rangle &= \sum_\{k=0\}^\{N-1\} y_k |k\rangle
+\end\{aligned\}$$ where we have that $$\begin\{aligned\}
+y_k &= \frac\{1\}\{\sqrt\{N\}\} \sum_\{j=0\}^\{N-1\} x_j \omega_N^\{jk\}
+\end\{aligned\}$$
+
+Intuitively, the QFT acts as a change of basis transformation mapping
+from the a standard computational basis to a fourier basis for the
+quantum system.
+
+
+# The Bloch Sphere \{#chap:bloch_sphere\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:quantum_mechanics\]](#chap:quantum_mechanics)\{reference-type="ref+label"
+reference="chap:quantum_mechanics"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+The Bloch sphere is a representation of the state space of a two level
+quantum system. We can write such a system by the equation
+
+$$\begin\{aligned\}
+    |\psi \rangle &= \alpha | 0 \rangle + \beta | 1 \rangle \\
+\end\{aligned\}$$
+
+We know that the norm of this state has to be $1$, so
+
+$$\begin\{aligned\}
+    \langle \psi | \psi \rangle &= \alpha^2 + \beta^2 = 1
+\end\{aligned\}$$
+
+Note also that the coefficients $\alpha$ and $\beta$ are only defined up
+to a complex phase factor $e^\{i\phi\}$ if $$\begin\{aligned\}
+    \alpha' &= e^\{i\phi\} \alpha \\
+    \beta' &= e^\{i \phi\} \beta \\
+    |\psi' \rangle &= \alpha' |0 \rangle + \beta' | 1 \rangle \\
+\end\{aligned\}$$ Then both $|\psi \rangle$ and $|\psi' \rangle$ represent
+the same quantum state. We can then chose to multiply by a phase factor
+so that the coefficient of $|0 \rangle$ is real and nonnegative. This
+allows us to write
+
+$$\begin\{aligned\}
+    | \psi \rangle &= \cos \theta | 0 \rangle + e^\{i \phi\} \sin \theta | 1 \rangle 
+\end\{aligned\}$$ Here $\theta$ must range between $0$ and $\pi/2$ for
+both $\cos \theta$ and $\sin \theta$ to be nonnegative. $\phi$ ranges
+between $0$ and $2 \pi$ We can go one step further and do a change of
+variables to replace $\theta$ by $\theta/2$. Then we have the following
+expression $$\begin\{aligned\}
+  | \psi \rangle &= \cos (\theta/2) | 0 \rangle + e^\{i \phi\} \sin (\theta/2) | 1 \rangle 
+\end\{aligned\}$$ where $\theta$ ranges between $0$ and $\pi$ and $\phi$
+ranges from $0$ to $2 \pi$. These ranges allow us to interpret $\theta$
+and $\phi$ as spherical coordinates! We can use them to write a unique
+point on the unit sphere as $$\begin\{aligned\}
+    (\sin \theta \cos \phi, \sin \theta \sin \phi, \cos \theta)
+\end\{aligned\}$$ This spherical representation of $\psi$ is denoted as
+the Bloch sphere as the diagram below shows.
+
+::: marginfigure
+![image](figures/Physics/quantum_computing/bloch_sphere/bloch_sphere1.png)
+:::
+
+To gain intuition for the Bloch sphere, it is useful to plot a few
+representative states. Where do the basis states $|0 \rangle$ and
+$| 1 \rangle$ land for example? We start by rewriting both of these
+states in the canonical representation above $$\begin\{aligned\}
+    |0 \rangle &= \cos (0/2) | 0 \rangle + e^\{i \phi\} \sin(0/2) | 1 \rangle \\
+    |1 \rangle &= \cos(\pi/2) | 0 \rangle + e^\{i \phi\} \sin(\pi/2) | 1 \rangle 
+\end\{aligned\}$$ Here $\phi$ can be an arbitrary value between $0$ and
+$2\pi$. We see then that $|0 \rangle$ lands at the North pole and
+$|1 \rangle$ at the South pole of the Bloch sphere.
+
+
+# Quantum Programming \{#chap:quantum_programmiing\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:physika\]](#chap:physika)\{reference-type="ref+label"
+reference="chap:physika"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+Quantum computing has spawned a large number of new programming
+languages to design sophisticated quantum algorithms. While quantum
+circuits are themselves a simple language for quantum algorithms,
+circuits can become verbose. Most quantum algorithms also have repeated
+patterns within circuits suggesting that there are higher order patterns
+which can be encapsulated and re-sued in circuit design.
+
+In this section, we will discuss a simple extension to Physika that
+performs quantum programming. We will design this quantum extension to
+enable variational quantum programs which will require us to merge
+classical and quantum computations in the same program.
+
+## Syntax for Quantum Gates
+
+Basic gates are provided by simple functions
+
+    X : $H_2 \to H_2$
+    Y : $H_2 \to H_2$
+    $\sigma_x$ : $H_2 \to H_2$
+
+These operators can be chained together into basic algorithms and
+executed the same as any other algorithm. The key differentiator is that
+the type must be from a specified Hilbert space to another specified
+Hilbert space.
+
+
+# Quantum Circuits \{#chap:quantum_circuits\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:quantum_mechanics\]](#chap:quantum_mechanics)\{reference-type="ref+label"
+reference="chap:quantum_mechanics"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+This chapter introduces the basics of quantum circuits, the leading
+methodology for describing quantum computations. A quantum circuit can
+be viewed as graphical shorthand for matrix algebra. A qubit has two
+states, $| 0 \rangle$ and $| 1 \rangle$. It follows that a system with
+$n$ qubits has $2^n$ states ($|0...0\rangle$ to $|1....1\rangle$). State
+transformations for a $2^n$ dimensional quantum system are given by
+$2^n \times 2^n$ unitary matrices. A quantum circuit provides a
+graphical representation for these large matrices in terms of local
+transformations on one or a few qubits at a time.
+
+The diagram below represents a quantum circuit on 3 qubits. Individual
+qubits are drawn as lines coming in from the left and going to the
+right. Gates are drawn as squares ($H$, $X$, $Z$) or as connecting
+elements drawn across multiple lines. Measurements are drawn with an
+arrow symbol. The full quantum circuit below is a shorthand for a
+$8\times 8$ unitary matrix that represents a state evolution of the
+underlying quantum system.
+
+![A circuit for a quantum teleportation operation. Qubits are
+represented as lines from the left of the diagram. Various quantum gates
+are applied to individual
+qubits.](figures/Physics/quantum_computing/quantum_circuits/quantum_teleportation.png)\{#fig:my_label\}
+
+The advantage of a quantum circuit is that composable patterns in the
+quantum state transformation can be easily recognized and \"refactored\"
+out and reused in new circuits.
+
+## Basic Quantum Gates
+
+In this section, we provide an overview of some important quantum gates.
+
+### Hadamard Gate
+
+The Hadamard gate operates on a single qubit at a time and is given by
+the $2\times 2$ unity matrix $$\begin\{aligned\}
+    H &= \frac\{1\}\{\sqrt\{2\}\}\begin\{pmatrix\}
+    1 & 1 \\
+    1 & -1 \\
+    \end\{pmatrix\}
+\end\{aligned\}$$ Note that $H$ performs the following transformations of
+the basis states $$\begin\{aligned\}
+    |0 \rangle & \to \frac\{|0\rangle + |1 \rangle\}\{\sqrt\{2\}\} \\
+    |1 \rangle & \to \frac\{|0 \rangle - |1 \rangle\}\{\sqrt\{2\}\}
+\end\{aligned\}$$ To verify these equations, you can expand into the
+following matrix equations. We follow the convention of multiplying
+transfomrations on the left $$\begin\{aligned\}
+    H | 0 \rangle &= \frac\{1\}\{\sqrt\{2\}\} \begin\{pmatrix\}
+    1 & 1 \\
+    1 & -1 \\
+    \end\{pmatrix\}
+    \begin\{pmatrix\}
+    1 \\
+    0 \\
+    \end\{pmatrix\}
+    = \frac\{1\}\{\sqrt\{2\}\}\begin\{pmatrix\}
+    1 \\
+    1 \\
+    \end\{pmatrix\} \\
+     H | 1 \rangle &= \frac\{1\}\{\sqrt\{2\}\} \begin\{pmatrix\}
+    1 & 1 \\
+    1 & -1 \\
+    \end\{pmatrix\}
+    \begin\{pmatrix\}
+    0 \\
+    1 \\
+    \end\{pmatrix\}
+    = \frac\{1\}\{\sqrt\{2\}\}\begin\{pmatrix\}
+    1 \\
+    -1 \\
+    \end\{pmatrix\}
+\end\{aligned\}$$
+
+### Pauli-$X$ Gate
+
+$$\begin\{aligned\}
+    X &= \begin\{pmatrix\}
+    0 & 1 \\
+    1 & 0 \\
+    \end\{pmatrix\}
+\end\{aligned\}$$ $$\begin\{aligned\}
+    |0 \rangle & \to | 1 \rangle \\
+    |1 \rangle & \to | 0 \rangle \\
+\end\{aligned\}$$
+
+### Pauli-$Y$ Gate
+
+$$\begin\{aligned\}
+    Y &= \begin\{pmatrix\}
+    0 & -i \\
+    i & 0 \\
+    \end\{pmatrix\}
+\end\{aligned\}$$
+
+$$\begin\{aligned\}
+    |0 \rangle &\to -i |1 \rangle \\
+    |1 \rangle &\to i | 0 \rangle \\
+\end\{aligned\}$$
+
+### Pauli-$Z$ Gate
+
+$$\begin\{aligned\}
+    Z &= \begin\{pmatrix\}
+    1 & 0 \\
+    0 & -1 \\
+    \end\{pmatrix\}
+\end\{aligned\}$$
+
+$$\begin\{aligned\}
+    |0 \rangle &\to |0 \rangle \\
+    |1 \rangle &\to -|1 \rangle \\
+\end\{aligned\}$$
+
+### CNOT Gate
+
+Controlled gates allow for the state of one qubit to act as a control on
+the state of another qubit. The controlled not (CNOT) gate is given by
+the following matrix $$\begin\{aligned\}
+    \textrm\{CNOT\} &= \begin\{pmatrix\}
+    1 & 0 & 0 & 0 \\
+    0 & 1 & 0 & 0 \\
+    0 & 0 & 0 & 1 \\
+    0 & 0 & 1 & 1 \\
+    \end\{pmatrix\}
+\end\{aligned\}$$ We leave it as an exercise to verify that the CNOT
+performs the following set of transformations upon its input states
+$$\begin\{aligned\}
+    |00 \rangle & \to | 00 \rangle \\
+    |01 \rangle & \to | 01 \rangle \\
+    |10 \rangle & \to | 11 \rangle \\
+    |11 \rangle & \to | 10 \rangle \\
+\end\{aligned\}$$
+
+## Universal Quantum Gates
+
+A collection of gates is said to be universal if an arbitrary unitary
+transformation can be approximated by a finite sequence of gates from
+this set.
+
+
+# Variational Quantum Algorithms \{#chap:variation_quantum_algorithms\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:quantum_circuits\]](#chap:quantum_circuits)\{reference-type="ref+label"
+reference="chap:quantum_circuits"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+A variational quantum algorithm is a quantum circuit parameterized by a
+given set of parameters $\theta$. Variational quantum algorithms can be
+used to combine classical learning techniques with quantum circuits. The
+main motivation for using VQA algorithms is that noisy intermediate
+scale qubit (NISQ) devices have high noise, high error, limited
+connectivity and cannot yet make use of quantum error correction.
+Intuitively, the parameters act as a mechanism for controlling the error
+on these devices.
+
+VQA algorithms off-board parameterization to classical machine learning
+algorithms and use the minimal viable quantum circuit for the task at
+hand.
+
+## Basic Formulation
+
+A variational quantum problem is set up much like a standard machine
+learning problem. A loss, denoted $C$ is optimized to find an optimal
+set of parameters. Optimization is performed with standard machine
+learning algorithms. $$\begin\{aligned\}
+    \theta^* = \arg\min_\{\theta\} C(\theta)
+\end\{aligned\}$$
+
+The variation is that the loss function $C$ is implemented by a quantum
+circuit. The general quantum loss function is expressed in the form
+
+$$\begin\{aligned\}
+    C(\theta) &= \sum_k f_k(\mathrm\{Tr\}[O_kU(\theta)\rho_kU^\{\dagger\}(\theta)])
+\end\{aligned\}$$
+
+Here $U(\theta)$ is a parameterized unitary transformation, $\rho_k$ are
+the input training samples, $O_k$ are the observables, and $f_k$ are
+arbitrary functions.
+
+The form of a parameterized unitary $U(\theta)$ is called its ansatz.
+The generic $U(\theta)$ can be broken down as a sequence of simpler
+unitary transformations
+
+$$\begin\{aligned\}
+    U(\theta) = U_L(\theta_L) \dotsc U_1(\theta_1)
+\end\{aligned\}$$
+
+and each $U_i(\theta)$ can be further decomposed as
+
+$$\begin\{aligned\}
+    U_i(\theta) &= \prod_j e^\{-i\theta_jH_j\} W_j
+\end\{aligned\}$$ where the $H_j$ are Hermitian operators and the $W_j$
+are unparameterized unitary transformations. At a high level, this
+decomposition is similar to decompositions seen in deep networks, which
+sequences of chained transformations. An ansatz then corresponds roughly
+to a family of architectures (like convolutional networks or
+transformers).
+
+## The Parameter Shift Rule
+
+For classical differentiable programs, we use automatic differentiation
+methods to find gradients. But $C$ is a quantum loss; how can we find
+the gradient of $C$ with respect to its parameters? The parameter shift
+rule is a variant of the finite difference method which suffices to take
+derivatives.
+
+Suppose that $f_k$ is the identity function, and that $\theta_l$
+parameterizes unitary $e^\{i\theta_l \sigma_l\}$ where $\sigma$ is a Pauli
+operator. Then the parameter shift rule is given by
+
+$$\begin\{aligned\}
+    \frac\{\partial C\}\{\partial \theta_l\} &= \sum_k \frac\{1\}\{\sin 2 \alpha \} \left ( C(\theta_l + \frac\{\pi\}\{4l\}) - C(\theta_l - \frac\{\pi\}\{4l\}) \right )
+\end\{aligned\}$$
+
+
+# Shor's Algorithm \{#chap:shors_algorithm\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:quantum_fourier_transform\]](#chap:quantum_fourier_transform)\{reference-type="ref+label"
+reference="chap:quantum_fourier_transform"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+Shor's algorithm provides a method to factor large numbers into their
+prime factors using a quantum circuit. The method embeds the problem of
+prime factoring into an invocation of the quantum fourier transform,
+allowing for an efficient solution. Although not directly related to a
+physical system, there are deep connections between number theory, the
+prime numbers, and physics, so we highlight the method in this chapter.

@@ -1,0 +1,104 @@
+# Autoencoders \{#chap:autoencoders\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:ml_basics\]](#chap:ml_basics)\{reference-type="ref+label"
+reference="chap:ml_basics"\},
+[\[chap:grad_descent\]](#chap:grad_descent)\{reference-type="ref+label"
+reference="chap:grad_descent"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+Often in scientific machine learning applications, we lack any labeled
+training data. We may have a collection of molecular structures or
+materials formulas, but may not have access to any associated
+experimental labels for these data points. Can we still do machine
+learning?
+
+## Autoencoder Reconstruction
+
+Suppose the input $x$ is in space $\mathcal\{S\}$. An encoder is a
+function $f_\{\theta\}: \mathcal\{S\} \to \mathbb\{R\}^n$ that transforms
+elements of $\mathcal\{S\}$ into $n$ dimensional vectors parameterized by
+$\theta$. Let $g_\{\theta\}: \mathbb\{R\}^n \to \mathcal\{S\}$ be a map in the
+opposite direction. An autoencoder posits that the encoding and decoding
+an input can be a meaningful tool to force learning of the structure of
+a dataset; the challenge of representation learning is picking $\theta$
+such that $$\begin\{aligned\}
+    \theta^* = \argmin_\{\theta\} \|g_\{\theta\}(f_\{\theta\}(s)) - s \| 
+\end\{aligned\}$$
+
+One way to think about $g_\{\theta\} \circ f_\{\theta\}$ is as a learned
+version of the identity. There are a couple of reasons learning the
+identity may be useful. Suppose that $$\begin\{aligned\}
+\mathcal\{S\} = \mathbb\{R\}^M,\quad M \gg n
+\end\{aligned\}$$ In this case, $g_\{\theta\} \circ f_\{\theta\}$ is a
+compressed version of the identity that mandates an internal compression
+to $n$-dimensional space.
+
+![Autoencoders encode the input into a suitable embedding space and
+decode the embedded vector into the output space. This encoding and
+decoding process can help networks learn about the meaningful structure
+of the
+data.](figures/Differentiable Models/autoencoders/Autoencoder.png)\{#fig:auto_compression\}
+
+As a slightly more complex example, we may have
+$\mathcal\{S\} = \mathbb\{R\}^\{a \times b \times c\}$ be a space of images
+with $a \times b$ pixels and $c$ colors. In this case, the encoder
+$f_\{\theta\}$ transforms these images into $n$-dimensional feature
+vectors.
+
+We can choose different architectures to encode and decode, but a common
+simple choice is to just use fully connected networks.
+
+``` \{.python language="python"\}
+
+class Autoencoder(f: FullyConnectedNetwork, g: FullyConnectedNetwork):
+  def $\lambda$(X: $\mathbb\{R\}$[N, T, d])) $\to$ $\mathbb\{R\}$[N, T, d]): 
+    g(f(X))
+    
+def reconstruction_loss(model, X):
+  return $\|$model(X) - X$\|^2$
+```
+
+## Variational Autoencoder
+
+A variational autencoder can be viewed as a classical autoencoder with
+the addition of a regularization term to the loss. Here we train the
+encoder $f$ to produce the means and standard deviations of the encoded
+distribution. $$\begin\{aligned\}
+    \mu_x, \sigma_x &= f(x)
+\end\{aligned\}$$
+
+Then during decoding, we sample from this distribution $$\begin\{aligned\}
+    z \sim \mathcal\{N\}(\mu_x, \sigma_x)
+\end\{aligned\}$$ And then reconstruct the output. $$\begin\{aligned\}
+    \mathrm\{out\} &= g(z)
+\end\{aligned\}$$
+
+Converting into Physika, we obtain
+
+``` \{.python language="python"\}
+class VariationalAutoencoder(f: FullyConnectedNetwork, g: FullyConnectedNetwork):
+  def $\lambda$(X):
+    $\mu_x$, $\sigma_x$ = f(X)
+    z = sample($\mathcal\{N\}$($\mu_x$, $\sigma_x$))
+    g(z)
+```
+
+Note that the variational autoencoder provides a natural mechanism to
+draw samples from a learned distribution by sampling random $z$ and then
+decoding accoding to $g$. The latent distribution is controlled by
+adding a KL-divergence.
+
+$$\begin\{aligned\}
+    \mathcal\{L\} &= \|x - f(\textrm\{sample\}(g(x)))\|^2 + \mathrm\{KL\}(\mathcal\{N\}(\mu_x, \sigma_x), \mathcal\{N\}(0, I))
+\end\{aligned\}$$
+
+The gradient descent step here is more complex since we have to do a
+backwards update over a sampling step. Empirically, we can compute this
+quantity in expectation, but proofs of correctness are quite tricky for
+these probabilistic losses.

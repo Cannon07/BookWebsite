@@ -1,0 +1,41 @@
+# Machine learning Electronic Structure Theory Across Temperatures \{#chap:deep_schrodinger\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:molecular_hamiltonian\]](#chap:molecular_hamiltonian)\{reference-type="ref+label"
+reference="chap:molecular_hamiltonian"\},
+[\[chap:dft\]](#chap:dft)\{reference-type="ref+label"
+reference="chap:dft"\},
+[\[chap:hartree_fock\]](#chap:hartree_fock)\{reference-type="ref+label"
+reference="chap:hartree_fock"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+Electronic structure theory is the computational investigation of
+electron distribution. Bad scaling for traditional electronic structure
+calculations. It is useful to use machine learning to accelerate
+simulations.
+
+We can define an entropy term with electron temperature $\tau_e$
+$$\begin\{aligned\}
+    A[n] &= E_H[n] + E_\{ei\}[n] +T_s[\phi_j[n]] +E_\{xc\}[n] -k_B\tau_eS_s[\epsilon_j[n]]
+\end\{aligned\}$$
+
+Higher temperatures means more orbitals need to be considered. We can
+compute the local density of states
+
+$$\begin\{aligned\}
+    d(\epsilon, r) &= \sum_j |\phi_j(r)|^2 \delta(\epsilon - \epsilon_j)
+\end\{aligned\}$$
+
+Ionic densities are represented using bispectrum descriptors
+$B(r, j)[R_\{cut\}, j_\{max\}]$. A vector of bispectrum descriptors is then
+fed into a fully connected neural network to make predictions.
+
+The system is tested on reproducing the electronic structure of aluminum
+at room temperature. Also we study the models at the melting phase of
+aluminum. The system is also tested with size transfer. The system
+appears to scale up to hundreds of thousands of atoms.

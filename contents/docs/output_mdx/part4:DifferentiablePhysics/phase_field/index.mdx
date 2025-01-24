@@ -1,0 +1,88 @@
+# Learning Phase Fields from Solution Data \{#chap:hamiltonian_nn\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:hamiltonians_mechanics\]](#chap:hamiltonians_mechanics)\{reference-type="ref+label"
+reference="chap:hamiltonians_mechanics"\},
+[\[chap:neural_ode\]](#chap:neural_ode)\{reference-type="ref+label"
+reference="chap:neural_ode"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+Hey Bharath, um I'm glad I got voicemail because I wanted to record this
+so that we keep it for the future. One more in the diffphys. First well
+open problems and then obviously something you know we should definitely
+file on. This whole field of phase field simulations basically what you
+do is you start with a free energy functional and then once you have the
+free energy functional, um all the control, sort of physical laws emerge
+as derivatives of the phase field free energy. So completely diff
+phys'able. And the answer of that solution field is what you typically
+observe. And so what the canonical challenge in the field is to try and
+write down the free energy functional. Same exchange correlation
+problem, right. So you observe some outside answer and you have to back
+propagate through it. So exactly in that same way, in a battery case for
+example, you observe the morphology of the deposits and you have to
+backpropagate and say what is the overall free energy of the system and
+how it evolves.
+
+So basically what we can do with this is learn the free energy
+functional for any arbitrary system by observing the latent dynamics and
+then diff phys'ing all the way. Another one of these things that I'm
+thinking is crazy right now and then like six months from now we will
+think this is totally obvious. This would basically encompass like a
+large portion of mechanics, and then microstructures, and even things
+like metallurgy, nuclear fusion all kinds of different areas. So just
+want to drop this so that we keep it for the record and we can try to
+populate.
+
+\"Phase Field Model For Fatigue Cracking in Electrode Particles\" -
+Weilong Ai, etc
+
+Cracking of electrode particles.
+
+## Introduction
+
+Battery electrodes crack because of flux loadinig.Fracture exposes fresh
+new electrode surfaces and corrsion proceeds.
+
+Hundreds of cycles are needed before electrode particles experience
+cracking.
+
+Order reduced model developed for fatigue crack propagation in electrode
+particles. Fatiigue crack growth follow's Paris' law. (Predicts SEI(?)
+formation on cracks). The model can make prediction on future behavior.
+
+## Couple Electrochemo-mechanical Batter Models
+
+Make models of lithium ion batteries across scales.
+
+Particle fraction, lithium flkaing, SEI flaking, PE structure
+decomposition, and particle fracture.
+
+Combination of P2D battery model, and mechanical model for electrode
+particles, and model heterogenous stress in pouch cells.
+
+Develop fully fully coupled battery degradation model = SEI growth, Li
+Plating, Particle Cracking, and Loss of Active Material.
+
+## Phase Field Fatigue Crack Model for Electrode Particles
+
+$$\begin\{aligned\}
+\frac\{dc\}\{dt\} + \nabla \cdot J &= 0 \\
+(1 - \phi^2)\nabla \cdot \phhi &= 0 \\
+\frac\{\phi G_a\}\{l\} - l \nabla (G_d \nabla \phi) &= 2(1 - \phi) \mathcal\{H\} \\
+\end\{aligned\}$$
+
+Finite element method is used to discretize the three fields. Use
+Newton-Raphson to model the nonlinear equations.
+
+Damage accumulation in fracture toughness causes issues. Griffith's
+theory explains part of crack.
+
+Model cylindrical, spherical, and realistic models.
+
+There is a phenomenon of multi-crack coalescence. Lower lithium
+concentrations in cracks. [TODO: What ]\{style="color: red"\}

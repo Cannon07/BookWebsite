@@ -1,0 +1,107 @@
+# Stochastic Gradient Descent \{#chap:grad_descent\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:calculus\]](#chap:calculus)\{reference-type="ref+label"
+reference="chap:calculus"\},
+[\[chap:multidimensional\]](#chap:multidimensional)\{reference-type="ref+label"
+reference="chap:multidimensional"\},
+[\[chap:ml_basics\]](#chap:ml_basics)\{reference-type="ref+label"
+reference="chap:ml_basics"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+The previous chapters have defined the structure of simple machine
+learning models but have not explained how to learn model weights from
+data. The techniques for model learning draw heavily on the optimization
+and numerical methods we have seen in earlier chapters. The core idea is
+to use gradient descent to find local optima of loss functions. Consider
+the simple model $$\begin\{aligned\}
+h[w, b] = w^T x + b,
+\end\{aligned\}$$ paired with a $L^2$ loss function:
+
+$$\begin\{aligned\}
+    \mathcal\{L\}(h[w, b], x, y) &= | w^T x + b - y| ^2 
+\end\{aligned\}$$
+
+Each learning update is to take one step towards a lower loss by
+following the gradient:
+
+$$\begin\{aligned\}
+ w &\leftarrow w - \alpha \nabla_w \mathcal\{L\} \\
+ b &\leftarrow b - \alpha \nabla_b \mathcal\{L\} \\
+\end\{aligned\}$$
+
+Here the parameter $\alpha$ is called the step size. Let's define this
+system in Physika
+
+``` \{.python language="python"\}
+class LinearModel(w: $\mathbb\{R\}^m$, b: $\mathbb\{R\}^m$):
+  def $\lambda$(x: $\mathbb\{R\}^m$) $\to$ $\mathbb\{R\}$:
+    w*x + b
+ 
+def L(model: $(\mathbb\{R\}^m\to\mathbb\{R\})[\mathbb\{R\}^m, \mathbb\{R\}^m]$, x: $\mathbb\{R\}^m$, y: $\mathbb\{R\}$) $\to$ $\mathbb\{R\}$:
+  (model(x) - y)$^2$
+```
+
+The full type signature for `LinearModel` can get unwieldy to read at
+times, so we will often use the convenient shortcut of referring to the
+type as `LinearModel` directly. With this convention, one step of the
+learning update can then be computed with
+
+``` \{.python language="python"\}
+$\alpha$: $\mathbb\{R\}$
+def step(model: LinearModel, x: $\mathbb\{R\}^m$, y: $\mathbb\{R\}$):
+  model.w = model.w - $\alpha$ * $\nabla$(L(model, x, y), model.w)
+  model.b = model.b - $\alpha$ * $\nabla$(L(model, x, y), model.b)
+```
+
+To learn on a dataset $X \in \mathbb\{R\}^\{N\times m\}$,
+$y \in \mathbb\{R\}^N$, you can simply repeatedly take gradient descent
+steps. We tie this together into a simple learning algorithm for
+\"stochastic gradient descent\"
+
+``` \{.python language="python"\}
+def sgd(model: $(\mathbb\{R\}^m\to\mathbb\{R\})[\mathbb\{R\}^m, \mathbb\{R\}^m]$, X: $\mathbb\{R\}^\{N \times m\}$, y: $\mathbb\{R\}^N$, num_epochs: $\mathbb\{N\}$):
+  for _ in num_epochs:
+    for i: step(model, $\alpha$, X[i], y[i])
+```
+
+The code snippet above introduces the new concept of epochs. An epoch is
+a complete pass of gradient descent steps over the entire dataset. We've
+tied the implementation above to the particular linear model at hand,
+but this technique can be applied to arbitrary models. There are a few
+important variants of this technique. The first is to performed batched
+updates on a batch of gradients at a time.
+
+``` \{.python language="python"\}
+w: $\mathbb\{R\}$[m], b: $\mathbb\{R\}$
+def minibatch(X: $\mathbb\{R\}[B, m]$, y: $\mathbb\{R\}[B]):$
+  $\Sigma_\{\nabla w\}$, $\Sigma_\{\nabla b\}$ = zeros(m), zeros(1)
+  for i:
+    $\Sigma_\{\nabla w\}$, $\Sigma_\{\nabla b\}$ += $\nabla$(loss, X[i], y[i], [w, b])
+  w = w - $\alpha$ * (1/B)*$\Sigma_\{\nabla w\}$
+  b = b - $\alpha$ * (1/B)*$\Sigma_\{\nabla b\}$
+```
+
+In practice, more efficient hardware operations are used than the
+for-loop above, but conceptually the same operation is performed.
+
+It is an amazing empirical fact that many different architectures and
+models can be trained with this basic algorithm. One of the biggest
+mathematical mysteries of deep learning is explaining why gradient
+descent works in practice. Most loss functions are non-convex, without a
+theoretically guaranteed unique minimum, but simple gradient descent
+often does surprisingly well at optimizing these systems. Theorists
+don't have a definitive understanding of this phenomenon yet.
+
+## Exercises
+
+1.  Derive and implement the gradient descent step in Physika for a
+    quadratic model $$\begin\{aligned\}
+            f(x) &= (w^T x + b)^2
+        
+    \end\{aligned\}$$

@@ -1,0 +1,128 @@
+# Solving Blow-up Problems in PINNs \{#chap:pinns_blowup\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:pinns\]](#chap:pinns)\{reference-type="ref+label"
+reference="chap:pinns"\},\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+\"\"\" One of the most challenging open questions in mathematical fluid
+dynamics is whether an inviscid incompressible fluid, described by the
+3-dimensional Euler equations, with initially smooth velocity and finite
+energy can develop singularities in finite time. This long-standing open
+problem is closely related to one of the seven Millennium Prize Problems
+which considers the Navier-Stokes equations, the viscous analogue to the
+Euler equations. In this talk, I will describe why and how the
+physics-informed neural networks (PINNs) can be a robust and universal
+tool to find the smooth self-similar blow-up solution for various fluid
+equations, from the simple 1-D burgers equation to the 3-D Euler
+equations in the presence of a cylindrical boundary. To the best of our
+knowledge, the latter represents the first example of a truly 2-D or
+higher dimensional backwards self-similar solution. This sheds new light
+to the century-old mystery of capital importance in the field of
+mathematical fluid dynamics. \"\"\"
+
+The goal is to solve the incompressible 3D Euler equations. Does there
+exist a smooth solution $u_0$ which leads to a solution blowing up in
+finite time.
+
+$$\begin\{aligned\}
+\partial_t u + (u \cdot \nabla )u + \nabpa p &= 0 \\
+div(u) &= 0 \\
+u(\cdot, t) &= u_0
+\end\{aligned\}$$
+
+Does there exist a smooth $u_0$ that leads to the solution blowing up?
+
+## Introduction to PINNs
+
+In this structure we use a fully connected network. Consider a simple
+differential equation $$\begin\{aligned\}
+\frac\{du\}\{dx\} &= u
+\end\{aligned\}$$ Both numerical methods and PINNs convert differential
+equations to algebraic equations. Numerical methods do this by finite
+difference methods. $$\begin\{aligned\}
+\frac\{du(x_\{n-1\})\}\{dx\} &= \frac\{u_n - u_\{n-1\}\}\{h\}
+\end\{aligned\}$$ To consider PINNs, first consider a fourier series
+$$\begin\{aligned\}
+u(x) &= \sum_\{n=0\}^N w_n \sin(\frac\{2\pi\}\{L\} n_x + b_n)
+\end\{aligned\}$$ We can view the fourier series as a type of neural
+network. We can gain an exact expression for its derivative. In a PINN,
+instead of a fourier series, we can instead use the fully connected
+network. Here again we know the explicit derivative from autograd.
+
+PINNs have no truncation error and gives continuous solutions, but can
+get trapped in local minima and have higher computational costs than
+classical numerical methods.l
+
+## Why can PINNs find Blow-up Solutions?
+
+Recall the incompressible 3D Euler equations above. We will solve these
+equations under axi-symmetry. The \"Luo-Huo\" condition provides a case
+in which singularities can form within a cylinder when there are two
+flows that are rotating on the opposite axis to the cylinder at the
+point they meet. The singularity occurs at the point these two vortices
+meet. We introduce self-similar coordinates around the singularity
+$$\begin\{aligned\}
+s &= - \log (\tau_0 - t) \\
+y &= (y_1, y_2) &= \frac\{(x_3, r-r_0)\}\{(\tau_0 - t)^\{1+\lambda\}\}
+\end\{aligned\}$$ We can thhen reformulate into self-similar equation
+$$\begin\{aligned\}
+(\partial_s + 1) \Omega + ((1 + \lambda) y + U) \cdot \nabla \Omega &= \Phi + E_1 \\
+&= ...
+\end\{aligned\}$$
+
+We can simplify these equations. If $\lambda \geq -1$ then two of the
+terms above simplify down further. It becomes the 2D Boussineq equations
+$$\begin\{aligned\}
+...
+\end\{aligned\}$$ There are several other constraints we have to place on
+the solutions. The governing ewquations now have unknown $\lambda$
+making this a PDE constrained optimization. We also need smooth
+solutions. Discretizations cand truncations can break the blow-up. PINNs
+are well suited to addresse these challenges
+
+### Burger's Equation
+
+This equation is known to have a self-similar solution in 1D.
+$$\begin\{aligned\}
+u_t + u u_x &= 0
+\end\{aligned\}$$ Assume self-similar ansatz $$\begin\{aligned\}
+u &= (1+t)^\lambda U\left ( \frac\{...\}\{...\}\right )
+\end\{aligned\}$$
+
+We can use PINNs to solve Burger's equation as a starting point. It is
+possible to find a cusp in the PINNs solution. However it is only a
+smooth approximation to a non-smooth solution. You can only approach but
+not reach solution.
+
+We need to impose an additional constraint as penalty in order to force
+solutions which have smaller errors. $$\begin\{aligned\}
+(\partial_\{xxx\} f(x))^2 &= 0
+\end\{aligned\}$$
+
+This gets $\lambda$ very close to the true theoretical value.
+
+### Euler's Equation
+
+First set $\lambda$ up front. The PINN gets close to the Chen-Hou
+solution. The analysis gives high error at the origin. We can then add
+the higher derivative constraint.
+
+## De Gregorio Equations
+
+$$\begin\{aligned\}
+\omega_t + a u \omega_x &= \omega u_x \\
+u &= - \int_0^x (H\omega)(s) dz &= \Lambda^\{-1\} \omega
+\end\{aligned\}$$ where $H$ is the Hilbert transforms.
+
+## Summary
+
+PINNs provide a differential equation solver that can solve equations
+with unknowns and which can find smooth solutions. To convert these
+approximate solutions to theoretical solutions, we need to take
+additional steps.

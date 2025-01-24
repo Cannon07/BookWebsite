@@ -1,0 +1,25 @@
+# Quantum Fourier Transform \{#chap:quantum_fourier_transform\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:quantum_circuits\]](#chap:quantum_circuits)\{reference-type="ref+label"
+reference="chap:quantum_circuits"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+The quantum Fourier transform implements the Fourier transform as a
+quantum circuit and is a fundamental part of many circuits. The quantum
+fourier transform acts on an input state $$\begin\{aligned\}
+    |X\rangle &= \sum_\{j=0\}^\{N-1\} x_j |j \rangle
+\end\{aligned\}$$ and maps it to the state $$\begin\{aligned\}
+|Y\rangle &= \sum_\{k=0\}^\{N-1\} y_k |k\rangle
+\end\{aligned\}$$ where we have that $$\begin\{aligned\}
+y_k &= \frac\{1\}\{\sqrt\{N\}\} \sum_\{j=0\}^\{N-1\} x_j \omega_N^\{jk\}
+\end\{aligned\}$$
+
+Intuitively, the QFT acts as a change of basis transformation mapping
+from the a standard computational basis to a fourier basis for the
+quantum system.

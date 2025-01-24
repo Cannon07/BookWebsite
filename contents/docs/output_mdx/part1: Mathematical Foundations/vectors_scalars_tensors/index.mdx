@@ -1,0 +1,163 @@
+# Vectors, Scalars, and Tensors \{#chap:vectors\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:math_basics\]](#chap:math_basics)\{reference-type="ref+label"
+reference="chap:math_basics"\}\
+**Difficulty Level:** \*\
+
+------------------------------------------------------------------------
+
+A scalar is a term for an element of a field. For example, if
+$a \in \mathbb\{R\}$, we might refer to $a$ as a scalar. A *vector space*
+is a set $V$ that satisfies the following properties.
+
+1.  Scalar Multiplication: Let $F$ be a field. Let $a \in F$ be a
+    scalar. If $v$ is a vector, then $av$ is a vector. The operation
+    mapping $v$ to $av$ is called scalar multiplication.
+
+2.  Linear Combination: If $u, v \in V$ and $a, b \in F$, then
+    $au + bv \in V$.
+
+$\mathbb\{R\}^2$ provides a simple example of a vector space. We define
+scalar multiplication and addition as follows $$\begin\{aligned\}
+    c(a, b) &= (ca, cb) \\
+    (a, b) + (c, d) &= (a+c, b+d)
+\end\{aligned\}$$
+
+A *vector* is an element of a vector space. A vector is a geometric
+object. A vector is said to be of dimension $n$ if there exist $n$
+elements $e_1,\cdots,e_n \in V$ (read as \"e one to e n in v\") such
+that given any element $v \in V$, we can write
+$$v = a_1 e_1 + \cdots + a_n e_n,$$ for some choice of $a_i \in F$. The
+elements $e_i$ are said to constitute a *basis* for $V$. Note that not
+all vector spaces have a finite basis; we'll run into *Hilbert spaces*
+when we discuss quantum mechanics that are infinite dimensional vector
+spaces.
+
+A common example of a vector space operation is to perform a \"change of
+basis\". That is, we want to swap from basis $e_1, \dotsc, e_n$ to new
+basis $h_1, \dotsc, h_n$. The idea for this is simple; simply rewrite
+each $e_i$ in terms of $h_i$.
+
+$$e_i = b_\{i1\} h_1 + \dotsc + b_\{in\} h_n$$
+
+Then substitute these back any basis expansion in terms of the $e_i$.
+
+### Inner Product Space
+
+A vector space is called an inner product space if there exists a
+function $$\begin\{aligned\}
+    \langle \cdot | \cdot \rangle: V \times V \to F
+\end\{aligned\}$$ (read as \"anonymous function that takes two vectors in
+v to a scalar in f\"). $\mathbb\{R\}^2$ has a dot product defined as
+$$\begin\{aligned\}
+    \langle (a, b) | (c, d) \rangle &= ac + bd
+\end\{aligned\}$$ Another common alternative notation for the inner
+producct is the transpose notation $$\begin\{aligned\}
+    \langle v | w \rangle &= v^T w
+\end\{aligned\}$$ (read as \"v transpose w\").
+
+### Dual Space
+
+For every vector space $V$ over field $F$, we can define an associated
+vector space $V^*$ denoted the dual space as follows
+$$V^* = \{ \varphi: V \to F \ | \ \varphi \textrm\{ is linear\}\}$$ The
+pipe $|$ is read as \"such that.\" The entire definition above is read
+as \"V star equals the set of phi from V to F such that phi is linear.\"
+
+Here, we define a function $f$ to be linear if it respects combinations
+in $V$. That is $$f(au + bv) = af(u) + bf(v)$$
+
+The dual space arises very naturally in linear algebra since each
+element $v \in V$ induces an element in the dual space by the inner
+product $$\begin\{aligned\}
+    w \mapsto v^T w
+\end\{aligned\}$$
+
+### Tensor Product
+
+Let $V$ and $W$ be two vector spaces. The operation $\otimes$, denoted
+the tensor product, is a way of combining the two vector spaces into one
+larger vector space denoted $V \otimes W$. If $d_1,\dotsc, d_n$ is a
+basis for $V$ and $e_1,\dotsc,e_m$ is a basis for $W$, then the basis
+for $V \otimes W$ is of size $nm$ and has basis elements
+$$\begin\{aligned\}
+    d_1 \otimes e_1, \dotsc, d_n \otimes e_m 
+\end\{aligned\}$$
+
+### Tensors
+
+Let $V$ be a vectors space over $F$. Let $V^*$ be its dual vector space.
+A tensor on the vector space $V$ is defined to be an element of
+$$V \otimes \cdots \otimes V \otimes V^* \otimes \cdots \otimes V^*$$ If
+there are $p$ copies of $V$ and $q$ copies of $V^*$ we say that the
+tensor is of type $(p, q)$. Like a vector, a tensor is a geometric
+object that doesn't depend on a choice of basis for $V$. Given a choice
+of basis on $V$, it is possible represent a tensor as a multidimensional
+array.
+
+### Scalar, Vector, and Array Notation
+
+For a lot of our mathematical work, we'll use in the set of real
+numbers, which we denote $\mathbb\{R\}$. Scalars are members of
+$\mathbb\{R\}$ or $\mathbb\{C\}$ and will be denoted using lowercase letters
+$x, y, z, \dotsc$. Vectors are represented as elements of $\mathbb\{R\}^N$
+for $N > 1$. We will denote vectors generally as
+$\vec\{u\}, \vec\{v\}, \vec\{w\}$ with the overhead notation. We will follow
+the convention that vectors are column vectors
+
+$$\begin\{aligned\}
+    \vec\{u\} = \begin\{bmatrix\}
+           u_\{1\} \\
+           u_\{2\} \\
+           \vdots \\
+           u_\{N\}
+         \end\{bmatrix\}
+\end\{aligned\}$$
+
+Matrices are elements of $\mathbb\{R\}^\{N \times M\}$ and will be denoted
+with capital letters $X, Y, Z, \dotsc$. We will write
+
+$$\begin\{aligned\}
+    X = \begin\{bmatrix\}
+    X_\{11\} & \cdots & X_\{1M\} \\
+    X_\{21\} & \cdots & X_\{2M\} \\
+           & \vdots & \\
+    X_\{N1\}&  \cdots& X_\{NM\} \\
+    \end\{bmatrix\}
+\end\{aligned\}$$
+
+We will sometimes have to work with multidimensional arrays, such as
+elements of $\mathbb\{R\}^\{L \times N \times M\}$. We will use the same
+notation to refer to multidimensional arrays as we do to matrices (and
+trust that context will disambiguate which is which). Let
+$T \in \mathbb\{R\}^\{L \times N \times M \}$. We will write $T$ as
+
+$$\begin\{aligned\}
+T = \begin\{bmatrix\}
+    \begin\{bmatrix\}
+    T_\{111\} &\cdots  & T_\{11M\} \\
+    T_\{121\} & \cdots & T_\{12M\} \\
+            & \vdots & \\
+    T_\{1N1\} & \cdots & T_\{1NM\} \\
+    \end\{bmatrix\}
+    & \cdots &
+    \begin\{bmatrix\}
+    T_\{L11\} & \cdots & T_\{L1M\} \\
+    T_\{L21\} & \cdots & T_\{L2M\} \\
+            & \vdots & \\
+    T_\{LN1\} & \cdots & T_\{LNM\} \\
+    \end\{bmatrix\}
+    \end\{bmatrix\}
+\end\{aligned\}$$
+
+### Exercises
+
+1.  Let $V$ be a vector space over $F$. Prove that $V^*$ is a vector
+    space by showing that it obeys the vector space laws.
+
+2.  Prove that if $f,g :[a, b] \to \mathbb\{R\}$ are continuous functions
+    and $c, d \in \mathbb\{R\}$, then $cf + gd$ is a continuous function.

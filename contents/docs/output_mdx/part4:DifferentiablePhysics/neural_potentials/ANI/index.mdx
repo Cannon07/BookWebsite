@@ -1,0 +1,78 @@
+# ANI Potentials \{#chap:ani\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:molecular_hamiltonian\]](#chap:molecular_hamiltonian)\{reference-type="ref+label"
+reference="chap:molecular_hamiltonian"\},\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+ANI-1 [@smith2017anidata], [@smith2019approaching], [@smith2020ani],
+[@gao2020torchani], [@devereux2020extending] is a deep neural network
+capable of learning accurate and transferable potentials for organic
+molecules. It is based on the Behler-Parinello symmetry function method
+[@behler2007generalized] with additional changes enabling it to learn
+different potentials for different atom types. A feature vector, a
+series of symmetry functions, is built for each atom in the molecule
+based on its atom type and interaction with other atoms. Then the
+feature vectors are fed into different neural network potentials
+(depending on atom types) to generate predictions of properties.
+
+## Mathematical Formulation
+
+The base structure of the ANI potential closely follows the
+Behler-Parinello framework. Atomic energies are estimated as the sum of
+local atomic contributions
+
+$$\begin\{aligned\}
+E &= \sum_i E_i
+\end\{aligned\}$$
+
+The local atomic environment is again computed with function $f_C$
+$$\begin\{aligned\}
+f_C(R_\{ij\}) &= \begin\{cases\}
+0.5 \left [ \cos \left ( \frac\{\pi R_\{ij\}\}\{R_c\} +  1 \right ) \right ] & R_\{ij\} < R_C \\
+0.0 & R_\{ij\} \geq R_C
+\end\{cases\}
+\end\{aligned\}$$
+
+The atomic symmetry functions are computed as before $$\begin\{aligned\}
+G^R_m &= \sum_\{j \neq i\} e^\{-\eta (R_\{ij\} - R_s)^2 \} f_C(R_\{ij\})
+\end\{aligned\}$$ The index $m$ here ranges over different choices of
+$\eta$ and $R_s$.
+
+Angular contribution functions are modified by the addition of an offset
+parameter $\theta_s$ and the addition of $R_s$ to the exponential term.
+$$\begin\{aligned\}
+G^\{A_\{mod\}\}_m &= 2^\{1-\zeta\} \sum_\{j,k \neq i\} (1 + \cos(\theta_\{ijk\} - \theta_s))^\zeta \exp \left [ \eta \left (\frac\{R_\{ij\} + R_\{ik\}\}\{2\} - R_s \right )^2 \right ] f_C(R_\{ij\}) f_C(R_\{ik\}) 
+\end\{aligned\}$$ The index $m$ here ranges over $\zeta, \theta_s$,
+$\eta$, and $R_s$.
+
+These modified symmetry functions are used to compute an atomic
+environment vector (AEV) at each atom
+
+$$\begin\{aligned\}
+G^X_i &= \{G_1, \dotsc, G_M\}
+\end\{aligned\}$$
+
+The number of different features $M$ is a hyperparameter of the system.
+The original paper chooses a total of $768$ different features by
+setting different values of the hyperparameters.
+
+## Normal Mode Sampling
+
+The ANI functions can be used to sample molecular conformations. Normal
+mode coordinates have to be computed for the potential energy surface
+and a displace is computed along each coordinate.
+
+## Training
+
+The ANI function is trained using an exponential loss function that
+compares against energies computed with density functional theory.
+
+$$\begin\{aligned\}
+\mathcal\{L\}(E^\{ANI\}) &= \tau \exp \left ( \frac\{1\}\{\tau\} \sum_j (E^\{ANI\}_j E^\{DFT\}_j)^2 \right )
+\end\{aligned\}$$

@@ -1,0 +1,52 @@
+# Learning Invariances in Neural Networks \{#chap:learning_invariance\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:qft_basics\]](#chap:qft_basics)\{reference-type="ref+label"
+reference="chap:qft_basics"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+\"\"\" Although machine learning has been used to assist physics by
+speeding up simulations and improving data analysis, a largely
+unexplored question is whether machine learning can help theoretical
+physicists for automatic physics discoveries. In this talk, I will
+demonstrate that machine learning is capable of auto-discovering
+symmetries and conservation laws of physical systems. \"\"\"
+
+\"\"\" Invariances to translations have imbued convolutional neural
+networks with powerful generalization properties. However, we often do
+not know a priori what invariances are present in the data, or to what
+extent a model should be invariant to a given symmetry group. We show
+how to learn invariances and equivariances by parameterizing a
+distribution over augmentations and optimizing the training loss
+simultaneously with respect to the network parameters and augmentation
+parameters. With this simple procedure we can recover the correct set
+and extent of invariances on image classification, regression,
+segmentation, and molecular property prediction from a large space of
+augmentations, on training data alone. \"\"\"
+
+\"\"\" Existing methods for incorporating symmetries into neural network
+architectures require prior knowledge of the symmetry group. We propose
+to learn the symmetries during the training of the group equivariant
+architectures. Our model, the Lie algebra convolutional network
+(L-conv), is based on infinitesimal generators of continuous groups and
+does not require discretization or integration over the group. We show
+that L-conv can approximate any group convolutional layer by composition
+of layers. We demonstrate how CNNs, Graph Convolutional Networks and
+fully-connected networks can all be expressed as an L-conv with
+appropriate groups. By allowing the infinitesimal generators to be
+learnable, L-conv can learn potential symmetries. We also show how the
+symmetries are related to the statistics of the dataset in linear
+settings. We find an analytical relationship between the symmetry group
+and a subgroup of an orthogonal group preserving the covariance of the
+input. Our experiments show that L-conv with trainable generators
+performs well on problems with hidden symmetries. Due to parameter
+sharing, L-conv also uses far fewer parameters than fully-connected
+layers. \"\"\"
+
+References [@benton2020learning], [@dehmamy2020lie], [@liu2020ai],
+[@liu2021machine].

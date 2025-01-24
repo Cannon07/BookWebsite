@@ -1,0 +1,37 @@
+# Equivariant Dynamical Models \{#chap:eqdynamic\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:qft_basics\]](#chap:qft_basics)\{reference-type="ref+label"
+reference="chap:qft_basics"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+Equivariances can be incorporated into models of dynamical systems in
+order to improve data efficiency [@wang2020incorporating]. A
+differential equation is said to respect a symmetry group $G$ if all
+solutions to the equation respect group $G$.
+
+## Navier Stokes Symmetries
+
+Solutions to Navier-Stokes respect a number of symmetries
+
+-   Space translation
+
+-   Time translation
+
+-   Uniform shifts $$\begin\{aligned\}
+    w(x, t) \mapsto \lambda w(x, t) + c
+    \end\{aligned\}$$
+
+-   Rotation/Reflection
+
+-   Scaling $$\begin\{aligned\}
+    w(x, t) \mapsto \lambda w(\lambda x, \lambda^2 t)
+    \end\{aligned\}$$
+
+We can use equivariant convolutions that are equivariant to these known
+symmetries when modeling fluid systems.

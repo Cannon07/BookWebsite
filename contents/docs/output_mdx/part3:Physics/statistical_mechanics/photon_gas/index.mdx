@@ -1,0 +1,239 @@
+# Photon Gas \{#chap:photons\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:phase_equilibrium\]](#chap:phase_equilibrium)\{reference-type="ref+label"
+reference="chap:phase_equilibrium"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+In this chapter, we analyze the thermodynamics of photon gas, which
+constitutes the description of the radiation properties of Black Bodies.
+Here we consider an electromagnetic field in thermal equilibrium with
+its container. Under this condition, quantum theory predicts that the
+Hamiltonian of the system can be written as a sum of terms, each having
+the form of the harmonic oscillator. Thus, the energy of each photon is
+given by $\hslash\omega$. This provides our starting point for the
+derivation of all the thermodynamic properties of photons from the basis
+of statistical mechanics. In addition to the thermodynamic properties of
+photon gases, some fundamental laws for Blackbody Radiation will be
+obtained, such as Planck's Law, Wien's Law, Rayleigh-Jeans law, and
+Stefan-Boltzmann Law.
+
+## Black Body Radiation
+
+We are all familiar with the idea that hot objects emit radiation, a
+light bulb, for example. In the hot wire filament, an electron,
+originally in an excited state drops to a lower energy state and the
+energy difference is given off as a photon,
+($\epsilon = h\nu = \epsilon_2 -\epsilon_1$). We are also familiar with
+the absorption of radiation by surfaces. For example, clothes in the
+summer absorb photons from the sun and heat up. Black clothes absorb
+more radiation than lighter ones. This means, of course that lighter
+colored clothes reflect a larger fraction of the light falling on them.
+
+A black body is defined as one which absorbs all the radiation incident
+upon it, *i.e.* a perfect absorber. It also emits the radiation
+subsequently. If radiation is falling on a black body, its temperature
+rises until it reaches equilibrium with the radiation. At equilibrium,
+it re-emits as much radiation as it absorbs so there is no net gain in
+energy and the temperature remains constant. In this case, the surface
+is in equilibrium with the radiation and the temperature of the surface
+must be the same as the temperature of the radiation.
+
+To develop the idea of radiation temperature we construct an enclosure
+having walls which are perfect absorbers (see
+Fig. [\[fig8\]](#fig8)\{reference-type="ref" reference="fig8"\}). Inside
+the enclosure is radiation. Eventually this radiation reaches
+equilibrium with the enclosure walls, equal amounts are emitted and
+absorbed by the walls. Also, the amount of radiation travelling in each
+direction becomes equal and is uniform. In this case the radiation may
+be regarded as a gas of photons in equilibrium having a uniform
+temperature. The enclosure is then called an isothermal enclosure.
+
+An enclosure of this type containing a small hole is itself a black
+body. Any radiation passing through the hole will be absorbed. The
+radiation emitted from the hole is characteristic of a black body at the
+temperature of the photon gas. The properties of the emitted radiation
+is then independent of the materials of the wall provided they are
+sufficiently absorbing that essentially all radiation entering the hole
+is absorbed. This universal radiation is called Black Body Radiation.
+
+::: marginfigure
+![image](figures/Physics/statistical_mechanics/photon_gas/Fig8.png)\{width="\\linewidth"\}
+:::
+
+An everyday example of a photon gas is the background radiation in the
+universe. This photon gas is at a temperature of about 5 $K$. Thus the
+earth's surface, at a temperature of about 300 $K$, is not in
+equilibrium with this gas. The earth is a net emitter of radiation
+(excluding the sun) and this is why it is dark at night and why it is
+coldest on clear nights when there is no cloud cover to increase the
+reflection of the earth's radiation back to the earth. A second example
+is a Bessemer converter used in steel manufacture containing molten
+steel. These vessels actually contain holes like the isothermal
+enclosure of Fig. [\[fig8\]](#fig8)\{reference-type="ref"
+reference="fig8"\}. The radiation emitted from the hole is used in steel
+making to measure the temperature in the vessel, by means of an optical
+pyrometer.
+
+## Statistical Thermodynamics
+
+To derive Planck's radiation law directly from our statistical
+mechanics, we note that number of photons in the gas is not fixed. The
+photons are absorbed and re-emitted by the enclosure walls. Since the
+photons are non-interacting it is by this absorption and re-emission
+that equilibrium is maintained in the gas. Since, also the free energy
+$F(T, V, N)$ is constant in equilibrium (at constant $T$ and $V$ ) while
+N varies it follows that $\partial F/\partial N = 0$, that is
+$$\mu = \frac\{\partial F\}\{\partial N\}\bigg|_\{V,N\} = 0 \notag$$
+
+The photon gas is then a Bose gas with $\mu= 0$, so that the canonical
+partition function is given directly as $$\label\{Part_photon\}
+Q = \sum_\{s_1,s_2,...s_j,... = 0\}^\infty e^\{- \beta \sum_\{l=1\}^\infty s_l\epsilon_l\} = \prod_\{s=1\}^\infty \frac\{1\}\{1-e^\{-\epsilon_\{s\}\beta\}\}$$
+
+Similarly to our previous treatment for phonons, we express the average
+energy of the system per unit of volume $\langle E\rangle/V$ considering
+a continuum distribution of energies: $$\begin\{aligned\}
+\label\{Energy_Density\}
+\frac\{\langle E \rangle\}\{V\} = -\frac\{1\}\{V\}\frac\{\partial \log Q\}\{\partial \beta\} &= \frac\{1\}\{V\}\sum_\{l=1\}^\infty \frac\{\epsilon_le^\{-\beta\epsilon_l\}\}\{1 - e^\{-\beta\epsilon_l\}\} \notag\\
+&= \int_0^\infty \frac\{1\}\{V\}g(\epsilon)  \frac\{\epsilon\}\{e^\{\beta\epsilon\}-1\} d\epsilon \notag\\
+&= \int_0^\infty \frac\{1\}\{V\}\epsilon(\nu)g(\nu)\bar\{n\}(\nu) d\nu
+\end\{aligned\}$$
+
+where $\epsilon=h\nu$, according to the energy states defined by the
+quantum theory of electromagnetic field;
+$g(\nu)=\frac\{4\pi V\}\{c_0^3\}\nu^2$ is the density of states, and
+$\bar\{n\}(\nu)$ is the Bose occupation given by:
+$$\bar\{n\}(\nu) = \frac\{1\}\{\exp(\epsilon_\{s\}\beta)-1\} \notag$$
+
+The integrand from
+([\[Energy_Density\]](#Energy_Density)\{reference-type="ref"
+reference="Energy_Density"\}) can be expressed as: $$\label\{Planck\}
+u(\nu) = \frac\{8\pi\}\{c^\{3\}\}\frac\{h\nu\}\{\exp(\beta h\nu)-1\}\nu^\{2\}$$
+
+Which is Planck's Radiation Law. We may also recover Wien and
+Rayleigh-Jeans laws as limits of Planck's law,
+
+1.  Long wavelength, $\frac\{hc\}\{kT\lambda\} << 1$. Here $$\label\{Eq29\}
+    \bar\{\epsilon\}= \frac\{hc/\lambda\}\{\exp(hc/kT\lambda)-1\} \simeq kT$$
+
+    And ([\[Eq29\]](#Eq29)\{reference-type="ref" reference="Eq29"\})
+    becomes $$\label\{Eq30\}
+    u(\lambda)= \frac\{1\}\{V\} \bar\{\epsilon\}(\lambda) g(\lambda) \simeq \frac\{8 \pi\}\{\lambda^\{4\}\} kT$$
+
+    Which is Wien's law valid at long wavelengths.
+
+2.  Short wavelength, $\frac\{hc\}\{kT\lambda\} >> 1$. Here $$\label\{Eq31\}
+    \bar\{\epsilon\}= \frac\{hc\}\{\lambda\} \exp(-hc/kT\lambda)$$
+
+    And ([\[Eq30\]](#Eq30)\{reference-type="ref" reference="Eq30"\})
+    becomes $$\label\{Eq32\}
+    u(\lambda)= \frac\{1\}\{V\} \bar\{\epsilon\}(\lambda) g(\lambda) \simeq \frac\{8 \pi hc\}\{\lambda^\{5\}\} \exp(-hc/kT\lambda)$$
+
+    Which is the Wien's law valid at short wavelength.
+
+Employing our statistical mechanics we readily obtained Planck's
+radiation law.
+
+We may also derive the Stefan-Boltzmann law for: $$\label\{Eq33\}
+u = \int_0^\{\infty\} u(\nu) d\nu = \frac\{8\pi\}\{c^\{3\}\} \int_0^\{\infty\} \frac\{h\nu\}\{\exp(\beta h\nu)-1\}\nu^\{2\}d\nu$$
+
+Introducing $x=\beta h\nu$, this reduces to $$\label\{Eq34\}
+u = \frac\{8\pi k^\{4\}\}\{(hc)^\{3\}\} \int_0^\{\infty\} dx \frac\{x^\{3\}\}\{\exp(x)-1\} T^\{4\} = aT^\{4\}$$
+
+Where $$\label\{Eq35\}
+a = \frac\{8\pi k^\{4\}\}\{(hc)^\{3\}\} \frac\{\pi^\{4\}\}\{15\}$$
+
+In this way we obtain, using statistical mechanics, a law derived
+previously using thermodynamics including all the numerical factors.
+This gives Stefan's constant $\sigma$ in $$\label\{Eq36\}
+E = \frac\{1\}\{4\} caT^\{4\} = \sigma T^\{4\}$$
+
+As $$\label\{Eq37\}
+\sigma =  \frac\{2\pi ck^\{4\}\}\{(hc)^\{3\}\} \frac\{\pi^\{4\}\}\{15\} = 5.67 \times 10^\{-5\} \frac\{erg\}\{cm^\{2\}-Sec-K^\{4\}\}$$
+
+A measurement of $\sigma$ could then be used, for example, to determine
+Planck's constant. Planck, in fact, determined h as the constant needed
+in his radiation law to fit the observed spectral distribution law. This
+gave him the value h = 6.55 $\times$ 10$^\{-27\}$ erg.sec which compares
+with the present value of h = 6.625 $\times$ 10$^\{-27\}$ erg.sec
+
+## Thermodynamic Properties of Photons
+
+We may calculate all the thermodynamic properties of black body
+radiation using statistical mechanics through the partition function
+$Q$, where $$\label\{Eq38\}
+F =  -kT\log(Q)$$
+
+And $Q$ was derived as shown in
+([\[Part_photon\]](#Part_photon)\{reference-type="ref"
+reference="Part_photon"\}). This is the basic method of statistical
+thermodynamics. The aim is to reproduce all the thermodynamic properties
+with all factors and constants evaluated. This gives $$\begin\{aligned\}
+\label\{Eq39\}
+F &=  -kT\log\left(\prod_\{s=1\}^\{r\} (1-\exp(-\epsilon_\{s\}\beta))^\{-1\}\right) \notag \\
+F &=  -kT\sum_\{s=1\}^\{r\} \log(1-\exp(-\epsilon_\{s\}\beta))^\{-1\} \notag \\
+F &= -2kT  \int \frac\{d\Gamma\}\{h^\{3\}\} \log (1-\exp(-\epsilon_\{s\}\beta))^\{-1\} 
+\end\{aligned\}$$
+
+Where the $\epsilon_\{s\}$ are the single photon states and the factor of
+2 arises from the two polarizations available to each photon. This can
+be integrated in a variety of ways. Perhaps the most direct is to
+integrate over phase space $(d\Gamma=dV\,\,4\pi p^\{2\}\,\,dp)$ and write
+$\epsilon=pc$. Introducing the dimensionless variable
+$x = \beta \epsilon = \beta pc$, the Helmholtz free energy is:
+$$\label\{Eq40\}
+F = -\frac\{1\}\{3\} \left\lbrace -\frac\{8\pi k^\{4\}\}\{(hc)^\{3\}\} \int_\{0\}^\{\infty\} d(x)^\{3\} \,\, \log(1-\exp(-x)) \right\rbrace \,\, VT^\{4\}$$
+
+The dimensionless integral here can be transformed into that appearing
+in the constant of $a$ of ([\[Eq35\]](#Eq35)\{reference-type="ref"
+reference="Eq35"\}), by an integration by parts, i.e., $$\begin\{aligned\}
+\label\{Eq41\}
+I &= -  \int_\{0\}^\{\infty\} d(x)^\{3\} \log(1-\exp(-x)) \notag \\
+&= - (x^\{3\}) \log(1-\exp(-x))\bigg|_\{0\}^\{\infty\} + \int_\{0\}^\{\infty\} x^\{3\} d[\log(1-\exp(-x))]
+\end\{aligned\}$$
+
+The first term vanishes because:
+
+$$\begin\{aligned\}
+\lim_\{x \to \infty\} x^\{3\} \log(1-\exp(-x)) &\simeq \lim_\{x \to \infty\} x^\{3\} \exp(-x) = 0 \\
+\lim_\{x \to 0\} x^\{3\} \log(1-\exp(-x)) &\simeq \lim_\{x \to 0\} x^\{3\} \log(x) = 0
+\end\{aligned\}$$
+
+And $$\begin\{aligned\}
+\label\{Eq42\}
+I &= \int_\{0\}^\{\infty\} dx \frac\{x^\{3\}\}\{\exp(x)-1\} = \frac\{\pi\}\{15\}
+\end\{aligned\}$$
+
+Comparing ([\[Eq40\]](#Eq40)\{reference-type="ref" reference="Eq40"\}) and
+([\[Eq35\]](#Eq35)\{reference-type="ref" reference="Eq35"\}), we get:
+$$\label\{Eq43\}
+F = -\frac\{1\}\{3\} aVT^\{4\}$$
+
+From F we may determine all other thermodynamic properties by
+differentiation. For example, the entropy is $$\label\{Eq44\}
+S = -\left(\frac\{\partial F\}\{\partial T\}\right) \bigg|_\{V\} = \frac\{4\}\{3\} aVT^\{3\}$$
+
+The internal energy is: $$\label\{Eq45\}
+U = F +TS = avT^\{4\}$$
+
+The pressure is: $$\label\{Eq46\}
+p = -\left(\frac\{\partial F\}\{\partial V\}\right) \bigg|_\{T\}  = \frac\{1\}\{3\} aT^\{4\}$$
+
+Finally, the Gibbs free energy is: s $$\label\{Eq47\}
+G = F + pV =  - \frac\{1\}\{3\} aVT^\{4\} + \frac\{1\}\{3\} aVT^\{4\} = 0$$
+
+This is zero as required $G=\mu N$ and the chemical potential $\mu=0$.
+We may use these expressions to further verify thermodynamic
+consistency, for example that
+$C_\{V\} = T\frac\{\partial S\}\{\partial T\}\bigg|_\{V\}= \frac\{\partial U\}\{\partial T\}\bigg|_\{V\}$.
+
+In summary, we have obtained the spectral distribution from the Bose
+occupation in much the same way as we obtained the Maxwell-Boltzmann
+distribution for a classical gas. The only other required ingredient was
+the density of states. We have also obtained all the thermodynamic
+properties using the partition function $Q$.

@@ -1,0 +1,48 @@
+# Graph Networks in High Energy Physics \{#chap:gnn_hep\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:graphconvs\]](#chap:graphconvs)\{reference-type="ref+label"
+reference="chap:graphconvs"\},
+[\[chap:equivariant_networks\]](#chap:equivariant_networks)\{reference-type="ref+label"
+reference="chap:equivariant_networks"\},
+[\[chap:molecular_dynamics\]](#chap:molecular_dynamics)\{reference-type="ref+label"
+reference="chap:molecular_dynamics"\},
+[\[chap:dft\]](#chap:dft)\{reference-type="ref+label"
+reference="chap:dft"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+Graph neural networks can be used for the tasks of reconstruction,
+tagging, generation, and end-to-end analysis.
+
+In particular, graph neural networks have found a niche in analyzing
+particle accelerator data to perform useful tasks like identifying jets.
+Architectures for this task need to consider useful physical properties
+of jets which may be used to narrow down those phenomena which merit
+deeper consideration.
+
+## Reconstruction and Identification
+
+Raw data from particle accelerators can take the form of a point cloud.
+A graph of relationships between these events has to be reconstructed.
+Traditionally this is done with heuristic methods, but this can be done
+with graph networks.
+
+Reconstruction approaches often build on a clustering task and may
+follow the form of edge strength prediction which predicts the weight of
+a node to node edge. Calorimeter applications focus on segmentation,
+with tasks like partial assignment of hits to showers.
+
+Identification tasks focus on graph classification or segmentation. A
+common task is jet classification, which seeks to identify the particle
+that triggered a jet. Graph networks have proven useful in identifying
+jets and reconstructing their dynamics from the raw data.
+
+## Generative Modeling
+
+Generative models are useful for creating simulated data since running
+lattice cluster simulations can be very expensive.

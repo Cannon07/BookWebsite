@@ -1,0 +1,40 @@
+# Ab Initio Structure Prediction \{#chap:cormorant\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:graphconvs\]](#chap:graphconvs)\{reference-type="ref+label"
+reference="chap:graphconvs"\},
+[\[chap:equivariant_networks\]](#chap:equivariant_networks)\{reference-type="ref+label"
+reference="chap:equivariant_networks"\},
+[\[chap:molecular_dynamics\]](#chap:molecular_dynamics)\{reference-type="ref+label"
+reference="chap:molecular_dynamics"\},
+[\[chap:dft\]](#chap:dft)\{reference-type="ref+label"
+reference="chap:dft"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+\"\"\" The computational prediction of atomistic structure is a
+long-standing problem in physics, chemistry, materials, and biology.
+Within conventional force-field or ab initio calculations, structure is
+determined through energy minimization, which is either approximate or
+computationally demanding. Alas, the accuracy-cost trade-off prohibits
+the generation of synthetic big data records with meaningful energy
+based conformational search and structure relaxation output. In this
+talk, Graph-To-Structure (G2S \[1\]), a graph-based kernel ridge
+regression model for structure prediction, will be presented. Exploiting
+implicit correlations among relaxed structures, G2s generalizes across
+chemical compound space, enabling direct predictions of relaxed
+structures for out-of-sample compounds, and effectively bypassing the
+energy optimization task. Examples of G2S applicability include closed
+shell (QM9 \[2\]) and open shell (QMSpin \[3\]) molecules, transition
+states (QMrxn20 \[4\]) and solids (Elpasolites \[5\]). Moreover, the
+usefulness of G2S will be shown as an improved initial guess to
+subsequent ab initio based relaxation, as well as an input for structure
+based quantum machine learning models \[6\]. \"\"\"
+
+References [@christensen2020fchl], [@faber2016machine],
+[@von2020thousands], [@schwilk2020large], [@ramakrishnan2014quantum],
+[@lemm2021machine]

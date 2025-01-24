@@ -1,0 +1,63 @@
+# Green's Identities \{#chap:greens_identities\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:calculus\]](#chap:calculus)\{reference-type="ref+label"
+reference="chap:calculus"\},
+[\[chap:vectors\]](#chap:vectors)\{reference-type="ref+label"
+reference="chap:vectors"\}\
+**Difficulty Level:** \*\*\*\
+
+------------------------------------------------------------------------
+
+Green's identities are a set of three vector calculus identities used
+widely in physics.
+
+## Green's First Identity
+
+Let $U \subset \mathbb\{R\}^n$ be a region of space with boundary
+$\partial U$. Let $\varphi$ and $\psi$ be scalar functions on $U$ with
+$\varphi$ twice differentiable and $\psi$ differentiable. Let $\vec\{n\}$
+be an outward pointing normal vector. Then $$\begin\{aligned\}
+\int_U (\psi \nabla^2 \varphi + \nabla \psi \cdot \nabla \varphi) dV &= \oint_\{\partial U\} \psi (\nabla \varphi \cdot \vec\{n\}) dS \\
+&= \oint_\{\partial U\} \psi \nabla \varphi \cdot d\vec\{S\}
+\end\{aligned\}$$ where we have $$\begin\{aligned\}
+d\vec\{S\} &= \vec\{n\} dS
+\end\{aligned\}$$ is the oriented surface element. This rule is a
+higher-dimensional analog of the technique of integration by parts.
+
+## Green's Second Identity
+
+Let $\varphi$ and $\psi$ be twice continuously differentiable functions.
+Then we have
+
+$$\begin\{aligned\}
+\int_U \left [ \psi \nabla^2  \varphi - \varphi \nabla^2  \psi   \right] dV = \oint_\{\partial U\} \left ( \psi \frac\{\partial \varphi\}\{\partial \vec\{n\}\} - \varphi \frac\{\partial \psi\}\{\partial \vec\{n\}\} \right ) dS
+\end\{aligned\}$$
+
+$\frac\{\partial \varphi\}\{\partial \vec\{n\}\}$ is the directional
+derivative of $\varphi$ in the normal direction.
+
+$$\begin\{aligned\}
+\frac\{\partial \varphi\}\{\partial \vec\{n\}\} &= \nabla \varphi \cdot \vec\{n\}
+\end\{aligned\}$$
+
+## Green's Third Identity
+
+Let $\psi$ be a function that is twice continuously differentiable
+functions on $U$. Let $G$ be the Green's function of the Laplacian
+$\nabla^2$. Then we have that
+
+$$\begin\{aligned\}
+\int_U [G(y, \eta) \nabla^2 \psi(y)] dV_y - \psi(\eta) &= \oint_\{\partial U\} \left [ G(y, \eta)\frac\{\partial \psi\}\{\partial \vec\{n\}\} - \psi(y) \frac\{\partial G(y, \eta)\}\{\partial \vec\{n\}\} \right ] dS_y
+\end\{aligned\}$$
+
+This formula proves useful when solving boundary value problems in
+electrostatics.
+
+## The Divergence Theorem
+
+The divergence theorem provides a broader theoretical justification for
+the facts considered in this section.

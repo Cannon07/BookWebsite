@@ -1,0 +1,370 @@
+# Statistical Thermodynamics and Machine Learning \{#chap:stat_thermo_ml\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:ml_basics\]](#chap:ml_basics)\{reference-type="ref+label"
+reference="chap:ml_basics"\},
+[\[chap:kernel_methods\]](#chap:kernel_methods)\{reference-type="ref+label"
+reference="chap:kernel_methods"\},
+[\[chap:stat_thermo\]](#chap:stat_thermo)\{reference-type="ref+label"
+reference="chap:stat_thermo"\},\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+By applying the methods of statistical mechanics to machine learning, we
+are able to create laws of learning which are analogous to the laws of
+thermodynamics [@alemi2016deep], [@alemi2018fixing], [@alemi2018therml],
+[@alemi2018uncertainty], [@fischer2020ceb]. These laws of learning
+provide a series of objective functions that when minimized are able to
+solve for similar solutions to those determined using the laws of
+thermodynamics. Once developed, Maxwell relations can be developed for
+the laws of learning that will be analogous to those developed from the
+laws of thermodynamics. Using these Maxwell relations, we can construct
+different ensembles analogous to statistical mechanical ensembles.
+
+## Machine Learning In Terms of Information Theory
+
+We define a pair of data sets, $X$ and $Y$ such that $X$ is a data set
+containing all of the measured features of the data points and $Y$ is
+the measured labels of those data points. Suppose that $X$ and $Y$
+contain $N$ samples generated from some unknown oracle function. In
+other words, there exists some true function $\Phi$ from which we have
+sampled paired training data $X$ and $Y$. We define the training set as
+done below. $$\begin\{aligned\}
+\mathcal\{T\}_N &= (X^N,Y^N)\\
+&= \{(x_1,y_1),(x_2,y_2),\dotsc,(x_N,y_N)\} \\
+&\sim\Phi(x^N,y^N)
+\end\{aligned\}$$ We further envision that the process is exchangeable so
+that it satisfies De Finetti's theorem and that the data is
+conditionally independent when given the governing process $\Phi$.
+$$\begin\{aligned\}
+p(x^N,y^N|\Phi)&=\prod_\{i\}p(x_i|\Phi)p(y_i|x_i,\Phi)
+\end\{aligned\}$$ We define a test data set of $M$ data points similarly
+$$\begin\{aligned\}
+\mathcal\{T\}'_M & =\{X^M,Y^M\}
+\end\{aligned\}$$ The predictive information is the mutual information
+between the training set and a infinite test set. Equivalently, it is
+the amount of information the training data set provides about the
+generative process itself. $$\begin\{aligned\}
+I_\{\textrm\{pred\}\}(\mathcal\{T\}_N) &= \lim_\{M\to\infty\}  I(\mathcal\{T\}_N;\mathcal\{T\}'_M) =I(\mathcal\{T\}_N;\Phi)=I(X^N,Y^N;\Phi)
+\end\{aligned\}$$ The predictive information measures the underlying
+complexity of the data generating process and is fundamentally limited
+and must grow sublinearly in the data set size. Hence, the predictive
+information is a vanishing fraction of the total information in the
+training data set. $$\begin\{aligned\}
+\lim_\{N\to\infty\}\frac\{I_\{\textrm\{pred\}\}(\mathcal\{T\}_N)\}\{H(\mathcal\{T\}_N)\}=0
+\end\{aligned\}$$ Most of the time, the vanishing fraction of information
+includes proper representation of the data as well as noise due to
+inaccuracy in the measurements. An important goal of machine learning is
+to learn a generalizable representations of the data that can globally
+capture trends in the data without overfitting to the training data set.
+
+![Graphical model for world $P$, the real world augmented with a local
+and global representation. The dashed lines emphasize that $\theta$ only
+depends on the first N data points, the training set. Blue denotes nodes
+outside our control, while red nodes are under our direct
+control.](figures/Physics/statistical_mechanics/stat_thermo_ML/Stat_thermo_fig1.png)\{#fig1
+width="70%"\}
+
+We want to learn a stochastic general representation of $X$, defined by
+some parametric distribution, $$\begin\{aligned\}
+p(z_i|x_i,\theta)
+\end\{aligned\}$$ with its own parameters $\theta$. We train the
+parameters on the training data set using the distribution
+$$\begin\{aligned\}
+p(\theta|x^N,y^N)
+\end\{aligned\}$$ Our process is represented by the graphical model shown
+in Figure [1.1](#fig1)\{reference-type="ref" reference="fig1"\} as
+represented in world $P$, the real world augmented with global and local
+representations.
+
+![Graphical model for world $Q$, the world that we desire. In this
+world, $Z$ acts as a latent variable for $X$ and $Y$
+jointly.](figures/Physics/statistical_mechanics/stat_thermo_ML/Stat_thermo_fig2.png)\{#fig2
+width="70%"\}
+
+While world $P$ is what we have, it is generally not what we want.
+Rather than the unknown distribution of our data, we want a world that
+corresponds to the modeling assumption in which $Z$ acts as a latent
+factor for $X$ and $Y$ rendering them conditionally independent.
+Similarly, we would prefer to marginalize out the dependence on our
+universal ($\Phi$) and model specific ($\Theta$) parameters. This is
+represented in Figure [1.2](#fig2)\{reference-type="ref"
+reference="fig2"\} by world $Q$.
+
+To measure the degree to which the real world aligns with this desired
+world, we compute the minimum possible relative information between our
+distribution p and any distribution consistent with the conditional
+dependencies encoded in the graphical model of world Q. This quantity
+can be given by the difference in multi-informations between the two
+graphical models as measured in world P. $$\begin\{aligned\}
+    \mathcal\{J\} &=\min_\{q\in Q\}D_\{KL\}[p;q]=I_P-I_Q
+\end\{aligned\}$$ The multi-information of a graphical model is the KL
+divergence between the joint distribution and the product of all of the
+marginal distributions, which can be computed as a sum of mutual
+informations, one for each node in the graph between itself and its
+parents. $$\begin\{aligned\}
+I_G &=\langle \log\frac\{p(g^N)\}\{\prod_i p(g_i)\} \rangle = \sum_i I(g_i;Pa(g_i))
+\end\{aligned\}$$ Using this information, we can reformulate $\mathcal\{J\}$
+as done in the equation below. $$\begin\{aligned\}
+\mathcal\{J\} &=I(\Theta;X^N,Y^N)+\sum_i[I(X_i;\Phi) + I(Y_i;X_i,\Phi) + I(Z_i;X_i,\Theta) - I(X_i;Z_i) - I(Y_i;Z_i)]
+\end\{aligned\}$$ In this equation, the following two terms are outside of
+our control and thus we take them to be constant but we must recognize
+that they relate to the predictive information. $$\begin\{aligned\}
+\sum_i[I(X_i;\Phi)+I(Y_i;X_i,\Phi)]\geq \sum_i I(Y_i;X_i) + I_\{\textrm\{pred\}\}(\mathcal\{T\}_N)
+\end\{aligned\}$$ The remaining terms have to do with the intrinsic
+complexity of the data. $$\begin\{aligned\}
+I(X_i;Z_i)
+\end\{aligned\}$$ measures the information our representation contains
+about input $X$. This should be maximized to ensure our representation
+actually represents the input. $$\begin\{aligned\}
+I(Y_i;Z_i)
+\end\{aligned\}$$ measures the information our representation contains
+about our auxiliary data. This should be maximized as well to ensure
+that our representation is predictive for the labels. $$\begin\{aligned\}
+I(Z_i;X_i,\Theta)
+\end\{aligned\}$$ measures the information the parameters and input
+determine about our representation. This should be minimized to ensure
+consistency between worlds and ensure we learn compressed
+representations. This is similar to the first term and is related by the
+following equation. $$\begin\{aligned\}
+I(Z_i;X_i,\Theta) &=I(Z_i;X_i) + I(Z_i;\Theta|X_i)
+\end\{aligned\}$$ The last term, $$\begin\{aligned\}
+I(\Theta;X^N,Y^N)
+\end\{aligned\}$$ measures the much information we store about our
+training data in the parameters of our encoder. This should be minimized
+to ensure we are generalizing and avoiding overfitting. These mutual
+informations are all intractable in general, since we can't compute the
+necessary marginals in closed form, given that we do not have access to
+the true data generating distribution.
+
+## Functionals
+
+Despite their intractability, we can compute variational bounds on these
+mutual informations. The first one is termed the relative entropy and
+measures the relative information between the distribution we assign our
+parameters in world $P$ after learning from the data $(X^N,Y^N)$ with
+respect to some data independent prior on the parameters, $q(\theta)$.
+This is an upper bound on the mutual information between the data and
+our parameters and as such can measure the risk of overfitting the
+parameters. $$\begin\{aligned\}
+S&=\langle \log \frac\{p(\theta|x^N,y^N)\}\{q(\theta)\} \rangle_P \geq I(\Theta;X^N,Y^N)
+\end\{aligned\}$$ The next functional is the rate and measures the
+complexity of our representation. It is the relative information of a
+sample specific representation $$\begin\{aligned\}
+z_i \sim p(z|x_i,\theta)
+\end\{aligned\}$$ with respect to our variational marginal $q(z)$. It
+measures how many bits we actually encode about each sample and can also
+measure the risk of overfitting. $$\begin\{aligned\}
+R_i &= \langle \log\frac\{p(z_i|x_i,\theta)\}\{q(z_i)\} \rangle_P \geq I(Z_i;X_i,\Theta)
+\end\{aligned\}$$ The following equations will use $R$ which is defined as
+$$\begin\{aligned\}
+R=\sum_i R_i
+\end\{aligned\}$$ The next functional is the classification error and it
+measures the conditional entropy of Y left after conditioning on Z. It
+is a measure of how much information about Y is left unspecified in our
+representation. This functional measures our supervised learning
+performance. $$\begin\{aligned\}
+C_i & =-\langle \log q(y_i|z_i) \rangle_P \\
+&\geq H(Y_i) - I(Y_i;Z_i)\\ 
+& \geq H(Y_i|Z_i)
+\end\{aligned\}$$ The following equations will use $C$ which is defined as
+$$\begin\{aligned\}
+C &= \sum_i C_i
+\end\{aligned\}$$ The next functional is the distortion and measures the
+conditional entropy of $X$ left after conditioning on $Z$. Distortion
+can be used to measure performance on unsupervised learning
+$$\begin\{aligned\}
+D_i &=-\langle \log q(x_i|z_i) \rangle_P \\
+& \geq H(X_i) - I(X_i;Z_i)\\ 
+&\geq H(X_i|Z_i)
+\end\{aligned\}$$ The following equations will use $D$ which is defined as
+$$\begin\{aligned\}
+D & =\sum_i D_i
+\end\{aligned\}$$ Note that the distributions $$\begin\{aligned\}
+ p(z|x,\theta),\ p(\theta|x^N,y^N),\ q(z),\ q(x|z),\ q(y|z)
+\end\{aligned\}$$ can be chosen arbitrarily. Once they are chosen,
+functionals $R$, $C$, $D$, and $S$ become well described values. Using
+these functional inequalities, we can write the following equations by
+being explicit about the presence of the relative informations in our
+variational approximations. $$\begin\{aligned\}
+I(\Theta;X^N,Y^N)&=S-D_\{KL\}[p(\theta);q(\theta)]\\ 
+I(X_i;Z_i)&=H(X_i)-D_i+D_\{KL\}[p(x_i|z_i);q(x_i|z_i)]\\
+I(Y_i;Z_i)&=H(Y_i)-C_i+D_\{KL\}[p(y_i|z_i);q(y_i|z_i)]\\
+I(Z_i;X_i,\Theta)&=R_i-D_\{KL\}[p(z_i);q(z_i)]\\
+\end\{aligned\}$$ Combining these equations with our equation for
+$\mathcal\{J\}$, we get the following. $$\begin\{aligned\}
+\mathcal\{J\}=S+D+C+R-D_\{KL\}[p;q]-\sum_i[H(X_i)+H(Y_i)-I(X_i;\Phi)-I(Y_i;X_i,\Phi)] \geq 0
+\end\{aligned\}$$ In this equation, $D_\{KL\}[p;q]$ represents the
+collection of all of the KL divergence terms. To simplify the summation
+term, we can use the following equations. $$\begin\{aligned\}
+H(X_i)-I(X_i;\Phi)&=H(X_i|\Phi)\\
+H(Y_i)-I(Y_i;X_i,\Phi)&=H(Y_i|X_i,\Phi)\\
+H(Y_i|X_i,\Phi)+H(X_i|\Phi)&=H(Y_i,X_i|\Phi)
+\end\{aligned\}$$ This yields the following equation for $\mathcal\{J\}$.
+$$\begin\{aligned\}
+\mathcal\{J\}=S+D+C+R-D_\{KL\} [p;q] - \sum_i H(Y_i,X_i|\Phi)
+\end\{aligned\}$$ This can then be rewritten in its final form as the
+following equation. $$\begin\{aligned\}
+S+D+C+R \geq \sum_i H(Y_i,X_i|\Phi)
+\end\{aligned\}$$ This equation shows that the choice of the five
+distributional families specified above creates a single point in a
+four-dimensional space. This sum of the functionals is a variational
+upper bound for the minimum possible relative information between the
+worlds $P$ and $Q$.
+
+When considering the full space of feasible points, we notice that $S$
+and $R$ are both themselves upper bounds on mutual informations and thus
+themselves must be positive semi-definite. If the data is discrete, then
+both $D$ and $C$, which are both upper bounds on conditional entropies,
+must be positive as well. This means that if $$\begin\{aligned\}
+\sum_i H(X_i,Y_i|\Phi)
+\end\{aligned\}$$ is positive, since it is a constant outside of our
+control, the space of possible $R$, $C$, $D$ and $S$ values is
+restricted to be points in the positive orthant with some minimum
+possible Manhattan distance to the origin as shown below where
+$R\geq0,\ S\geq0,\ D\geq0,\ C\geq0$. $$\begin\{aligned\}
+S+R+C+D\geq \sum_i H(X_i,Y_i|\Phi)
+\end\{aligned\}$$ The surface of the feasible region maps an optimal
+frontier which minimizes mismatch between our two worlds $P$ and $Q$
+subject to constraints on the relative magnitudes of the individual
+terms. This convex polytope has edges, faces and corners that are
+identifiable as the optimal solutions for well known objectives. Finding
+points on this surface equates to solving the constrained optimization
+problem below. $$\begin\{aligned\}
+\min_\{q(z)q(x|z)q(y|z)p(z|x,\theta)p(\theta|\{x,y\})\}\ R\textrm\{ such that \}D=D_0,\ S=S_0,\ C=C_0
+\end\{aligned\}$$ Equivalently, we could solve the unconstrained Lagrange
+multipliers problem shown below where $\delta,\gamma,\sigma$ are
+Lagrange multipliers that impose the constraints. $$\begin\{aligned\}
+\min_\{q(z)q(x|z)q(y|z)p(z|x,\theta)p(\theta|\{x,y\})\}\ R+\delta D+\gamma C+\sigma S
+\end\{aligned\}$$ So far we've considered explicit forms of the objective
+in terms of the four functionals. For $S$, this would require some kind
+of tractable approximation to the posterior over the parameters of our
+encoding distribution. Alternatively, we can formulate the exact
+solution to the minimization of $S$ as follows. $$\begin\{aligned\}
+\min S \textrm\{ such that \} R=R_0,C=C_0,D=D_0
+\end\{aligned\}$$ Recall that $S$ measures the relative entropy of our
+parameter distribution with respect to the $q(\theta)$ prior. As such,
+the solution that minimizes the relative entropy to some constraints is
+a generalized Boltzmann distribution shown below. $$\begin\{aligned\}
+p^*(\theta|\{x,y\}) &=\frac\{q(\theta)\}\{\mathcal\{Z\}\}e^\{(R+\delta D+ \gamma C)/\sigma\}
+\end\{aligned\}$$ Here, the $\mathcal\{Z\}$ is the partition function
+defined below. $$\begin\{aligned\}
+\mathcal\{Z\} &=\int d\theta q(\theta)e^\{-(R+\delta D+\gamma C) / \sigma\}
+\end\{aligned\}$$ Using an algorithm such as stochastic gradient descent,
+one can learn the desired quantities.
+
+## Thermodynamics
+
+So far we have described a framework for learning that involves finding
+points that lie on the surface of a convex three-dimensional surface in
+terms of four functional coordinates $R, C, D, S$. This framework allows
+us to directly make correlations to thermodynamics.
+
+## First Law of Learning
+
+The optimal frontier creates an equivalence class of states, being the
+set of all states that minimize as much as possible the distortion
+introduced in projecting world P onto a set of distortions that respect
+the conditions in Q. The surface satisfies some equation
+$$\begin\{aligned\}
+f(R,C,D,S) &=0
+\end\{aligned\}$$ which we can use to describe any one of these
+functionals in terms of the rest, $$\begin\{aligned\}
+R &=R(C,D,S)
+\end\{aligned\}$$. This allows us to make the following equation.
+$$\begin\{aligned\}
+dR &=\left (\frac\{\partial R\}\{\partial C\}\right)_\{D,S\}dC+\left (\frac\{\partial R\}\{\partial D\}\right)_\{C,S\}dD+\left (\frac\{\partial R\}\{\partial S\}\right)_\{C,D\}dS
+\end\{aligned\}$$ Since the function is smooth and convex, instead of
+identifying the surface of optimal rates in terms of the functionals
+$C, D, S$, we could just as well describe the surface in terms of the
+partial derivatives by applying a Legendre transformation.
+$$\begin\{aligned\}
+\gamma &=-\left(\frac\{\partial R\}\{\partial C\}\right)_\{D,S\}\\ 
+\delta&=-\left(\frac\{\partial R\}\{\partial D\}\right)_\{C,S\}\\
+\sigma&=-\left(\frac\{\partial R\}\{\partial S\}\right)_\{C,D\}
+\end\{aligned\}$$ These measure the exchange rate for turning rate into
+reduced distortion, reduced classification error, or increased entropy
+respectively. The functionals $R$, $C$, $D$ and $S$ are analogous to
+extensive thermodynamic variables which grow as the system grows while
+the named partial derivatives above are analogous to the intensive,
+generalized forces. Just as with thermodynamics, the extensive
+functionals are defined for any state while the intensive partial
+derivatives are only well defined for equilibrium states (states which
+are on the optimal surface). We can now write the First Law of Learning.
+$$\begin\{aligned\}
+dR=-\gamma dC-\delta dD -\sigma dS
+\end\{aligned\}$$ Similar to the statement about conservation of energy in
+the First Law of Thermodynamics, we could think of this law as a
+statement about the conservation of information.
+
+## Maxwell Relations and Thermodynamics Potentials
+
+Requiring that the First Law of Learning be an exact differential has
+mathematically trivial but intuitively non-obvious implications that
+relate various partial derivatives of the system to one another, akin to
+the Maxwell Relations in thermodynamics. For example, requiring that
+mixed second partial derivatives are symmetric establishes the following
+relation. $$\begin\{aligned\}
+\left(\frac\{\partial^2 R\}\{\partial D\partial C\}\right) = \left(\frac\{\partial^2 R\}\{\partial C \partial D\}\right) \longrightarrow \left(\frac\{\partial \delta\}\{\partial C\}\right)_D = \left(\frac\{\partial \gamma\}\{\partial D\}\right)_C
+\end\{aligned\}$$ This allows us to equate the results of two different
+experiments. This also allows us to define other potentials analogous to
+the Gibb's free energy and the enthalpy. For example, the free rate is
+defined below. $$\begin\{aligned\}
+F(C,D,\sigma)&=R+\sigma S\\
+dF &= -\gamma dC - \delta dD + Sd\sigma
+\end\{aligned\}$$ Further transformations and Maxwell Relations can be
+found in the reference. We can also take and name higher order partial
+derivatives, analogous to the susceptibilities of thermodynamics like
+bulk modulus, thermal expansion coefficient or heat capacities. For
+example, the analog of the heat capacity of the system can be defined as
+done below which is a rate capacity constant for distortion.
+$$\begin\{aligned\}
+K_D=\left(\frac\{\partial R\}\{\partial \sigma\}\right)_D
+\end\{aligned\}$$ Similar to thermodynamics, a subset of the first, second
+and higher order partial derivatives of the base functionals will be
+useful for comparing, quantifying and understanding differences between
+modeling choices.
+
+## Second Law of Learning
+
+Even when doing deterministic training, training is non-invertible and
+we need to contend with and track the entropy ($S$) term. Optimization
+is a many-to-one function that in the ideal limiting case, maps all
+possible initializations to a single global optimum. In this limiting
+case, $S$ would be divergent and there is nothing to prevent us from
+memorizing the training set. Formally, there are many statements akin to
+the Second Law of Thermodynamics that can be made about Markov chains
+generally. The central one is that for any two distributions $p_n,\ q_n$
+both evolving according to the same Markov process, the relative entropy
+$D_\{KL\}[p_n;q_n]$ monotonically decreases with time.
+
+## Zeroth Law of Learning
+
+In our framework, the points on the optimal surface are analogous to the
+equilibrium states, for which we have well defined partial derivatives.
+We can demonstrate that this notion of equilibrium agrees with a more
+intuitive notion of equilibrium between coupled systems. Imagine we have
+two models, Model $A$ and Model $B$, each with their own distributions
+and functionals. Each model would also have its own representation
+$Z_A,\ Z_B$ respectively. If we make a joint representation,
+$$\begin\{aligned\}
+Z_C &=(Z_A,Z_B),
+\end\{aligned\}$$ then the governing distributions over $Z$ are simply the
+product of the two model's distributions. Thus the rate and entropy for
+the combined model is the sum of the individual models.
+$$\begin\{aligned\}
+R_C=R_A+R_B, S_C=S_A+S_B
+\end\{aligned\}$$ Now imagine we sample new states for the combined system
+which are maximally entropic with the constraint that the combined rate
+stay constant. For the expectation of the two rates to be unchanged
+after they have been coupled and evolved holding their total rate fixed,
+we have the following equation. $$\begin\{aligned\}
+-\frac\{1\}\{\sigma_A\}R_A-\frac\{1\}\{\sigma_B\}R_B=-\frac\{1\}\{\sigma_C\}R_C=-\frac\{1\}\{\sigma_C\}(R_A+R_B) \longrightarrow \sigma_A=\sigma_B=\sigma_C
+\end\{aligned\}$$ Therefore, we can see that $\sigma$, the effective
+temperature, allows us to identify whether two systems are in thermal
+equilibrium with one another. Just as in thermodynamics, if two systems
+at different temperatures are coupled, some transfer will take place.

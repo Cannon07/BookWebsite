@@ -1,0 +1,49 @@
+# Universal Ordinary Differential Equations and Residual Physics \{#chap:pinns\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:** [\[chap:pde\]](#chap:pde)\{reference-type="ref+label"
+reference="chap:pde"\},
+[\[chap:numerical_pde\]](#chap:numerical_pde)\{reference-type="ref+label"
+reference="chap:numerical_pde"\},
+[\[chap:neural_ode\]](#chap:neural_ode)\{reference-type="ref+label"
+reference="chap:neural_ode"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+In previous chapters we have learned of a number of techniques to
+approximately solve differential equations using differentiable
+programs. Most such techniques directly approximate the solution $u$ to
+the differential equation by a suitable deep network. The universal
+ordinary differential equations [@bills2020universal],
+[@rackauckas2020universal] approach instead seeks to use the deep
+network as a universal approximator that learns an error correction term
+that modifies a standard solution with a learned correction term.
+
+## Mathematical Framework
+
+The fully general formulation of a universal differential equation is
+given by $$\begin\{aligned\}
+    \mathcal\{N\}[u(t), u(\alpha(t)), W(t), U_\theta(u, \beta(t))] = 0
+\end\{aligned\}$$ where $\mathcal\{N\}$ is a possibly nonlinear operator,
+$u$, is a proposed solution, $\alpha(t)$ is a delay function, and $W(t)$
+is the Wiener process.
+
+Let $u_\theta(t)$ denote the universal differential equation. The loss
+function for such an equation is given by $$\begin\{aligned\}
+    \mathcal\{L\}(\theta) &= \sum_i \|u_\{\theta\}(t_i) - d_i\|
+\end\{aligned\}$$ where $(t_1, d_1),\dotsc,(t_n,d_n)$ are given discrete
+datapoints.
+
+## Lotka-Volterra Equations
+
+As a concrete example, consider the Lotka-Volterra equations. We add on
+approximation terms $U_1, U_2$ to the two quantities being solved for in
+this equation.
+
+$$\begin\{aligned\}
+    \dot\{x\} &= \alpha x + U_1(\theta, x, y) \\
+    \dot\{y\} &= - \theta_1 y + U_2(\theta, x, y)
+\end\{aligned\}$$

@@ -1,0 +1,36 @@
+# Gaussian Processes \{#chap:gaussian_processes\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:calculus\]](#chap:calculus)\{reference-type="ref+label"
+reference="chap:calculus"\},
+[\[chap:multidimensional\]](#chap:multidimensional)\{reference-type="ref+label"
+reference="chap:multidimensional"\},
+[\[chap:ml_basics\]](#chap:ml_basics)\{reference-type="ref+label"
+reference="chap:ml_basics"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+Gaussian processes provide a powerful class of methods for modeling time
+series data that competes broadly with RNNs but offers much tighter
+theoretical control
+
+## Intuition
+
+The core idea of a Gaussian process is that a dataset $$\begin\{aligned\}
+\mathcal\{D\} &= \{(x_1, y_1),\dotsc, (x_n, y_n)\}
+\end\{aligned\}$$ corresponds to a family of functions which pass through
+these points. By using as assumption of Gaussianity, we can place a
+reasonable prior distribution on the family of all functions which pass
+through the points in $\mathcal\{D\}$. In order for this prior to make
+sense at points not in $\{x_i\}$, we need to make a choice of a kernel
+function $K$ that tells us how to compute the probability of values $y$
+at some point $x$ not in the training distribution.
+
+In order to do prediction at $x$, we have to compute the conditional
+Gaussian distribution given $\mathcal\{D\}$ and $K$. This computation can
+become expensive, so there are number of methods to compute approximate
+Gaussian process regressors.

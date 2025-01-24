@@ -1,0 +1,200 @@
+# Molecular Graph Convolutions \{#chap:molecular_graphconvs\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:graphconvs\]](#chap:graphconvs)\{reference-type="ref+label"
+reference="chap:graphconvs"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+Molecular graph convolutions treat a molecule as a graph and utilize
+graph convolutional techniques to make predictions about molecular
+properties. These convolutions provide a powerful alternative to the
+heuristic fingerprints we learned about earlier since they allow for the
+possibility of learning data-dependent featurizations suited to the
+problem at hand instead of using generic featurization schemes.
+Empirically, molecular graph convolutions can outperform heuristic
+featurizations on a broad range of tasks.
+
+## Representing Molecules as Graphs
+
+Graph-based models are naturally suited to represent molecules as
+mathematical graphs by defining atoms as nodes, bonds as edges. The
+natural similarity has inspired a number of models to utilize the graph
+structure of molecules to improve predictive
+capabilities[@gilmer2017neural]. Mathematically, the representation of a
+molecule is given by vertices $\mathcal\{V\}$ and edges $\mathcal\{E\}$.
+
+$$\begin\{aligned\}
+\mathcal\{V\} &= \{1, \dotsc, n\}\\
+\mathcal\{E\} &= \{(i, j)\ | \textrm\{atom $i$ is covalently bonded to atom $j$\}\} \\
+\end\{aligned\}$$
+
+Here $n$ is the number of atoms in the molecule, $\mathcal\{V\}$
+represents the set of vertices (atoms) and $\mathcal\{E\}$ the set of
+edges (covalent bonds). The molecule is represented by the pair
+$$\begin\{aligned\}
+m &= (\mathcal\{V\}, \mathcal\{E\})
+\end\{aligned\}$$ We introduce a graph data type in Physika to facilitate
+coding
+
+    class Node(h: $\mathbb\{R\}^N$)
+    class Graph(V: [Node], E: [(Node, Node)])
+
+As a first summary, graph convolutional models treat molecules as
+undirected graphs, and apply the same learnable function to every node
+(atom) and its neighbors (bonded atoms) in the graph.
+
+## Neural Graph Fingerprints
+
+A neural graph fingerprint architecture begins with computing an initial
+feature vector and a neighbor list for every atom in the molecule. The
+feature vector encodes the atom's local electronic structure or the
+chemical environment, by incorporating atom-types, hybridization types,
+and valence structures. The neighbor lists of atoms represent
+connectivity within the molecule, which are further processed in each
+model to generate graph structures.
+
+$$\begin\{aligned\}
+    \textrm\{Features\} &\in \mathbb\{R\}^\{N \times d\} \\
+    \textrm\{NeighborList\} &= [[i_1,\dotsc,i_j],\dotsc]
+\end\{aligned\}$$
+
+As for ECFP fingeprints, graph convolutional layer gradually merge
+information for distant atoms by extending radially through bonds.
+However, instead of applying fixed hash functions, the neural graph
+fingerprint uses differentiable \"hash functions\". This creates a
+learnable process capable of extracting useful representations of
+molecules suited to the task at hand, which recapitulates convolution
+layers in visual recognition deep networks.
+
+![An illustration of the control flow in a classical molecular
+fingerprint and a neural graph fingerprint.
+<https://arxiv.org/pdf/1509.09292.pdf>](figures/Differentiable Physics/Molecular ML/Molecular Graph Convolutions/neural_graph_fingerprint0.png)\{#fig:neural_graph_fingerprint\}
+
+We can implement the neural graph fingerprint in Physika as follows. Let
+`R` denote the number of layers in the architecture. Let $H^i_j$ denote
+the weight matrix for the $j$-th hidden layer and the case when an atom
+has $i$ neighbors, where $N$ is the max number neighbors we allow
+(typically 5).
+
+``` \{.python language="python"\}
+class NeuralGraphFingerprint(R: $\mathbb\{N\}$, [$H^1_1$,$\dotsc$,$H^N_R$], $W_1,\dotsc, W_R$):
+
+  def $\lambda$(molecule: Graph):
+    for a in molecule:
+      r[a] = g(a)
+    for L in [1,$\dotsc$, R]:
+      for a in molecule:
+        $r_1$,$\dotsc$,$r_N$ = neighbors(a)
+        v = r[a] + $\sum_\{i=1\}^N r_i$
+        $r_a$ = $\sigma$(v$H^N_L$)
+        i = softmax($r_a$ $W_L$)
+        f = f + i
+    return f
+```
+
+Note the similarity between the neural graph fingerprint and the ECFP
+algorithm. The core difference is the presence of the learnable matrices
+$H^i_j$ which allow the emphasis the fingerprint places on different
+parts of the molecule to be tuned by data.
+
+## Weave Convolutions
+
+The weave featurization [@kearnes2016molecular] is a modification of the
+graph convolutional featurization that captures more bond information.
+The atom feature vector in the weave featurization is exactly the same
+as in the graph convolutional featurization, while the connectivity
+between atoms is represented using more detailed pair features instead
+of a neighbor listing.
+
+For each pair of atoms in the molecule, the weave featurization
+calculates a feature vector, including bond properties if atoms are
+directly bonded, distance and ring information, creating a feature
+matrix. This featurization method can be used in conjunction with
+graph-based models that utilize properties of both nodes (atoms) and
+edges (bonds between atoms).
+
+Unlike the neural graph fingerprint, the weave convolution is much
+larger; to update features of an atom, weave models combine info from
+all other atoms and their corresponding pairs in the molecule. Weave
+models are more efficient at transmitting information between distant
+atoms, at the price of increased complexity for each convolution. A
+molecule is first encoded into a list of atomic features and a matrix of
+pair features by the weave model's featurization method. Then in each
+weave module, these features are inputted into four sets of fully
+connected layers (corresponding to four paths from two original features
+to two updated features) and concatenated to form new atomic and pair
+features. After stacking several weave modules, a similar gather layer
+combines atomic features together to form molecular features that are
+fed into task-specific layers.
+
+Let $x_1,\dotsc x_n$ be layers. Atom layers can be computed from
+previous atom layers ($A \mapsto A$) by applying
+
+$$\begin\{aligned\}
+    A^y_a &= f(A^\{x_1\}_a,\dotsc,A^\{x_n\}_a)
+\end\{aligned\}$$
+
+Pair layers can be computed from previous pair layers ($P\mapsto P$) by
+applying
+
+$$\begin\{aligned\}
+    P^y_\{a,b\} &= f(P^\{x_1\}_\{a,b\}, \dotsc, P^\{x_n\}_\{a,b\})
+\end\{aligned\}$$
+
+We can also update atom layers from pair layers ($P \mapsto A$) by
+considering all pairs which contain a given atom $a$. $$\begin\{aligned\}
+    A^y_a &= g(f(P^x_\{(a,b)\}), f(P^x_\{(a,c)\}),\dotsc )
+\end\{aligned\}$$
+
+![The $P \mapsto A$ transformation projects from pair features to atom
+features.
+<https://arxiv.org/abs/1603.00856>](figures/Differentiable Physics/Molecular ML/Molecular Graph Convolutions/Pair to atom.png)\{#fig:p_to_a
+width="60%"\}
+
+We can also expand a pair layer from an atom layer ($A \mapsto P$).
+$$\begin\{aligned\}
+    P^y_\{a,b\} &= g(f(A^x_a, A^x_b), f(A^x_b, A^x_a))
+\end\{aligned\}$$
+
+![The $A \mapsto P$ transformation combines atom features to generate
+pair features.
+<https://arxiv.org/abs/1603.00856>](figures/Differentiable Physics/Molecular ML/Molecular Graph Convolutions/Atom to pair.png)\{#fig:my_label
+width="50%"\}
+
+We can combine all these operations together into a Weave module
+
+![The Weave module combines atom and pair features to generate new atom
+and pair features by performing $A \mapsto A$, $P \mapsto P$,
+$A \mapsto P$, and $P \mapsto A$ transformations.
+<https://arxiv.org/abs/1603.00856>](figures/Differentiable Physics/Molecular ML/Molecular Graph Convolutions/weave module.png)\{#fig:my_label
+width="50%"\}
+
+We can represent the Weave module in Physika as follows.
+
+``` \{.python language="python"\}
+class Weave(A $\mapsto$ A: $\mathbb\{R\}[N, d_a] \to \mathbb\{R\}[N, d_a]$, A $\mapsto$ P: $\mathbb\{R\}[N, d_a] \to \mathbb\{R\}[N, N, d_p]$, 
+            P $\mapsto$ A: $\mathbb\{R\}[N, N, d_p] \to \mathbb\{R\}[N, d_a]$, P $\mapsto$ P: $\mathbb\{R\}[N, N, d_p] \to \mathbb\{R\}[N, N, d_p]$):
+  def $\lambda$($A^k$: $\mathbb\{R\}[N, d_a]$, $P^k$: $\mathbb\{R\}[N, N, d_p]$):
+    $A^\{k'\}$ = ($A\mapsto A$)($A^k$)
+    $A^\{k''\}$ = ($P \mapsto A$)($P^k$)
+    $A^\{k+1\}$ = ($A \mapsto A$)($A^\{k'\}$ || $A^\{k''\}$)
+  
+    $P^\{k'\}$ = ($P\mapsto P$)($P^k$)
+    $P^\{k''\}$ = ($A \mapsto P$)($A^k$)
+    $P^\{k+1\}$ = ($P \mapsto P$)($P^\{k'\}$ || $P^\{k''\}$)
+    return $A^\{k+1\}, P^\{k+1\}$
+```
+
+Weave convolutions can be stacked. At the end of a stack of weave
+convolutions, the final atom features $A^N$ can be extracted and used in
+a downstream pipeline.
+
+![A stack of weave modules can be combined to build a feature vector
+that can be fed into a fully connected network.
+<https://arxiv.org/abs/1603.00856>](figures/Differentiable Physics/Molecular ML/Molecular Graph Convolutions/Stacked weave module.png)\{#fig:weave_arcvh
+width="30%"\}

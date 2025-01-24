@@ -1,0 +1,80 @@
+# Hamiltonian Neural Networks \{#chap:hamiltonian_nn\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:hamiltonians_mechanics\]](#chap:hamiltonians_mechanics)\{reference-type="ref+label"
+reference="chap:hamiltonians_mechanics"\},
+[\[chap:neural_ode\]](#chap:neural_ode)\{reference-type="ref+label"
+reference="chap:neural_ode"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+In chapter [\[chap:neural_ode\]](#chap:neural_ode)\{reference-type="ref"
+reference="chap:neural_ode"\}, we learned about neural ordinary
+differential equations which provide tools to learn the evolution
+equations of dynamical systems. One limitation of these methods is that
+they cannot learn invariances or richer structure present within a
+physical system easily. As a result, such systems may be data
+inefficient. In cases where we know more about the conserved quantities
+in a system, we may be able to learn a richer representation.
+
+## Parameteric Hamiltonians
+
+Classically, the function $\mathcal\{H\}$ is written down analytically by
+studying the physics of the system (as we have done in earlier
+chapters). The challenge to this approach is that for complex systems it
+may not be possible to construct an analytical Hamiltonian. An
+alternative approach constructs a parameteric Hamiltonian, where
+$\mathcal\{H\}$ is parameterized by learnable weights $\theta$. We can
+then use these weights to construct a natural loss function
+
+$$\begin\{aligned\}
+    \mathcal\{L\}_\{\textrm\{Hamiltonian\}\} &= \left \| \frac\{\partial \mathcal\{H\}_\{\theta\}\}\{\partial p\} - \frac\{\partial q\}\{\partial t\}\right \|_2
+    +
+    \left \|\frac\{\partial \mathcal\{H\}_\{\theta\}\}\{\partial q\} + \frac\{\partial p\}\{\partial t\}\right \|_2
+\end\{aligned\}$$
+
+## A Mass-Spring System
+
+Let's study a few simple Hamiltonian systems. We start with a simple
+ideal mass-spring system as shown in
+Figure [\[fig:ideal_mass_spring\]](#fig:ideal_mass_spring)\{reference-type="ref"
+reference="fig:ideal_mass_spring"\}. The Hamiltonian for this system is
+given by
+
+$$\begin\{aligned\}
+    \mathcal\{H\}_\theta &= \frac\{1\}\{2\}kq^2 + \frac\{p^2\}\{2m\}
+\end\{aligned\}$$ Here $q$ and $p$ are the canonical coordinates and
+represent the displace of the mass and its momentum respectively. The
+parameters in this system are given by $$\begin\{aligned\}
+    \theta &= (k, m)
+\end\{aligned\}$$ We can write down the explicit form of the loss in this
+case as well $$\begin\{aligned\}
+    \mathcal\{L\}_\{\textrm\{Hamiltonian\}\} &= \left \| \frac\{\partial \mathcal\{H\}_\{\theta\}\}\{\partial p\} - \frac\{\partial q\}\{\partial t\}\right \|_2
+    +
+    \left \|\frac\{\partial \mathcal\{H\}_\{\theta\}\}\{\partial q\} + \frac\{\partial p\}\{\partial t\}\right \|_2 \\
+    &= \left \|\frac\{p\}\{m\} - \dot\{q\} \right \|_2 + \| kq + \dot\{p\} \|_2 \\
+    &= \left \|\frac\{p\}\{m\} - \dot\{q\} \right \|_2 + \| kq + m\ddot\{q\} \|_2 
+\end\{aligned\}$$
+
+::: marginfigure
+![image](figures/Differentiable Physics/Mechanics_ML/Hamiltonian_NN/Mass Spring System (1).png)
+:::
+
+For a synthetic dataset, we assume that the true dynamics are obscured
+by Gaussian noise and our task is to learn a model of the dynamics from
+the noisy dataset.
+
+## Exercises \{#exercises .unnumbered\}
+
+1.  Write down the Hamiltonian of a system of two coupled springs (see
+    Figure [\[fig:coupled_springs\]](#fig:coupled_springs)\{reference-type="ref"
+    reference="fig:coupled_springs"\}). Write down the explicit loss
+    function for this system.
+
+    ::: marginfigure
+    ![image](figures/Differentiable Physics/Mechanics_ML/Hamiltonian_NN/Coupled springs.png)\{width="\\linewidth"\}
+    :::

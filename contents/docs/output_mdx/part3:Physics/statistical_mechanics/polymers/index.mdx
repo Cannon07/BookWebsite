@@ -1,0 +1,244 @@
+# Polymers \{#chap:polymers\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:phase_equilibrium\]](#chap:phase_equilibrium)\{reference-type="ref+label"
+reference="chap:phase_equilibrium"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+The term polymer is used to describe molecules which consist of a large
+number of repeating units connected by covalent chemical bonds. Some
+polymers are linear, like beads on a necklace; others are branched.
+Statistical mechanics has a prominent role in predicting the properties
+of polymers. For example, stretching the polymer chains lowers their
+conformational entropy, and so under no external force conditions, the
+chain naturally tend to retract to regain entropy. The entropy is also
+lowered when polymers become compact, as when proteins fold or when DNA
+becomes encapsulated within virus heads. Additionally the changes on the
+end-to end length of polymer molecules due stretching, can be used to
+interpret the viscosities of polymer solutions, the scattering of light,
+and some of the dynamic properties of polymer solutions.
+
+In order to understand the thermodynamic behavior due to polymer
+stretching, a proper characterization of the random changes in length
+needs to be considered. For this, we will consider the *random flight*
+model. This model has the advantage that in the case of long chains, it
+can be approximated as a Gaussian distribution, and so simplifying the
+analysis of the statistical mechanics.
+
+## Polymers and proteins
+
+Polymer molecules are chains of covalently bonded monomer units
+(Fig. [\[fig1\]](#fig1)\{reference-type="ref" reference="fig1"\}).
+
+::: marginfigure
+![image](figures/Physics/statistical_mechanics/polymers/fig1.png)\{width="\\linewidth"\}
+![image](figures/Physics/statistical_mechanics/polymers/fig2.png)\{width="\\linewidth"\}
+:::
+
+Proteins are polymers that are composed of specific sequence of amino
+acids that are linked by peptide bonds. Nature has exquisite control
+over primary structure of proteins (*i.e.* amino acid sequence),
+facilitating the manufacture of proteins that fold into precise
+structures with specific biological functions. There are 20 natural
+amino acids that are used to construct biological proteins. The diverse
+chemical functionality of these amino acids provides the flexibility to
+create enzymes and structural proteins that engage in a wide range of
+biological processes (Fig. [\[fig8\]](#fig8)\{reference-type="ref"
+reference="fig8"\}).
+
+## Physical behavior at different length scales
+
+The chemical structure of a polymer dictates the atomic level physical
+behavior. Thermal fluctuations at small length scales result in local
+deformations that are randomly distributed about a mean structure with a
+finite variance. At larger length scales, the correlation between the
+fluctuating chain segments vanishes, and the behavior is that of many
+independently fluctuating chain segments.
+
+The Central Limit Theorem states that any sum of many independent
+identically distributed random variables will tend to a normal (or
+Gaussian) distribution, provided the sum of variables has a finite
+variance.
+
+::: marginfigure
+![image](figures/Physics/statistical_mechanics/polymers/fig10.png)\{width="\\linewidth"\}
+:::
+
+Various models for the small-length-scale physical behavior of a polymer
+exist (see Fig.4). Though they differ in their small length scale
+behavior, they all tend to a Gaussian distribution at large length
+scales. We focus on a discrete random walk (or a freely jointed chain)
+to demonstrate the crossover to a Gaussian distribution.
+
+<figure id="fig11">
+<p><img src="figures/Physics/statistical_mechanics/polymers/fig11.png"
+alt="image" /> Figure : Several ideal chain models. <span id="fig11"
+data-label="fig11"></span></p>
+</figure>
+
+The Ideal random-walk (or freely jointed) polymer chain is the simplest
+idealization of a flexible polymer. The polymer does not interact with
+itself; we can think of it as a phantom chain. This framework is
+mathematically useful since random walks appear in a range of seemingly
+different physical processes (diffusion, heat transfer, quantum
+mechanics, etc).
+
+## Entropic elasticity
+
+Consider a walk on a one-dimensional lattice. After $N$ steps, how far
+do you travel on average?
+
+$$\begin\{aligned\}
+\label\{Eq1\}
+X = s_1+s_2+...+s_N=\sum_\{i=1\}^Ns_i
+\end\{aligned\}$$
+
+where $s_i = \pm 1$ is the jump vector. The mean-square end displacement
+is: $$\begin\{aligned\}
+\label\{Eq2\}
+\langle X^2\rangle = \sum_\{i=1\}^N\sum_\{j=1\}^N\langle s_is_j\rangle
+\end\{aligned\}$$
+
+Since jumps are uncorrelated, we have: $$\begin\{aligned\}
+\label\{Eq3\}
+\langle s_i s_j \rangle = \delta_\{ij\}
+\end\{aligned\}$$
+
+hwere $\delta_\{ij\}$ if $i=j$ and $\delta_\{ij\}=0$ if $i\ne j$. Therefore
+$$\begin\{aligned\}
+\label\{Eq4\}
+\langle X^2\rangle = \sum_\{i=1\}^N\sum_\{j=1\}^N \delta_\{ij\} = \sum_\{i=1\}^N 1 =N
+\end\{aligned\}$$ This gives the size of a 1-dimensional polymer with
+discrete subunits of unit length.
+
+This is extended to 3 dimensions. Consider a chain of $N$ bond vectors
+$\vec\{b\}_i$ ($i =1,2,...,N$) with length
+$b (\vec\{b\}_i \cdot\vec\{b\}_i =b^2)$, with end-to-end vector
+$\vec\{R\} = \sum_\{i=1\}^N\vec\{b\}_i$. The mean-square end-to-end distance
+is: $$\begin\{aligned\}
+\label\{Eq5\}
+\langle \vec\{R\}^2 \rangle = \sum_\{i=1\}^N\sum_\{j=1\}^N\langle\vec\{b\}_i\vec\{b\}_j\rangle = \sum_\{i=1\}^N\sum_\{j=1\}^N b^2\delta_\{ij\}=b^2N
+\end\{aligned\}$$
+
+using similar arguments as the 1-dimensional case.
+
+Decomposing the end-to-end vector into its components
+$\vec\{R\} = X\hat\{x\}+ Y\hat\{y\}+Z\hat\{z\}$, we have: $$\begin\{aligned\}
+\label\{Eq6\}
+\langle X^2 \rangle = \langle Y^2 \rangle = \langle Z^2 \rangle = \frac\{b^2N\}\{3\}
+\end\{aligned\}$$
+
+since no direction is preferred.
+
+The central limit theorem states that the limiting behavior of any
+statistical distribution tends to a Gaussian distribution in the limit
+of large sample size. In our case, the limit of large $N$ leads to a
+chain probability distribution that is Gaussian. With this, we construct
+the polymer chain distribution function.
+
+Generally, a Gaussian distribution for a variable $X$ with zero mean
+($\langle X \rangle = 0$) and variance $\langle X^2 \rangle$ is written
+as: $$\begin\{aligned\}
+\label\{Eq7\}
+p_x(X,N)=\frac\{1\}\{\sqrt\{2\pi\langle X^2\rangle\}\}\exp\left( -\frac\{X^2\}\{2\langle X^2 \rangle\} \right)
+\end\{aligned\}$$
+
+This is the limiting behavior of a random walk in one dimension as the
+number of steps is very large ($N \gg 1$).
+
+Assuming the probability distribution is decoupled in the 3 directions,
+we write the 3-dimensional probability distribution as $$\begin\{aligned\}
+\label\{Eq8\}
+p(\vec\{R\},N) &= p_x(X,N)p_y(Y,N)p_y(Z,N) \notag\\
+&=\left(\frac\{2\pi Nb^2\}\{3\}\right)^\{-3/2\}\exp\left( -\frac\{3\vec\{R^2\}\}\{2Nb^2\} \right)
+\end\{aligned\}$$
+
+giving the probability that a chain of length $N$ that begins at the
+origin will end at position $\vec\{R\}$.
+
+The chain probability gives the free energy for constraining the chain
+ends at a fixed position; specifically, we have: $$\begin\{aligned\}
+\label\{Eq9\}
+F(\vec\{R\})-F(\vec\{0\}) = -k_BT\log\left[ \frac\{p(\vec\{R\},N)\}\{p(\vec\{0\},N)\} \right] = \frac\{3k_BT\}\{2Nb^2\}\vec\{R\}^2
+\end\{aligned\}$$
+
+Thus, the chain behaves as a Hookean spring, *i.e* a Gaussian chain
+exhibits a linear response to tension. Pulling a Gaussian chain along
+the $z$-axis a distance $Z$ requires a tension $\tau$ given by:
+$$\begin\{aligned\}
+\label\{Eq10\}
+\tau = \frac\{\partial F(Z)\}\{\partial Z\} = \frac\{3k_BT\}\{Nb^2\}Z
+\end\{aligned\}$$
+
+::: marginfigure
+![image](figures/Physics/statistical_mechanics/polymers/fig12.png)\{width="\\linewidth"\}
+:::
+
+This linear response governs the small-scale deformation of a polymer
+chain. The response is purely entropic, indicated by the linear scaling
+in temperature. This leads to the curious behavior for a stretch elastic
+band retracts when heated. The Gaussian chain model does not capture the
+behavior once the chain is nearly extended. Full extension reflects the
+microscopic details of the model; for example, the nearly inextensible
+covalent bonds of the polymer chain. However, many polymer properties
+are captured by the Gaussian chain model. This is highly advantageous
+because the properties tend to be governed by just a few parameters
+(Fig. [\[fig12\]](#fig12)\{reference-type="ref" reference="fig12"\}).
+
+## Freely Jointed Model
+
+Consider one link of a polymer chain shown in the
+Fig. [\[fjm\]](#fjm)\{reference-type="ref" reference="fjm"\} which has a
+fixed length of $b$. The bond angle is given as $\theta$ and the torsion
+angle is give as $\phi$, both being free to to rotate. A force of
+magnitude $f$ is applied at its ends. Here, we will develop a model for
+its streching.
+
+::: marginfigure
+![image](figures/Physics/statistical_mechanics/polymers/fjm.png)\{width="\\linewidth"\}
+:::
+
+Since each polymer link has a fixed length $b$, the system has only 2
+degrees of freedom. When this single link is pulled with a force,
+$\vec\{f\} = f \hat\{z\}$, the energy associated with it is given by
+$\varepsilon = -\vec\{r\}.\vec\{f\}$. The partition function $q(f)$ would
+be:
+
+$$\begin\{aligned\}
+q &= \sum \exp(-\beta E) \\
+&= \int_0^\{2\pi\}\int_0^\pi\exp[-\beta(-\vec\{r\}\cdot \vec\{f\})]\sin\theta d\theta d\phi\\
+&=\int_0^\{2\pi\}\int_0^\pi\exp(\beta zf)\sin\theta d\theta d\phi\\
+&=\frac\{2\pi\}\{b\}\int_\{-b\}^\{+b\}\exp(\beta zf) dz\\
+&=\frac\{4\pi\}\{bf\}k_BT\sinh\left(\frac\{fb\}\{k_BT\}\right)
+\end\{aligned\}$$
+
+Consider now a polymer made of $N$ such links. Since the links are
+distinguishable, we can write down the partition function $Q(f,N)$ as
+$$Q = q^N$$
+
+Using the above partition function, we can evaluate the Helmholtz free
+energy, $F(f,N)$ as:
+
+$$\begin\{aligned\}
+F = -k_BT\log Q 
+\end\{aligned\}$$
+
+The Helmholtz free energy can be used to calculate the average
+displacement $\langle r \rangle$.
+
+Since
+$F = -\langle r\rangle f \rightarrow \langle r \rangle = \frac\{\partial F\}\{\partial f\}$,
+we have: $$\begin\{aligned\}
+\langle r\rangle  &= k_BT\frac\{\partial \log Q\}\{\partial f\} = \frac\{k_BT\}\{q^N\}Nq^\{N-1\}\frac\{\partial q\}\{\partial f\} \\
+&= \frac\{k_BTN\}\{q\}\left[ \frac\{4\pi\}\{f\} \cosh\left( \frac\{fb\}\{k_BT\} \right) - \frac\{4\pi\}\{bf^2\} \sinh\left( \frac\{fb\}\{k_BT\} \right) \right] \\
+&= \frac\{N\}\{f\}\left[ bf\coth\left( \frac\{fb\}\{k_BT\} \right) - k_BT \right]
+\end\{aligned\}$$
+
+::: marginfigure
+![image](figures/Physics/statistical_mechanics/polymers/stretch.jpg)\{width="\\linewidth"\}
+:::

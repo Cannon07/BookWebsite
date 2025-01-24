@@ -1,0 +1,171 @@
+# Normalizing Flows \{#chap:normalizing_flows\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:ml_basics\]](#chap:ml_basics)\{reference-type="ref+label"
+reference="chap:ml_basics"\},
+[\[chap:probability\]](#chap:probability)\{reference-type="ref+label"
+reference="chap:probability"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+We'll start off this chapter with a mathematical review of the
+underpinnings of generative modeling.
+
+## Mathematical Underpinnings
+
+Let's consider a probability distribution $\mathcal\{P\}$ over
+$\mathbb\{R\}^N$. For now, we can informally represent this probability
+distribution by a probability density function
+$p: \mathbb\{R\}^n \to \mathbb\{R\}$. We previously introduced datasets by
+noting that training samples $x_i$ are sampled from this underlying data
+distribution $\mathcal\{P\}$, which we write mathematically as
+$x_i \sim \mathcal\{P\}$. In some simple toy cases, $\mathcal\{P\}$ may be a
+tractable distribution which can be described analytically. However,
+even for analytical distributions, it can be quite challenging to draw
+samples from $\mathcal\{P\}$. Let's illustrate this with an example.
+
+### Multivariate Gaussians
+
+The multivariate Gaussian distribution is a fundamental mainstay of the
+modern sciences. We typically write the distribution as
+$\mathcal\{N\}(\mu, \Sigma)$ where $\mu \in \mathbb\{R\}^N$ is the mean
+vector and $\Sigma \in \mathbb\{R\}^\{N \times N\}$ is the covariance
+matrix. Roughly, the multivariate Gaussian encodes a probability
+distribution centered around the mean $\mu$, where vectors that are
+closer to $\mu$ are more likely and where vectors further away grow
+progressively less likely. This rough intuition is formally encoded by
+the probability density function
+
+$$p_N(x) = \frac\{1\}\{\sqrt\{(2\pi)^N |\Sigma|\}\} \exp\left (-\frac\{1\}\{2\} (x - \mu)^T\Sigma^\{-1\}(x-\mu)\right )$$
+
+Here, $|\Sigma|$ is the determinant of the covariance matrix $\Sigma$.
+How can we sample from this distribution? Creating a suitable sampling
+algorithm turns out to require a bit of subtlety, so let's consider a
+simpler question. Note that in the case $N = 1$, then the covariance
+matrix reduces to the scalar variance $\sigma^2$. We can then simplify
+the probability density function to
+
+$$p_1(x) = \frac\{1\}\{\sigma\sqrt\{2 \pi\}\} \exp \left ( -\frac\{1\}\{2\} \left ( \frac\{x-\mu\}\{\sigma\} \right )^2 \right )$$
+
+How can we sample from this simpler distribution? Let's assume that we
+have a method to sample from the uniform distribution $\mathcal\{U\}$ on
+the interval $[0, 1]$. Let's draw two samples $U_1$ and $U_2$ from
+$\mathcal\{U\}$. Then let
+
+$$\begin\{aligned\}
+Z_0 &= \sqrt\{-2 \ln U_1\} \cos(2\pi U_2) \\
+Z_1 &= \sqrt\{- 2 \ln U_1\} \sin(2 \pi U_2) \\
+\end\{aligned\}$$
+
+We claim that $Z_0$, and $Z_1$ are both samples from the univariate
+Guassian distribution with mean $\mu = 0$ and variance $\sigma^2 = 1$.
+This technique is commonly referred to as the Box-Muller transform. If
+you haven't seen this technique before, it may be somewhat mysterious to
+understand. Let's break down the derivation a bit. It might help if we
+solve these equations for $U_1, U_2$ (the derivation is left as an
+exercise).
+
+$$\begin\{aligned\}
+U_1 &= \exp\left(-\frac\{1\}\{2\}(Z_0^2 + Z_1^2) \right) \\
+U_2 &= \frac\{1\}\{2\pi\} \arctan\left (\frac\{Z_1\}\{Z_0\}\right) \\
+\end\{aligned\}$$
+
+Let $f:\mathbb\{R\}^2 \to \mathbb\{R\}^2$ be defined as
+
+$$f(x_1, x_2) = \begin\{bmatrix\}
+    \exp\left(-\frac\{1\}\{2\}(x_1^2 + x_2^2) \right) \\
+    \frac\{1\}\{2\pi\} \arctan\left (\frac\{x_2\}\{x_1\}\right) \\
+    \end\{bmatrix\}$$
+
+such that $f(Z_0, Z_1) = U_1, U_2$. You can show via a simple
+calculation (left to the exercises) that
+
+$$|\mathcal\{J\}(f)| = \frac\{1\}\{2\pi\}\exp \left ( -\frac\{1\}\{2\} (x_1^2 + x_1^2) \right ) = p_1(x_1) p_2(x_2)$$
+
+That is, $|\mathcal\{J\}(f)|$ is the product of the probability density
+functions of two one dimensional Gaussians!
+
+## Introduction to Normalizing Flows
+
+The core idea of a normalizing flow is to transform a simple probability
+distribution such as a Gaussian distribution into more sophisticated
+function which can model a real world data distribution through the use
+of a suitable transformation function $g$. Suppose that
+$$\begin\{aligned\}
+    z &\sim \mathcal\{N\}(\mu, \Sigma) \\
+    x &= f(z)
+\end\{aligned\}$$ Then the probability density of $x$ is given by
+$$\begin\{aligned\}
+    P(x) &= P_z(f(x))\left | \det \mathcal\{J\}(f) \right |
+\end\{aligned\}$$ We constrain the function $g$ to be one-to-one and onto.
+A core idea of using a deep network to train a normalizing flow is that
+we can consider a chain of such transformations $$\begin\{aligned\}
+    z &\sim \mathcal\{N\}(\mu, \Sigma) \\
+    x_1 &= f_1(z) \\
+    x_2 &= f_2(x_1) \\
+\end\{aligned\}$$ Then the final distribution is given by
+$$\begin\{aligned\}
+    P(x_2) &= P_z(f(x))\left | \det \mathcal\{J\}(f_2) \right | \left | \det \mathcal\{J\}(f_1) \right |
+\end\{aligned\}$$ The loss for the normalizing flow is simply given by the
+log-likelihood $$\begin\{aligned\}
+    \mathcal\{L\} &= -\log P_z[f_n(\dotsc (f_1(x))] - \sum_i \log \left | \det \mathcal\{J\}(f_i) \right |
+\end\{aligned\}$$
+
+``` \{.python language="python"\}
+class AutoregressiveNetwork(params: $\mathbb\{N\}$, hidden_units: [$\mathbb\{N\}$], activations: String)
+
+class MaskedAutoregressiveFlow(net: Module)
+
+class TransformedDistribution(zdist: $\mathbb\{R\}^N$, bijection: $\mathbb\{R\}^N \to \mathbb\{R\}^N$)
+
+class NormalizingFlow(num_layers : $\mathbb\{N\}$, ndims: $\mathbb\{N\}$):
+  bijects = []
+  # loop over desired bijectors and put into list
+  for i in num_layers:
+    anet = AutoregressiveNetwork(
+        params=ndim, hidden_units=[128, 128], activation="relu")
+    ab = MaskedAutoregressiveFlow(anet)
+    bijects.append(ab)
+    # Now permute 
+    permute = Permute([1, 0])
+    bijects.append(permute)
+  chained = Chain(bijects)
+    
+  def $\lambda$(zdist):
+    # make transformed dist
+    td = TransformedDistribution(zdist, bijector=chained)
+```
+
+``` \{.python language="python"\}
+x : $\mathbb\{R\}^\{N, 2\}$
+log_prob = log_prob(x)
+model = Model(x, log_prob)
+def neg_loglik(log_prob):
+  return -log_prob
+```
+
+## Exercises \{#exercises .unnumbered\}
+
+1.  Let $U_1$ and $U_2$ be two samples from the uniform distribution on
+    the interval $[0, 1]$. Let $$\begin\{aligned\}
+    Z_0 &= \sqrt\{-2 \ln U_1\} \cos(2\pi U_2) \\
+    Z_1 &= \sqrt\{- 2 \ln U_1\} \sin(2 \pi U_2) \\
+    \end\{aligned\}$$ Solve these equations for $U_1$ and $U_2$. Prove
+    that $$\begin\{aligned\}
+    U_1 &= \exp\left(-\frac\{1\}\{2\}(Z_0^2 + Z_1^2) \right) \\
+    U_2 &= \frac\{1\}\{2\pi\} \arctan\left (\frac\{Z_1\}\{Z_0\}\right) \\
+    \end\{aligned\}$$
+
+2.  Let $f:\mathbb\{R\}^2 \to \mathbb\{R\}^2$ be defined as
+
+    $$f(x_1, x_2) = \begin\{bmatrix\}
+        \exp\left(-\frac\{1\}\{2\}(x_1^2 + x_2^2) \right) \\
+        \frac\{1\}\{2\pi\} \arctan\left (\frac\{x_2\}\{x_1\}\right) \\
+        \end\{bmatrix\}$$
+
+    Prove that
+    $|\mathcal\{J\}(f)| = \frac\{1\}\{2\pi\}\exp(-\frac\{1\}\{2\} (x_1^2 + x_2^2))$

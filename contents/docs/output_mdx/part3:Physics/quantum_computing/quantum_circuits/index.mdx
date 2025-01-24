@@ -1,0 +1,149 @@
+# Quantum Circuits \{#chap:quantum_circuits\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:quantum_mechanics\]](#chap:quantum_mechanics)\{reference-type="ref+label"
+reference="chap:quantum_mechanics"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+This chapter introduces the basics of quantum circuits, the leading
+methodology for describing quantum computations. A quantum circuit can
+be viewed as graphical shorthand for matrix algebra. A qubit has two
+states, $| 0 \rangle$ and $| 1 \rangle$. It follows that a system with
+$n$ qubits has $2^n$ states ($|0...0\rangle$ to $|1....1\rangle$). State
+transformations for a $2^n$ dimensional quantum system are given by
+$2^n \times 2^n$ unitary matrices. A quantum circuit provides a
+graphical representation for these large matrices in terms of local
+transformations on one or a few qubits at a time.
+
+The diagram below represents a quantum circuit on 3 qubits. Individual
+qubits are drawn as lines coming in from the left and going to the
+right. Gates are drawn as squares ($H$, $X$, $Z$) or as connecting
+elements drawn across multiple lines. Measurements are drawn with an
+arrow symbol. The full quantum circuit below is a shorthand for a
+$8\times 8$ unitary matrix that represents a state evolution of the
+underlying quantum system.
+
+![A circuit for a quantum teleportation operation. Qubits are
+represented as lines from the left of the diagram. Various quantum gates
+are applied to individual
+qubits.](figures/Physics/quantum_computing/quantum_circuits/quantum_teleportation.png)\{#fig:my_label\}
+
+The advantage of a quantum circuit is that composable patterns in the
+quantum state transformation can be easily recognized and \"refactored\"
+out and reused in new circuits.
+
+## Basic Quantum Gates
+
+In this section, we provide an overview of some important quantum gates.
+
+### Hadamard Gate
+
+The Hadamard gate operates on a single qubit at a time and is given by
+the $2\times 2$ unity matrix $$\begin\{aligned\}
+    H &= \frac\{1\}\{\sqrt\{2\}\}\begin\{pmatrix\}
+    1 & 1 \\
+    1 & -1 \\
+    \end\{pmatrix\}
+\end\{aligned\}$$ Note that $H$ performs the following transformations of
+the basis states $$\begin\{aligned\}
+    |0 \rangle & \to \frac\{|0\rangle + |1 \rangle\}\{\sqrt\{2\}\} \\
+    |1 \rangle & \to \frac\{|0 \rangle - |1 \rangle\}\{\sqrt\{2\}\}
+\end\{aligned\}$$ To verify these equations, you can expand into the
+following matrix equations. We follow the convention of multiplying
+transfomrations on the left $$\begin\{aligned\}
+    H | 0 \rangle &= \frac\{1\}\{\sqrt\{2\}\} \begin\{pmatrix\}
+    1 & 1 \\
+    1 & -1 \\
+    \end\{pmatrix\}
+    \begin\{pmatrix\}
+    1 \\
+    0 \\
+    \end\{pmatrix\}
+    = \frac\{1\}\{\sqrt\{2\}\}\begin\{pmatrix\}
+    1 \\
+    1 \\
+    \end\{pmatrix\} \\
+     H | 1 \rangle &= \frac\{1\}\{\sqrt\{2\}\} \begin\{pmatrix\}
+    1 & 1 \\
+    1 & -1 \\
+    \end\{pmatrix\}
+    \begin\{pmatrix\}
+    0 \\
+    1 \\
+    \end\{pmatrix\}
+    = \frac\{1\}\{\sqrt\{2\}\}\begin\{pmatrix\}
+    1 \\
+    -1 \\
+    \end\{pmatrix\}
+\end\{aligned\}$$
+
+### Pauli-$X$ Gate
+
+$$\begin\{aligned\}
+    X &= \begin\{pmatrix\}
+    0 & 1 \\
+    1 & 0 \\
+    \end\{pmatrix\}
+\end\{aligned\}$$ $$\begin\{aligned\}
+    |0 \rangle & \to | 1 \rangle \\
+    |1 \rangle & \to | 0 \rangle \\
+\end\{aligned\}$$
+
+### Pauli-$Y$ Gate
+
+$$\begin\{aligned\}
+    Y &= \begin\{pmatrix\}
+    0 & -i \\
+    i & 0 \\
+    \end\{pmatrix\}
+\end\{aligned\}$$
+
+$$\begin\{aligned\}
+    |0 \rangle &\to -i |1 \rangle \\
+    |1 \rangle &\to i | 0 \rangle \\
+\end\{aligned\}$$
+
+### Pauli-$Z$ Gate
+
+$$\begin\{aligned\}
+    Z &= \begin\{pmatrix\}
+    1 & 0 \\
+    0 & -1 \\
+    \end\{pmatrix\}
+\end\{aligned\}$$
+
+$$\begin\{aligned\}
+    |0 \rangle &\to |0 \rangle \\
+    |1 \rangle &\to -|1 \rangle \\
+\end\{aligned\}$$
+
+### CNOT Gate
+
+Controlled gates allow for the state of one qubit to act as a control on
+the state of another qubit. The controlled not (CNOT) gate is given by
+the following matrix $$\begin\{aligned\}
+    \textrm\{CNOT\} &= \begin\{pmatrix\}
+    1 & 0 & 0 & 0 \\
+    0 & 1 & 0 & 0 \\
+    0 & 0 & 0 & 1 \\
+    0 & 0 & 1 & 1 \\
+    \end\{pmatrix\}
+\end\{aligned\}$$ We leave it as an exercise to verify that the CNOT
+performs the following set of transformations upon its input states
+$$\begin\{aligned\}
+    |00 \rangle & \to | 00 \rangle \\
+    |01 \rangle & \to | 01 \rangle \\
+    |10 \rangle & \to | 11 \rangle \\
+    |11 \rangle & \to | 10 \rangle \\
+\end\{aligned\}$$
+
+## Universal Quantum Gates
+
+A collection of gates is said to be universal if an arbitrary unitary
+transformation can be approximated by a finite sequence of gates from
+this set.

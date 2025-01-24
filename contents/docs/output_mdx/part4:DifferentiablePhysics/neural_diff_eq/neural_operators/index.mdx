@@ -1,0 +1,214 @@
+# Neural Operators \{#chap:neural_operators\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:** [\[chap:pde\]](#chap:pde)\{reference-type="ref+label"
+reference="chap:pde"\},
+[\[chap:numerical_pde\]](#chap:numerical_pde)\{reference-type="ref+label"
+reference="chap:numerical_pde"\},
+[\[chap:neural_ode\]](#chap:neural_ode)\{reference-type="ref+label"
+reference="chap:neural_ode"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+Neural network theory and practice has mainly focused on learning
+functions which operate on finite dimensional inputs. Surprisingly, it
+turns out that neural methods can be adapted to learn general operators
+on infinite dimensional function space [@li2020fourier],
+[@li2020neural]. That is, we can model elements of $$\begin\{aligned\}
+    \mathcal\{B\}(\mathcal\{H\})
+\end\{aligned\}$$ by borrowing ideas from messaging passing neural
+networks and the classical theory of kernels. Mathematically, these
+operators are formed by composition of approximate linear integrals and
+nonlinear activation functions. These composed operators can approximate
+sophisticated nonlinear operators on function space and in fact satisfy
+a universal approximation theorem. The representation of these operators
+is not dependent on a choice of underlying grid. One of the intriging
+properties of such neural operators is that representations can be
+trained at one grid resolution and be generalized in a zero-shot fashion
+to another grid resolution.
+
+The neural operator method can be used to approximately solving partial
+differential equations by directly learning the solution operator.
+Variants of the base technique use methods like Fourier transforms to
+speed up the computation of the kernel. The resulting technique can
+provide dramatic speedups in solution of large systems of partial
+differential equations.
+
+## Parametric Partial Differential Equations
+
+A parametric partial differential equation is one whole coefficients are
+specific by arbitrary functions. We will use the following example in
+this chapter
+
+$$\begin\{aligned\}
+    - \nabla \cdot (a(x) \nabla u(x)) &= f(x),\quad  x \in D \\
+    u(x) &= 0,\quad  x \in \partial D
+\end\{aligned\}$$
+
+Here $D$ is the domain of the partial differential equation in equation,
+and $\partial D$ is its boundary. We require that $D$ be a bounded open
+set. Given data points $\{a_j, u_j\}_\{j=1\}^\{N\}$ we want to learn the
+operator $$\begin\{aligned\}
+\mathcal\{F\}: \mathcal\{A\} \times \Theta \to \mathcal\{U\}
+\end\{aligned\}$$
+
+Where $\mathcal\{U\}$ and $\mathcal\{A\}$ are spaces of functions taking
+values in $\mathbb\{R\}^d$ for some $d$ (note that $d$ does not have to be
+the same for both spaces), and $\Theta$ is some space of parameters. The
+core idea is that solving partial differential equations is slow so we
+instead directly learn the mapping from data (coefficients and solution
+points) to potential solutions. We can view this as the task of solving
+the learning problem $$\begin\{aligned\}
+\min_\{\theta \in \Theta\} \mathbb\{E\}_a[\mathcal\{L\}(\mathcal\{F\}(a, \theta), \mathcal\{F\}^*(a, \theta))]
+\end\{aligned\}$$ where $\mathcal\{F\}^*$ is the ideal operator we want to
+find and $\mathcal\{L\}$ is a loss functional.
+
+As we have learned in earlier chapters, traditional methods for solving
+partial differential equations approximate the solution by solving on a
+mesh. These traditional methods solve one instance of the parameteric
+PDE with specific coefficients. A neural technique instead learns a
+solution for a family of parametric PDEs and is fast to evaluate on new
+instances once the original model has been trained.
+
+## Operator Learning
+
+Most machine learning tasks learn mappings from vectors to vectors.
+Operator learning seeks to learn a function to function mapping to
+approximate the true operator solution $\mathcal\{F\}^*$. To do this, we
+want to represent functions and operators in a mesh-invariant fashion.
+That is, our operator must be able to handle inputs that are not on the
+same mesh points as the training data. We define our neural operators to
+be of the form
+
+$$\begin\{aligned\}
+    u = (K_l \circ \sigma_l \circ \dotsc \circ \sigma_1 \circ K_0)v
+\end\{aligned\}$$
+
+Here the $\sigma_i$ are the nonlinear local activations and $K$ are
+linear operators but non-local. If the original PDE is uniformly
+elliptic, Green's representation formula implies that we can write
+solution $u$ in the form.
+
+$$\begin\{aligned\}
+    u(x) &= \int_D G_a(x,y)[f(y) + (\Gamma_a u)(y)] dy
+\end\{aligned\}$$
+
+where $G_a$ is a potential function and $\Gamma_a$ is an operator.
+
+To solve more general nonlinear PDEs, we build a neural representation
+for $u$ that is inspired by Green's representation formula. We introduce
+network $\kappa_\theta$ and define a kernel operator $\mathcal\{K\}_a$ as
+
+$$\begin\{aligned\}
+    (\mathcal\{K\}_a u)(x) = \int_D \kappa_\theta(x, y, a(x), a(y)) u(y) dy
+\end\{aligned\}$$ Here $x, y \in D$ are spatial locations and $a(x), a(y)$
+are parameter values. This base equation isn't sufficient to model the
+action of operator $\Gamma_a$, so we construct an iterative modification
+of the base operator $\mathcal\{K\}_a$. We add iterations for
+$t=1,\dotsc T$ as follows $$\begin\{aligned\}
+u_\{t+1\}(x) = \sigma \left ((W  + \mathcal\{K\}_a)u_t(x) \right )
+\end\{aligned\}$$ where $u_0 = a$, $W \in \mathbb\{R\}$ is a learned weight,
+and $\sigma$ is a nonlinear activation. Note however that this base
+formula is a little limiting since we are stuck to one dimension. For
+this reason, it is useful to define the generalization to higher
+dimensions. Let $$\begin\{aligned\}
+v(x) \in \mathbb\{R\}^d
+\end\{aligned\}$$ and project the initial $u_0$ to a higher dimensional
+$v_0$ by a projection matrix. We can then define iterations much as we
+did before with $$\begin\{aligned\}
+v_0 &= P u_0 \\
+v_\{t+1\}(x) &= \sigma \left ((W  + \mathcal\{K\}_a)v_t(x) \right ), \qquad t = 1,\dotsc,T\\
+u_\{T\} &= Q v_T
+\end\{aligned\}$$ where $P, Q$ are suitable projection matrices. If
+$x, y \in \mathbb\{R\}^3$, then we have that the kernel has type
+$$\begin\{aligned\}
+\kappa_\theta: \mathbb\{R\}^\{2(3+1)\} \to \mathbb\{R\}^\{d \times d\}
+\end\{aligned\}$$ We can slightly generalize the above design to have $P$
+and $Q$ be local networks (encoder and decoder) where $P$ lifts the
+input to a high dimensional channel space in some arbitrary fashion
+while $Q$ projects back to the original space. The full network can then
+be written compactly as $$\begin\{aligned\}
+u = Q(K_a \circ \sigma_l \circ \dotsc \circ \sigma_1 \circ K_a)P v
+\end\{aligned\}$$ where $\sigma_l$ encodes the transformation
+$$\begin\{aligned\}
+\sigma_l \circ \mathcal\{K\}_a (u) &= \sigma((W + \mathcal\{K\}_a) u)
+\end\{aligned\}$$
+
+This series of approximation works since there exists a universal
+approximation bound that for any continuous operator defined on a
+compact domain there exists a two layer neural operator which can model
+this operator.
+
+## Fixed Discretization
+
+Let $D_j$ be some fixed discretization of the input domain $D$. Then the
+functions $a, u$ become discrete vectors $$\begin\{aligned\}
+a | D_j, u | D_j \in \mathbb\{R\}^n
+\end\{aligned\}$$ for some $n$. The operator $\mathcal\{K\}_a$ then becomes
+a $n \times n$ kernel matrix $K_a$ in the one dimensional case. In the
+higher order case, we have $$\begin\{aligned\}
+(K_a)_\{x, y\} &= \kappa_\theta(x, y, a(x), a(y)) \in \mathbb\{R\}^\{d \times d\}
+\end\{aligned\}$$ where $x, y \in D_j$ are points in the discretization,
+so $K$ is a tensor of shape $(n, n, d, d)$. Computing operator updates
+in this case becomes simple since all operations can be implemented by
+matrix multiplications.
+
+## Graph Networks for Arbitrary Discretization
+
+In general though, training data may not belong to one fixed
+discretization, which means that computing the operator updates becomes
+infeasible with standard matrix multiplications. In this case, we
+typically use a graph network approximation
+
+$$\begin\{aligned\}
+v_\{t+1\}(x) &= (\sigma(W + \mathcal\{K\}_a)v_t)(x) \\
+& \approx \sigma \left (W v_\{t\} + \frac\{1\}\{|N(x)|\} \sum_\{y \in N(x)\} \kappa_\theta (e(x,y)) v_t(y) \right)
+\end\{aligned\}$$ where $N(x)$ is the neighborhood of $x$. Given an
+arbitrary discretization $D_j$, we can set $N(x)$ to be the full
+discretization. This can become very expensive in general, so a form of
+neighbor thresholding is usually imposed $$\begin\{aligned\}
+N(x) &= \{y \in D_j | \|y - x\| < B \}
+\end\{aligned\}$$ where $B$ is some distance cutoff. More sophisticated
+methods randomly sample the full discretization and perform a low rank
+decomposition.
+
+## Fourier Neural Operators
+
+Fourier neural operators provide one method of facilitating the
+evaluation of the kernel by performing operator learning steps in
+Fourier space. Let $\mathcal\{F\}$ denote the Fourier transform in $d$
+dimensions
+
+$$\begin\{aligned\}
+(\mathcal\{F\} f)_j(k) &= \int_D f_j(x) e^\{-2i\pi \langle x, k \rangle\} dx \\
+(\mathcal\{F\}^\{-1\} f)_j(k) &= \int_D f_j(k) e^\{2i\pi \langle x, k \rangle\} d 
+\end\{aligned\}$$
+
+The Fourier transform converts the convolution operation into pointwise
+multiplication so we have the identity that $$\begin\{aligned\}
+(\mathcal\{K\}_\theta u)(x) &= \kappa_\theta \ast u \\
+&= \mathcal\{F\}^\{-1\}\left (\mathcal\{F\}(\kappa_\theta) \cdot \mathcal\{F\}(u) \right )(x)
+\end\{aligned\}$$ We then can learn the kernel directly in Fourier space
+
+$$\begin\{aligned\}
+R_\theta &= \mathcal\{F\}(\kappa_\theta)\\
+(\mathcal\{K\}(\phi) v_t)(x) &= \mathcal\{F\}^\{-1\} \left ( R_\theta \cdot (\mathcal\{F\} u) \right ) (x)
+\end\{aligned\}$$ One major advantage of this representation is that the
+Fourier modes are discrete $$\begin\{aligned\}
+k \in \mathbb\{Z\}^d
+\end\{aligned\}$$ We can truncate the higher order Fourier modes (under
+the ansatz that high frequency information is generally less useful).
+Then we only need to track $$\begin\{aligned\}
+\{R_\theta(k) : k \leq N_\{\textrm\{cutoff\}\} \}
+\end\{aligned\}$$
+
+For a given discretization $D_j$, we can implement the Fourier operation
+through a matrix multiplication. We can use the Fast Fourier Transform
+to speed up this computation. These Fourier layers are natively mesh
+invariant since the parameterization is performed in Fourier space which
+doesn't directly depend on the choice of mesh. The learned algorithm can
+be projected out into a higher mesh than featured in the training data,
+allowing for easy superresolution from the learned algorithm.

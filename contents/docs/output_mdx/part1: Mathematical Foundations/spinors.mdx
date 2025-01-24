@@ -1,0 +1,127 @@
+# Spinors \{#chap:hilbert\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:math_basics\]](#chap:math_basics)\{reference-type="ref+label"
+reference="chap:math_basics"\},
+[\[chap:vectors\]](#chap:vectors)\{reference-type="ref+label"
+reference="chap:vectors"\},
+[\[chap:manifold\]](#chap:manifold)\{reference-type="ref+label"
+reference="chap:manifold"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+Spinors are foundational mathematical objects that prove useful for
+modeling certain types of particles mathematically (fermions in
+particular). Mathematically, spinors are defined as fundamental
+representations of Clifford algebras so we begin this chapter by
+introducing the formalism of Clifford algebras.
+
+## Clifford Algebra
+
+Let $V$ be a vector space over the complex numbers $\mathbb\{C\}$. Let
+$g: V \times V \to \mathbb\{C\}$ be a quadratic form (roughly, a quadratic
+form can be thought of a quadratic polynomial defined on $V$). The
+Clifford algebra $\rm\{Cl\}(V, g)$ is the algebra generated on $V$ that
+satisfies the following anticommutation relationship.
+
+$$\begin\{aligned\}
+    xy + yx = 2g(x, y)
+\end\{aligned\}$$
+
+In the case $V = \mathbb\{C\}^n$, the bilinear form $g$ can be defined by
+$$\begin\{aligned\}
+    g(x, y) &= x^T y \\
+    &= x_1 y_1 + \dotsc + x_n y_n
+\end\{aligned\}$$
+
+Another common example of a Clifford algebra is denoted
+$\rm\{Cl\}_\{p, q\}(\mathbb\{R\})$. This algebra is built from $p+q$ mutually
+orthogonal basis vectors using addition and multiplication. These
+algebras satisfy the following multiplication rule $$\begin\{aligned\}
+    e_i e_j &= \begin\{cases\}
+    +1 & i=j, i \in (1,\dotsc, p) \\
+    -1 & i=j, i \in (p+1,\dotsc,p+q) \\
+    -e_je_i & i \neq j
+    \end\{cases\}
+\end\{aligned\}$$
+
+A representation of a Clifford algebra represents these abstract
+elements with specific matrices of complex numbers. In the next section,
+we will learn about a specific such representation.
+
+## Gamma Matrices
+
+The Gamma matrices $\{\gamma^0, \gamma^1, \gamma^2, \gamma^3\}$ (also
+called the Dirac matrices) are a specific set of $4 \times 4$ matrices
+that generate a representation of $\rm\{Cl\}_\{1,3\}(\mathbb\{R\})$. The gamma
+matrices are defined as $$\begin\{aligned\}
+    \gamma^0 &= \begin\{pmatrix\}
+    1 & 0 & 0 & 0 \\
+    0 & 1 & 0 & 0 \\
+    0 & 0 & -1 & 0 \\
+    0 & 0 & 0 & -1 
+    \end\{pmatrix\} \\
+    \gamma^1 &= \begin\{pmatrix\}
+    0 & 0 & 0 & 1 \\
+    0 & 0 & 1 & 0 \\
+    0 & -1 & 0 & 0 \\
+    -1 & 0 & 0 & 0 
+    \end\{pmatrix\} \\
+    \gamma^2 &= \begin\{pmatrix\}
+    0 & 0 & 0 & -i \\
+    0 & 0 & i & 0 \\
+    0 & i & 0 & 0 \\
+    -i & 0 & 0 & 0 
+    \end\{pmatrix\} \\
+    \gamma^3 &= \begin\{pmatrix\}
+    0 & 0 & 1 & 0 \\
+    0 & 0 & 0 & -1 \\
+    -1 & 0 & 0 & 0 \\
+    0 & 1 & 0 & 0 
+    \end\{pmatrix\} \\
+\end\{aligned\}$$ These matrices satisfy the following anticommutation
+relationship $$\begin\{aligned\}
+    \{\gamma^\mu, \gamma^\nu\} &= \gamma^\{\mu\} \gamma^\nu + \gamma^\nu \gamma^\mu \\
+    &= 2 \eta^\{\mu\nu\} I_4
+\end\{aligned\}$$ Here $\eta^\{\mu\nu\}$ denotes an index in the Minkowski
+metric $$\begin\{aligned\}
+    \eta &= \begin\{pmatrix\}
+    1 & 0 & 0 & 0 \\
+    0 & -1 & 0 & 0 \\
+    0 & 0 & -1 & 0 \\
+    0 & 0 & 0 & -1 
+    \end\{pmatrix\}
+\end\{aligned\}$$ and $I_4$ is the identity matrix $$\begin\{aligned\}
+    I_4 &= \begin\{pmatrix\}
+    1 & 0 & 0 & 0 \\
+    0 & 1 & 0 & 0 \\
+    0 & 0 & 1 & 0 \\
+    0 & 0 & 0 & 1 
+    \end\{pmatrix\}
+\end\{aligned\}$$
+
+## Weyl Spinor
+
+Let $M$ be a pseudo-Riemannian manifold with dimension $(p, q)$. Recall
+that for $x \in M$, $T_x M$ denotes the tangent space at $x$, which is a
+vector space. We can construct a Clifford algebra on this vector space
+using the metric tensor $g: T_x M \times T_x M \to \mathbb\{R\}$ as the
+quadratic form. Let $\{e_i\}$ form a vector space basis on $T_x M$. Then
+let $\rm\{Cl\}(p, q)$ denote the Clifford algebra constructed from this
+basis. The Weyl spinors are defined as
+
+$$\begin\{aligned\}
+    w_j &= \frac\{1\}\{\sqrt\{2\}\}(e_\{2j\} + i e_\{2j + 1\}) \\
+    w_j^* &= \frac\{1\}\{\sqrt\{2\}\}(e_\{2j\} - i e_\{2j + 1\}) 
+\end\{aligned\}$$
+
+## Exercises
+
+1.  Verify the relationship $$\begin\{aligned\}
+            \{\gamma^0, \gamma^0\} &= 2 \eta^\{0,0\} I_4
+        
+    \end\{aligned\}$$

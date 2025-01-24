@@ -1,0 +1,97 @@
+# Differentiable Convex Optimization \{#chap:deep_equilibrium\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:ml_basics\]](#chap:ml_basics)\{reference-type="ref+label"
+reference="chap:ml_basics"\},
+[\[chap:probability\]](#chap:probability)\{reference-type="ref+label"
+reference="chap:probability"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+Convex optimization problems provide a convenient mathematical language
+for stating a class of mathematical problems that are amenable to
+optimization methods. These layers can now be used as layers in
+differentiable programs, facilitating modeling of physical systems with
+constrained degrees of freedom.
+
+## Convex Optimization and Convex Programs
+
+A general family of convex optimization problems can be written as
+
+$$\begin\{aligned\}
+    x^*(\theta) = &\arg\min \quad f_0(x; \theta) \\
+    &\textrm\{subject to\} \quad f_i(x; \theta) \leq 0,\quad i = 1,\dotsc,m \\
+    &\qquad \qquad \quad  g_j(x;\theta) = 0, \quad j=1,\dotsc, n
+\end\{aligned\}$$
+
+Here $x$ is the optimization variable, $f_0, f_i, g_j$ are all convex
+functions and $\theta$ is a parameter vector.
+
+Convex programs have increasingly become standard computational
+primitives that can be used as pieces of more complex programs. Can we
+use a convex problem as a part of a differentiable program? It is in
+fact possible to differentiate through convex optimization problems
+[@agrawal2019differentiable], [@agrawal2020learning]. If the objective
+and condition functions are smooth, we can write down the KKT equations
+that govern the solution and solve them directly
+
+At times, we will have non-smooth, non-differentiable objective or
+condition functions. In this case, we can implicitly define the
+stationary conditions of a generic cone program.
+
+$$\begin\{aligned\}
+\textrm\{minimize\} \quad c^T x \quad
+\textrm\{subject to\} \quad b - A x \in \mathcal\{K\}
+\end\{aligned\}$$ where $\mathcal\{K\}$ is a convex cone, $A$ is a matrix,
+and $b$ is a vector.
+
+## Disciplined Convex Programming
+
+The field of disciplined convex programming has introduced domain
+specific languages to faciliate specification of complex convex
+programs. These systems, such as cvxpy, perform compilation steps to
+transform an arbitrary convex optimization into a standardized cone
+program. When computing gradients, these transformations also have to be
+differentiated through as well. The compilation transformations are
+affine so the differentiation is simple.
+
+A differentiable disciplined convex program can be constructed by using
+differentiable disciplined components in a Physika program.
+
+## Taking Derivatives of a Cone Program
+
+Suppose that we have a cone program given in primal form by
+$$\begin\{aligned\}
+    &\textrm\{minimize\}\ c^T x \\
+    & \textrm\{subject to\}\ Ax + s = b \\
+    & \qquad \qquad \ s \in \mathcal\{K\}
+\end\{aligned\}$$
+
+We swap to dual formulation of cone program. View a conic program as a
+function
+
+$$\begin\{aligned\}
+    \psi: \mathbb\{R\}^\{m \times n\}\times \mathbb\{R\}^m \times \mathbb\{R\}^n \to \mathbb\{R\}^\{n+2m\}
+\end\{aligned\}$$ We compute the adjoint to the derivative of $\psi$ at
+$(A, b, c)$ by the formula $$\begin\{aligned\}
+    (dA, db, dc) &= D^T \psi(A, b, c)(dx, dy, ds) \\
+    &= D^T Q(A, b, c)D^T s(Q) D^T \phi(z)(dx, dy, ds)
+\end\{aligned\}$$
+
+## Noisy Linear Regression
+
+Suppose $(x_i, y_i)$ are the data. Suppose we have a linear classifier
+
+$$\begin\{aligned\}
+    \hat\{y\} &= 1[\beta^T x \geq 0]
+\end\{aligned\}$$ The loss is given by $$\begin\{aligned\}
+    \mathcal\{L\} &= \frac\{1\}\{m\} \sum \ell(\theta, x_i, y_i)
+\end\{aligned\}$$ $\beta^*$ is the solution to the convex optimization
+problem for training.
+
+The gradient $\nabla_\{x_i\} \mathcal\{L\}$ gives the direction that creates
+a maximal increase in the training loss.

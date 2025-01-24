@@ -1,0 +1,563 @@
+# Introduction to Scientific Machine Learning \{#ch:intro-molecular-ml\}
+
+While applying machine learning algorithms to physical systems, there
+typically are additional constraints in the form of respecting any given
+laws of physics often described by general nonlinear partial
+differential equations. In this chapter, we will introduce approaches to
+incorporate such additional constraints into machine learning
+algorithms. We will also discuss approaches to discover and learn the
+underlying partial differential equations for systems where the
+underlying physics can emerge from collected data.
+
+## Physics-Guided Machine Learning
+
+Physics-based models of dynamical systems are often used to study
+engineering and environmental systems. Despite their extensive use,
+these models have several well-known limitations due to simplified
+representations of the physical processes being modeled or challenges in
+selecting appropriate parameters. While-state-of-the-art machine
+learning models can sometimes outperform physics-based models given
+ample amount of training data, they can produce results that are
+physically inconsistent.
+
+### Physics Guided Recurrent Neural Network (PGRNN)
+
+$$h_t= \tanh(W_hh_\{t-1\}+W_x x_t)$$
+
+In this section, we discuss a physics-guided recurrent neural network
+model (PGRNN) that combines RNNs and physics-based models to leverage
+their complementary strengths and improves the modeling of physical
+processes. Specifically, we show that a PGRNN can improve prediction
+accuracy over that of physics-based models, while generating outputs
+consistent with physical laws. An important aspect of the PGRNN approach
+lies in its ability to incorporate the knowledge encoded in
+physics-based models. This allows training the PGRNN model using very
+few true observed data while also ensuring high prediction accuracy.
+Although we present and evaluate this methodology in the context of
+modeling the dynamics of temperature in lakes, it is applicable more
+widely to a range of scientific and engineering disciplines where
+physics-based (also known as mechanistic) models are used, e.g., climate
+science, materials science, computational chemistry and biomedicine.
+
+Physics-based models are often used to study engineering and
+environmental systems. The ability to model these systems is the key to
+achieving our future environmental sustainability and improving the
+quality of human life. This chapter focuses on simulating lake water
+temperature, which is critical for understanding the impact of changing
+climate on aquatic ecosystems and assisting in aquatic resource
+management decisions. General Lake Model (GLM) is a state-of-the-art
+physics-based model used for addressing such problems. However, like
+other physics-based models used for studying scientific and engineering
+systems, it has several well-known limitations due to simplified
+representations of the physical processes being modeled or challenges in
+selecting appropriate parameters. While-state-of-the-art machine
+learning models can sometimes outperform physics-based models given
+ample amount of training data, they can produce results that are
+physically inconsistent. This chapter proposes a physics-guided
+recurrent neural network model (PGRNN) that combines RNNs and
+physics-based models to leverage their complementary strengths and
+improves the modeling of physical processes. Specifically, we show that
+a PGRNN can improve prediction accuracy over that of physics-based
+models (by over 20% even with very few training data), while generating
+outputs consistent with physical laws. An important aspect of the PGRNN
+approach lies in its ability to incorporate the knowledge encoded in
+physics-based models. This allows training the PGRNN model using very
+few true observed data while also ensuring high prediction accuracy.
+Although we present and evaluate this methodology in the context of
+modeling the dynamics of temperature in lakes, it is applicable more
+widely to a range of scientific and engineering disciplines where
+physics-based (also known as mechanistic) models are used.
+
+**Intro**
+
+Physics-based models have been widely used to study engineering and
+environmental systems in domains such as hydrology, climate science,
+materials science, agriculture, and computational chemistry. Despite
+their extensive use, these models have several well-known limitations
+due to simplified representations of the physical processes being
+modeled or challenges in selecting appropriate parameters. Thre is a
+tremendous opportunity to systematically advance modeling in these
+domains by using machine learning (ML) methods. However, capturing this
+opportunity is contingent on a paradigm shift in data-intensive
+scientific discovery since the "black box" use of ML often leads to
+serious false discoveries in scientific applications ([Karpatne et al.
+2017a](#page23); [Lazer et al. 2014](#page23)). In this chapter, we
+present a novel methodology for combining physics-based models with
+state-of-the-art deep learning methods to leverage their complementary
+strengths.
+
+Even though physics-based models are based on known physical laws that
+govern relationships between input and output variables, the majority of
+physics-based models are necessarily approximations of reality due to
+incomplete knowledge of certain processes, which introduces bias. In
+addition, they often contain a large number of parameters whose values
+must be estimated with the help of limited observed data. A standard
+approach for calibrating these parameters is to exhaustively search the
+space of parameter combinations and choose parameter combinations that
+result in the best performance on training data. Besides its
+computational cost, this approach is also prone to over-fitting due to
+heterogeneity in the underlying processes in both space and time. The
+limitations of physics-based models cut across discipline boundaries and
+are well known in the scientific community; e.g., see a series of debate
+papers in hydrology ([Gupta et al. 2014](#page23); [Lall 2014](#page23);
+[McDonnell and Beven 2014](#page23)).
+
+ML models, given their tremendous success in several commercial
+applications (e.g., computer vision, and natural language processing)
+are increasingly being considered as promising alternatives to
+physics-based models by the scientific community. State of the art (SOA)
+ML models (e.g., Long-Short Term Memory (LSTM), Convolutional Neural
+Networks (CNN)), and the attention mechanism) given enough data, can
+often perform better than traditional empirical models (e.g.,
+regression-based models) used by science communities as an alternative
+to physics-based models ([Goh](#page23) [et al. 2017](#page23);
+[Graham-Rowe et al. 2008](#page23)). However, direct application of
+black-box ML models to a scientific problem encounters several major
+challenges:
+
+1.  Effective modeling of physical processes (that may be unfolding and
+    interacting at multiple scales in space and time) is dependent on
+    the capacity of ML models in extracting complex patterns from data.
+
+2.  Training ML models requires a lot of labeled data, which is scarce
+    in most practical settings given the substantial human effort and
+    material cost required to deploy and maintain sensors.
+
+3.  Empirical models (including the SOA ML models) simply identify
+    statistical relations between inputs and the system variables of
+    interest (e.g., the temperature profile of the lake) without taking
+    into account any physical laws (e.g., conservation of energy or
+    mass) and thus can produce results that are inconsistent with
+    physical laws. Hence, even if they produce accurate predictions,
+    such models cannot be used in practice by domain experts and other
+    stakeholders.
+
+4.  Relationships produced by empirical models can at best be valid only
+    for the set of variable combinations present in the training data
+    and are unable to generalize to scenarios unseen in the training
+    data. For example, a ML model trained for today's climate may not be
+    accurate for future warmer climate scenarios.
+
+The goal of this work is to improve the modeling of engineering and
+environmental systems. Effective representation of physical processes in
+such systems will require development of novel abstractions and
+architectures. In addition, the optimization process to produce an ML
+model will have to consider not just accuracy (i.e., how well the output
+matches the observations) but also its ability to provide physically
+consistent results. The most common approach for directly addressing the
+imperfection of physics-based models in the scientific community is
+residual modeling, where an ML model learns to predict the errors, or
+residuals, made by a physics-based model ([Kani and Elsheikh
+2017](#page23); [San and](#page24) [Maulik 2018](#page24); [Wan et al.
+2018](#page24)). One of the key limitations of these approaches is their
+inability to provide predictions that are consistent with known physical
+laws. Karpatne et al. ([Karpatne et al. 2017b](#page23)) further extends
+residual modeling by using simulated data as additional input to the ML
+model. 3. This new framework permits incorporation of physical
+constraints that can be defined purely on the output of the model
+([Beucler et al. 2019](#page22); [Karpatne et al. 2017b](#page23);
+[Muralidhar](#page24) [et al. 2018](#page24)). However, these methods
+cannot incorporate more general constraints that are based on internal
+states of the physical system (e.g., energy conservation). In addition,
+all of these approaches still require a lot of training data, and thus
+cannot address the data scarcity challenge.
+
+In this chapter, we present Physics-Guided Recurrent Neural Network
+models (PGRNN) as a general framework for modeling physical phenomena
+with potential applications for many disciplines. The PGRNN model has a
+number of novel aspects:
+
+1.  Many temporal processes in environmental/engineering systems involve
+    complex long-term temporal dependencies that cannot be captured by a
+    plain neural network or a simple temporal model such as a standard
+    RNN. In contrast, in PGRNN we use advanced ML models such as LSTM,
+    which use the internal memory structure to preserve long-term
+    temporal dependencies and thus has the potential to capture complex
+    physical patterns that last over several months or years.
+
+2.  The proposed PGRNN can incorporate explicit physical laws such as
+    energy conservation or mass conserva-tion. This is done by
+    introducing additional variables in the recurrent structure to keep
+    track of physical states that can be used to check for consistency
+    with physical laws. In addition, we generalize the loss function to
+    include a physics-based penalty ([Karpatne et al. 2017a](#page23)).
+    Thus, the overall training loss is
+
+    $$L = \textrm\{Supervised loss\} (Y_\{pred\},Y_\{true\}) +
+      \textrm\{Physics-based Penalty\},$$ where the first term on the
+    right hand side represents the supervised training loss between the
+    predicted outputs Y~pr\ ed~ and the observed outputs Y~t\ r\ ue~
+    (e.g., RMSE in regression or cross-entropy in classification), and
+    the second term represents the physical consistency-based penalty.
+    In addition, to favoring physically consistent solutions, another
+    major side benefit of including physics-based penalty in the loss
+    function is that it can be applied even to instances for which
+    output (observed) data is not available since the physics-based
+    penalty can be computed as long as input (driver) data is available.
+    Note that in absence of physics based penalty, training loss can be
+    computed only on those time steps where observed output is
+    available. Inclusion of physics based loss term allows a much more
+    robust training, especially in situations, where observed output is
+    available on only a small number of time steps.
+
+3.  Physics based/mechanistic models contain a lot of domain knowledge
+    that goes well beyond what can be captured as constraints such
+    conservation laws. To leverage this knowledge, we generate a large
+    amount of "synthetic" observation data by executing physics based
+    models for a variety input drivers (that are easily available) and
+    use the synthetic observation to pre-train the ML model. The idea
+    here is that training from synthetic data generated by imperfect
+    physical models may allow the ML model to get close enough to the
+    target solution, so only a small amount of observed data (ground
+    truth labels) is needed to further refine the model. In addition,
+    the synthetic data is guaranteed to be physically consistent due to
+    the nature of the process model being founded on physical
+    principles.
+
+The proposed Physics-Guided Recurrent Neural Networks model (PGRNN) is
+developed for the purpose of predicting lake water temperatures at
+various depths at the daily scale. The temperature of water in a lake is
+known to be an ecological "master factor" ([Magnuson et al.
+1979](#page23)) that controls the growth, survival, and reproduction of
+fish ([Roberts](#page24) [et al. 2013](#page24)). Warming water
+temperatures can increase the occurrence of aquatic invasive species
+([Rahel and Olden](#page24)[2008](#page24); [Roberts et al.
+2017](#page24)), which may displace fish and native aquatic organisms,
+result in more harmful algal blooms (HABs) ([Harris and Graham
+2017](#page23); [Paerl and Huisman 2008](#page24)). Understanding
+temperature change and the resulting biotic "winners and losers" is
+timely science that can also be directly applied to inform priority
+action for natural resources. Given the importance of this problem, the
+aquatic science community has developed numerous models for the
+simulation of temperature, including the General Lake Model (GLM)
+([Hipsey et al. 2019](#page23)), which simulates the physical processes
+(e.g., vertical mixing, and the warming or cooling of water via energy
+lost or gained from fuxes such as solar radiation and evaporation,
+etc.). As is typical for any such model, GLM is only an approximation of
+the physical reality, and has a number of parameters (e.g., water
+clarity, mixing efficiency, and wind sheltering) that often need to be
+calibrated using observations.
+
+We evaluate the proposed PGRNN method in a real-world system, Lake
+Mendota (Wisconsin), which is one of the most extensively studied lake
+systems in the world. We chose this lake because it has plenty of
+observed data that can be used to evaluate the performance of any new
+approach. In particular, we can measure the performance of different
+algorithms by varying the the amount of observations used for training.
+This helps test the effectiveness of the proposed methods in data-scarce
+scenarios, which is important since most real-world lakes have very few
+observations or are not observed at all (they usually have less than 1%
+of observations that are available for Mendota). In addition, Lake
+Mendota is large and deep enough such that it shows a variety of
+temperature patterns (e.g., stratified temperature patterns in warmer
+seasons and well-mixed patterns in colder seasons). This allows us to
+test the capacity of ML models in capturing such complex temperature
+patterns.
+
+This work's main contributions are as follows. We show that it is
+possible to effectively model the temporal dynamics of temperature in
+lakes using LSTMs provided that enough observed data is available for
+training. We show that traditional LSTMs can be augmented to take energy
+conservation into account and track the balance of energy loss and gain
+relative to temperature change (a physical law of thermodynamics).
+Including such components in models to make the output consistent with
+physical laws can make them more acceptable for use by scientists and
+also may improve the prediction performance. We also studied the benefit
+of pre-training this model using synthetic data (i.e., the output of a
+generic physics-based model) and then refining it using only a small
+amount of observation data. The results show that such pre-trained
+models can easily outperform the state-of-the art physics-based model by
+using a small amount of observed data. Moreover, we show that such
+pre-training is useful even if it uses simulated data from lakes that
+are very different in geometry, clarity or climate than the lake being
+studied. These results confirm that the PGRNN can leverage the strengths
+of physics-based models while also filling in knowledge gaps by
+overlaying features learned from data.
+
+The proposed method has general applicability to many scientific
+applications. In fact its effectiveness has already been shown in two
+different applications in aquatic science ([Hanson et al.
+2020](#page23); [Read et al. 2019](#page24)). As discussed in
+([Willard](#page24) [et al. 2020](#page24)), the overall approach is
+applicable to a wide range of domains such as hydrology, Computational
+fuid dynamics (CFD), and crop modeling.
+
+The organization of the chapter is as follows: In Section 2, we describe
+the preliminary knowledge and the setting of the problem. Section 3
+presents the discussions related to the proposed PGRNN model. In Section
+4, we extensively evaluate the proposed method in a real-world dataset.
+We then recapitulate related existing work in Section 5 before we
+conclude the work in Section 6. A preliminary version of this work
+appeared in ([Jia et al. 2019](#page23)).
+
+## Problem Formulation
+
+The goal is to simulate the temperature of water in the lake at each
+depth d, and on each date t, given physical variables governing the
+dynamics of lake temperature. This problem is referred to as 1D-modeling
+of temperature (depth being the single dimension). Specifically, x~t~
+represents input physical variables at on a specific date t, which
+include meteorological recordings at the surface of water such as the
+amount of solar radiation (in W/m^2^, for short-wave and long-wave),
+wind speed (in m/s), air temperature (in C), relative humidity (0-100%),
+rain (in cm), snow indicator (True or False), as well as the value of
+depth (in m) and day of year (1-366). These chosen features are known to
+be the primary drivers of lake thermodynamics ([Hipsey et al.
+2019](#page23)). Given these input drivers x~t~ and a depth level d, we
+aim to predict water temperature fy~d;t~ g^T^~t=1~ at this depth over
+the entire study period. For simplicity, we use x~t~ and y ~t~ to
+represent fx~t~ ; dg and y~d;t~ in the chapter when it causes no
+ambiguity. During the training process, we are given the sparse
+ground-truth observed temperature profiles on certain dates and at
+certain depths captured by in-water sensors (more dataset description is
+provided in Section [4.1](#page10)).
+
+### General Lake Model (GLM)
+
+The physics-based GLM captures a variety of physical processes governing
+the dynamics of water temperature in a lake, including the heating of
+the water surface due to incoming short-wave radiation, the attenuation
+of radiation beneath the water surface, the mixing of layers with
+varying thermal energy at different depths, and the loss of heat from
+the surface of the lake via evaporation or outgoing long-wave radiation
+(shown in Fig. [1](#page5)). We use GLM as the preferred physics-based
+model for lake temperature modeling due to its model performance and
+wide use among the lake modeling community.
+
+The GLM has a number of parameters (e.g., parameters related to vertical
+mixing, wind sheltering, and water clarity) that are often calibrated
+specifically to individual lakes if training data are available. The
+basic calibration method (common to a wide range of scientific and
+engineering problems) is to run the model for combinations of parameter
+values and select the parameter set that minimizes model error. This
+calibration process can be both labor-and computationally-intensive.
+Furthermore, the calibration process, applied even in the presence of
+ample training data, is still limited by simplifications and rigid
+formulations in these physics-based models.
+
+### Machine learning model for sequential data
+
+There is a class of ML models that aims to learn a black-box
+transformation from the input series $\{x_1, x_2, ..., x_T\}$ to target
+variables $\{y_1, y_2, ..., y_T\}$. In this problem, the observation
+data can be sparse for certain depths so it is infeasible to train
+individual models for each depth separately. Instead, we will train a
+global model that uses depth as an input feature. This makes it possible
+to use observation data from any depth at any time step for training
+this model. Later in Section 4 we will show that such a global model can
+still very well capture temporal dynamics at each depth separately.
+
+We also use area-depth profile as additional information to compute
+energy constraints (see Section [3.2](#page7)). Since we train machine
+learning models that are specific to a target lake, the area-depth
+profile remains the same on different days and thus we do not include it
+in the input features.
+
+In this section, we will discuss the proposed PGRNN model in detail.
+First, we describe how to train an LSTM to model temperature dynamics
+using sparse observed data. Second, we describe how to combine the
+energy conservation law and the standard recurrent neural networks
+model. Then, we further utilize a pre-training method to improve the
+learning performance even with limited training data.
+
+### Recurrent Neural Networks and Long-Short Term Memory Networks
+
+Recent advances in deep learning models enable automatic extraction of
+representative patterns from multivariate input temporal data to better
+predict the target variable. As one of the most popular temporal deep
+learning models, RNN models have shown success in a broad range of
+applications. The power of the RNN model lies in its ability to combine
+the input data at the current and previous time steps to extract an
+informative hidden representation h~t~ . In an RNN, the hidden
+representation h~t~ is generated using the following equation:
+
+where W~h~ and W~x~ represent the weight matrices that connect h~t~ 1
+and x~t~ , respectively. Here the bias terms are omitted as they can be
+absorbed into the weight matrix.
+
+While RNN models can model transitions across time, they gradually lose
+the connections to long histories as time progresses ([Bengio et al.
+1994](#page22)). Therefore, the RNN-based method may fail to grasp
+long-term patterns that are common in scientific applications. For
+example, the seasonal patterns and yearly patterns that commonly exist
+in environmental systems can last for many time steps if we use data at
+a daily scale. The standard RNN fails to memorize long-term temporal
+patterns because it does not explicitly generate a long-term memory to
+store previous information but only captures the transition patterns
+between consecutive time steps. It is well-known ([Chen and Billings
+1992](#page23); [Pan and](#page24) [Duraisamy 2018](#page24)) that such
+issue of memory is a major di•culty in the study of dynamical system.
+
+As an extended version of the RNN, LSTM is better in modeling long-term
+dependencies where each time step needs more contextual information from
+the past. The difference between LSTM and RNN lies in the generation of
+the hidden representation h~t~ . In essence, the LSTM model defines a
+transition relationship for the hidden representation h~t~ through an
+LSTM cell. Each LSTM cell contains a cell state c~t~ , which serves as a
+memory and forces the hidden
+
+LSTM generates a forget gate f$_t$ , an input gate g$_t$ , and an output
+gate o$_t$ via sigmoid function $\sigma$(.), as:
+
+$$\begin\{aligned\}
+\begin\{split\}
+  f_t = \sigma(W_h^f h_\{t-1\} + W_x^f x_t)\\
+  g_t = \sigma(W_h^g h_\{t-1\} + W_x^g x_t)\\
+  o_t = \sigma(W_h^o h_\{t-1\} + W_x^o x_t)\\
+\end\{split\}
+\end\{aligned\}$$
+
+The forget gate is used to filter the information inherited from
+c$^\{t-1\}$, and the input gate is used to filter the candidate cell state
+at t. Then we compute the new cell state and the hidden representation
+as: $$\begin\{aligned\}
+    \begin\{split\}
+        c_t=f_t \otimes c_\{t-1\}+g_t\otimes \tilde\{c_t\}\\
+        h_t=o_t \otimes tanh(c_t)
+    \end\{split\}
+\end\{aligned\}$$
+
+where denotes the entry-wise product.
+
+As we wish to conduct regression for continuous values, we generate the
+predicted temperature yˆ~t~ at each time step via a linear combination
+of hidden units, as:
+
+$$\hat\{y_t\}=W_y h_t$$
+
+We also apply the LSTM model for each depth separately to generate
+predictions yˆ~d;t~ for every depth d 2 »1; N~d~ ... and for every date
+t 2 »1;T .... Then given the true observation y ~d;t~ for the dates and
+depths where the sparse observed data is available, i.e., S = f„d; t" :
+y~d;t~ exists, the training loss is defined as:
+
+$$L_\{RNN\}=\sqrt\{\frac\{1\}\{|S|\}\sum_\{(d,t)\in S\}(y_\{d,t\}-\hat\{y_\{d,t\}\})^2\}$$
+
+It is noteworthy that even if the training loss is only defined on the
+time steps where the observed data is available, the transition modeling
+(Eqs. [2](#page7)-[5](#page7)) can be applied to all the time steps.
+Hence, the time steps without observed data can still contribute to
+learning temporal patterns by using their input drivers.
+
+### Energy conservation over time
+
+The law of energy conservation states that the change of thermal energy
+U~t~ of a lake system over time is equivalent to the net gain of heat
+energy fuxes, which is the difference between incoming energy fuxes and
+any energy losses from the lake (see Fig. [3](#page9)). The explicit
+modeling of energy conservation is critical for capturing temperature
+dynamics since a mismatch in losses and gains results in a temperature
+change. Specifically, more incoming heat fuxes than outgoing heat fuxes
+will warm the lake, and more outgoing heat fuxes than incoming heat
+fuxes will cool the lake.
+
+The total thermal energy of the lake at time t can be computed as
+follows: $$U_t = c_w \sum_d a_d y_\{d,t\}\rho_\{d,t\}\partial z_d$$
+
+where y~d;t~ is the temperature at depth d at time t, c~w~ the specific
+heat of water (4186 J kg ^1^°C ^1^), a~d~ the cross-sectional area of
+the water column (m^2^) at depth d, $\rho$~d;t~ the water density
+(kg/m^3^) at depth d at time t, and \@z~d~ the thickness of the layer at
+depth $d$. In this work, we simulate water temperature for every 0.5m
+and thus we set \@z~d~ =0.5. The computation of U~t~ requires the output
+of temperature y~d;t~ through a feed-forward process for all the depths,
+as well as the cross-sectional area a~d~ , which is available as input.
+
+The balance between incoming heat fuxes (F~in~ ) and outgoing heat fuxes
+(F~out~ ) results in a change in the thermal energy (U~t~ ) of the lake.
+The consistency between lake energy U~t~ and energy fuxes can be
+expressed as:
+
+$$\Delta U_t = F_\{in\} - F_\{out\}$$
+
+where U~t~ = U~t~ ~+~1 U~t~ . More details about computing heat fuxes
+are described in the appendix. All the involved energy components are in
+Wm ^2^.
+
+In Fig. [2](#page8), we show the fow of the proposed PGRNN model, which
+integrates energy conservation fow into the recurrent process. While the
+recurrent fow in the standard RNN can capture data dependencies across
+time, the modeling of energy fow ensures that the change of lake
+environment and predicted temperature conforms to the law of energy
+conservation. Traditional LSTM models utilize the LSTM cell to
+implicitly encode useful information at each time step and pass it to
+the next time step. In contrast, the energy fow in PGRNN explicitly
+captures the key factor that leads to temperature change in dynamical
+systems - the heat energy fuxes that are transferred from one time to
+the next. Standard LSTM model trained from certain years or seasons may
+not generalize to other years or seasons given that the distributions of
+input features and temperature profiles are different in different time
+periods. However, Eq. [8](#page8) should always hold for data from any
+time period due to conservation of energy. Therefore, by complying with
+the universal law of energy conservation, PGRNN has a better chance at
+learning patterns that are generalizable to unseen scenarios ([Read et
+al. 2019](#page24)).
+
+We define the loss function term for energy conservation and combine
+this with the training objective of standard LSTM model in the following
+equation:
+
+$$\begin\{aligned\}
+L &= L_\{RNN\} + \lambda_\{EC\}L_\{EC\}\\
+L_\{EC\} &= \frac\{1\}\{T_\{ice-free\}\}\sum_\{t=ice-free\}ReLU(|\Delta U_t -(F_\{in\}-F_\{out\})|-\tau_\{EC\})
+\end\{aligned\}$$
+
+where T~ice-free~ represents the length of the ice-free period. Here we
+consider the energy conservation only for ice-free periods since the
+lake exhibits drastically different refectance and energy loss dynamics
+when covered in ice and snow, and the modeling of ice and snow was
+considered out of scope for this study. We provide more details about
+
+how to compute the energy fuxes F~in~ and F~out~ from input data in the
+appendix. The value $\tau_\{EC\}$ is a threshold for the loss of energy
+conservation. This threshold is introduced because physical processes
+can be affected by unknown less important factors which are not included
+in the model, or by observation errors in the metereological data. The
+function ReLU is adopted such that only the difference larger than the
+threshold is counted towards the penalty. In the implementation, the
+threshold is set as the largest value of
+$|\Delta U_t - (F_\{in\}-F_\{out\})|$ in the GLM model for daily averages.
+The hyper-parameter $\lambda_\{EC\}$ controls the balance between the loss
+of the standard RNN and the energy conservation loss. The model is
+updated using the back-propagation with the ADAM optimizer ([Kingma and
+Ba 2014](#page23)).
+
+Note that the modeling of energy fow using the procedure described above
+does not require any input of true labels/observations. According to
+Eqs. [11](#page25)-[13](#page26), the heat fuxes and lake energy are
+computed using only input drivers and predicted temperature. In light of
+these observations, we can apply this model for semi-supervised training
+for lake systems which have only a few labeled data points.
+
+### Pre-training using physical simulations
+
+In real-world environmental systems, observed data is limited. For
+example, amongst the lakes being studied by USGS, less than 1% of lakes
+have 100 or more days of temperature observations and less than 5% of
+lakes have 10 or more days of temperature observations ([Read et al.
+2017](#page24)). Given their complexity, the RNN-based models trained
+with limited observed data can lead to poor performance. In addition, ML
+models often require an initial choice of model parameters before
+training. Poor initialization can cause models to anchor in local
+minimum, which is especially true for deep neural networks. If physical
+knowledge can be used to help inform the initialization of the weights,
+model training can accelerated (i.e., require fewer epochs for training)
+and also need fewer training samples to achieve good performance.
+
+To address these issues, we propose to pre-train the PGRNN model using
+the simulated data produced by a generic GLM (also referred to as
+uncalibrated GLM) that uses default values for parameters. In
+particular, given the input drivers, we run the generic GLM to predict
+temperature at every depth and at every day. These simulated temperature
+data from the generic GLM are imperfect but they provide a synthetic
+realization of physical responses of a lake to a given set of
+meteorological drivers. Hence, pre-training a neural network using
+simulations from the generic GLM allows the network to emulate a
+synthetic but physically realistic phenomena. This process results in a
+more accurate and physically consistent initialized status for the
+learning model. When applying the pre-trained model to a real system, we
+fine-tune the model using true observations. Here the hypothesis is that
+the pre-trained model is much closer to the optimal solution and thus
+requires less observed data to train a good quality model. In the
+experiments, we show that such pre-trained models can achieve high
+accuracy given only a few observed data points.

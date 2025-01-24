@@ -1,0 +1,30 @@
+# Path Integral Theory of an Oscillator \{#chap:perturbation_theory\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:schrodinger\]](#chap:schrodinger)\{reference-type="ref+label"
+reference="chap:schrodinger"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+The action of a harmonic oscillator with mass $m$ is $$\begin\{aligned\}
+    S &= \frac\{m\}\{2\} \int_\{t'\}^\{t\} ds(\dot\{w\}^2(s)-\omega^2(s) w^2(s))
+\end\{aligned\}$$ Here $\omega(s)$ is a time-dependent circular frequency.
+Consider the following path $$\begin\{aligned\}
+S^\{(n)\}(w) &= \frac\{m\}\{2\}\sum_\{j=0\}^\{n-1\}\left [ \frac\{1\}\{\epsilon\}(w_\{j+1\}-w_j)^2 - \epsilon \omega_j^2 w_j^2 \right ] \\
+w_\{j+1\} &= \omega (t' + j\epsilon)
+\end\{aligned\}$$
+
+$$\begin\{aligned\}
+\xi &= (w_1,\dotsc,,w_\{n-1\}) \\
+\eta &= (q', 0,\dotsc,0, q)
+\end\{aligned\}$$ Then we can write action as $$\begin\{aligned\}
+S^\{(n)\}(w) &= \frac\{m\}\{2\} \left ( \frac\{1\}\{\epsilon\} (\eta, \eta)  + \frac\{1\}\{\epsilon\} (\xi, C \xi) - \frac\{2\}\{\epsilon\} (\xi, \epsilon) - \epsilon \omega_0^2 (q')^2 \right )
+\end\{aligned\}$$ Here $C$ is a $n-1$ dimensional matrix. The action then
+reduces to computing a Gaussian integral on a discrete time lattice. The
+derivation yields inthe end $$\begin\{aligned\}
+K(t, q, t', q') &= \lim_\{\epsilon \to 0\} \sqrt\{\frac\{m\}\{2\pi i \hbar\}\} \frac\{1\}\{\epsilon \det C\} e^\{iS(n)(\xi)/\hbar\}
+\end\{aligned\}$$

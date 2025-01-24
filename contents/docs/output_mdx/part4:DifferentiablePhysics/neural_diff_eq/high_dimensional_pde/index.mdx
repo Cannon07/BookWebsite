@@ -1,0 +1,122 @@
+# Solving High Dimensional Parabolic PDEs  \{#chap:high_dimensional\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:pinns\]](#chap:pinns)\{reference-type="ref+label"
+reference="chap:pinns"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+The Feynman-Kac formula provides a bridge between solutions to linear
+parabolic partial differential equations and stochastic differential
+equations. Recent work has extended the Feynman-Kac formula to broader
+classes of nonlinear parabolic differential equations. In particular, by
+leveraging the universal approximation capability of neural networks to
+model the gradient of the unknown solution, we can numerically solve
+high dimensional parabolic partial differential equations
+[@han2018solving].
+
+## Mathematical Formulation
+
+Consider the family of semilinear parabolic PDEs given by
+
+$$\begin\{aligned\}
+    \frac\{\partial u\}\{\partial t\}(t, x) + \frac\{1\}\{2\}\mathrm\{Tr\}\left ( \sigma \sigma^T (t, x)(\mathrm\{Hess\}_x u)(t, x) \right ) + \nabla u(t, x) \cdot \mu(t, x) + f \left (t, x, u(t, x), \sigma^T(t, x) \nabla u(t, x) \right ) = 0 
+\end\{aligned\}$$
+
+Here $t$ is the time variable, $x$ is a $d$-dimensional space variable.
+
+$$\begin\{aligned\}
+u(T, x) = g
+\end\{aligned\}$$
+
+$\mu$ is a vector valued variable and $\sigma$ is a $d \times d$ matrix
+valued function.
+
+$$\begin\{aligned\}
+    &\mu: \mathbb\{R\} \to \mathbb\{R\}^d \\
+    &\sigma: \mathbb\{R\} \to \mathbb\{R\}^\{d \times d\}
+\end\{aligned\}$$
+
+Suppose also that we have terminal condition at time $T$
+
+Let $W_s$ be Brownian motion and let $X_t$ be a stochastic process that
+satisfies the equation
+
+$$\begin\{aligned\}
+    X_t &= \xi + \int_0^t \mu(s, X_s) ds + \int_0^t \sigma(s, X_s) dW_s
+\end\{aligned\}$$
+
+We can then express the solution to our original PDE as the following
+stochastic differential equation (SDE) by the Feynman-Kac formula
+
+$$\begin\{aligned\}
+u(t, X_t) - u(0, X_0) &= - \int_0^t f(s, X_s, u(s, X_s), \sigma(s, X_s) \nabla u (s, X_s)) ds + \int_0^t [\nabla u(s, X_s)]^T \sigma(s, X_s) dW_s
+\end\{aligned\}$$
+
+In order to turn this integral into a numerical algorithm, w e partition
+$[0, 1]$ into $t_1,\dotsc, t_n$. We can then write down the Euler
+approximation
+
+$$\begin\{aligned\}
+    X_\{t_\{n+1\}\} - X_\{t_n\} \approx \mu(t_n, X_\{t_n\}) \Delta t_n + \sigma(t_n, X_\{t_n\}) \Delta W_n
+\end\{aligned\}$$
+
+This equation can be used to sample a path $X_t$. We can then construct
+an approximate solution of the SDE as
+
+$$\begin\{aligned\}
+u(t_\{n+1\}, X_\{t_\{n+1\}\}) - u(t_n, X_\{t_n\}) \approx - f\left (t_n, X_\{t_n\}, u(t_n, X_\{t_n\}), \sigma(t_n, X_\{t_n\}) \nabla u(t_n, X_\{t_n\}) \right) \Delta t_n + [\nabla u(t_n, X_\{t_n\})]^T \sigma(t_n, X_\{t_n\}) \Delta W_n
+\end\{aligned\}$$
+
+The main challenge of this equation though is that the update is
+formulated in terms of $\nabla u$, where $u$ is itself unknown. In order
+to use this equation, we have to find a way to compute this quantity.
+The idea is that we can approximate this gradient quantity by a neural
+network
+
+$$\begin\{aligned\}
+    x \mapsto \sigma^T(t_n, X_\{t_n\})\nabla u(t_n, X_\{t_n\}) \approx g_n(t_n, X_\{t_n\}, \theta)
+\end\{aligned\}$$
+
+where $\theta$ is a set of learnable parameters. Using this
+approximation we can compute an approximate solution $\hat\{u\}$
+parameterized by $\theta$ given a sampled path $X_t$. To train
+parameters $\theta$, we can use the fact that we know terminal condition
+$g$ to impose a loss
+
+$$\begin\{aligned\}
+\mathcal\{L\}(\theta) &= \mathbb\{E\}_\{X_t\} \left [ \left | g(X_\{t_n\}) - \hat\{u\}(X_t, W_t)\right |^2 \right ]
+\end\{aligned\}$$
+
+This loss can be optimized to find $\theta$ that provides an approximate
+solution to the original PDE.
+
+## Network Architecture
+
+The gradient term $\nabla u$ is approximated using a multilayer feed
+forward network tha maps $X_\{t_n\}$ to the estimated term
+
+$$\begin\{aligned\}
+    X_\{t_n\} \to h^1_n \to h^2_n \dotsc \to h^H_n \to \nabla u(t_n, X_\{t_n\})
+\end\{aligned\}$$ We can convert this definition into Physika pseudocode
+
+``` \{.python language="python"\}
+class SpatialGradient($\theta$, n$_\{\textrm\{layers\}\}$):
+
+  def $\lambda$(X):
+    return fcnet(X, $\theta, n_\{\textrm\{layers\}\})$
+```
+
+The forward iteration $$\begin\{aligned\}
+u(t_n, X_\{t_n\}) \mapsto u(t_\{n+1\}, X_\{t_\{n+1\}\})
+\end\{aligned\}$$ can be computed directly from the definition earlier and
+the known functions $f$ and $\sigma$.
+
+One fact to note about these networks is that they can become very deep.
+Suppose that spatial gradient network has $H$ hidden layers. Then the
+total network has $(H+1)(N-1)$ layers in total for a discretization with
+$N$ points total.

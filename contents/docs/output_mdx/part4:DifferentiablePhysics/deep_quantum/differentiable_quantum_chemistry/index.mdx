@@ -1,0 +1,137 @@
+# Learning Density Functions \{#chap:differentiable_dft\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:graphconvs\]](#chap:graphconvs)\{reference-type="ref+label"
+reference="chap:graphconvs"\},
+[\[chap:equivariant_networks\]](#chap:equivariant_networks)\{reference-type="ref+label"
+reference="chap:equivariant_networks"\},
+[\[chap:molecular_dynamics\]](#chap:molecular_dynamics)\{reference-type="ref+label"
+reference="chap:molecular_dynamics"\},
+[\[chap:dft\]](#chap:dft)\{reference-type="ref+label"
+reference="chap:dft"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+Systematic learning of the exchange correlation function holds out the
+promise of making density functional theory methods broadly more
+applicable in the sciences. The core mathematical idea is that we need
+to construct an end-to-end differentiable implementation of the
+Kohn-Sham self-consistent field equations which can be back-propagated
+through in order to fit the exchange correlation functional from data.
+Learning the exchange correlational functional directly holds out the
+promise of applying density functional theory to a very broad range of
+systems beyond current state of the art [@kasim2021learning],
+[@kirkpatrick2021pushing], [@dick2021using].
+
+## Mathematical Basics
+
+Recall that the basic form of the Schrodinger's equation is given by
+
+$$\begin\{aligned\}
+    H \psi = E \psi
+\end\{aligned\}$$
+
+The Kohn-Sham equations are given by
+
+$$\begin\{aligned\}
+    \left ( -\frac\{1\}\{2\} \nabla^2 + v_s[n](r)\right ) \psi_i(r) = \epsilon_i \psi_i(r)
+\end\{aligned\}$$
+
+Here $\psi_i$ is a occupied molecular orbital and the electron density
+$n(r)$ is given by $$\begin\{aligned\}
+    n(r) &= \sum_\{i=1\}^N |\psi_i(r)|^2
+\end\{aligned\}$$
+
+An ansatz is typically applied which sets an assumption on the form of
+$\psi_i$. A common choice is $$\begin\{aligned\}
+    \psi_i &= \sum_\{\mu\} C_\{i\mu\} \phi_\mu
+\end\{aligned\}$$
+
+where $\phi_\mu$ is an atom-centered Gaussian orbital. The energy can be
+compute in terms of the underlying electron density $n(r)$ as
+
+$$\begin\{aligned\}
+    E[n(r)] = \int v(r)n(r) dr + \frac\{1\}\{2\} \int \frac\{n(r)n(r')\}\{|r - r'|^2\} dr + E_\{xc\}[n(r)]
+\end\{aligned\}$$
+
+Here $E_\{xc\}$ is the exchange correlation density. The reformulation
+$E[n(r)]$ reduces the complexity from $3N$ to $3$ dimensions. The
+density functional theory core algorithm can be reduced to the following
+steps.
+
+1.  Choose an orbital basis set $\{b_i(r)\}$
+
+2.  Compute the Hamiltonian matrix
+    $H_\{ij\} = \int b_i(r) \frac\{\partial E\}\{\partial n(r)\} b_j(r) dr$
+
+3.  Do eigendecomposition of $H$ to get orbitals as eigenvectors
+    $\psi_i(r)$
+
+4.  Compute $\sum_i \psi(r) b(r)$ the density profile
+
+5.  Check for convergence.
+
+DFT has been broadly used for materials, drug-protein interactions and
+finding superconducting materials. There have been multiple efforts to
+replace DFT calculations directly with ML for rapid approximations but
+the accuracy of these techniques still struggles to match classical DFT
+does. However, by constructing a hybrid differentiable physics model it
+is possible to achieve greater accuracy. We need to make all the arrows
+in the DFT algorithm differentiable. Here are the self consistent field
+iteration equations.
+
+$$\begin\{aligned\}
+y &= f(y, \theta) \\
+\frac\{\partial L\}\{\partial \theta\} &= \frac\{\partial L\}\{\partial y\} \left ( 1 - \frac\{\partial f\}\{\partial y\} \right )^\{-1\} \frac\{\partial f\}\{\partial \theta\}
+\end\{aligned\}$$
+
+The eigendecomposition is given by $$\begin\{aligned\}
+\frac\{\partial L\}\{\partial A\} &= \sum_i \sum_\{j \neq i\} \frac\{1\}\{\lambda_i-\lambda_j\}v_i v_j^T \frac\{\partial L\}\{\partial v_j\} v_i^T \\
+\frac\{\partial L\}\{\partial A\} &= - \sum_j \sum_\{i \neq j, \lambda_i \neq \lambda_j\} \frac\{1\}\{\lambda_i - \lambda_j\} v_iv_j^T \frac\{\partial L\}\{\partial v_j\} v_i^T
+\end\{aligned\}$$ The second case handles degeneracy of duplicate
+eigenvalues. These expressions can be used to propagate back the
+gradient. We choose the basis set $\{b_i\}$ in terms of spherical
+harmonics $$\begin\{aligned\}
+b_i(r) = \sum_j r^\{2n\}c_i^\{(j)\} \exp(\alpha_i^\{(j)\} r^2) Y_\{lm\}(\theta, \phi)
+\end\{aligned\}$$ $c$ and $\alpha$ are available online from basis sets
+databases. Analytical expressions for $$\begin\{aligned\}
+H_\{ij\} = \int b_i(r) \frac\{\partial E\}\{\partial n(r)\} b_j(r) dr 
+\end\{aligned\}$$ are already available. Derivatives
+$\frac\{\partial b\}\{\partial c\}$ take the same form.
+
+A number of these gradients are challenging for automatic
+differentiation systems to compute. The full hybrid neural network
+functional ius given by
+
+$$\begin\{aligned\}
+    E_\{nnLDA\}[n] = \alpha E_\{LDA(xc)\}[n] + \beta \int n(r) f(n, \xi) dr \\
+    E_\{nnPBE\}[n] = \alpha E_\{PBA(xc)\}[n] + \beta \int n(r) f(n, \xi, s) dr
+\end\{aligned\}$$ where $f$ is a fully connected neural network.
+
+## Choosing the Loss Function
+
+A differentiable physics DFT models can be trained by comparing to a
+classical density functional theoretic code. We define the loss as the
+$L^2$ loss against energies computed by a reference code. This code can
+be another DFT code or possibly computed by a higher level of quantum
+calculation
+
+$$\begin\{aligned\}
+\mathcal\{L\} &= \sum_\{i=1\}^M |E_\{\theta\}(x) - E_\{DFT\}(x)|^2
+\end\{aligned\}$$
+
+## Discussion
+
+In principle, the learned differentiable exchange correlation functional
+can be arbitrarily accurate. Past research reports that learned
+functions can be more accurate than CCSD calculations in some cases
+even.
+
+Applying an appropriate density regularization scheme appears to be a
+critical idea for good performance. Considerable additional work will
+need to be done though before differentiable exchange correlation
+functionals can be applied successfully for practical applications.

@@ -1,0 +1,112 @@
+# Behler-Parinello Representations \{#chap:behler_parinello\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:** [\[chap:dft\]](#chap:dft)\{reference-type="ref+label"
+reference="chap:dft"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+Density functional theory and its differentiable variants provide a
+powerful tool to model the quantum mechanics of a system but are still
+prohibitively expensive for large systems. An alternative approach would
+be to directly predict the forces and energies of a given system
+directly from atomic positions. Such a scheme would rely on the
+universal approximation capability of a deep representation to learn a
+proxy function that bypasses the need for expensive quantum
+calculations. Such a scheme could be adapted for both periodic and
+non-periodic systems
+
+## Behler-Parinello Architecture
+
+The Behler-Parinello representation [@behler2007generalized] provides a
+first step towards such a calculation by presenting a simple method for
+modeling the potential energy surface of complex quantum mechanical
+systems. The energy $E$ is modeled additively
+
+$$\begin\{aligned\}
+    E = \sum_i E_i
+\end\{aligned\}$$ as the sum of atomic contributions. The Behler-Parinello
+network architecture is illustrated in
+Figure [1.1](#fig:bp_nn_architecture)\{reference-type="ref"
+reference="fig:bp_nn_architecture"\}. $R^\{\alpha\}_i$ represents the
+cartesian coordinates of atom $i$. These coordinates are featurized into
+symmetry functions $G^\{\mu\}_i$ and then fed into a subnetwork $S_i$. The
+weights are constrained to be identical among the $S_i$ nodes.
+
+![Behler-Parinello core architecture that converts positions $R^a_i$
+into invariant features $G^\mu_i$ and then into energies
+$E_i$.](figures/Differentiable Physics/Neural Potentials/Behler-Parinello/bp_architecture.png)\{#fig:bp_nn_architecture\}
+
+## Symmetry Function Featurization
+
+The Behler-Parinello method introduces a rotationally invariant feature
+representation that is used to transform input coordinates. Each atomic
+contribution is modeled by the following simple functional form
+
+$$\begin\{aligned\}
+f_c(R_\{ij\}) &= \begin\{cases\}
+0.5 \left [ \cos\left(\frac\{\pi R_\{ij\}\}\{R_c\} \right ) + 1\right] & R_\{ij\} \leq R_c \\
+0 & R_\{ij\} > R_c
+\end\{cases\}
+\end\{aligned\}$$ where $R_c$ is the cutoff distance and $R_\{ij\}$ is the
+interatomic distance. The radial symmetry functions are defined by
+
+$$\begin\{aligned\}
+    G^1_i &= \sum_\{j\neq i\} e^\{-\eta (R_\{ij\}- R_s)^2\} f_c(R_\{ij\})
+\end\{aligned\}$$ where $\eta$ and $R_s$ are learned parameters. The
+$G^1_i$ features are rotationally invariant features associated with
+each atom.
+
+Angular terms are added for all triples of atoms as $$\begin\{aligned\}
+    \vec\{R\}_\{ij\} &= \vec\{R\}_i - \vec\{R\}_j \\
+    \theta_\{ijk\} &= \frac\{\vec\{R\}_\{ij\}\cdot \vec\{R\}_\{ik\}\}\{R_\{ij\} R_\{ik\}\} \\
+    G^2_i &= 2^\{1-\xi\} \sum_\{j,k \neq i\} (1 + \lambda \cos \theta_\{ijk\})^\{\xi\} e^\{-\eta(R_\{ij\}^2+R_\{ik\}^2 +R_\{jk\}^2)\} f_c(R_\{ij\})f_c(R_\{ik\})f_c(R_\{jk\})
+\end\{aligned\}$$ Where $\lambda$ (constrained to $+1,-1$), $\xi$ are new
+parameters. $G^1_i$ and $G^2_i$ can be thought of two-body and
+three-body terms which add in approximate many-body interactions.
+
+The per-atom contribution to energy is computed by a simple neural
+network on the $G^1_i, G^2_i$ features.
+
+$$\begin\{aligned\}
+E_i &= f^2 \left ( w^2_\{01\} + \sum_\{j=1\}^3 w^2_\{j1\} f^1 \left (w^1_\{0j\} + \sum_\{\mu=1\}^2 w^1_\{\mu j\} G^\mu_j \right) \right)
+\end\{aligned\}$$ Here $f^1, f^2$ are the hyperbolic tangent function, and
+the $w^i_\{jk\}$ are weights at different layers.
+
+## Pseudocode Implementation
+
+We can turn the implementation description above into a Physika
+implementation with minimal adaptation.
+
+    class BehlerParinello($\lambda: \mathbb\{R\}$, $\eta: \mathbb\{R\}$, $\xi: \mathbb\{R\}$, $R_s: \mathbb\{R\}$):
+
+      $w^i_\{jk\}$ : $\mathbb\{R\}$
+      def $\lambda$(N : $\mathbb\{N\}$) : $\mathbb\{R\}$:
+        E = 0
+        for i:
+          E += $f^2(w^2_\{01\} + \sum_\{j=1\}^3 w^2_\{j1\} f^1(w^1_\{0j\} + \sum_\{j=1\}^2 w^1_\{\mu j\} G^\mu_j)$
+        return E
+
+## Training the Behler-Parinello Model
+
+Parameters $\lambda, \eta, \xi, R_s$ are treated as hyperparameters and
+are chosen when training on density functional theory data. The weights
+are trained using gradient descent as usual.
+
+The Behler-Parinello function provides a simple example of a potential
+energy function constructed in terms of invariant features. In future
+chapters, we will learn how to generalize this construction to broader
+classes of functions to allow for richer learned representations.
+
+## Exercises
+
+1.  Suppose that coordinates of atoms are given by $$\begin\{aligned\}
+            R_1 &= (1, 0, 0) \\
+            R_2 &= (0, 1, 0) \\
+            R_3 &= (0, 0, 1)
+        
+    \end\{aligned\}$$ Compute the symmetry functions $G^\{\mu\}_i$ for this
+    system.

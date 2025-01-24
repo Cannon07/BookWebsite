@@ -1,0 +1,152 @@
+# The Heat Equation \{#chap:heat_equation\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:** [\[chap:pde\]](#chap:pde)\{reference-type="ref+label"
+reference="chap:pde"\},
+[\[chap:simple_physics\]](#chap:simple_physics)\{reference-type="ref+label"
+reference="chap:simple_physics"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+The heat equation is a fundamental partial differential equation that
+models systems with dissipating heat.
+
+Let $u(x,y,z,t)$ be a function of spatial coordinates and time. The heat
+equation is given by
+$$\frac\{\partial u\}\{\partial t\} = \alpha \left ( \frac\{\partial^2 u\}\{\partial x^2\} + \frac\{\partial^2 u\}\{\partial y^2\} + \frac\{\partial^2 u\}\{\partial z^2\} \right )$$
+
+$$\frac\{\partial u\}\{\partial t\} = \alpha \nabla^2 u$$
+
+The $\nabla^2$ operator is a general \"averaging\" operator. So the heat
+equation takes a point and moves it to the average of its neighbors over
+time.
+
+We're going to take some time to study solutions to the heat equation in
+some depth. While the transmission of heat is indeed an interesting
+problem, the heat equation is also the simplex example of a physical
+partial differential equation that we will encounter in this book so it
+serves as a neat test bed to learn the core principles of solving
+physical equations.
+
+### Linearity
+
+One of the most important properties of the heat equation is that its
+solutions satisfy a linearity property. That is, assume that $u_1$ and
+$u_2$ are both solutions. Then we know that $$\begin\{aligned\}
+    \frac\{\partial u_1\}\{\partial t\} &= \alpha \nabla^2 u_1 \\
+    \frac\{\partial u_2\}\{\partial t\} &= \alpha \nabla^2 u_2 
+\end\{aligned\}$$ By the fact that partial derivatives and $\nabla^2$ are
+both linear operators, we find that a linear combination of $u_1$ and
+$u_2$ is also a solution
+$$\frac\{\partial (c_1 u_1 + c_2 u_2)\}\{\partial t\} = \alpha \nabla^2(c_1 u_1 + c_2 u_2)$$
+This observation provides a powerful tool for solving the heat equation
+in greater generality, since if we can find some solutions, we can find
+more solutions by linear combinations.
+
+### Separation of Variables
+
+The idea of separation of variables is simple. We're going to posit that
+there exists a solution to the heat equation which has the following
+special structure.
+
+$$u(x, t) = X(x)T(t)$$
+
+That is, the solution is \"separable\". Note that if we have a family of
+separable solutions of the form $X_i(x)T_i(t)$, we can construct more
+general solutions by linear combinations
+$$u(x, t) = \sum_i X_i(x)T_i(t)$$ Note that $u$ need not be separable
+now! So the separable solutions form a sort of \"basis\" which we can
+use to solve for the general case of this equation.
+
+Let's now plug in separable equations into the heat equation
+
+$$\begin\{aligned\}
+    \frac\{\partial u\}\{\partial t\} &= \alpha \nabla^2 u \\
+    X(x) T'(t) &= \alpha T(t) \nabla^2 X \\
+    \frac\{T'(t)\}\{T(t)\} &= \alpha \frac\{(\nabla^2 X)(x)\}\{X(x)\}
+\end\{aligned\}$$ This last set of equations has an interesting form. Note
+that the left hand side is a function of $t$ while the right hand side
+is a function of $x$. As $x$ and $t$ independently vary, this equality
+must hold. The only way this can be the case is if both sides equal
+constants. So we can factor this equation into two separate equations
+$$\begin\{aligned\}
+    \frac\{T'(t)\}\{T(t)\} &= c \\
+    \alpha \frac\{(\nabla^2 X)(x)\}\{X(x)\} &= c
+\end\{aligned\}$$ Multiplying through we recover the two ordinary
+differential equations $$\begin\{aligned\}
+    T'(t) &= cT(t) \\
+    \alpha (\nabla^2 X)(x) &= cX(x) 
+\end\{aligned\}$$ For simplicity, let's work with these equations in 1D.
+Then our equations reduce to $$\begin\{aligned\}
+    T'(t) &= cT(t) \\
+    X''(x) &= \frac\{c\}\{\alpha\}X(x) \label\{1d_X_eqn\}
+\end\{aligned\}$$ The solution to the equation for $T$ should recognizably
+be the exponential function $$T(t) = d e^\{ct\}
+    \label\{1d_X_soln\}$$ The solution for the order two differential
+equation is a little trickier though. We can start from a guess that the
+solution perhaps should look like $e^\{\lambda t\}$ since we have that
+$X''$ and $X$ are multiple of one another. Let's try substituting in
+$X = e^\{\lambda t\}$ into our equation and seeing what happens
+$$\begin\{aligned\}
+    \lambda^2 e^\{\lambda t\} &= \frac\{c\}\{\alpha\} e^\{\lambda t\} \\
+    \lambda^2 &= \frac\{c\}\{\alpha\}
+\end\{aligned\}$$ Note that cancelling the $e^\{\lambda t\}$ term is allowed
+since this term is never 0. We now see that equality holds when
+$$\lambda = \pm \sqrt\{\frac\{c\}\{\alpha\}\}$$ Note that Equation
+[\[1d_X_eqn\]](#1d_X_eqn)\{reference-type="ref" reference="1d_X_eqn"\}
+satisfies the property (like the heat equation itself) that its
+solutions space is linear. It follows that we have a family of equations
+$$X(x) = c_1 e^\{\sqrt\{\frac\{c\}\{\alpha\}\}t\} + c_2 e^\{-\sqrt\{\frac\{c\}\{\alpha\}\}t\}$$
+In fact, every solution to Equation
+[\[1d_X_eqn\]](#1d_X_eqn)\{reference-type="ref" reference="1d_X_eqn"\} is
+of this form, but we won't prove that fact here. We now have a family of
+separable solutions for the heat equation in 1D
+$$u(x, t) = \left (c_1 e^\{\sqrt\{\frac\{c\}\{\alpha\}\}t\} + c_2 e^\{-\sqrt\{\frac\{c\}\{\alpha\}\}t\} \right ) \left (d e^\{ct\} \right)
+    \label\{heat_1d_general\}$$
+
+## Boundary Conditions
+
+While we've identified a general class of solutions to the heat
+equation, in practice we'll have some additional information about the
+physical system that we're trying to model. This type of information in
+general is termed *boundary conditions.*.
+
+In this section, we'll work through a simple 1D example of boundary
+conditions to see how we can turn the generic solution form in Equation
+[\[heat_1d_general\]](#heat_1d_general)\{reference-type="ref"
+reference="heat_1d_general"\} into solutions that meet our boundary
+conditions. In particular, let's suppose that we have a 1D rod whose
+endpoints are constrained to have a fixed temperature of $0$ for all
+time
+
+$$\begin\{aligned\}
+u(0, t) &= 0 \qquad \textrm\{for all \} t > 0 \\
+u(\ell, t) &= 0 \qquad \textrm\{for all \} t > 0
+\end\{aligned\}$$
+
+We'll also assume that we know the initial temperature of the rod
+everywhere.
+
+$$u(x, 0) = f(x) \qquad \textrm\{for all \} 0 < x < \ell$$
+
+Let's now impose our boundary conditions onto our general solutions.
+Let's start with the condition that the boundary temperature must be $0$
+for all time. Note that under our separation of variables setting, we
+can enforce boundary conditions by requiring that $X(0) = 0$ and
+$X(\ell) = 0$ for a separable solution $X(x)T(t)$. Note that a more
+general solution will have the form $$u(x, t) = \sum_i X_i(x)T_i(t)$$ If
+we enforce $X_i(0) = 0$ and $X_i(\ell) = 0$, we will have that $u$
+satisfies the endpoint conditions for boundary temperature.
+
+## Exercises
+
+1.  Given the differential equation $T'(t) = cT(t)$ verify that
+    $$T(t) = d \exp\{ct\}$$ is a solution where $d$ is an arbitrary
+    constant. Prove that all solutions must be of this form.
+
+2.  Given the differential equation $$X''(x) = \frac\{c\}\{\alpha\} X$$ Show
+    that if $f_1$ and $f_2$ are solutions to this equation, so too is
+    $c_1 f_1 + c_2 f_2$

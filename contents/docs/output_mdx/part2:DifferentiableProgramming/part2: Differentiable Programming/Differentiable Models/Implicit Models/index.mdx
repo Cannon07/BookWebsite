@@ -1,0 +1,290 @@
+# Deep Equilibrium Models \{#chap:deep_equilibrium\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:ml_basics\]](#chap:ml_basics)\{reference-type="ref+label"
+reference="chap:ml_basics"\},
+[\[chap:probability\]](#chap:probability)\{reference-type="ref+label"
+reference="chap:probability"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+Deep learning techniques often exploit layers of transformations to
+learn powerful representations. Evidence indicates (but does not prove)
+that deeper transformations yield richer representations. An alternative
+idea uses an implicit equation to model the steady state representation
+of an infinitely deep model. In this chapter we study such deep
+equilibrium models (DEQ)[@bai2019deep], [@bai2020multiscale] and study
+their training mechanism through the implicit function theorem.
+
+## Dynamical Systems and Steady State
+
+In dynamical systems, a process achieves steady-state when the behavior
+of the process is unchanging in time. In the continuous version, this
+would mean that the derivative with respect to time is zero.
+
+$$\begin\{aligned\}
+\frac\{dh\}\{dt\} = f(h(t),\theta,t) = 0
+\end\{aligned\}$$ for all present and future time t $\geq$ $t_\{ss\}$, where
+$t_\{ss\}$ is the time at which the system achieves steady state. For
+discrete time processes, this would mean that, $$\begin\{aligned\}
+    h_\{t+1\} = h_\{t\}
+\end\{aligned\}$$ Remember, that $$\begin\{aligned\}
+f(h(t),\theta,t) \neq 0 \textrm \{ for \}t < t_\{ss\}
+\end\{aligned\}$$ The idea of a steady state is extremely important for
+physical systems, both natural and engineered. Systems typically
+approach steady state asymptotically, and some unstable systems never
+reach steady state.
+
+The steady state is often referred to an equilibrium point (or fixed
+point) in mathematics.
+
+$$\begin\{aligned\}
+    \{h\}_\{t+1\}= f(t,\{h\}_\{t\})
+\end\{aligned\}$$
+
+## Explicit vs Implicit Solution Methods for Dynamical Systems
+
+When numerically integrating dynamical systems, there are two approaches
+to solving for the solution. The set of methods we discussed thus far,
+Euler, Runge-Kutta all fall under a class called explicit methods. In
+the simplest formulation, explicit integration for Euler scheme works in
+the following way:
+
+$$\begin\{aligned\}
+    h_\{t+1\} = h_\{t\} + f(h_t,t,\theta)
+\end\{aligned\}$$
+
+The update rule only depends on information from past time-steps. In
+implicit integration though, we take derivative information from a
+future time-step. For example, implicit Euler scheme works in the
+following way:
+
+$$\begin\{aligned\}
+    h_\{t+1\} = h_\{t\} + f(h_\{t+1\},t+1,\theta)
+\end\{aligned\}$$
+
+This is a non-linear equation, in general and can be re-cast as
+
+$$\begin\{aligned\}
+    g(h_\{t+1\},h_\{t\},\theta) = 0
+\end\{aligned\}$$
+
+In general, implicit methods work much better but are computationally
+more difficult to implement. One of the widely used implict methods is
+the Crank--Nicolson method.
+
+In much the same way, one can define an explicit vs implicit layer in a
+neural network. All the networks we have defined thus far have been
+explicit.
+
+$$\begin\{aligned\}
+h_\{t+1\} = f(h_\{t\},t)
+\end\{aligned\}$$ In much the same way, one can define an implicit layer
+in a neural network, i.e. identify $h_\{t+1\}$ such that it satisfies the
+following non-linear equation [@amos2017optnet]
+
+$$\begin\{aligned\}
+f(h_\{t+1\},h_\{t\}) = 0
+\end\{aligned\}$$
+
+## Backpropagation through an implicit layer
+
+In order to backpropagate through implicit layers, we have to make use
+of the implicit function theorem.
+
+$$\begin\{aligned\}
+f(h_\{t+1\}(h_t),h_\{t\}) & = 0\\
+\frac\{df(h_\{t+1\}(h_t),h_\{t\})\}\{dh_t\} & =   0\\
+\frac\{\partial f(h_\{t+1\},h_\{t\})\}\{\partial h_t\} + \frac\{\partial f(h_\{t+1\},h_\{t\})\}\{\partial h_\{t+1\}\} \frac\{\partial h_\{t+1\}\}\{\partial h_t\} & = 0\\
+\frac\{\partial h_\{t+1\}\}\{\partial h_t\} & =  - \left(\frac\{\partial f(h_\{t+1\},h_\{t\})\}\{ \partial h_\{t+1\}\}\right)^\{-1\} \{\partial f(h_\{t+1\},h_\{t\})\}\{\partial h_t\}
+\end\{aligned\}$$
+
+To summarize, the process is differentiating through an implicit layer
+is not to unroll the solution procedure, but to find a solution and then
+analytically compute the backpropagation.
+
+Some challenges for implicit layers are the choice of function $f$, and
+difficulties with computing the Jacobian.
+
+## Intuition behind Equilibrium Models
+
+Let us revisit the neural ODE formulation for a particular task (e.g.
+classification or regression). The ODE solver is used to evolve the
+solution from time, $t=0$ to $t=T$. Ultimately, the prediction is made
+from the solution at $t=T$, directly through a linear layer. Now, let us
+assume that the time $T > t_\{ss\}$ for this ODE flow.
+
+In this case, if one could directly get the equilibrium (or fixed
+point), then a one-layer network can be defined to perform this task.
+Intuitively, starting at some point, stacking an additional layer or
+solving for additional time gives smaller and smaller contribution to
+the feature representation, i.e. we are in a region of diminishing
+returns.
+
+## Deep Equilibrium Models \{#deep-equilibrium-models\}
+
+For the limiting case of an infinite-depth network, the solution should
+settle to the equilibrium point.
+
+$$\begin\{aligned\}
+  \lim_\{t\rightarrow \infty\} h_\{t\} = f(h_\{t\},x,\theta) = h^* = f(h^*,x,\theta)
+\end\{aligned\}$$
+
+Now, find this equilibrium point becomes a simple root-finding problem
+which can be done using Newton/Quasi-Newton methods rather than moving
+through the forward model. Then, backpropagation is carried out via the
+implicit differentiation shown earlier [@bai2019deep]. Here is a summary
+of the DEQ approach:
+
+1.  Define a single layer $f(h,\theta, x)$.
+
+2.  **Forward Pass:** Given an input x, compute the equilibrium point
+    $h^*$, such that $$f(h^*,\theta;x) - h^*= 0$$ via a root-finding
+    algorithm.
+
+3.  **Backward Pass:** Implicitly differentiate through the equilibrium
+    state to form gradients:
+    $$\frac\{\partial \mathcal\{L\}\}\{\partial (\cdot)\} = - \frac\{\partial \mathcal\{L\}\}\{\partial h^*\} \underbrace\{\left(\frac\{\partial f(h^*,\theta)\}\{\partial h^*\}-I\right)^\{-1\}\}_\{\textrm\{Jacobian at the equilibrium\}\} \underbrace\{\frac\{\partial f(h^*,\theta)\}\{\partial (\cdot)\}\}_\{\textrm\{Gradient of one layer\}\}$$
+
+``` \{.python language="python"\}
+class DeepEquilibriumModel(f: $\mathbb\{R\}^N \times \mathbb\{R\}^N \to \mathbb\{R\}$):
+  def $\lambda$(x):
+    hstar = RootFind(f)
+    return hstar
+
+  def d$\lambda$(x, hstar, upstream):
+    J = ($\nabla$(f, hstar) - I)$^\{-1\}$
+    grad = $\nabla$(f, x)
+    return (- upstream * J * grad)
+```
+
+Note that we define a custom gradient for this layer. At times,
+Physika's automatic differentiation is not sufficient to fully define
+derivatives for a given layer.
+
+### Implementation Details
+
+Broyden's method (quasi-Newton) is used for both forward and backward
+passes. This saves the (potentially) huge cost of forming and inverting
+Jacobians.
+
+This raises the question of whether equilibrium points should exist. In
+fact, the converge of deep networks require this kind of stability or
+they will blow up as we had discussed in the context of residual
+networks. Thus, the existence of equilibrium points probably requires
+the same level of stability considerations as traditional deep networks.
+
+### Advantages/Trade-offs
+
+Let's consider the tradeofs between implicit and explicit layers. One
+major advantage is Constant memory consumption. As there is no need to
+store any intermediate value. We only need to store x, $h^*, \theta$.
+
+A major disadvantage is slower training. Empirically implicit layers are
+typically $\sim$`<!-- -->`\{=html\}2-2.5x slower to train,
+$\sim$`<!-- -->`\{=html\}1.5-2x slower for inference. This is because root
+finding takes slightly longer than iterating a small fixed \# of forward
+steps.
+
+
+# Differentiable Convex Optimization \{#chap:deep_equilibrium\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:ml_basics\]](#chap:ml_basics)\{reference-type="ref+label"
+reference="chap:ml_basics"\},
+[\[chap:probability\]](#chap:probability)\{reference-type="ref+label"
+reference="chap:probability"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+Convex optimization problems provide a convenient mathematical language
+for stating a class of mathematical problems that are amenable to
+optimization methods. These layers can now be used as layers in
+differentiable programs, facilitating modeling of physical systems with
+constrained degrees of freedom.
+
+## Convex Optimization and Convex Programs
+
+A general family of convex optimization problems can be written as
+
+$$\begin\{aligned\}
+    x^*(\theta) = &\arg\min \quad f_0(x; \theta) \\
+    &\textrm\{subject to\} \quad f_i(x; \theta) \leq 0,\quad i = 1,\dotsc,m \\
+    &\qquad \qquad \quad  g_j(x;\theta) = 0, \quad j=1,\dotsc, n
+\end\{aligned\}$$
+
+Here $x$ is the optimization variable, $f_0, f_i, g_j$ are all convex
+functions and $\theta$ is a parameter vector.
+
+Convex programs have increasingly become standard computational
+primitives that can be used as pieces of more complex programs. Can we
+use a convex problem as a part of a differentiable program? It is in
+fact possible to differentiate through convex optimization problems
+[@agrawal2019differentiable], [@agrawal2020learning]. If the objective
+and condition functions are smooth, we can write down the KKT equations
+that govern the solution and solve them directly
+
+At times, we will have non-smooth, non-differentiable objective or
+condition functions. In this case, we can implicitly define the
+stationary conditions of a generic cone program.
+
+$$\begin\{aligned\}
+\textrm\{minimize\} \quad c^T x \quad
+\textrm\{subject to\} \quad b - A x \in \mathcal\{K\}
+\end\{aligned\}$$ where $\mathcal\{K\}$ is a convex cone, $A$ is a matrix,
+and $b$ is a vector.
+
+## Disciplined Convex Programming
+
+The field of disciplined convex programming has introduced domain
+specific languages to faciliate specification of complex convex
+programs. These systems, such as cvxpy, perform compilation steps to
+transform an arbitrary convex optimization into a standardized cone
+program. When computing gradients, these transformations also have to be
+differentiated through as well. The compilation transformations are
+affine so the differentiation is simple.
+
+A differentiable disciplined convex program can be constructed by using
+differentiable disciplined components in a Physika program.
+
+## Taking Derivatives of a Cone Program
+
+Suppose that we have a cone program given in primal form by
+$$\begin\{aligned\}
+    &\textrm\{minimize\}\ c^T x \\
+    & \textrm\{subject to\}\ Ax + s = b \\
+    & \qquad \qquad \ s \in \mathcal\{K\}
+\end\{aligned\}$$
+
+We swap to dual formulation of cone program. View a conic program as a
+function
+
+$$\begin\{aligned\}
+    \psi: \mathbb\{R\}^\{m \times n\}\times \mathbb\{R\}^m \times \mathbb\{R\}^n \to \mathbb\{R\}^\{n+2m\}
+\end\{aligned\}$$ We compute the adjoint to the derivative of $\psi$ at
+$(A, b, c)$ by the formula $$\begin\{aligned\}
+    (dA, db, dc) &= D^T \psi(A, b, c)(dx, dy, ds) \\
+    &= D^T Q(A, b, c)D^T s(Q) D^T \phi(z)(dx, dy, ds)
+\end\{aligned\}$$
+
+## Noisy Linear Regression
+
+Suppose $(x_i, y_i)$ are the data. Suppose we have a linear classifier
+
+$$\begin\{aligned\}
+    \hat\{y\} &= 1[\beta^T x \geq 0]
+\end\{aligned\}$$ The loss is given by $$\begin\{aligned\}
+    \mathcal\{L\} &= \frac\{1\}\{m\} \sum \ell(\theta, x_i, y_i)
+\end\{aligned\}$$ $\beta^*$ is the solution to the convex optimization
+problem for training.
+
+The gradient $\nabla_\{x_i\} \mathcal\{L\}$ gives the direction that creates
+a maximal increase in the training loss.

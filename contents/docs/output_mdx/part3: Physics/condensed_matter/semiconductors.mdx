@@ -1,0 +1,131 @@
+# Semiconductors \{#chap:semiconductors\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:quantum_mechanics\]](#chap:quantum_mechanics)\{reference-type="ref+label"
+reference="chap:quantum_mechanics"\},
+[\[chap:stat_thermo\]](#chap:stat_thermo)\{reference-type="ref+label"
+reference="chap:stat_thermo"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+Semiconductors are materials with electrical conductivity between that
+of a metallic conductor and a nonmetallic insulator. Semiconductors have
+a number of interesting physical properties. For one, their resistivity
+drops as temperatures rise (unlike metals which have higher resistivity
+at higher temperatures). Semiconductors can also have their conducting
+properties altered by the addition of \"dopants\", impurities introduced
+into the crystal structure of a semiconductor. A substance with two
+differently doped regions can form a \"semiconductor junction\".
+
+In this chapter, we introduce the foundations of semiconductor physics
+and consider how to build differentiable programs that predict
+semiconductor structure and behavior.
+
+## Basic Semiconductor Physics
+
+Semiconductors are marked by their unique conductivity behavior, between
+that for conductors and insulators. To understand this behavior more
+precisely, we will need to delve into the physics of electronic band
+structure. An isolated atom has electrons that occupy atomic orbitals.
+What happens to the electronic structure then when two atoms come
+together to form a molecule? Pauli's exclusion principle dictates that
+two electrons can't have the quantum number in a molecule. This means
+that each atomic orbital in a diatomic molecule splits into two
+molecular orbitals
+
+Now consider a more complex situation, where $N$ identical atoms come
+together to form crystal lattice. In this case, the atomic orbitals of
+individual atoms will overlap. The Pauli exclusion principle then
+dictates that we can't have two electrons in the solid that have the
+same quantum numbers. This forces each atomic orbital for each atom to
+split into $N$ discrete molecular orbitals. Macroscopic solids have very
+large numbers of atoms, so these $N$ discrete molecular orbitals
+effectively form a continuum since the energy gap between adjacent
+molecular orbitals will be very small.
+
+### Fermi Level
+
+For a solid state body, the Fermi level is the thermodynamic work
+required to add one electron to the body. This quantity is usually
+referred to as $\mu$.
+
+### Band Gap
+
+For semiconductors, the band gap is the distance between the valence
+band and the conduction band. It represents the amount of energy
+required to promote an electron to participating in conduction.
+
+![The band-gap structure of an example
+material.](figures/Physics/condensed_matter/semiconductors/band gap structure (1).png)\{#fig:bandgap\}
+
+### Bravais Lattice and Reciprocal Lattice
+
+To study the mathematical properties of semiconductor systems, we need
+to be able to formulate the repeating lattice structure of the material
+in our equations. Let's start by defining a lattice. Conceptually, a
+lattice is defined by its unit cell, which is given by three primitive
+lattice vectors $$\begin\{aligned\}
+\vec\{a_1\}, \vec\{a_2\}, \vec\{a_3\}
+\end\{aligned\}$$ The Bravais lattice is the infinite set of points
+described by
+
+$$\vec\{r\} = n_1 \vec\{a_1\} + n_2 \vec\{a_2\} + n_3 \vec\{a_3\}, \quad n_1, n_2, n_3 \in \mathbb\{Z\}$$
+
+To model physical crystals, we also need to consider the *primitive unit
+cell*. This unit cell is given by
+
+$$\textbf\{r\} = \{x_1 \vec\{a_1\} + x_2 \vec\{a_2\} + x_3 \vec\{a_3\} | 0 \leq x_1, x_2, x_3 < 1 \}$$
+
+We then say that a crystal is an arrangement of atoms within the
+primitive unit cell. Note that not all the atoms have to be of the same
+type.
+
+## Solving Schrodinger's Equation in Lattices
+
+Let's consider how to solve Schrodinger's equation for particles in a
+lattice. Physically, we expect that the potential energy of the system
+obeys the following symmetry
+
+$$\begin\{aligned\}
+V(\vec\{x\} + \vec\{a\}) = V(\vec\{x\}) 
+\end\{aligned\}$$
+
+That is, the potential energy repeats for each primitive unit cell. The
+solutions of Schrodinger's equation for such a system are given by
+Bloch's theorem which states that for electrons in a crystal lattice,
+with a potential $V$ that obeys the symmetry
+
+$$\begin\{aligned\}
+V(\vec\{x\} + \vec\{a\}) = V(\vec\{x\}), 
+\end\{aligned\}$$
+
+There exists a basis of wave functions which have the following
+properties: Each wave function $\psi_i$ is an energy eigenstate of
+Schrodinger's equation. We can write $\psi_i$ as $$\begin\{aligned\}
+\psi_i(r) = e^\{i k \cdot r\} u_i(r)
+\end\{aligned\}$$
+
+Where $u(r)$ has the same periodicity as the crystal. That is,
+$$\begin\{aligned\}
+u(r + \vec\{a\}) = u(r)
+\end\{aligned\}$$ We say that a function with the form $$\begin\{aligned\}
+\psi_\{i\}(r) = e^\{ik\cdot r\}u_\{i\}(r)
+\end\{aligned\}$$ is a Bloch wave. Note that the Block theorem means that
+given bloch state can be identified with a wave vector $k$.
+
+::: marginfigure
+![image](figures/Physics/condensed_matter/semiconductors/pn junction.png)\{width="\\linewidth"\}
+:::
+
+## Doping
+
+Doping is the introduction of impurities into semiconductor for the
+purpose of changing its properties and behaviors.
+
+P-type semiconductors have electron acceptors embedded into the
+underlying semiconductor, whhile N-type semiconductors have electron
+donors embedded into the underlying semiconductor.

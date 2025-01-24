@@ -1,0 +1,192 @@
+# Quantum Harmonic Oscillators \{#chap:quantum_harmonic\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:harmonic\]](#chap:harmonic)\{reference-type="ref+label"
+reference="chap:harmonic"\},
+[\[chap:quantum_mechanics\]](#chap:quantum_mechanics)\{reference-type="ref+label"
+reference="chap:quantum_mechanics"\},
+[\[chap:position_and_momentum\]](#chap:position_and_momentum)\{reference-type="ref+label"
+reference="chap:position_and_momentum"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+The quantum harmonic oscillator is a quantum mechanical version of the
+classical oscillator we saw in
+[\[chap:harmonic\]](#chap:harmonic)\{reference-type="ref+label"
+reference="chap:harmonic"\}. Quantum harmonic oscillators also arise as a
+foundational building block for systems in condensed matter and quantum
+field theory.
+
+## The Basic Oscillator
+
+The energy for a classical harmonic spring system was given by
+$$E = \frac\{p^2\}\{2m\} + \frac\{1\}\{2\}kx^2$$ Quantizing this energy, we
+arrive at the Hamiltonian for a quantum mechanical oscillator.
+$$\hat\{H\} = \frac\{\hat\{p\}^2\}\{2m\} + \frac\{1\}\{2\}k\hat\{x\}^2$$ How should we
+think about this equation? Proceeding with intuition based on the
+classical energy, this operator states that as the energy and momentum
+grows larger, the system has higher and higher energy.
+
+We start by defining some fundamental types for this system. The state
+space $\mathcal\{S\}$ should be a suitable Hilbert space $\mathcal\{H\}$ of
+wave functions. For this example, we will take $\mathcal\{H\}$ to be the
+space of square-integrable functions over $\mathbb\{R\}^3$,
+$L^2(\mathbb\{R\}^3)$
+
+The time evolution of the system is given by Schrodinger's equation. In
+our case, the equation becomes $$\begin\{aligned\}
+        i \hbar \frac\{d\}\{dt\} | \psi(t) \rangle = \left (\frac\{\hat\{p\}^2\}\{2m\} + \frac\{1\}\{2\} k \hat\{x\}^2 \right ) |\psi(t) \rangle
+\end\{aligned\}$$
+
+The parameters are $$\begin\{aligned\}
+\mathcal\{W\} = \{m, k, |\psi(0)\rangle \}
+\end\{aligned\}$$ where $k$ is the harmonic constant and $|\psi(0)\rangle$
+is the initial condition of the wave function.
+
+Recall that the velocity operator is defined by
+$$\hat\{v\} = -\frac\{i\hbar\}\{m\} \frac\{\partial\}\{\partial x\}$$ We constrain
+$$\|\hat\{v\}\|_2 \ll c$$ where $\| \hat\{v\}\|_2$ is the spectral norm of
+$\hat\{v\}$. Hyperparameters $\mathcal\{HP\}$ are $c$, the speed of light,
+and noise parameter $\epsilon$.
+
+In the classical quantum mechanical sense, any self-adjoint operator on
+$\mathcal\{H\}$ can be an observable. We choose the position operation
+$\hat\{x\}$ to be the observable we can measure. Recall that taking a
+measurement of $\hat\{x\}$ projects onto the eigenstates of $\hat\{x\}$
+(which are just the points in $\mathbb\{R\}^3$). We will assume that we
+have a noise process $\mathrm\{Normal\}(0, \epsilon)$ on this measurement
+
+[]\{#phs:theory:moving:particle label="phs:theory:moving:particle"\}
+
+## The Vibrational Modes of a Diatomic Molecule
+
+The vibrational modes of a diatomic molecule can be determined by
+considering a single particle in a harmonic potential. Consider a
+diatomic molecule with atomic masses $m_1$ and $m_2$. The covalent bond
+between the two atoms can be modeled as a harmonic spring with spring
+constant $k$. If we define $x$ to be the distance of separation between
+the two atoms, we have the governing equation for the wave-packet as
+
+$$\begin\{aligned\}
+\hat\{H\} \psi &= E \psi \\
+-\frac\{h^2\}\{8 \pi^2 \mu\} \frac\{d^2\psi\}\{dx^2\} + \frac\{1\}\{2\}kx^2\psi &= E \psi
+\end\{aligned\}$$
+
+Where $$\begin\{aligned\}
+\mu &= \frac\{m_1m_2\}\{m_1+m_2\}
+\end\{aligned\}$$ Upon solving this equation, we have an infinite number
+of solutions with discreet energy levels. In general, the $nth$
+wave-packet can be described by:
+
+$$\begin\{aligned\}
+\label\{exmp4b\}
+\psi_n = \left(\frac\{1\}\{n!2^na\sqrt\{\pi\}\}\right)^\{1/2\} H_n\left(\frac\{x\}\{a\}\right) \exp\left(-\frac\{x^2\}\{2a^2\}\right)
+\end\{aligned\}$$
+
+Where $a^4=\frac\{h^2\}\{4\pi^2\mu k\}$ and the function $H_n(u)$ represents
+the Hermite polynomials as $$\begin\{aligned\}
+H_0(u) &=1\\
+H_1(u) &=2u\\
+H_2(u) &= 4u^2 - 2 \\
+H_3(u) &= 8u^3-12u
+\end\{aligned\}$$ for the first four states. Following this procedure, the
+energy of the $nth$ state can be described as:
+
+::: marginfigure
+![image](figures/Physics/quantum_mechanics/harmonic_oscillator/harmonicoscillator.png)\{width="\\linewidth"\}
+:::
+
+$$\begin\{aligned\}
+\label\{exmp4c\}
+E_n = \left( n+\frac\{1\}\{2\}\right)\frac\{h\nu\}\{2\pi\}
+\end\{aligned\}$$
+
+Where $\nu=\sqrt\{\frac\{k\}\{\mu\}\}$ and $n=0,1,2,3,4.....$ are the quantum
+mechanical modes of motion. As in the case of classical mechanics, the
+characteristic frequency $\nu$ plays an important role in determining
+the solutions using the quantum mechanical solutions, as shown in
+Fig. [\[fig:harmonicoscillator\]](#fig:harmonicoscillator)\{reference-type="ref"
+reference="fig:harmonicoscillator"\}.
+
+## Particle in a box
+
+We can use the quantum harmonic oscillator to help us solve more complex
+models. Consider now a particle with 1-D motion along the $x$ axis in a
+box of length L from $x=0$ to $x=L$. The external potential is assigned
+as $$\begin\{aligned\}
+V(x,t) = \begin\{cases\} 
+0 & \textrm\{ for $0 < x < L$\} \\
+\rightarrow \infty & \textrm\{ for $x \geq L$ and $x \leq 0$\} 
+\end\{cases\}
+\end\{aligned\}$$ We illustrate $V(x)$ in
+Fig. [\[fig:partinbox\]](#fig:partinbox)\{reference-type="ref"
+reference="fig:partinbox"\}.
+
+::: marginfigure
+![image](figures/Physics/quantum_mechanics/schrodingers_equation/particle_in_box0.png)
+:::
+
+The governing equation for the particle inside the box is:
+
+$$\begin\{aligned\}
+\hat\{H\} \psi &= E \psi \\
+-\frac\{h^2\}\{8 \pi^2 m\} \frac\{d^2\psi\}\{dx^2\} &= E \psi
+\end\{aligned\}$$
+
+This equation has the boundary conditions $\psi=0$ at $x=0$ and at
+$x=L$. The equation can be written in the same form as that of a
+harmonic oscillator as:
+
+$$\begin\{aligned\}
+\label\{exmp3b\}
+\frac\{d^2\psi\}\{dx^2\} + G^2\psi=0
+\end\{aligned\}$$
+
+Where $G^2=\frac\{8mE \pi^2\}\{h^2\}$. The solution for this system is given
+as:
+
+$$\begin\{aligned\}
+\label\{exmp3c\}
+\psi = C_1\sin(Gx)+ C_2\cos(Gx)
+\end\{aligned\}$$
+
+To satisfy the boundary conditions, we must have $C_2=0$. The remaining
+solution has infinite possibilities because $\sin(n\pi)=0$ for
+$n=1,2,3,4.......$ The condition for the solution thus results in:
+
+$$\begin\{aligned\}
+\label\{exmp3d\}
+G_n = \pi\sqrt\{\frac\{8m E_n\}\{h^2\}\} = \frac\{n\pi\}\{L\}
+\end\{aligned\}$$
+
+This implies:
+
+$$\begin\{aligned\}
+\label\{exmp3e\}
+E_n = \frac\{h^2\}\{8mL^2\}n^2
+\end\{aligned\}$$
+
+Using the condition that $|\psi|^2$ has to be normalized, we have
+$$\begin\{aligned\}
+C_1 &= \sqrt\{\frac\{2\}\{L\}\}
+\end\{aligned\}$$ Hence, the solution for the wave-packet for the $n^\{th\}$
+quantum state of the particle is:
+
+::: marginfigure
+![image](figures/Physics/quantum_mechanics/harmonic_oscillator/schrodingereqnsoln0.png)\{width="\\linewidth"\}
+:::
+
+$$\label\{exmp3f\}
+\psi_n(x) = \sqrt\{\frac\{2\}\{L\}\} \sin \left (\frac\{n \pi x\}\{L\}\right )$$
+
+One can easily extend this to 3-dimensions, which instead of $n$ would
+result in $n_x,n_y,n_z$. However, what is more important here is to
+understand the quantization of the energy levels in terms of n. For
+varying $n$, we get different solutions of the Schrödinger equation in
+1-dimension, as shown in
+Fig. [\[fig:schrodingereqnsoln\]](#fig:schrodingereqnsoln)\{reference-type="ref"
+reference="fig:schrodingereqnsoln"\}.

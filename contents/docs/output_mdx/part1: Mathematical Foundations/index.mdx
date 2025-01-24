@@ -1,0 +1,3319 @@
+# Differentiable Manifolds \{#chap:manifold\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:calculus\]](#chap:calculus)\{reference-type="ref+label"
+reference="chap:calculus"\},
+[\[chap:matrix_calculus\]](#chap:matrix_calculus)\{reference-type="ref+label"
+reference="chap:matrix_calculus"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+Modeling physical systems at times requires us to describe complex
+shapes and spaces that aren't just $\mathbb\{R\}^n$. Manifolds provide a
+powerful method for describing and analyzing such shapes. We will need
+to make use of manifolds for describing systems in general relativity
+and quantum mechanics.
+
+We note that it's also common to see the term manifold used informally
+in the machine learning literature to describe complex spaces. This
+usage is usually more metaphorical than literal but we will attempt to
+explore what these statements mean more rigorously.
+
+## Formal Definitions
+
+We start by defining some basic preliminaries from topology to
+facilitate our definition. A topological space is a set along a defined
+topology (a collection of open sets). A topological space $T$ is
+Hausdorff if for any two distinct points $x, y$, there exist disjoint
+open sets $U_x$, $U_y$ such that $$\begin\{aligned\}
+x \in U_x, y \in U_y, U_x \cap U_y = \emptyset
+\end\{aligned\}$$
+
+To give an example, the real numbers $\mathbb\{R\}$ form a Hausdorff
+topological space. The open sets for $\mathbb\{R\}$ are given by the open
+intervals $$\begin\{aligned\}
+    \mathcal\{U\}(\mathbb\{R\}) &= \{ (a, b) | a, b\in \mathbb\{R\}, a < b \}
+\end\{aligned\}$$ Then for any $x, y \in \mathbb\{R\}$, we can choose
+disjoint open sets $$\begin\{aligned\}
+    (a-\epsilon, a+\epsilon), (b-\epsilon, b+\epsilon)
+\end\{aligned\}$$ where $\epsilon$ is small enough that these sets don't
+intersect.
+
+A topological space $T$ is second countable if there exists a sequence
+of open sets $U_1, U_2, \dotsc$ such that any open subset of $T$ is a
+union of elements of this sequence. The real numbers are second
+countable since we can consider the set of open intervals with rational
+centers and radiii $$\begin\{aligned\}
+    \mathcal\{U\} &= \left \{ \left (\frac\{p\}\{q\} - \frac\{m\}\{n\}, \frac\{p\}\{q\} + \frac\{m\}\{n\} \right ) | p, q, m, n \in \mathcal\{N\} \right \}
+\end\{aligned\}$$
+
+A homeomorphism $T: U \to V$ is a continuous function between two
+topological spaces $U$ and $V$ which has a continuous inverse. For
+example, the exponential map is a homeomorphism $$\begin\{aligned\}
+    \mathrm\{exp\}: \mathbb\{R\} \to \mathbb\{R\}^+
+\end\{aligned\}$$
+
+Let $M$ be a topological space. A chart is a homeomorphism
+$$\begin\{aligned\}
+    \varphi: U \to \mathbb\{R\}^n
+\end\{aligned\}$$ where $U$ is an open subset of $M$ and and $\varphi(U)$
+is an open subset of $\mathbb\{R\}^n$. A differentiable atlas on
+topological space $M$ is a collection of charts $$\begin\{aligned\}
+   \mathcal\{A\} &= \{\varphi_i: U_i \to \mathbb\{R\}^n \}
+\end\{aligned\}$$ such that $$\begin\{aligned\}
+    \bigcup_i U_i = M
+\end\{aligned\}$$ and such that for all $i, j$ $$\begin\{aligned\}
+    \varphi_i \circ \varphi_j^\{-1\}
+\end\{aligned\}$$ is a differentiable function. The atlas is said to be
+smooth (or $C^\infty$) if the composition function
+$\varphi_i \circ \varphi_j^\{-1\}$ are infinitely differentiable.
+
+With these preliminaries in place, we can define a manifold as a
+topological space $M$ that is Hausdorff, second-countable, and which has
+a differentiable atlas. The manifold is called smooth ($C^\infty$) if
+the atlas is smooth.
+
+To take a trivial example, $\mathbb\{R\}^n$ is a manifold where the atlas
+consists of one function $\varphi = I$, where $I$ is the identity
+function. The intuition behind the definitions is that a manifold
+provides a way to describe a space that locally looks like the real
+numbers.
+
+![A tangent space for a
+sphere.](figures/Mathematical Foundations/manifolds/manifold_tangent1.png)
+
+Let $M$ be a $C^\{\infty\}$ manifold. A function $f:M \to \mathbb\{R\}$ is
+defined to be in $C^\{\infty\}(M)$ if for every chart
+$\varphi: U \to \mathbb\{R\}^n$, the composition $f \circ \varphi^\{-1\}$ is
+infinitely differentiable.
+
+Let $x \in M$. A derivation $d: C^\{\infty\}(M) \to \mathbb\{R\}$ at $x$ is
+a linear map that satisfies the Leibniz rule $$\begin\{aligned\}
+    d(fg) = d(f)g + fd(g)
+\end\{aligned\}$$ where $f, g \in C^\{\infty\}(M)$.
+
+Note that two derivations can be added to one another and multiplied by
+scalars in $\mathbb\{R\}$. Hence, the set of derivations forms a real
+vector space.
+
+The *tangent space* at $x \in M$, denoted $T_x M$ is the set of
+derivations $d$ defined at $x$. The tangent space provides a formal
+mechanism to compute the \"tangent lines\" to the manifold at a given
+point.
+
+Let $M$ be a differentiable manifold. Then the tangent bundle is given
+by the disjoint union of the tangent spaces of $M$. $$\begin\{aligned\}
+    TM := \bigsqcup_\{x \in M\} T_x M
+\end\{aligned\}$$
+
+::: marginfigure
+![image](figures/Mathematical Foundations/manifolds/tangent_bundle_circle1.png)
+:::
+
+Let $M$ be a smooth manifold. Let $x \in M$ be a point and $T_x M$ be
+the tangent space at that point. A cotangent vector $\alpha$ at $x$ is a
+linear functional $$\begin\{aligned\}
+    \alpha: T_x M \to \mathbb\{R\}
+\end\{aligned\}$$ The set of all cotangent vectors is denoted by
+$T_x^* M$. The cotangent bundle $T^* M$ is the disjoint union of the
+cotangent spaces of the manifold
+
+## Riemannian Manifolds
+
+A Riemannian Manifold adds a notion of distance to a differentiable
+manifold. Let $M$ be a smooth manifold. Let $g$ be such that for each
+$x \in M$, $g_x$ is a positive definite inner product on the vector
+space $T_x M$. The tuple $(M, g)$ is a Riemannian manifold.
+
+In general, $g$ is called the metric tensor for the manifold. We note
+that $\mathbb\{R\}^n$ is a Riemannian manifold. Note that for any
+$x \in \mathbb\{R\}N^n$, the following is a basis of the tangent space
+$$\begin\{aligned\}
+    \{\frac\{\partial\}\{\partial x_i\} \}
+\end\{aligned\}$$ Note that each of these quantities is a derivation by
+our rule above and hence a member of the tangent space. Then an
+arbitrary element of the tangent space $T_x \mathbb\{R\}^n$ can be written
+as $$\begin\{aligned\}
+    \sum_i a_i \frac\{\partial\}\{\partial x_i\}
+\end\{aligned\}$$ We then define an inner product as $$\begin\{aligned\}
+    g\left ( \sum_i a_i \frac\{\partial\}\{\partial x_i\}, \sum_j b_j \frac\{\partial\}\{\partial x_j\} \right ) &= \sum_i a_i b_i
+\end\{aligned\}$$
+
+## Exercises
+
+1.  Prove that $\frac\{\partial\}\{\partial x_i\}$ is a derivation for
+    $\mathbb\{R\}^n$
+
+
+# Group Actions and Representations \{#chap:lorentz_group\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:** [\[chap:lie\]](#chap:lie)\{reference-type="ref+label"
+reference="chap:lie"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+Mathematical groups represent collections of mathematical
+transformations (such as rotations, translations, reflections) abstract.
+Representations provide a tool to turn abstract transformations into
+concrete matrices. In this chapter, we define the useful notions of
+group actions and group representations, which provide tools to study
+groups as concrete matrices instead of as abstract mathematical
+entities.
+
+## Group Action
+
+A group $G$ is said to act on space $A$ if there exists some function
+$$\begin\{aligned\}
+G \times A \to A
+\end\{aligned\}$$ This function is commonly indicated by $\cdot$ under the
+notation $$\begin\{aligned\}
+g \cdot a \in A
+\end\{aligned\}$$ Group representations furnish a natural group action on
+their associated vector spaces $V$.
+
+## Defining Group Representations
+
+For example, a group representation on $\mathbb\{R\}^n$ is given by a map
+$$\begin\{aligned\}
+\rho: G \to M_\{n\times n\}(\mathbb\{R\})
+\end\{aligned\}$$ We say that $\rho$ must be a group homomorphism that
+satisfies the following property $$\begin\{aligned\}
+    \rho(g_1g_2) = \rho(g_1)\rho(g_2)
+\end\{aligned\}$$ for all $g_1, g_2 \in G$.
+
+A faithful representation is one which is injective. We can generalize
+this notation of representation to the complex numbers $$\begin\{aligned\}
+\rho: G \to M_\{n \times n\}(\mathbb\{C\})
+\end\{aligned\}$$ or even further to an arbitrary vector space $V$
+$$\begin\{aligned\}
+\rho: G \to M_\{n \times n\}(V)
+\end\{aligned\}$$
+
+To provide a concrete example, consider the group of 3 elements,
+$$\begin\{aligned\}
+H &= \{1, u, u^2\}
+\end\{aligned\}$$ where $$\begin\{aligned\}
+u &= e^\{2\pi i / 3\}
+\end\{aligned\}$$ We define $\rho: H \to M_\{2 \times 2\}(\mathbb\{C\})$ by
+$$\begin\{aligned\}
+\rho(0) &= \begin\{pmatrix\}
+1 & 0 \\
+0 & 1 
+\end\{pmatrix\}\\
+\rho(u) &= \begin\{pmatrix\}
+1 & 0 \\
+0 & u 
+\end\{pmatrix\} \\
+\rho(u^2) &= \begin\{pmatrix\}
+1 & 0 \\
+0 & u^2 
+\end\{pmatrix\} 
+\end\{aligned\}$$ You will show in the exercises that $\rho$ is a group
+representation.
+
+## Irreducible Representations
+
+Suppose that $W$ is a vector subspace of $V$ which is invariant under
+the group representation $\rho$. That is, if $w \in W$, we have that for
+all group elements $g \in G$, $$\begin\{aligned\}
+\rho(g) w \in W
+\end\{aligned\}$$ That is, the matrices $\rho(g)$ map elements of $W$ back
+into $W$. We can then say that $W$ provides a subrepresentation of
+$\rho$. We say that $V$ provides an irreducible representation if there
+do not exist any subrepresentations. Irreducible representations are
+very useful since reducible representations can be decomposed into a sum
+of irreducible representations. For this reason, irreducible
+representations furnish the \"atomic\" elements of representations. In
+fact, there is a deep connection between particles and representation
+theory given by Wigner's theorem.
+
+## Exercises
+
+1.  Prove that $H$ is a group.
+
+2.  Prove that $\rho$ acting on $H$ defined above is a group
+    representation.
+
+
+# Mathematical Transforms \{#chap:transforms\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:calculus\]](#chap:calculus)\{reference-type="ref+label"
+reference="chap:calculus"\},
+[\[chap:vectors\]](#chap:vectors)\{reference-type="ref+label"
+reference="chap:vectors"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+We will at various times have to make use of various transforms that
+turn one type of equation into another. These transforms will prove
+especially useful to us as we encounter complex sets of differential
+equations. Having a toolbox of transforms we can throw at systems will
+enable us to solve much more sophisticated systems than we could do
+otherwise.
+
+## Fourier Transforms
+
+The Fourier transform is a mathematical operation of fundamental
+importance to modern physics and engineering. Let $f$ be an integrable
+function $f: \mathbb\{R\} \to \mathbb\{C\}$.
+
+$$\hat\{f\}(k) = \frac\{1\}\{2\pi\} \int_\{-\infty\}^\{\infty\} f(x) e^\{i x k\} dx$$
+
+We will also use the notation
+
+$$\mathcal\{F\}(f) = \hat\{f\}$$
+
+to denote the Fourier transform as an operator $\mathcal\{F\}$. If you're
+not familiar with the Fourier transform, this definition may feel quite
+opaque. Why does it make sense? Let's start by first outlining a few
+basic properties of the Fourier transform
+
+$$\begin\{aligned\}
+    \mathcal\{F\}(a f(x) + b g(x)) &= \int_\{-\infty\}^\{\infty\} (a f(x) + b g(x))e^\{-2\pi i x k\} dx \\
+    &= \frac\{a\}\{2\pi\} \int_\{-\infty\}^\{\infty\} f(x) e^\{i x k\} dx + \frac\{b\}\{2\pi\} \int_\{-\infty\}^\{\infty\} g(x) e^\{i x k\} dx \\
+    &= a \mathcal\{F\}(f(x)) + b \mathcal\{F\}(g(x))
+\end\{aligned\}$$
+
+Put another way, $\mathcal\{F\}$ is a linear operator. Fourier transforms
+have a number of really powerful other properties. Let's consider
+another such property. Let $f$ be a function and $f'$ its derivative.
+Then
+
+$$\begin\{aligned\}
+    \mathcal\{F\}(f')(k) &= \frac\{1\}\{2\pi\} \int_\{-\infty\}^\{\infty\} f'(x)e^\{ixk\} dx
+\end\{aligned\}$$
+
+To compute this integral, we can use integration by parts. Let
+$u = e^\{ixk\}$ and $dv = f'(x)dx$. Then $du = ik e^\{ixk\}$ and $v = f(x)$.
+Then we can write
+
+$$\begin\{aligned\}
+    \mathcal\{F\}(f')(k) &= \frac\{1\}\{2\pi\}\int_\{-\infty\}^\{\infty\} u dv \\
+    &= \frac\{1\}\{2\pi\} \left (uv \Big |^\{\infty\}_\{-\infty\} - \int_\{-\infty\}^\{\infty\} v du \right ) \\
+    &= \frac\{1\}\{2\pi\} \left (e^\{ixk\} f(x) \Big |^\{\infty\}_\{-\infty\} - \int_\{-\infty\}^\{\infty\} f(x) ike^\{ixk\} dx \right ) \\
+\end\{aligned\}$$
+
+We assume that $f(x)$ goes to 0 at both infinities, so we are left with
+
+$$\begin\{aligned\}
+\mathcal\{F\}(f')(k) &= \frac\{-ik\}\{2\pi\} \int_\{-\infty\}^\{\infty\} f(x) e^\{ixk\} dx \\
+&= -ik \mathcal\{F\}(f)(k)
+\end\{aligned\}$$
+
+That is, the Fourier transform converts a derivative into multiplication
+by a scalar constant.
+
+## Convexity and Legendre Transform
+
+The Legendre transform is a type of functional transformation that
+arises in a number of different places in physics. In this section we'll
+give a brief introduction to the Legendre transform. We'll start by
+defining a *convex* sets and functions.
+
+Let $U \subseteq \mathbb\{R^n\}$. We say that $U$ is convex if for all
+$\vec\{v\}, \vec\{u\} \in U$, and for all $t \in [0, 1]$, we have that
+$t\vec\{v\} + (1-t)\vec\{u\} \in U$.
+
+A function $f: U \to \mathbb\{R\}$, where $U \subseteq \mathbb\{R\}^n$ is
+said to be convex if for all $\vec\{v\}, \vec\{u\} \in U$, and for all
+$t \in [0, 1]$, we have $$\begin\{aligned\}
+f(t\vec\{v\} + (1-t)\vec\{u\}) \leq tf(\vec\{v\}) + (1-t)f(\vec\{u\})
+\end\{aligned\}$$
+
+Convex functions arise often in optimization and in physics.
+Intuitively, a convex function is \"well-behaved\". The Legendre
+transform is defined for convex functions as follows.
+
+Let $U \subseteq \mathbb\{R\}^n$ be a convex set. Let
+$f: U \to \mathbb\{R\}$ be a convex function. We defined the Legendre
+transform of $f$ to be a function $f^*$ defined by $$\begin\{aligned\}
+f^*(y) = \mathrm\{sup\}_\{\vec\{x\} \in U\} \left (\vec\{y\}^T\vec\{x\} - f(x) \right )
+\end\{aligned\}$$ where $\vec\{y\} \in V \subseteq \mathbb\{R\}^n$ is a set
+defined by $$\begin\{aligned\}
+V = \{\vec\{y\} \in \mathbb\{R\}^n : f^*(y) < \infty \}
+\end\{aligned\}$$ Here $f^*$ is referred to as the convex conjugate of
+$f$.
+
+The mathematical method of performing this change of variables is called
+a Legendre Transform. The method is defined according to the following
+steps:
+
+A function $y=f(x)$ is defined as a list of $x$, $y$, pairs, *i.e.* the
+plot of $y(x)$ graphs $$\begin\{aligned\}
+(x_1,y_1), (x_2,y_2), (x_3,y_3), \dotsc 
+\end\{aligned\}$$ and so on. Equivalently, it is possible to express the
+same function in terms of the tangent slope $c(x)$ and the corresponding
+$y$-intercepts, *i.e.* the points $$\begin\{aligned\}
+(c_1,b_1), (c_2,b_2), (c_3,b_3),\dotsc
+\end\{aligned\}$$ For a change $dx$ in the $x$-variable, the change $dy$
+is given by: $$\begin\{aligned\}
+dy = \left(\frac\{dy\}\{dx\}\right)dx = c(x)dx \notag
+\end\{aligned\}$$ From this point on the curve, we can extend a line back
+to $x = 0$ to find the $y$-intercept $b(x)$, such that $$\begin\{aligned\}
+y(x) = c(x)x+b(x) \rightarrow b(x) = y(x)-c(x)x \notag
+\end\{aligned\}$$ The resulting function for the series of intercepts
+versus the slopes (*i.e.* $b = b(c)$) contains the same information as
+$y = y(x)$.
+
+A change in $b(c)$ is given by $$\begin\{aligned\}
+db &= dy - cdx - xdc = -xdc
+\end\{aligned\}$$
+
+As an example, consider the function $y = (x - 2)^2$. We use a Legendre
+Transform to shift the variable from $x$ to the slope $c$
+(Fig.[\[fig:Fig5\]](#fig:Fig5)\{reference-type="ref"
+reference="fig:Fig5"\}).
+
+The slope of the function is: $$\begin\{aligned\}
+c = 2(x-2) \rightarrow x =\frac\{c\}\{2\} + 2
+\end\{aligned\}$$
+
+The Legendre transform gives us a new function $b(c)$, given by:
+$$\begin\{aligned\}
+b=y-cx=\frac\{c^2\}\{4\} - \frac\{c^2\}\{2\}-2c=-\frac\{c^2\}\{4\}-2c 
+\end\{aligned\}$$
+
+We note that this Legendre transform correctly relates back to the
+original function by noting that $$\begin\{aligned\}
+\frac\{db\}\{dc\} = -\frac\{c\}\{2\} -2 = -x \notag
+\end\{aligned\}$$ endexample
+
+::: marginfigure
+![image](figures/Mathematical Foundations/mathematical_transforms/thermo_legendre.png)\{width="\\linewidth"\}
+:::
+
+## Laplace Transform
+
+The Laplace transform provides a technique for transforming a
+real-valued function into a complex-valued function in a structured way.
+Like the Fourier transform, it will enable us to simplify certain
+complex mathematical operations.
+
+Let's suppose that we have a function $f: \mathbb\{R\}^+ \to \mathbb\{R\}$.
+We then define
+
+$$\begin\{aligned\}
+    \mathcal\{L\}\{f\}(s) &= \int_0^\{\infty\} f(t) e^\{-s t\} dt 
+\end\{aligned\}$$ where $s$ is a complex number. That means $L\{f\}$ has
+type $\mathbb\{C\} \to \mathbb\{C\}$. Structurally, you might note the
+similarities between the Fourier transform and the Laplace transform.
+And indeed, the two share similar properties. To start, $\mathcal\{L\}$ is
+a linear operator
+
+$$\begin\{aligned\}
+    \mathcal\{L\}\{af + bg\} &= \int_\{0\}^\{\infty\} (a f(t) + b g(t)) e^\{-st\} dt \\
+    &= a\int_\{0\}^\{\infty\} f(t)e^\{-st\} dt + b \int_\{0\}^\{\infty\} g(t) e^\{-st\} dt \\
+    &= a\mathcal\{L\}\{f\} + b \mathcal\{L\}\{g\}
+\end\{aligned\}$$
+
+### Exercises
+
+1.  Let $f(x) = e^x$.
+
+    1.  Prove that $f$ is a convex function.
+
+    2.  Show that the convex conjugate $f^*(y) = y \ln y - y$.
+
+    3.  Show that the domain of $f^*$ is the set
+        $\{y \geq 0\ |\ y \in \mathbb\{R\}\}$.
+
+
+# Vectors, Scalars, and Tensors \{#chap:vectors\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:math_basics\]](#chap:math_basics)\{reference-type="ref+label"
+reference="chap:math_basics"\}\
+**Difficulty Level:** \*\
+
+------------------------------------------------------------------------
+
+A scalar is a term for an element of a field. For example, if
+$a \in \mathbb\{R\}$, we might refer to $a$ as a scalar. A *vector space*
+is a set $V$ that satisfies the following properties.
+
+1.  Scalar Multiplication: Let $F$ be a field. Let $a \in F$ be a
+    scalar. If $v$ is a vector, then $av$ is a vector. The operation
+    mapping $v$ to $av$ is called scalar multiplication.
+
+2.  Linear Combination: If $u, v \in V$ and $a, b \in F$, then
+    $au + bv \in V$.
+
+$\mathbb\{R\}^2$ provides a simple example of a vector space. We define
+scalar multiplication and addition as follows $$\begin\{aligned\}
+    c(a, b) &= (ca, cb) \\
+    (a, b) + (c, d) &= (a+c, b+d)
+\end\{aligned\}$$
+
+A *vector* is an element of a vector space. A vector is a geometric
+object. A vector is said to be of dimension $n$ if there exist $n$
+elements $e_1,\cdots,e_n \in V$ (read as \"e one to e n in v\") such
+that given any element $v \in V$, we can write
+$$v = a_1 e_1 + \cdots + a_n e_n,$$ for some choice of $a_i \in F$. The
+elements $e_i$ are said to constitute a *basis* for $V$. Note that not
+all vector spaces have a finite basis; we'll run into *Hilbert spaces*
+when we discuss quantum mechanics that are infinite dimensional vector
+spaces.
+
+A common example of a vector space operation is to perform a \"change of
+basis\". That is, we want to swap from basis $e_1, \dotsc, e_n$ to new
+basis $h_1, \dotsc, h_n$. The idea for this is simple; simply rewrite
+each $e_i$ in terms of $h_i$.
+
+$$e_i = b_\{i1\} h_1 + \dotsc + b_\{in\} h_n$$
+
+Then substitute these back any basis expansion in terms of the $e_i$.
+
+### Inner Product Space
+
+A vector space is called an inner product space if there exists a
+function $$\begin\{aligned\}
+    \langle \cdot | \cdot \rangle: V \times V \to F
+\end\{aligned\}$$ (read as \"anonymous function that takes two vectors in
+v to a scalar in f\"). $\mathbb\{R\}^2$ has a dot product defined as
+$$\begin\{aligned\}
+    \langle (a, b) | (c, d) \rangle &= ac + bd
+\end\{aligned\}$$ Another common alternative notation for the inner
+producct is the transpose notation $$\begin\{aligned\}
+    \langle v | w \rangle &= v^T w
+\end\{aligned\}$$ (read as \"v transpose w\").
+
+### Dual Space
+
+For every vector space $V$ over field $F$, we can define an associated
+vector space $V^*$ denoted the dual space as follows
+$$V^* = \{ \varphi: V \to F \ | \ \varphi \textrm\{ is linear\}\}$$ The
+pipe $|$ is read as \"such that.\" The entire definition above is read
+as \"V star equals the set of phi from V to F such that phi is linear.\"
+
+Here, we define a function $f$ to be linear if it respects combinations
+in $V$. That is $$f(au + bv) = af(u) + bf(v)$$
+
+The dual space arises very naturally in linear algebra since each
+element $v \in V$ induces an element in the dual space by the inner
+product $$\begin\{aligned\}
+    w \mapsto v^T w
+\end\{aligned\}$$
+
+### Tensor Product
+
+Let $V$ and $W$ be two vector spaces. The operation $\otimes$, denoted
+the tensor product, is a way of combining the two vector spaces into one
+larger vector space denoted $V \otimes W$. If $d_1,\dotsc, d_n$ is a
+basis for $V$ and $e_1,\dotsc,e_m$ is a basis for $W$, then the basis
+for $V \otimes W$ is of size $nm$ and has basis elements
+$$\begin\{aligned\}
+    d_1 \otimes e_1, \dotsc, d_n \otimes e_m 
+\end\{aligned\}$$
+
+### Tensors
+
+Let $V$ be a vectors space over $F$. Let $V^*$ be its dual vector space.
+A tensor on the vector space $V$ is defined to be an element of
+$$V \otimes \cdots \otimes V \otimes V^* \otimes \cdots \otimes V^*$$ If
+there are $p$ copies of $V$ and $q$ copies of $V^*$ we say that the
+tensor is of type $(p, q)$. Like a vector, a tensor is a geometric
+object that doesn't depend on a choice of basis for $V$. Given a choice
+of basis on $V$, it is possible represent a tensor as a multidimensional
+array.
+
+### Scalar, Vector, and Array Notation
+
+For a lot of our mathematical work, we'll use in the set of real
+numbers, which we denote $\mathbb\{R\}$. Scalars are members of
+$\mathbb\{R\}$ or $\mathbb\{C\}$ and will be denoted using lowercase letters
+$x, y, z, \dotsc$. Vectors are represented as elements of $\mathbb\{R\}^N$
+for $N > 1$. We will denote vectors generally as
+$\vec\{u\}, \vec\{v\}, \vec\{w\}$ with the overhead notation. We will follow
+the convention that vectors are column vectors
+
+$$\begin\{aligned\}
+    \vec\{u\} = \begin\{bmatrix\}
+           u_\{1\} \\
+           u_\{2\} \\
+           \vdots \\
+           u_\{N\}
+         \end\{bmatrix\}
+\end\{aligned\}$$
+
+Matrices are elements of $\mathbb\{R\}^\{N \times M\}$ and will be denoted
+with capital letters $X, Y, Z, \dotsc$. We will write
+
+$$\begin\{aligned\}
+    X = \begin\{bmatrix\}
+    X_\{11\} & \cdots & X_\{1M\} \\
+    X_\{21\} & \cdots & X_\{2M\} \\
+           & \vdots & \\
+    X_\{N1\}&  \cdots& X_\{NM\} \\
+    \end\{bmatrix\}
+\end\{aligned\}$$
+
+We will sometimes have to work with multidimensional arrays, such as
+elements of $\mathbb\{R\}^\{L \times N \times M\}$. We will use the same
+notation to refer to multidimensional arrays as we do to matrices (and
+trust that context will disambiguate which is which). Let
+$T \in \mathbb\{R\}^\{L \times N \times M \}$. We will write $T$ as
+
+$$\begin\{aligned\}
+T = \begin\{bmatrix\}
+    \begin\{bmatrix\}
+    T_\{111\} &\cdots  & T_\{11M\} \\
+    T_\{121\} & \cdots & T_\{12M\} \\
+            & \vdots & \\
+    T_\{1N1\} & \cdots & T_\{1NM\} \\
+    \end\{bmatrix\}
+    & \cdots &
+    \begin\{bmatrix\}
+    T_\{L11\} & \cdots & T_\{L1M\} \\
+    T_\{L21\} & \cdots & T_\{L2M\} \\
+            & \vdots & \\
+    T_\{LN1\} & \cdots & T_\{LNM\} \\
+    \end\{bmatrix\}
+    \end\{bmatrix\}
+\end\{aligned\}$$
+
+### Exercises
+
+1.  Let $V$ be a vector space over $F$. Prove that $V^*$ is a vector
+    space by showing that it obeys the vector space laws.
+
+2.  Prove that if $f,g :[a, b] \to \mathbb\{R\}$ are continuous functions
+    and $c, d \in \mathbb\{R\}$, then $cf + gd$ is a continuous function.
+
+
+# Symmetry Groups \{#chap:lorentz_group\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:** [\[chap:lie\]](#chap:lie)\{reference-type="ref+label"
+reference="chap:lie"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+In this chapter, we introduce a number of symmetry groups that arise in
+physical systems. All the groups we introduce here are examples of
+topological groups, where they inherit a topological structure from a
+larger space (typically $\mathbb\{R\}^n$ or $\mathbb\{R\}^\{n \times n\}$). In
+fact, as we will learn in a later chapter, these groups also inherit a
+differentiable structure from the larger space, making them all examples
+of \"Lie Groups\" (or differentiable groups).
+
+## The Orthogonal Groups $O(N)$
+
+The orthogonal group $O(3)$ is the collection of matrices with
+orthogonal columns in $R^3$. More general, $O(N)$ is the collection of
+$N \times N$ matrices which have orthogonal columns.
+
+$$\begin\{aligned\}
+O(N) &= \{ Q \in \mathbb\{R\}^\{N \times N\} | Q^T Q = QQ^T = I\}
+\end\{aligned\}$$
+
+## The Rotation Groups $SO(N)$
+
+The rotation group $SO(3)$ is the collection of three dimensional
+rotations, and is denoted $\textrm\{SO\}(3)$. $SO(3)$ is related to $O(3)$
+since it is the subset of $O(3)$ with determinant $1$. Mathematically,
+we say that $\det$ is a homomorphism from $O(3)$ to the real numbers
+minus $0$. $$\begin\{aligned\}
+\det : O(N) \to \mathbb\{R\} \setminus \{0 \}
+\end\{aligned\}$$ This fact holds since we have that $$\begin\{aligned\}
+\det(AB) &= \det A \det B
+\end\{aligned\}$$ $SO(3)$ is the subset of $O(3)$ that maps to $1$ under
+this transformation. An alternative way of describing $SO(3)$ is that it
+is the collection of orthogonal matrices whose columns are orthonormal
+(and not just orthogonal).
+
+All elements of $SO(3)$ are length preserving since rotations don't
+change the length of vectors. This holds true more generally for $SO(N)$
+and can be shown using the fact that column vectors are orthonormal.
+Another important fact is that rotations are linear. That is, if $R$ is
+a rotation and $u$ and $v$ are vectors, we have $$\begin\{aligned\}
+R \cdot (u + v) &= R \cdot u + R \cdot v
+\end\{aligned\}$$ For this reason, $SO(3)$ can be identified with the
+collection of real valued $3x3$ matrices with unit determinant.
+
+## The Euclidean Group $E(N)$
+
+The Euclidean group $E(n)$ denotes all the distance preserving
+transformations (isometries) on $\mathbb\{R\}^n$. This collection includes
+all translations, rotations, and reflections. The group $E(3)$ commonly
+arises when considering point clouds or collections of atoms in a
+molecule or material.
+
+## The Galilean Group
+
+The Galilean group consists of the collection of transformations between
+two reference frames which only differ by constant relative motion with
+respect to one another. Consider $(x, t)$ where $x \in \mathbb\{R\}^3$ is
+a coordinate and $t \in \mathbb\{R\}$ is time. Then uniform motion is
+represented by the transformation $$\begin\{aligned\}
+(x, t) \mapsto (x + tv, t)
+\end\{aligned\}$$ Rotation is represented by the transformation
+$$\begin\{aligned\}
+(x, t) \mapsto (R x, t)
+\end\{aligned\}$$ where $R$ is a rotation matrix. Translations are
+represented by $$\begin\{aligned\}
+(x, t) \mapsto (x + v, t + s)
+\end\{aligned\}$$ The group of Galilean transformations consists of all
+the compositions of these three types of transformations.
+
+## The Lorentz Group $O(1, 3)$
+
+The Lorentz group is the group of all Lorentz transformations defined on
+Minkowski space. Many fundamental equations in physics are invariant
+under Lorentz transformations. Mathematically, we write the Lorentz
+group as $O(1, 3)$ the set of orthogonal transformations on
+$\mathbb\{R\}^4$ that preserve the quadratic form $$\begin\{aligned\}
+    (t, x, y, z) \mapsto t^2 - x^2 - y^2 - z^2 
+\end\{aligned\}$$ The Lorentz group is often studied through its Lie group
+$\mathfrak\{so\}(1, 3)$ $$\begin\{aligned\}
+    \mathfrak\{so\}(1, 3) &= \{ X \in \mathbb\{R\}^\{4 \times 4\} | e^\{tX\} \in SO(1, 3), t \in \mathbb\{R\} \}
+\end\{aligned\}$$
+
+## Exercises
+
+1.  Prove that the Galilean group has dimension 10.
+
+2.  Prove that $SO(N)$ preserves the norm of vectors in $\mathbb\{R\}^N$
+
+
+# Spinors \{#chap:hilbert\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:math_basics\]](#chap:math_basics)\{reference-type="ref+label"
+reference="chap:math_basics"\},
+[\[chap:vectors\]](#chap:vectors)\{reference-type="ref+label"
+reference="chap:vectors"\},
+[\[chap:manifold\]](#chap:manifold)\{reference-type="ref+label"
+reference="chap:manifold"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+Spinors are foundational mathematical objects that prove useful for
+modeling certain types of particles mathematically (fermions in
+particular). Mathematically, spinors are defined as fundamental
+representations of Clifford algebras so we begin this chapter by
+introducing the formalism of Clifford algebras.
+
+## Clifford Algebra
+
+Let $V$ be a vector space over the complex numbers $\mathbb\{C\}$. Let
+$g: V \times V \to \mathbb\{C\}$ be a quadratic form (roughly, a quadratic
+form can be thought of a quadratic polynomial defined on $V$). The
+Clifford algebra $\rm\{Cl\}(V, g)$ is the algebra generated on $V$ that
+satisfies the following anticommutation relationship.
+
+$$\begin\{aligned\}
+    xy + yx = 2g(x, y)
+\end\{aligned\}$$
+
+In the case $V = \mathbb\{C\}^n$, the bilinear form $g$ can be defined by
+$$\begin\{aligned\}
+    g(x, y) &= x^T y \\
+    &= x_1 y_1 + \dotsc + x_n y_n
+\end\{aligned\}$$
+
+Another common example of a Clifford algebra is denoted
+$\rm\{Cl\}_\{p, q\}(\mathbb\{R\})$. This algebra is built from $p+q$ mutually
+orthogonal basis vectors using addition and multiplication. These
+algebras satisfy the following multiplication rule $$\begin\{aligned\}
+    e_i e_j &= \begin\{cases\}
+    +1 & i=j, i \in (1,\dotsc, p) \\
+    -1 & i=j, i \in (p+1,\dotsc,p+q) \\
+    -e_je_i & i \neq j
+    \end\{cases\}
+\end\{aligned\}$$
+
+A representation of a Clifford algebra represents these abstract
+elements with specific matrices of complex numbers. In the next section,
+we will learn about a specific such representation.
+
+## Gamma Matrices
+
+The Gamma matrices $\{\gamma^0, \gamma^1, \gamma^2, \gamma^3\}$ (also
+called the Dirac matrices) are a specific set of $4 \times 4$ matrices
+that generate a representation of $\rm\{Cl\}_\{1,3\}(\mathbb\{R\})$. The gamma
+matrices are defined as $$\begin\{aligned\}
+    \gamma^0 &= \begin\{pmatrix\}
+    1 & 0 & 0 & 0 \\
+    0 & 1 & 0 & 0 \\
+    0 & 0 & -1 & 0 \\
+    0 & 0 & 0 & -1 
+    \end\{pmatrix\} \\
+    \gamma^1 &= \begin\{pmatrix\}
+    0 & 0 & 0 & 1 \\
+    0 & 0 & 1 & 0 \\
+    0 & -1 & 0 & 0 \\
+    -1 & 0 & 0 & 0 
+    \end\{pmatrix\} \\
+    \gamma^2 &= \begin\{pmatrix\}
+    0 & 0 & 0 & -i \\
+    0 & 0 & i & 0 \\
+    0 & i & 0 & 0 \\
+    -i & 0 & 0 & 0 
+    \end\{pmatrix\} \\
+    \gamma^3 &= \begin\{pmatrix\}
+    0 & 0 & 1 & 0 \\
+    0 & 0 & 0 & -1 \\
+    -1 & 0 & 0 & 0 \\
+    0 & 1 & 0 & 0 
+    \end\{pmatrix\} \\
+\end\{aligned\}$$ These matrices satisfy the following anticommutation
+relationship $$\begin\{aligned\}
+    \{\gamma^\mu, \gamma^\nu\} &= \gamma^\{\mu\} \gamma^\nu + \gamma^\nu \gamma^\mu \\
+    &= 2 \eta^\{\mu\nu\} I_4
+\end\{aligned\}$$ Here $\eta^\{\mu\nu\}$ denotes an index in the Minkowski
+metric $$\begin\{aligned\}
+    \eta &= \begin\{pmatrix\}
+    1 & 0 & 0 & 0 \\
+    0 & -1 & 0 & 0 \\
+    0 & 0 & -1 & 0 \\
+    0 & 0 & 0 & -1 
+    \end\{pmatrix\}
+\end\{aligned\}$$ and $I_4$ is the identity matrix $$\begin\{aligned\}
+    I_4 &= \begin\{pmatrix\}
+    1 & 0 & 0 & 0 \\
+    0 & 1 & 0 & 0 \\
+    0 & 0 & 1 & 0 \\
+    0 & 0 & 0 & 1 
+    \end\{pmatrix\}
+\end\{aligned\}$$
+
+## Weyl Spinor
+
+Let $M$ be a pseudo-Riemannian manifold with dimension $(p, q)$. Recall
+that for $x \in M$, $T_x M$ denotes the tangent space at $x$, which is a
+vector space. We can construct a Clifford algebra on this vector space
+using the metric tensor $g: T_x M \times T_x M \to \mathbb\{R\}$ as the
+quadratic form. Let $\{e_i\}$ form a vector space basis on $T_x M$. Then
+let $\rm\{Cl\}(p, q)$ denote the Clifford algebra constructed from this
+basis. The Weyl spinors are defined as
+
+$$\begin\{aligned\}
+    w_j &= \frac\{1\}\{\sqrt\{2\}\}(e_\{2j\} + i e_\{2j + 1\}) \\
+    w_j^* &= \frac\{1\}\{\sqrt\{2\}\}(e_\{2j\} - i e_\{2j + 1\}) 
+\end\{aligned\}$$
+
+## Exercises
+
+1.  Verify the relationship $$\begin\{aligned\}
+            \{\gamma^0, \gamma^0\} &= 2 \eta^\{0,0\} I_4
+        
+    \end\{aligned\}$$
+
+
+# Covariance and Contravariance of Vectors \{#chap:covariance_contravariance\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:manifold\]](#chap:manifold)\{reference-type="ref+label"
+reference="chap:manifold"\}\
+
+------------------------------------------------------------------------
+
+Discuss
+<https://en.wikipedia.org/wiki/Covariance_and_contravariance_of_vectors>.
+
+In particular, note how the metric tensor provides a unique
+identification of contravariant and covariant indices. Explain how
+contracting with the metric tensor allows for contravariant and
+covariant indices to be swapped.
+
+
+# Calculus \{#chap:calculus\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:math_basics\]](#chap:math_basics)\{reference-type="ref+label"
+reference="chap:math_basics"\}\
+**Difficulty Level:** \*\
+
+------------------------------------------------------------------------
+
+This chapter introduces the basics of calculus, starting from continuity
+and limits and builds up to Taylor series and antiderivatives.
+
+## Continuity and Limits
+
+In colloquial language, a continuous function is one in which there are
+no abrupt shift in values. Adding a little bit more formality, suppose
+that we have a function $y = f(x)$ (read as \"f of x\"). Let us suppose
+that $\epsilon$ (read as \"epsilon\") is an \"infinitesimally small\"
+quantity. Then we say that $f$ is a continuous function if the shift
+$f(x + \epsilon) - f(x)$ is also an infinitesimally small quantity. In
+the language of \"limits\", we would write this relationship as
+
+$$\lim_\{\epsilon \to 0\} f(x + \epsilon) = f(x)$$
+
+(Read this as \"limit as epsilon approaches zero of f of x plus epsilon
+equals f of x\".) Many of you may already be familiar with the notion of
+a limit from past mathematics classes. But for those of you who aren't
+familiar, let's try to provide a little more intuition. The idea is that
+the quantity $\epsilon$ needs to \"get close\" to zero and as it does
+so, $f(x + \epsilon)$ should \"get close\" to $f(x)$. The underlying
+concept here is that of a *metric*, where a *metric* is a function
+$d: A \times A \to [0, \infty)$ that satisfies the following 3 axioms:
+
+1.  $d(x, y) = 0$ if and only if $x = y$
+
+2.  $d(x, y) = d(y, x)$ for all $x, y$
+
+3.  $d(x, y) \leq d(x, z) + d(z, y)$ for all $z$
+
+On the real numbers $\mathbb\{R\}$ (which we haven't yet formally
+defined), we define the metric as the absolute value of the difference:
+$$d(x, y) = |x - y|$$
+
+A set $A$ with a metric $d$ defined is said to be a \"metric space.\"
+With this definition in place, we can define the continuity with the
+\"$(\epsilon, \delta)$\" definition. That is, a function $f$ on a metric
+space $A$ is continuous if for every $\epsilon > 0$ there exists a
+$\delta$ such that if $d(x, y) < \delta$ then
+$d(f(x), f(y)) < \epsilon$.
+
+This definition looks a little formal, but the idea is simply that as
+$x$ \"gets close\" to $y$, then $f(x)$ must \"get close\" to $f(y)$.
+
+## Differential Calculus
+
+In this section, we'll do a rapid introduction to the calculus that
+we'll use throughout this book. Let $f: \mathbb\{R\} \to \mathbb\{R\}$ be a
+function. The derivative of $f$, is a function
+$\frac\{df\}\{dx\}: \mathbb\{R\} \to \mathbb\{R\}$ which is defined by
+
+$$\begin\{aligned\}
+\frac\{df\}\{dx\} = \lim_\{\Delta x \to 0\} \frac\{f(x + \Delta x) - f(x)\}\{\Delta x\}
+\end\{aligned\}$$
+
+The quantity $\frac\{df\}\{dx\}$ is read as \"dee f dee x\" and is a measure
+of the rate of change of the function $f$ with respect to the input $x$.
+We also often use an alternative notation for derivatives
+
+$$\begin\{aligned\}
+    f' &= \frac\{df\}\{dx\} 
+\end\{aligned\}$$ which we read as \"f prime\". Let's work through a
+simple example. We will compute $\frac\{df\}\{dx\}$ for the following
+function $$\begin\{aligned\}
+    f(x) = 5 x + 6
+\end\{aligned\}$$ We use the definition to write $$\begin\{aligned\}
+    \frac\{df\}\{dx\} &= \lim_\{\Delta x \to 0\} \frac\{f(x+\Delta x) - f(x)\}\{\Delta x\} \\
+    &=  \lim_\{\Delta x \to 0\} \frac\{5(x+\Delta x) + 6 - (5x + 6)\}\{\Delta x\} \\
+    &=  \lim_\{\Delta x \to 0\} \frac\{5\Delta x \}\{\Delta x\} \\
+    &= 5
+\end\{aligned\}$$ That is, $\frac\{df\}\{dx\}$ is the slope of $f$. To compute
+derivatives for more complex functions, you can use the formal
+definition, but it is often simpler to use some shortcuts that
+mathematicians have discovered. The most powerful such shortcut is the
+chain rule which states $$\begin\{aligned\}
+    \frac\{d f(g(x))\}\{dx\} &= \frac\{df\}\{dx\}(g(x)) \frac\{dg\}\{dx\}
+\end\{aligned\}$$ We will use the chain rule systematically later in the
+book to compute the derivatives of very complex functions. We will also
+note that we will have reason to chain derivatives. Consider the
+quantity $$\begin\{aligned\}
+    \frac\{d^2 f\}\{dx^2\}
+\end\{aligned\}$$ read as \"d square f, d x square\", which denotes the
+derivative with respect to $x$ of $\frac\{df\}\{dx\}$. We can also define
+higher derivatives such as $\frac\{d^3f\}\{dx^3\}$ and so on.
+
+Note that this function $\frac\{df\}\{dx\}$ doesn't always exist. For
+example, consider the function $g(x) = |x|$\
+
+::: marginfigure
+![image](figures/Mathematical Foundations/calculus/absolute_value_x.png)\{width="\\linewidth"\}
+:::
+
+Let's try evaluating the definition at $x = 0$. We get
+
+$$\begin\{aligned\}
+    \frac\{dg\}\{dx\} = \lim_\{\Delta x \to 0\} \frac\{|x + \Delta x| - |x|\}\{\Delta x\}
+\end\{aligned\}$$
+
+There's a bit of subtlety here. Note that if we constrain
+$\Delta x > 0$, we get $\frac\{dg\}\{dx\} = 1$ and if we constrain
+$\Delta x < 0$, we get $\frac\{dg\}\{dx\} = -1$! In practice, what's done
+numerically is that we handle points such as $0$ by picking one of these
+derivatives. (Formally, all the numbers in the range $[-1, 1]$ are
+called *subderivatives* of $|x|$). We say that a function is
+differentiable if it has a unique value for this limit at all points. A
+function such as $|x|$ is said to be almost-everywhere differentiable.
+
+### Taylor Series
+
+A Taylor series expands a function out in terms of its derivatives. Here
+is an example of a Taylor expansion around $0$.
+
+$$\begin\{aligned\}
+    f(x) = f(0) + f'(0)x + \frac\{f''(0)^2\}\{2!\}x^2 + \dotsc
+\end\{aligned\}$$
+
+We can define the Taylor series about any point $a$ in fact as
+$$\begin\{aligned\}
+    f(a) &= f(a) + f'(x-a)(x-a) + \frac\{f''(x-a)\}\{2!\} (x-a)^2 + \dotsc
+\end\{aligned\}$$
+
+Taylor series are fundamental tools in physics that allow for
+approximation of a complex function around a local point. Note that
+Taylor series only converge in a region of the approximation point and
+not globally typically. One important counterexample to this rule of
+thumb is the Taylor series for $e^x$ which converges globally
+
+$$\begin\{aligned\}
+    e^x = 1 + x + \frac\{x^2\}\{2!\} + \frac\{x^3\}\{3!\} + \dotsc
+\end\{aligned\}$$
+
+### Multivariate Differentiation
+
+Suppose that we have a function of two variables $$\begin\{aligned\}
+    f(x, y) &= x^2 + y^2
+\end\{aligned\}$$ To find the rate of change of $f$ with respect to either
+argument, we use partial derivatives defined as $$\begin\{aligned\}
+    \frac\{\partial f\}\{\partial x\} &= \lim_\{\Delta x \to 0\} \frac\{f(x + \Delta x, y) - f(x, y)\}\{\Delta x \}\\
+    \frac\{\partial f\}\{\partial y\} &= \lim_\{\Delta y \to 0\} \frac\{f(x, y + \Delta y) - f(x, y)\}\{\Delta y\}
+\end\{aligned\}$$
+
+Read $\frac\{\partial f\}\{\partial x\}$ as \"partial f partial x\" or
+alternatively as \"doh f doh x\". The idea is that we hold the other
+variable constant and take the ordinary derivative with respect to only
+one argument.
+
+Let $f: \mathbb\{R\}^N \to \mathbb\{R\}$ be a differentiable function. We
+can define partial derivatives $\frac\{\partial f\}\{\partial x_i\}$ with
+respect to the different arguments, but is there a way to define a
+single joint derivative of $f$? There are many variables here, so which
+direction do we take the derivative from? The usual solution is to
+define a directional derivative in a direction $\vec\{u\}$. We define the
+directional derivative as
+
+$$\begin\{aligned\}
+    \nabla_\{\vec\{u\}\}(f) = \lim_\{h \to 0\} \frac\{f(x + h\vec\{u\}) - f(x)\}\{h\}
+\end\{aligned\}$$
+
+It's possible to prove (left as an exercise) that
+
+$$\begin\{aligned\}
+\nabla_\{\vec\{u\}\}(f) = \frac\{df\}\{dx_1\}u_1 + \cdots + \frac\{df\}\{dx_N\} u_N 
+\end\{aligned\}$$
+
+We define the gradient $\nabla f$ as follows
+
+$$\begin\{aligned\}
+ \nabla f = \begin\{bmatrix\}
+    \frac\{df\}\{dx_1\} \\
+    \vdots \\
+    \frac\{df\}\{dx_N\} \\
+    \end\{bmatrix\} 
+\end\{aligned\}$$
+
+Note that then the directional derivative is then simply
+$$\begin\{aligned\}
+\nabla_\{\vec\{u\}\}(f) = (\nabla f)^T \vec\{u\}
+\end\{aligned\}$$ Note that the gradient is the direction in which the
+directional derivative is maximized (proof left as an exercise).
+
+Let's now take one more step to generalize. Let
+$f: \mathbb\{R\}^N \to \mathbb\{R\}^M$. What is the derivative of $f$? It
+turns out that there are a number of reasonable answers, but we will
+often find ourselves working with the *Jacobian*. The Jacobian
+$\mathcal\{J\}$ is defined as
+
+$$\begin\{aligned\}
+ \mathcal\{J\}(f) = \begin\{bmatrix\}
+    \frac\{\partial f_1\}\{dx_1\} & \cdots & \frac\{\partial f_1\}\{dx_N\} \\
+    & \vdots & \\
+    \frac\{\partial f_M\}\{x_1\} & \cdots & \frac\{\partial f_M\}\{x_N\} \\
+    \end\{bmatrix\}
+\end\{aligned\}$$ Recall that $\frac\{\partial f_i\}\{\partial x_i\}$ is the
+partial derivative of function $f_i$ with respect to variable $x_i$.
+Here we write $f = (f_1, \dotsc, f_M)$ as $M$ functions of type
+$\mathbb\{R\}^N \to \mathbb\{R\}$. Note that
+$\mathcal\{J\}(f) \in \mathbb\{R\}^\{M \times N\}$.
+
+## An introduction to integral calculus
+
+Integration is the opposite of differentiation. Let
+$f: \mathbb\{R\} \to \mathbb\{R\}$ be a function. We denote the
+antiderivative of a function by the notation $$\int f dx$$ The
+antiderivative is defined by its relation to the derivative. Broadly
+speaking, the antiderivative $\int f dx$ is a function
+$\mathbb\{R\} \to \mathbb\{R\}$ such that $$\frac\{d\}\{dx\} \int f dx = f
+    \label\{antidereqn\}$$ Antiderivatives are not unique. The reason for
+this is the fact that $\frac\{d\}\{dx\}(C) = 0$ where $C \in \mathbb\{R\}$ is
+any constant. This means that the antiderivative is only defined up to a
+constant. We'll have you work through a few such definitions in the
+exercises.
+
+It's possible to compute antiderivatives for simple functions directly
+from the defining Equation
+[\[antidereqn\]](#antidereqn)\{reference-type="ref"
+reference="antidereqn"\}.
+
+### Exercises
+
+1.  Prove that the derivative of $f(x) = e^x$ is $e^x$. Use the fact
+    that $$\begin\{aligned\}
+            e^x &= 1 + x + \frac\{x^2\}\{2!\} + \frac\{x^3\}\{3!\} + \dotsc
+        
+    \end\{aligned\}$$
+
+2.  Prove that the antiderivative of $f(x) = x^n$ is
+    $\frac\{x^\{n+1\}\}\{n+1\} + C$ by using the defining Equation
+    [\[antidereqn\]](#antidereqn)\{reference-type="ref"
+    reference="antidereqn"\}.
+
+3.  Prove that the antiderivative of $f(x) = e^x$ is $e^x + C$ by using
+    the definiting Equation
+    [\[antidereqn\]](#antidereqn)\{reference-type="ref"
+    reference="antidereqn"\}. Hint: Consider the Taylor series.
+
+
+# Matrix Calculus \{#chap:matrix_calculus\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:calculus\]](#chap:calculus)\{reference-type="ref+label"
+reference="chap:calculus"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+Matrix calculus extends basic calculus to functions on matrices (and on
+tensors). This chapter works through examples of taking matrix
+derivatives, starting by deriving derivatives manually, working through
+the steps in detail, followed by a more general treatment with the chain
+rule and Jacobians.
+
+Let's start with a simple function $f$ $$\begin\{aligned\}
+    f(\vec\{w\}, \vec\{x\}) = \vec\{w\}^T \vec\{x\} = \sum_\{i=1\}^N w_i x_i 
+\end\{aligned\}$$ Where
+$f: \mathbb\{R\}^N \times \mathbb\{R\}^N \to \mathbb\{R\}$. Let's treat
+$\vec\{w\}$ as constants. From the definition of the Jacobian, we have
+$\mathcal\{J\}_\{\vec\{x\}\}(f) \in \mathbb\{R\}^\{1 \times N\}$. That is,
+$\mathcal\{J\}_\{\vec\{x\}\}(f)$ is a row vector that can be written as
+
+$$\begin\{aligned\}
+\mathcal\{J\}_\{\vec\{x\}\}(f) &= \begin\{bmatrix\}
+     \frac\{\partial f\}\{\partial x_1\} & \cdots & \frac\{\partial f\}\{ \partial x_N\}  \\
+    \end\{bmatrix\} \\
+    &= \begin\{bmatrix\}
+    w_1 & \cdots & w_N \\
+    \end\{bmatrix\} \\
+    &= \vec\{w\}^T
+\end\{aligned\}$$
+
+We will for convenience write
+$\mathcal\{J\}_\{\vec\{x\}\}(f) = \frac\{\partial f\}\{\partial \vec\{x\}\} \in \mathbb\{R\}^\{1 \times N\}$
+but this is purely a syntactic representation. You should mentally
+expand this shorthand to the Jacobian when you read it. Let's now treat
+$\vec\{x\}$ as constants and take the derivative with respect to
+$\vec\{w\}$. We get $$\begin\{aligned\}
+\mathcal\{J\}_\{\vec\{w\}\}(f) &= \begin\{bmatrix\}
+     \frac\{\partial f\}\{dw_1\} & \cdots & \frac\{\partial f\}\{\partial w_N\}  \\
+    \end\{bmatrix\} \\
+    &= \begin\{bmatrix\}
+    x_1 & \cdots & x_N \\
+    \end\{bmatrix\} \\
+    &= \vec\{x\}^T 
+\end\{aligned\}$$ For convenience, we can write
+$\mathcal\{J\}_\{\vec\{w\}\}(f) = \frac\{\partial f\}\{\partial \vec\{w\}\} \in \mathbb\{R\}^\{1 \times N\}$.
+It's very useful to keep careful tracks of shapes when doing these types
+of derivatives.
+
+Let's now start a more complex example. Let
+$W \in \mathbb\{R\}^\{M \times N\}$ be a matrix and let
+$\vec\{x\} \in \mathbb\{R\}^N$ be a vector. Let's define a function
+
+$$\begin\{aligned\}
+    f(W, \vec\{x\}) &= \textrm\{sum\}(W \vec\{x\}^T) \\
+    &= \sum_\{i=1\}^M \sum_\{j=1\}^N W_\{ij\} x_j \\
+\end\{aligned\}$$
+
+Here $\textrm\{sum\}(\vec\{v\}) = \sum_\{i=1\}^M v_i$ is the summation
+function. Then we have that
+$f: \mathbb\{R\}^\{M \times N\} \times \mathbb\{R\}^N \to \mathbb\{R\}$.
+
+Let's now return to our function $f$ and take some partial derivatives.
+Let's first find the partial derivative with respect to $\vec\{x\}$ (so
+we're treating $W$ as a constant). Let's check our shapes first. We have
+
+$$\begin\{aligned\}
+\frac\{\partial f\}\{\partial \vec\{x\}\} &= \mathcal\{J\}_\{\vec\{x\}\}(f) \in \mathbb\{R\}^\{1 \times N\} \\
+&= \begin\{bmatrix\}
+\frac\{\partial f\}\{x_1\} & \cdots & \frac\{\partial f\}\{x_N\} \\
+\end\{bmatrix\} 
+\end\{aligned\}$$ Let's expand out these inner terms. We can use the fact
+that partial derivatives factor through summation to write
+$$\begin\{aligned\}
+    \frac\{\partial f\}\{\partial x_k\} &= \sum_\{i=1\}^M \frac\{\partial\}\{\partial x_k\} \left ( \sum_\{j=1\}^N W_\{ij\} x_j \right ) \\
+    &= \sum_\{i=1\}^M  \sum_\{j=1\}^N W_\{ij\} \frac\{\partial x_j \}\{\partial x_k\}  \\
+    &= \sum_\{i=1\}^M  W_\{ik\}  \\
+    &= \textrm\{sum\}(W[:, k]) 
+\end\{aligned\}$$ Here we have used the fact that
+$\frac\{\partial x_j\}\{\partial x_j\}$ is $1$ if $j = k$ and $0$ otherwise.
+We introduce a new bit of notation here. We use $W[:, k]$ to denote the
+$k$-th column of $W$. We can now write the full Jacobian out as
+
+$$\begin\{aligned\}
+\frac\{\partial f\}\{\partial \vec\{x\}\} &= \begin\{bmatrix\}
+\textrm\{sum\}(W[:, 1]) & \cdots & \textrm\{sum\}(W[:, N]) \\
+\end\{bmatrix\} 
+\end\{aligned\}$$
+
+Let's now assume that $\vec\{x\}$ is a constant and take derivatives. We
+have that
+
+$$\begin\{aligned\}
+    \frac\{\partial f\}\{\partial W\} &= \mathcal\{J\}_\{W\}(f) \in \mathbb\{R\}^\{1 \times M \times N\} 
+\end\{aligned\}$$ We can view an element of
+$\mathbb\{R\}^\{1 \times M \times N\}$ as a matrix in
+$\mathbb\{R\}^\{M \times N\}$ but for pedagogical reasons, let's keep the
+full shape. We write $$\begin\{aligned\}
+\left (\frac\{\partial f\}\{\partial W\}\right )_\{1, k, \ell\} &= \frac\{\partial f\}\{\partial W_\{k \ell\}\} \\
+&= \sum_\{i=1\}^M \sum_\{j=1\}^N \frac\{\partial W_\{ij\}\}\{\partial W_\{k \ell\}\} x_j \\
+&= x_\{\ell\} 
+\end\{aligned\}$$ We can visualize the full derivative as
+$$\begin\{aligned\}
+\frac\{\partial f\}\{\partial W\} &=
+    \begin\{bmatrix\}
+    \begin\{bmatrix\}
+    \vec\{x\}^T \\
+    \vdots \\
+    \vec\{x\}^T
+    \end\{bmatrix\} 
+    \end\{bmatrix\} \\
+    &= \begin\{bmatrix\} \textrm\{ones\}(N) \otimes \vec\{x\} \end\{bmatrix\} 
+\end\{aligned\}$$ Note that we're using the notation for multidimensional
+arrays we introduced previously. We also introduce two new bits of
+notation here. First, we define $\textrm\{ones\}(N)$ to be
+$$\textrm\{ones\}(N) = \begin\{bmatrix\}
+1 \\
+\vdots \\
+1 \\ 
+\end\{bmatrix\}$$ That is, $\textrm\{ones\}(N)$ is the column vector made up
+of ones. We also introduce the outer product denoted as $\otimes$. The
+outer product of two vectors is defined as
+$$\vec\{u\} \otimes \vec\{v\} = \begin\{bmatrix\}
+u_1 v_1 & \cdots & u_1 v_N \\
+& \vdots & \\
+u_M v_1 & \cdots & u_M v_N \\
+\end\{bmatrix\}$$
+
+As we can see, these calculations of matrix derivatives are starting to
+get a little tricky. Let's introduce a bit of machinery that will help
+facilitate calculations of more complex derivatives. Let
+$f: \mathbb\{R\}^N \to \mathbb\{R\}^M$ be a differentiable function. Let
+$g:\mathbb\{R\}^M \to \mathbb\{R\}^O$ be a second differentiable function.
+Let's say that we know the Jacobians of $g$ and $f$, $\mathcal\{J\}(g)$
+and $\mathcal\{J\}(f)$. Can we compute the Jacobian of $g \circ f$, the
+composition in terms of the component Jacobians? Let's expand out the
+definition.
+
+$$\begin\{aligned\}
+    \mathcal\{J\}(g \circ f) &= \begin\{bmatrix\}
+    \frac\{\partial (g \circ f)_1\}\{\partial x_1\} & \cdots & \frac\{\partial (g \circ f)_1\}\{\partial x_N\} \\
+    & \vdots & \\
+    \frac\{\partial (g \circ f)_O\}\{\partial x_1\} & \cdots & \frac\{\partial (g \circ f)_O\}\{\partial x_N\} \\
+    \end\{bmatrix\}
+\end\{aligned\}$$
+
+The challenge here seems to be finding a clean derivation of
+$\frac\{\partial (g \circ f)_i\}\{\partial x_j\}$. (Here $(g\circ f)_i$ is
+the $i$-th component of the output of $g \circ f$.). One challenge here
+is that there are a number of \"hidden\" intermediate variables. That
+is,
+
+$$(g \circ f)_i(\vec\{x\}) = g_i(f_1(\vec\{x\}), \dotsc, f_M(\vec\{x\}))$$
+
+The values $f_i(\vec\{x\})$ are the \"hidden\" variables here. We can use
+the chain rule for scalar variables to expand out the partial derivative
+we're working with.
+
+$$\begin\{aligned\}
+    \frac\{\partial (g \circ f)_i\}\{\partial x_j\} &= \sum_\{k=1\}^M \frac\{\partial (g \circ f)_i\}\{\partial f_k\} \frac\{\partial f_k\}\{\partial x_j\} \\
+    &= \sum_\{k=1\}^M \frac\{\partial g_i\}\{\partial y_k\} \frac\{\partial f_k\}\{\partial x_j\} \\
+    &= \mathcal\{J\}(g)[i, :]^T \mathcal\{J\}(f)[:, j]
+\end\{aligned\}$$
+
+That is, $\frac\{\partial (g \circ f)_i\}\{\partial x_j\}$ is simply the dot
+product of the $i$-th row of $\mathcal\{J\}(g)$ with the $j$-th column of
+$\mathcal\{J\}(g)$. From the definition of matrix multiplication, it
+follows that
+
+$$\begin\{aligned\}
+    \mathcal\{J\}(g \circ f) &= \mathcal\{J\}(g) \mathcal\{J\}(f)
+\end\{aligned\}$$
+
+That is, composition of functions reduces to the products of the
+Jacobians! This is a powerful generalization of the chain rule which can
+help us compute matrix derivatives for complex functions by breaking
+them down into simpler Jacobians. Let's introduce a more complex
+function
+
+$$\begin\{aligned\}
+f(\vec\{v\}, W, \vec\{b\}, \vec\{x\}) &= \vec\{v\}^T \sigma\left (W \vec\{x\} + \vec\{b\} \right )
+\end\{aligned\}$$
+
+Here,
+$\vec\{v\} \in \mathbb\{R\}^M, W \in \mathbb\{R\}^\{M \times N\}, \vec\{b\} \in \mathbb\{R\}^M, \vec\{x\} \in \mathbb\{R\}^N$.
+We also define the function $\sigma: \mathbb\{R\} \to \mathbb\{R\}$ to be
+the logistic function as follows $$\begin\{aligned\}
+    \sigma(x) &= \frac\{1\}\{1 + \exp(-x)\}
+\end\{aligned\}$$ You might note that
+$W \vec\{x\} + \vec\{b\} \in \mathbb\{R\}^M$. What does
+$\sigma(W \vec\{x\} + \vec\{b\})$ mean then? Our definition above operates
+on real numbers. Simply put, we apply the function $\sigma$ element-wise
+to the vector $W \vec\{x\} + \vec\{b\}$. Our function $f$ is in fact a
+simple neural network with one \"hidden\" layer. We will often want to
+take the derivative of functions such as $f$. How can we do this
+cleanly? Doing these calculations by hand can become complicated so at
+this point, we will usually fall back to an automated algorithm. If you
+would like a challenge, try computing the Jacobians associated with this
+function by hand.
+
+### Exercises
+
+1.  The directional derivative $\nabla_\{\vec\{u\}\}(f)$ is defined as
+    $$\nabla_\{\vec\{u\}\}(f) = \lim_\{h \to 0\} \frac\{f(x + h\vec\{u\}) - f(x)\}\{h\}$$
+    Prove that
+    $$\nabla_\{\vec\{u\}\}(f) = \frac\{df\}\{dx_1\}u_1 + \cdots + \frac\{df\}\{dx_N\} u_N$$
+
+2.  Let $\vec\{u\}$ be a unit vector. Prove that the directional
+    derivative $\nabla_\{\vec\{u\}\}(f)$ is maximized when
+    $\vec\{u\} = \frac\{\nabla f\}\{\|\nabla f\|\}$.
+
+3.  Consider the function $$\begin\{aligned\}
+        g(W, \vec\{x\}) = W \vec\{x\}
+    \end\{aligned\}$$ Note that
+    $g: \mathbb\{R\}^\{M \times N\} \times \mathbb\{R\}^N \to \mathbb\{R\}^N$.
+    Compute the Jacobians associated with this function.
+
+
+# Optimization \{#chap:optimization\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:calculus\]](#chap:calculus)\{reference-type="ref+label"
+reference="chap:calculus"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+Both machine learning and physics require methods to find points of
+functions that satisfy certain maximal or minimal criteria: for example
+the \"highest\" point on a 1D function. Optimization is the field of
+mathematics that provides procedures to find such special points. In the
+case that the functions in question take values on function spaces, then
+optimization turns into the problem of finding a function with a desired
+property, a technique of powerful physical importance.
+
+## Optimizing Simple Functions
+
+As a simple example, let us suppose that we have a function
+$f: \mathbb\{R\} \to \mathbb\{R\}$. How can we find the extrema of $f$? The
+first place to start looking is at the zeros of the derivative $f'$. For
+example, suppose that $f(x) = x^2$, then $f'(x) = 2x$ which has a zero
+at $x=0$. This is the minima of $f$. This rule isn't perfect though.
+Suppose $g(x) = x^3$. Then $g'(x) = 3x^2$ which also has a zero at
+$x=0$, but this isn't a minima of $g$.
+
+## Lagrange Multipliers
+
+Lagrange multipliers are a technique for finding minima that satisfy
+constraints. For example, suppose that
+$f, g: \mathbb\{R\}^3 \to \mathbb\{R\}$ are functions of three variables.
+Then we would like to solve the problem. $$\begin\{aligned\}
+    \min &\quad f(x, y, z)\\
+    \textrm\{s. t.\} &\quad g(x, y, z) = k
+\end\{aligned\}$$
+
+The technique for doing this is to find a spot such that the gradients
+of $f$ and $g$ point in the same direction and where the constraint is
+satisified. That is, we construct the following set of equations.
+
+$$\begin\{aligned\}
+    \nabla f(x, y, z) &= \nabla g(x, y, z) \\
+    g(x, y, z) &= k
+\end\{aligned\}$$
+
+Then check all solutions of this set of equations for those which are
+minima/maxima of the original equation. As a singularity check, also
+verify that the gradient of $g$ is not zero at that point either.
+
+## Adjoint Method
+
+Let $u \in \mathcal\{U\}$ be a state variable. Let $v \in \mathcal\{V\}$ be
+an optimization variable. Let $$\begin\{aligned\}
+J: \mathcal\{U\} \times \mathcal\{V\} \to \mathbb\{R\}
+\end\{aligned\}$$ be a function and considered the objective function
+$$\begin\{aligned\}
+    j(v) &= J(u(v), v)
+\end\{aligned\}$$ We can then formulate the optimization problem
+$$\begin\{aligned\}
+    & \textrm\{minimize\}\ j(v) = J(u_v, v) \\
+    & \textrm\{subject to\}\ D_v(u) = 0
+\end\{aligned\}$$ We wish to compute the total derivative $d_\theta j$
+subject to the constraint $D_v(u) = 0$. Create the Lagrangian
+$$\begin\{aligned\}
+    \mathcal\{L\}(u, v, \lambda) &= J(u, v) + \lambda D_v(u) \rangle 
+\end\{aligned\}$$ The method of Lagrange multipliers means solution has to
+be a stationary point of Lagrangian. The adjoint then comes out
+$$\begin\{aligned\}
+d_\theta f(x) &= \lambda^T g_\theta
+\end\{aligned\}$$
+
+## Convex Optimization
+
+Convex problems can be exactly solved by gradient descent and related
+optimization methods.
+
+## Calculus of Variations
+
+Differential calculus is concerned with the task of finding the extreme
+values of functions of one or more variables. This can be done by
+finding points where the derivative of the function is 0. However, in
+some cases, we will be interested in finding an extreme point in a set
+of functions.
+
+The *brachistochrone problem* is a famous example of such a task. This
+challenge, first posed in 1692, asks for the curve between two points
+$A$, $B$ through which a particle acted upon only by gravity can move
+from $A$ to $B$. In order for us to be able to solve this problem, we
+will have to introduce some machinery.
+
+Let $\mathcal\{F\}$ be a space of functions. A function
+$J: \mathcal\{F\} \to \mathbb\{R\}$ is said to be a *functional*. We denote
+the evaluation of $J$ on $f \in \mathcal\{F\}$ as $J[f]$. We say that $J$
+has an local maximum at $f$ if for all $y$ which are in a neighborhood
+of $f$, $J[y] \geq J[f]$. Alternatively, if $J[y] \leq J[f]$ for all
+such $y$, we say $J$ has a local minimum
+
+If you haven't worked with functionals before, this definition might be
+a little opaque. Let's look at an example. Let $x_1, x_2 \in \mathbb\{R\}$
+be constants. Let $y: \mathbb\{R\} \to \mathbb\{R\}$ be a twice
+differentiable function. Let $L: \mathbb\{R\}^3 \to \mathbb\{R\}$ be a twice
+differentiable function. Then we define
+$$J[f] = \int_\{x_1\}^\{x_2\} L(x, f(x), f'(x)) dx$$
+
+Here $f' = \frac\{df\}\{dx\}$. How can we find the minima of $J$? We
+typically do so by solving the *Euler-Lagrange equations*.
+$$\frac\{\partial L\}\{\partial f\} = \frac\{d\}\{dx\} \frac\{\partial L\}\{\partial f'\}$$
+
+In the exercises, we'll provide some examples of using the
+Euler-Lagrange equations on practice problems
+
+### Exercises
+
+1.  Let $f(x) = 4x^2 - 3y$. Find the extrema of $f$ on the circle
+    $x^2 + y^2 = 4$.
+
+2.  Let $(x_1, y_1), (x_2, y_2) \in \mathbb\{R\}^2$ be tuples of points.
+    We would like to to find the shortest path that connects
+    $(x_1, y_1)$ and $(x_2, y_2)$. We define a functional that computes
+    the arc-length of a curve.
+    $$A[f] = \int_\{x_1\}^\{x_2\} \sqrt\{1 + (f'(x))^2\} dx$$
+
+    1.  Let $g$ be the straight line that connects $(x_1, y_1)$ and
+        $(x_2, y_2)$. Write down the equation of $g$.
+
+    2.  Compute $A[g]$. Try a few other paths between these points and
+        convince yourself that the arclength is smallest for $g$.
+
+    3.  Show that $\frac\{\partial L\}\{\partial f\} = 0$. Hint: Note that
+        $f$ and $f'$ are independent arguments for $L$.
+
+    4.  Show that
+        $$\frac\{\partial L\}\{\partial f'\} = \frac\{f'(x)\}\{\sqrt\{1 + (f'(x))^2\}\}$$
+
+    5.  Show that $$\frac\{f'(x)\}\{\sqrt\{1 + (f'(x))^2\}\} = c$$ where
+        $c \in \mathbb\{R\}$ is a constant. Hint: plug the results of the
+        previous sections into the Euler-Lagrange equations.
+
+    6.  Show that $f'(x)$ must be a constant. Prove that this implies
+        $f = g$
+
+
+# Dynamical Systems \{#chap:dynamical_systems\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:manifold\]](#chap:manifold)\{reference-type="ref+label"
+reference="chap:manifold"\},\
+**Difficulty Level:** \*\*\*\
+
+------------------------------------------------------------------------
+
+Dynamical systems study time evolutions on manifolds. Dynamical systems
+are commonly used to model evolutions in physical and learning systems
+both
+
+
+# Mathematical Foundations \{#chap:math_basics\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:** High School Level Mathematics\
+**Difficulty Level:** \*\
+
+------------------------------------------------------------------------
+
+This chapter introduces some basic mathematical definitions used
+throughout the reminder of this book.
+
+## Sets, Groups, Rings, and Fields
+
+Pure mathematics studies mathematical objects, abstractions of patterns
+found in the real world. The simplest such object is a set. Think of a
+set as a collection of unique objects. Sets are typically denoted as
+follows
+
+$$X = \{a, b, c\}$$
+
+Curly braces are used to denote the elements of a set. Here $X$ is a set
+that contains 3 distinct elements $a, b, c$. We note the empty set which
+contains no elements by $\emptyset$ or $\{\}$. We denote membership in a
+set by the notation $$\begin\{aligned\}
+    a \in X
+\end\{aligned\}$$ read as \"a in x\". Set theory is traditionally used as
+the foundation of mathematics. It's possible to define all the usual
+mathematics we use in terms of sets. Let's introduce some basic sets
+which we will run into often. The set of natural numbers
+$$\mathbb\{N\} = \{0, 1, 2, \cdots\},$$ is the set of all whole numbers
+from $0$ upwards. The set of integers
+$$\mathbb\{Z\} = \{\cdots, -2, -1, 0, 1, 2, \cdots \},$$ is the set of all
+whole numbers positive and negative. The rational numbers contain
+fractions.
+$$\frac\{1\}\{3\}, \frac\{-23\}\{68\}, \frac\{1234234242\}\{23423423423425\}, \cdots$$
+
+The real numbers $\mathbb\{R\}$ are the set of positive and negative
+decimal numbers with infinite decimal places. For example
+$$\pi = 3.1415926535\cdots$$
+
+The set of complex numbers $\mathbb\{C\}$ contains one addition to the
+real numbers, denoted by $i$, the imaginary number. $i$ has the property
+that $$i^2 = -1$$ Elements of the complex numbers are denoted by
+$a + ib$. Complex numbers are important for formulating mathematical
+models of quantum mechanics.
+
+These different sets are included once inside the other as follows
+
+$$\begin\{aligned\}
+    \mathbb\{N\} \subset \mathbb\{Z\} \subset \mathbb\{Q\} \subset \mathbb\{R\} \subset \mathbb\{C\}
+\end\{aligned\}$$
+
+We will also often find ourselves working with tuples of these
+quantities $$\begin\{aligned\}
+    \mathbb\{R\}^2 = \mathbb\{R\} \times \mathbb\{R\}
+\end\{aligned\}$$ That is, the elements of $\mathbb\{R\}^2$ are tuples
+$(a,b)$ where $a, b \in \mathbb\{R\}$.
+
+### Set Theoretic Definitions of Numbers
+
+As a quick note, traditionally numbers themselves are defined as sets.
+Here's one way to define the natural numbers as sets $$\begin\{aligned\}
+0 &:= \{\} \\
+1 &:= \{0\} \\
+2 &:= \{0, 1\} \\
+\vdots
+\end\{aligned\}$$ The definition of the real numbers is more complex, but
+follows from similar constructions. We won't go into this more deeply
+here.
+
+### A Quick Introduction to Groups
+
+A *group* is a special kind of set that has an operation defined on it.
+This operation is typically denoted by $+$ or $\times$. We've already
+seen one simple example of a group, the set $\mathbb\{Z\}$. In this case,
+the group operation $+$ is the same as the usual addition. A group must
+satisfy a few formal *group laws*.
+
+1.  Identity: The element $0$ is an identity for $\mathbb\{Z\}$ since for
+    all $n \in \mathbb\{Z\}$, we have $n + 0 = 0 + n = 0$
+
+2.  Associativity: The operation $+$ associates. That is,
+    $n + (m + \ell) = (n + m) + \ell$
+
+3.  Inverses: For any element $n \in \mathbb\{Z\}$, the element $-n$ is
+    its inverse since $n + (-n) = (-n) + n = 0$
+
+If you haven't seen formal group laws before, don't worry too much about
+them. We'll see a number more groups in various physical applications
+later in the book which should help provide more intuition.
+
+### A Brief Introduction to Rings
+
+A *ring* is similar to a group but with the addition of a second
+operation, traditionally denoted by $\times$ as multiplication. This
+multiplication is unlike the group operation in that inverses for
+elements aren't required. For example, $\mathbb\{Z\}$ is a ring, with $+$
+the group operation and $\times$ (the usual multiplication) the ring
+operation. Here $1$ is the multiplicative identity, since for any
+$n \in \mathbb\{Z\}$, we have $n \times 1 = 1 \times n = n$. However, we
+don't have an inverse operation. Note that for $2$ for example, the
+multiplicative inverse would be $\frac\{1\}\{2\}$, which isn't an element of
+$\mathbb\{Z\}$.
+
+A field is a ring where the multiplication operation $\times$ is
+invertible for every element except $0$. This operation is denoted
+division and is given by $/$. The set of rational numbers $\mathbb\{Q\}$
+is a field, since for $\frac\{n\}\{m\} \in \mathbb\{Q\}$, the multiplicative
+inverse is simply $\frac\{m\}\{n\}$ (assuming $m \neq 0$). The real numbers
+$\mathbb\{R\}$ and the complex numbers $\mathbb\{C\}$ are fields as well.
+
+## Functions
+
+A function is a mapping from one set into another. If $A, B$ are sets,
+then we denote a function from $A$ to $B$ as $f: A \to B$ (read the
+notation as \"A to \"B\"). You can think of a function as a machine that
+given an element of $A$ that spits out an element of $B$.
+
+### Exercises
+
+1.  Consider the set $\{0, 1\}$ with addition defined as
+    $$\begin\{aligned\}
+            0 + 0 &= 0\\
+            1 + 0 &= 0 + 1 = 1\\
+            1 + 1 &= 0
+        
+    \end\{aligned\}$$ Prove that this set is a group.
+
+2.  A polynomial is a function of the form
+    $$f(x) = a_n x^n + a_\{n-1\}x^\{n-1\} + \cdots + a_1 x + a_0$$ where
+    $a_i$ is an element of some ring $R$. For example, for the ring
+    $\mathbb\{Z\}$, we have that $$g(x) = 4x^3 + 3 x^2 + 2 x + 1$$ is a
+    polynomial. Denote the set of polynomials over $R$ as
+    $\mathcal\{P\}(R)$.
+
+    1.  Prove that $\mathcal\{P\}(R)$ is a group. What is the group
+        operation? Prove that it follows the group laws.
+
+    2.  Prove that $\mathcal\{P\}(r)$ is a ring. What is the ring
+        operation? Prove that it follows the ring laws.
+
+
+# Complex Analysis \{#chap:complex_analysis\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:calculus\]](#chap:calculus)\{reference-type="ref+label"
+reference="chap:calculus"\},
+[\[chap:distributions\]](#chap:distributions)\{reference-type="ref+label"
+reference="chap:distributions"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+In this chapter, we will discuss the basics of complex analysis. Tools
+and tricks from complex analysis will arise often later in this book, in
+our study of quantum field theory, where it will be necessary to
+evaluate complex integrals over either Euclidean space $\mathbb\{R\}^3$,
+$\mathbb\{R\}^4$ or over Minkowski space.
+
+## Contour Integrals
+
+Contour integrals provide a methodology for evaluating integrals along
+curves in the complex plane. We define a curve in the complex plane as a
+function $$\begin\{aligned\}
+z: [a, b] \to \mathbb\{C\}
+\end\{aligned\}$$ A contour $\gamma$ is defined by a finite set of curves
+connected pointwise. Let $f: \mathbb\{C\} \to \mathbb\{C\}$ be a continuous
+function. The contour integral is defined as $$\begin\{aligned\}
+\int_\gamma f(z) dz &= \int_a^b f(\gamma(t)) \gamma'(t) dt
+\end\{aligned\}$$
+
+## Cauchy Principal Value
+
+The Cauchy principal value $\mathcal\{P\}(\frac\{1\}\{x\})$ is a distribution
+defined as follows. For $u \in C^\{\infty\}_c(\mathbb\{R\})$
+
+$$\begin\{aligned\}
+    \left [ \mathcal\{P\} \left ( \frac\{1\}\{x\} \right )\right ](u) &= \lim_\{\varepsilon \to 0^+\} \int_\{\mathbb\{R\} \setminus [-\varepsilon, \varepsilon]\} \frac\{u(x)\}\{x\} dx  \\
+    &= \int_0^\{\infty\} \frac\{u(x) - u(-x)\}\{x\} dx 
+\end\{aligned\}$$
+
+## Sokhotski-Plemelj Theorem
+
+Let $f$ be a complex-valued function. Let $a, b \in \mathbb\{R\}$ be such
+that $a < 0 < b$. Then
+
+$$\begin\{aligned\}
+    \lim_\{\varepsilon \to 0^+\} \int_\{a\}^b \frac\{f(x)\}\{x \pm i \varepsilon\} = \mp i \pi f(0) + \mathcal\{P\} \int_a^b \frac\{f(x)\}\{x\} dx
+\end\{aligned\}$$
+
+Note that this equation is a distributional equation; the quantities
+above may not be well defined as functions. When $f$ is the Dirac-delta,
+we obtain the following version of the equation above.
+
+$$\begin\{aligned\}
+    \lim_\{\varepsilon \to 0^+\} \frac\{1\}\{x \pm i \epsilon\} = \mp i \pi \delta(x) + \mathcal\{P\} \left ( \frac\{1\}\{x\} \right )
+\end\{aligned\}$$
+
+
+# Fiber Bundles \{#chap:fiber_bundles\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:manifold\]](#chap:manifold)\{reference-type="ref+label"
+reference="chap:manifold"\}\
+**Difficulty Level:** \*\*\*\
+
+------------------------------------------------------------------------
+
+A fiber bundle is a type of mathematical space that associates to each
+point on a given base space a \"fiber\" space. We have encountered a few
+simple examples of fiber bundles before, notably the tangent bundle
+$\mathcal\{T\}M$ over a manifold $M$ and the cotangent bundle
+$\mathcal\{T\}^*M$. Mathematically, a fiber bundle is defined by a
+projection map $$\begin\{aligned\}
+    \pi: E \to B
+\end\{aligned\}$$ Here, $\pi$ is a surjection, $B$ is the base space, and
+$\pi$ is defined such that in local regions of $E$, $\pi$ behaves like
+the projection map $B \times F \to B$ where $F$ is the fiber space. We
+say that $\pi^\{-1\}(x)$ is the fiber over point $x$.
+
+## Examples
+
+The formal mathematical definition of a fiber bundle is complex so we
+start with examples to build understanding.
+
+### Trivial Bundle
+
+Let $E = B \times F$ and let $\pi$ be the projection onto the first
+coordinate. In this case, $\pi: E \to B$ is called the trivial bundle.
+
+### Vector Bundle
+
+In the case that the fiber $F$ is a vector space, we say that the fiber
+bundle is a vector bundle. The tangent bundle $\mathcal\{T\}M$ and
+cotangent bundle $\mathcal\{T\}^*M$ are vector bundles.
+
+### Principle Bundle
+
+Suppose we have a fiber bundle $\pi: E \to B$. Let $G$ be a group and
+suppose we have a continuous right group action $$\begin\{aligned\}
+P \times G \to P
+\end\{aligned\}$$ such that the group action preserves the fibers. That
+is, if $y \in \pi^\{-1\}(x)$ then for all $g \in G$, we have
+$y \cdot g \in \pi^\{-1\}(x)$.
+
+## Section
+
+A section of a fiber bundle is a map $$\begin\{aligned\}
+    f: B \to E
+\end\{aligned\}$$ such that $\pi(f(x)) = x$. That is, a section maps every
+point on the base space to a point in the fiber \"above\" it.
+
+
+# Gaussian Integrals \{#chap:gaussian_integrals\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:manifold\]](#chap:manifold)\{reference-type="ref+label"
+reference="chap:manifold"\}\
+**Difficulty Level:** \*\*\*\
+
+------------------------------------------------------------------------
+
+Let's start by considering the Gaussian integral
+
+$$G = \int_\{-\infty\}^\infty e^\{-\frac\{1\}\{2\}x^2\} dx$$
+
+How do we evaluate this integral? The trick that's usually presented is
+to square the integral then do a change of basis to radial coordinates.
+
+$$\begin\{aligned\}
+    G^2 &= \left ( \int_\{-\infty\}^\infty e^\{-\frac\{1\}\{2\}x^2\} dx \right )^2 \\
+    &= \int_\{-\infty\}^\infty \int_\{-\infty\}^\infty e^\{-\frac\{1\}\{2\}(x^2 + y^2)\} dx dy \\
+\end\{aligned\}$$ Let's apply the change of variable $$\begin\{aligned\}
+    x &= r \cos \theta \\
+    y &= r \sin \theta \\
+\end\{aligned\}$$ We can then compute the determinant of the Jacobian of
+this change of variables as $$\begin\{aligned\}
+\det \mathcal\{J\} &= \det \begin\{pmatrix\}
+    \frac\{\partial x\}\{\partial r\} & \frac\{\partial x\}\{\partial \theta\} \\
+    \frac\{\partial y\}\{\partial r\} & \frac\{\partial y\}\{\partial \theta\} \\
+    \end\{pmatrix\} \\
+    &= \det \begin\{pmatrix\}
+    \cos\theta & -r\sin \theta \\
+    \sin \theta & r \cos \theta \\
+\end\{pmatrix\} \\
+&= r \\
+\end\{aligned\}$$ This means in practice that we transform the volume
+element $dx dy$ into $r dr d\theta$. Let's plug this back into our
+integral to obtain $$\begin\{aligned\}
+    G^2 &= \int_\{0\}^\{2\pi\} \int_\{0\}^\infty e^\{-\frac\{1\}\{2\}r^2\} r dr d\theta\\
+    &= 2 \pi \int_\{0\}^\infty e^\{-\frac\{1\}\{2\}r^2\} r dr \\
+\end\{aligned\}$$ Let's apply the change of variable $u = \frac\{1\}\{2\}r^2$.
+Then $du = r dr$ to obtain $$\begin\{aligned\}
+    G^2 &= 2 \pi \int_0^\infty e^\{-u\} du \\
+    &= 2 \pi
+\end\{aligned\}$$
+
+Thus it follows that $G = \sqrt\{2 \pi\}$. So far, this doesn't look too
+interesting. What does this integral calculation have to do with
+integral programs? Well one consideration here is that now that we have
+this closed form calculation for this simple Gaussian integral, anytime
+we see this same Gaussian integral in an integral program, the
+underlying compiler can just replace it with the constant
+$\sqrt\{2 \pi\}$. This isn't terribly interesting; how often are we likely
+to see just this constant?
+
+Things start to look a little more interesting when we start to evaluate
+slightly more general Gaussian integrals.
+
+Let's now consider the slightly more general integral
+
+$$\int_\{-\infty\}^\{\infty\} e^\{-\frac\{1\}\{2\} ax^2\}$$
+
+We can take the same tack as above and compute
+
+$$\begin\{aligned\}
+    G^2 &= \left ( \int_\{-\infty\}^\infty e^\{-\frac\{1\}\{2\}ax^2\} dx \right )^2 \\
+    &= \int_\{-\infty\}^\infty \int_\{-\infty\}^\infty e^\{-\frac\{1\}\{2\}a(x^2 + y^2)\} dx dy \\
+\end\{aligned\}$$
+
+Let's apply the same change of variables as above.
+
+$$\begin\{aligned\}
+    G^2 &= \int_\{0\}^\{2\pi\} \int_\{0\}^\infty e^\{-\frac\{1\}\{2\}ar^2\} r dr d\theta\\
+    &= 2 \pi \int_\{0\}^\infty e^\{-\frac\{1\}\{2\}ar^2\} r dr \\
+\end\{aligned\}$$
+
+Let's apply the change of variable $u = \frac\{1\}\{2\}ar^2$. Then
+$du = ar dr$ to obtain $$\begin\{aligned\}
+    G^2 &= 2 \pi \int_0^\infty \frac\{e^\{-u\}\}\{a\} du \\
+    &= \frac\{2 \pi\}\{a\}
+\end\{aligned\}$$ Thus it follows that $G = \sqrt\{\frac\{2\pi\}\{a\}\}$. Let's
+now evaluate a slightly more complex integral again.
+
+$$\int_\{-\infty\}^\{\infty\} e^\{-\frac\{1\}\{2\}ax^2 + Jx\} dx$$
+
+Here $J$ is another constant. To solve this integral, we will work to
+complete the square on the quadratic $-\frac\{1\}\{2\}ax^2 + Jx$
+
+$$\begin\{aligned\}
+    -\frac\{1\}\{2\}ax^2 + J x &= -\frac\{1\}\{2\}a \left (x^2 -2\left (\frac\{J\}\{a\} \right ) x \right) \\
+    &= -\frac\{1\}\{2\}a \left (x^2 -2\left (\frac\{J\}\{a\} \right ) x + \left ( \frac\{J\}\{a\} \right )^2 \right ) + \frac\{J^2\}\{2a\} \\
+    &= -\frac\{1\}\{2\}a \left (x -\left (\frac\{J\}\{a\} \right ) \right )^2 + \frac\{J^2\}\{2a\} \\
+\end\{aligned\}$$
+
+Let's apply the change of variable $y = x + \frac\{J\}\{a\}$. Then we see
+
+$$\begin\{aligned\}
+    -\frac\{1\}\{2\} a x^2 + J x &= -\frac\{1\}\{2\} a y^2 + \frac\{J^2\}\{2a\}
+\end\{aligned\}$$ Let's plug this back into the source integral
+$$\begin\{aligned\}
+    G &= \int_\{-\infty\}^\{\infty\} e^\{-\frac\{1\}\{2\}ax^2 + Jx\} \\
+    &= \int_\{-\infty\}^\{\infty\} e^\{-\frac\{1\}\{2\}ay^2 + J^2/2a\} dy \\
+    &= \sqrt\{\frac\{2 \pi\}\{a\}\} e^\{J^2/2a\}
+\end\{aligned\}$$
+
+
+# Special Functions \{#chap:special_funcntions\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:calculus\]](#chap:calculus)\{reference-type="ref+label"
+reference="chap:calculus"\},
+[\[chap:ode\]](#chap:ode)\{reference-type="ref+label"
+reference="chap:ode"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+Computations in physics are often facilitated by using special classes
+of functions that satisfy certain properties. While such functions will
+be intimately familiar to physicists, they are often more mathematically
+obscure to scientists from other disciplines. In this section, we will
+introduce some families of useful functions that we will have occasion
+to use later in the book.
+
+## Spherical Harmonics
+
+Spherical harmonics form an orthogonal basis set of functions on the
+surface of the sphere. For this reason, spherical harmonics prove very
+useful in physics for decomposing radial functions to do Fourier
+analysis.
+
+To define spherical harmonics, we start by first defining the associated
+Legendre polynomials. These polynomials are the solutions to the general
+Legendre equation
+
+$$\begin\{aligned\}
+(1 - x^2)\frac\{d^2\}\{dx^2\}P^m_\{\ell\}(x) - 2x\frac\{d\}\{dx\}P^m_\{\ell\}(x) + \left [\ell(\ell + 1) - \frac\{m^2\}\{1-x^2\} \right] P^m_\{\ell\}(x) = 0
+\end\{aligned\}$$
+
+Here the indices $m, \ell$ are both integers which are referred to
+respectively as the degree and order of the polynomial. In the special
+case the $m$ is $0$, the Legendre polynomials are given by Rodrigues'
+formula
+
+$$\begin\{aligned\}
+P_\{\ell\}(x) = \frac\{1\}\{2^\{\ell\}\ell!\}\frac\{d^\{\ell\}\}\{dx^\{\ell\}\} [(x^2 - 1)^\{\ell\}]
+\end\{aligned\}$$
+
+The spherical harmonics $Y^m_\{\ell\}(\theta, \varphi)$ are defined by
+$$\begin\{aligned\}
+Y^m_\{\ell\}(\theta, \varphi) &= N e^\{im \varphi\} P^m_\{\ell\}(\cos \theta)
+\end\{aligned\}$$
+
+Here $N$ is a normalization constant to satisfy the orthonormality
+constraint.
+
+![A common visual representation of the first few real spherical
+harmonics. Blue portions represent regions where the function is
+positive, and yellow portions represent where it is negative. The
+distance of the surface from the origin indicates the absolute value of
+$Y_\{\ell \}^\{m\}(\theta ,\varphi)$ in angular direction $(\theta,\varphi)$
+[]\{#fig:spherical_harmonics label="fig:spherical_harmonics"\}
+<https://en.wikipedia.org/wiki/Spherical_harmonics#/media/File:Spherical_Harmonics.png>.](figures/Mathematical Foundations/special_functions/spherical_harmonics1.png)\{#fig:spherical_harmonics\}
+
+Alternatively, the spherical harmonics can be viewed as the
+eigenfunctions of the Laplace operator $\nabla^2$. They satisfy the
+equation
+
+$$\begin\{aligned\}
+r^2 Y^m_\{\ell\}(\theta, \varphi) &= -\ell (\ell + 1) Y^m_\{\ell\}(\theta, \varphi)
+\end\{aligned\}$$
+
+An arbitrary solution to Laplace's equation, $$\begin\{aligned\}
+\nabla^2 f &= 0
+\end\{aligned\}$$ can then be written by the Fourier decomposition
+$$\begin\{aligned\}
+f(r, \theta, \varphi) &= \sum_\{\ell = 0\}^\infty \sum_\{m = -\ell\}^\{\ell\} f^m_\ell r^\ell Y^m_\{\ell\}(\theta, \varphi)
+\end\{aligned\}$$
+
+In fact, any square integrable function $f: S^2 \to \mathbb\{C\}$ on the
+sphere can be decomposed in this fashion.
+
+The product of two spherical harmonics can be decomposed as a sum of
+spherical harmonics using the Clebsch-Gordon coefficients
+$C^\{LM\}_\{\ell_1 m_1 \ell_2 m_2\}$ $$\begin\{aligned\}
+Y^\{m_1\}_\{\ell_1\} Y^\{m_2\}_\{\ell_2\} &= \sum_\{L, M\} C^\{L0\}_\{\ell_1 0 \ell_2 0\} C^\{LM\}_\{\ell_1 m_1 \ell_2 m_2\} Y^M_\{L\}
+\end\{aligned\}$$
+
+The definition we have given above defines spherical harmonics as
+specific functions. There are a number of variants of the definition
+that can yield slightly different functions. For this reason, it is
+useful to talk of the space $H_\ell$ of all spherical harmonics of
+degree $\ell$. This space proves useful since it allow for a group
+representation of $SO(3)$, the symmetry group of three dimensional
+rotation matrices. Suppose that $\rho$ is a rotation matrix and
+$\psi \in H_\ell$ is a spherical harmonic. Then $$\begin\{aligned\}
+\rho \cdot \psi &= \psi \circ \rho^\{-1\}
+\end\{aligned\}$$ defines another spherical harmonic.
+
+## Gamma Function
+
+The Gamma function $\Gamma$ provides a generalization of the factorial
+operation to the complex numbers. On the integers, the Gamma function
+has values
+
+$$\begin\{aligned\}
+\Gamma(n) &= (n-1)!
+\end\{aligned\}$$
+
+On the positive real numbers, the Gamma function can be defined by the
+integral $$\begin\{aligned\}
+\Gamma(r) &= \int_0^\infty t^\{r-1\}e^\{-t\} dt
+\end\{aligned\}$$ This definition can be extended to the complex plane
+(except 0 and the negative integers) by analytic continuation. The plot
+below shows $\Gamma$ along the full real axis
+
+![Plot of the values of the Gamma function along the real axis. Note
+that the Gamma function has poles at the negative
+integers.](figures/Mathematical Foundations/special_functions/gamma_function.png)\{#fig:my_label\}
+
+## Bessel Functions
+
+The Bessel functions are the solutions to Bessel's differential equation
+$$\begin\{aligned\}
+x^2 \frac\{dy^2\}\{dx^2\} + x \frac\{dy\}\{dx\} + (x^2 - \alpha^2) y &= 0
+\end\{aligned\}$$
+
+They arise in the solution of Laplace's equation and Schrodinger's
+equation in cylindrical coordinates. Bessel functions can be thought of
+as a generalization of the sine functions. Since the Bessel functions
+arise as the solutions to a second order differential equation, there
+are two linearly independent familes of solutions which are typically
+called Bessel functions of the first type (denote $J_\alpha$) and Bessel
+functions of the second type (denoted $Y_\alpha$)
+
+![A plot of Bessel's functions of the first kind
+$J_\alpha$.](figures/Mathematical Foundations/special_functions/bessel_first_kind.png)\{#fig:bessel_first\}
+
+![A plot of Bessel's functions of the second kind
+$Y_\alpha$.](figures/Mathematical Foundations/special_functions/bessel_second_kind.png)\{#fig:bessel_second\}
+
+## Airy Functions
+
+The Airy functions are given by the solutions to the differential
+equation $$\begin\{aligned\}
+\frac\{d^2 y\}\{dx^2\} - xy &= 0
+\end\{aligned\}$$
+
+The Airy functions are useful to describe the physics of rainbows and to
+solve Schrodinger's equation in triangular potential wells (which arise
+in semiconductor physics). Airy functions also come in two kinds,
+typically denoted $\mathrm\{Ai\}(x)$ and $\mathrm\{Bi\}(x)$.
+
+![Plots of $\mathrm\{Ai\}(x)$ and
+$\mathrm\{Bi\}(x)$](figures/Mathematical Foundations/special_functions/airy_functions.png)\{#fig:airy\}
+
+## Exercises
+
+1.  Compute the explicit forms of the polynomials $P_1$, $P_2$, $P_3$.
+
+2.  Compute the explicit forms of $Y^m_1$, $Y^m_2$, $Y^m_3$.
+
+
+# Distributions \{#chap:distributions\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:calculus\]](#chap:calculus)\{reference-type="ref+label"
+reference="chap:calculus"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+Distributions are powerful generalizations of functions which arise
+often when solving physical equations. We start with the intuitive
+example of the Dirac delta and return to a more general discussions of
+distributions.
+
+## The Dirac Delta
+
+Informally defined, the Dirac delta is a function which satisfies the
+following equation. $$\delta(x) = \begin\{cases\}
++\infty, & x = 0 \\
+0, & x \neq 0 \\
+\end\{cases\}$$ This \"function\" $\delta$ is also constrained to obey the
+following equation. $$\int_\{-\infty\}^\{\infty\} \delta(x) dx = 1$$ The
+issue here of course is that there exists no such function on
+$\mathbb\{R\}$ since functions can't take the value of $\infty$. The Dirac
+delta is thus an example of a *distribution*, a type of generalized
+function. Before we provide formal definitions, it will be useful to
+create a little more structured definition of the Dirac delta. Let's
+first start with introducing a simple integral we will find useful
+
+$$d_K(x) = \frac\{1\}\{2\pi\} \int_\{-K/2\}^\{K/2\} e^\{ikx\} dk$$
+
+How can we solve this complex integral? Recall the formula
+
+$$e^\{ikx\} = \cos(kx) + i \sin(kx)$$
+
+and rewrite $$\begin\{aligned\}
+    d_K(x) &= \frac\{1\}\{2\pi\} \int_\{-K/2\}^\{K/2\} e^\{ikx\} dk \\
+    &= \frac\{1\}\{2\pi\} \int_\{-K/2\}^\{K/2\} \cos(kx) + i \sin(kx) dk \\
+    &= \frac\{1\}\{2\pi\} \int_\{-K/2\}^\{K/2\} \cos(kx)  dk + \frac\{i\}\{2\pi\} \int_\{-K/2\}^\{K/2\} \sin(kx) dk\\
+    &= \frac\{1\}\{2\pi\} \frac\{\sin(kx)\}\{kx\} \Big|^\{K/2\}_\{-K/2\} - \frac\{i\}\{2\pi\}  \frac\{\cos(kx)\}\{kx\} \Big |_\{-K/2\}^\{K/2\} \\
+\end\{aligned\}$$
+
+To evaluate the last expression, note that $\cos$ is an even function
+and that $\sin$ is an odd function so we gain
+
+$$\begin\{aligned\}
+    d_K(x) &= \frac\{1\}\{\pi x\} \sin\{\frac\{Kx\}\{2\}\}
+\end\{aligned\}$$
+
+These functions spike at the origin with the spike growing more
+pronounced as $K \to \infty$ as the plot below shows
+
+![Plot of
+$d_\{50\}$.](figures/Mathematical Foundations/distributions/distributions_d_50.png)\{#fig:d_K\}
+
+$d_K(x)$ is damped by the factor $\frac\{1\}\{\pi x\}$ the further you get
+from the origin. Note that formally, $d_K(0)$ is undefined, but we can
+evaluate a reasonable value at the origin, by using L'Hôpital's rule
+
+$$\begin\{aligned\}
+    d_K(0) &:= \lim_\{x \to 0\} \frac\{\sin\{\tfrac\{Kx\}\{2\}\}\}\{\pi x\} \\
+    &= \lim_\{x \to 0\} \frac\{\tfrac\{K\}\{2\}\cos\{\tfrac\{Kx\}\{2\}\}\}\{\pi\} \\
+    &= \frac\{K\}\{2\pi\}
+\end\{aligned\}$$
+
+The definite integral of $d_K(x)$ over the real line equals $1$ for all
+$K$. To show this, consider the following definite integral
+
+$$\begin\{aligned\}
+    \int_\{-\infty\}^\{\infty\} d_K(x) dx &= \int_\{\infty\}^\{\infty\} \frac\{1\}\{\pi x\} \sin \tfrac\{Kx\}\{2\}  dx\\
+    &= \frac\{1\}\{\pi\} \int_\{-\infty\}^\{\infty\} \frac\{\sin\{\tfrac\{Kx\}\{2\}\}\}\{x\} dx \\
+\end\{aligned\}$$ Let's perform the substitution $y=\frac\{Kx\}\{2\}$. Then
+$x = \frac\{2y\}\{K\}$ $$\begin\{aligned\}
+    \frac\{1\}\{\pi\} \int_\{-\infty\}^\{\infty\} \frac\{\sin\{\tfrac\{Kx\}\{2\}\}\}\{x\} dx
+    &= \frac\{1\}\{\pi\}\frac\{2\}\{K\} \frac\{K\}\{2\} \int_\{-\infty\}^\{\infty\} \frac\{\sin\{y\}\}\{y\} dy \\
+    &= \frac\{1\}\{\pi\}\int_\{-\infty\} ^ \{\infty\} \frac\{\sin(y)\}\{y\} dy \\
+    &= \frac\{1\}\{\pi\}\pi \\
+    &= 1
+\end\{aligned\}$$
+
+This behavior suggests the following formal definition of $\delta$
+
+$$\delta(x) = \lim_\{K \to \infty\} d_K(x)$$
+
+The mathematicians in the audience might ask, well, what's the meaning
+of this limit? Is it pointwise? Is it convergence in an operator norm?
+We won't dig into these mathematical details just yet. Instead, we will
+note that physicists like to express this limit evocatively with the
+following definition
+
+$$\delta(x) = \frac\{1\}\{2\pi\} \int_\{-\infty\}^\{\infty\} e^\{ikx\} dk$$
+
+The advantage of this definition is that it proves much more amenable to
+symbolic manipulation.
+
+## Distributions \{#distributions\}
+
+As the Dirac delta shows, there are interesting function-like objects
+which don't fit neatly into the standard definition of a function. Let's
+generalize from the intuitive notion of a Dirac delta to a more robust
+mathematical definition. It's possible to meaningfully integrate the
+Dirac delta against functions by using the limit definition with $d_K$
+above. The formal notion of a distribution builds on this intuition and
+defines a distribution as continuous linear functions on a space of
+suitable functions.
+
+The space in question is called a Schwartz space and is usually denoted
+as $\mathcal\{S\}$. The Schwartz space, roughly speaking, is the set of
+infinitely differentiable functions which rapidly shrink to $0s$. You
+can think of a function in this space as being \"nearly finite.\"
+
+To define Schwartz spaces more rigorously, we need to introduce a few
+basic concepts from the field of topology. A closed subset of
+$\mathbb\{R\}^n$ is one which contains all its limit points. A compact
+subset of $\mathbb\{R\}^n$ is a subset which is closed and bounded.
+
+Let $C^\{\infty\}(U)$ define the space of all infinitely differentiable
+functions on $U$, where $U$ is a subset of $R^n$. $C^\{\infty\}_c(U)$ is
+the subset of functions which have compact support. That is, if
+$f \in C^\{\infty\}_c(U)$, there exists some compact subset $K$ of $U$
+such that $f$ is only nonzero on $K$.
+
+We say that $T: C^\{\infty\}_c(U) \to \mathbb\{R\}$ is a linear function if
+$T$ is a linear function. A linear function $T$ on $C^\{\infty\}_c(U)$ is
+a distribution with $T$ is continuous.
+
+Note that we don't define here what continuity would mean on
+$C^\{\infty\}_c(U)$. Defining a proper notion of continuity on a space can
+get involved, but intuitively, continuity means the same thing
+(functions that are close to one another get mapped to close points by
+$T$).
+
+
+# Sturm-Liouville Equations \{#chap:sturm_liouville\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:** [\[chap:ode\]](#chap:ode)\{reference-type="ref+label"
+reference="chap:ode"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+Sturm-Liouville theory studies equations of the form
+
+$$\begin\{aligned\}
+    \frac\{d\}\{dx\} \left [ p(x) \frac\{dy\}\{dx\} \right ] + q(x) y = - \lambda w(x) y
+\end\{aligned\}$$ where $p(x)$, $q(x)$, and $w(x)$ are arbitrary
+coefficient functions and $y$ is a function of $x$ that we wish to solve
+for. $\lambda$ here is a free parameter that is not specified in the
+equation and part of solving a Sturm-Liouville problem involves finding
+$\lambda$
+
+We can write this equation in differential operator form
+
+$$\begin\{aligned\}
+    Lu &= -\frac\{1\}\{w(x)\} \left ( \frac\{d\}\{dx\} \left [ p(x) \frac\{du\}\{dx\} \right ] + q(x) u \right )
+\end\{aligned\}$$
+
+We want to find the eigenvalues and eigenfunctions of this equation
+$$\begin\{aligned\}
+    Lu = \lambda u
+\end\{aligned\}$$
+
+Under some regularity conditions, the eigenfunctions of different
+Sturm-Liouville equations form interesting orthogonal bases which we
+will see again in multiple contexts throughout the book.
+
+## Bessel Equation
+
+The Bessel equation is given by $$\begin\{aligned\}
+    x^2 \frac\{d^2y\}\{dx^2\} + x \frac\{dy\}\{dx\} + (x^2 - \nu^2) y = 0
+\end\{aligned\}$$ By leveraging the product rule, the two terms on the
+left of the above equation can be grouped after we divide the Bessel
+equation through by $x$. $$\begin\{aligned\}
+   x \frac\{d^2y\}\{dx^2\} + \frac\{dy\}\{dx\} + (x - \frac\{\nu^2\}\{x\}) y &= 0\\
+   \frac\{d\}\{dx\} \left (x \frac\{dy\}\{dx\} \right) + \left (x - \frac\{\nu^2\}\{x\} \right) y &= 0
+\end\{aligned\}$$
+
+## Legendre Equation
+
+The Legendre equation is given by
+
+$$\begin\{aligned\}
+    (1 - x^2)\frac\{d^2 y\}\{dx^2\} - 2 x \frac\{dy\}\{dx\} + \nu (\nu + 1) y &= 0
+\end\{aligned\}$$
+
+Here we once again apply the chain rule to the two terms on the left to
+obtain
+
+$$\begin\{aligned\}
+    \frac\{d\}\{dx\} \left ( (1 - x^2)\frac\{dy\}\{dx\}  \right ) + \nu (\nu + 1) y &= 0
+\end\{aligned\}$$
+
+## Solution Space of the Sturm-Liouville Equation
+
+As we mentioned briefly above, we can think of the Sturm-Liouville
+equation as an operator equation. We seek solutions $$\begin\{aligned\}
+    u \in L^2([a, b], w(x)dx)
+\end\{aligned\}$$ This notation indicates that the inner product on the
+space is given by $$\begin\{aligned\}
+    \langle f, g \rangle &= \int_a^b \overline\{f(x)\} g(x) w(x) dx
+\end\{aligned\}$$
+
+## Exercises
+
+1.  Prove that the eigenfunctions of the Sturm-Liouville equation
+    $$\begin\{aligned\}
+            L u &= -\frac\{d^2 u\}\{dx^2\} = \lambda u
+        
+    \end\{aligned\}$$ with boundary constraints $$\begin\{aligned\}
+            u(0) = u(\pi) = 0
+        
+    \end\{aligned\}$$ are given by the Fourier basis of sinusoidal
+    functions.
+
+
+# Green's Identities \{#chap:greens_identities\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:calculus\]](#chap:calculus)\{reference-type="ref+label"
+reference="chap:calculus"\},
+[\[chap:vectors\]](#chap:vectors)\{reference-type="ref+label"
+reference="chap:vectors"\}\
+**Difficulty Level:** \*\*\*\
+
+------------------------------------------------------------------------
+
+Green's identities are a set of three vector calculus identities used
+widely in physics.
+
+## Green's First Identity
+
+Let $U \subset \mathbb\{R\}^n$ be a region of space with boundary
+$\partial U$. Let $\varphi$ and $\psi$ be scalar functions on $U$ with
+$\varphi$ twice differentiable and $\psi$ differentiable. Let $\vec\{n\}$
+be an outward pointing normal vector. Then $$\begin\{aligned\}
+\int_U (\psi \nabla^2 \varphi + \nabla \psi \cdot \nabla \varphi) dV &= \oint_\{\partial U\} \psi (\nabla \varphi \cdot \vec\{n\}) dS \\
+&= \oint_\{\partial U\} \psi \nabla \varphi \cdot d\vec\{S\}
+\end\{aligned\}$$ where we have $$\begin\{aligned\}
+d\vec\{S\} &= \vec\{n\} dS
+\end\{aligned\}$$ is the oriented surface element. This rule is a
+higher-dimensional analog of the technique of integration by parts.
+
+## Green's Second Identity
+
+Let $\varphi$ and $\psi$ be twice continuously differentiable functions.
+Then we have
+
+$$\begin\{aligned\}
+\int_U \left [ \psi \nabla^2  \varphi - \varphi \nabla^2  \psi   \right] dV = \oint_\{\partial U\} \left ( \psi \frac\{\partial \varphi\}\{\partial \vec\{n\}\} - \varphi \frac\{\partial \psi\}\{\partial \vec\{n\}\} \right ) dS
+\end\{aligned\}$$
+
+$\frac\{\partial \varphi\}\{\partial \vec\{n\}\}$ is the directional
+derivative of $\varphi$ in the normal direction.
+
+$$\begin\{aligned\}
+\frac\{\partial \varphi\}\{\partial \vec\{n\}\} &= \nabla \varphi \cdot \vec\{n\}
+\end\{aligned\}$$
+
+## Green's Third Identity
+
+Let $\psi$ be a function that is twice continuously differentiable
+functions on $U$. Let $G$ be the Green's function of the Laplacian
+$\nabla^2$. Then we have that
+
+$$\begin\{aligned\}
+\int_U [G(y, \eta) \nabla^2 \psi(y)] dV_y - \psi(\eta) &= \oint_\{\partial U\} \left [ G(y, \eta)\frac\{\partial \psi\}\{\partial \vec\{n\}\} - \psi(y) \frac\{\partial G(y, \eta)\}\{\partial \vec\{n\}\} \right ] dS_y
+\end\{aligned\}$$
+
+This formula proves useful when solving boundary value problems in
+electrostatics.
+
+## The Divergence Theorem
+
+The divergence theorem provides a broader theoretical justification for
+the facts considered in this section.
+
+
+# Ordinary Differential Equations \{#chap:ode\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:calculus\]](#chap:calculus)\{reference-type="ref+label"
+reference="chap:calculus"\}\
+**Difficulty Level:** \*\
+
+------------------------------------------------------------------------
+
+In this chapter we introduce techniques for solving ordinary
+differential equations (ODEs). Such equations come up often in physical
+systems and are simply equations that involve derivatives of a function
+in their definition. We start with the simplest possible example of such
+an equation.
+
+$$\begin\{aligned\}
+    \frac\{df\}\{dx\} = 0
+\end\{aligned\}$$
+
+That is, we want to find a function $f$ whose derivative is 0. In this
+case, we can directly integrate both sides $$\begin\{aligned\}
+    \int \frac\{df\}\{dx\} dx &= \int 0 dx \\
+    f &= C
+\end\{aligned\}$$ Let's take a look at a more complicated equation.
+
+$$\begin\{aligned\}
+    \frac\{df\}\{dx\} = f 
+\end\{aligned\}$$
+
+We want a function which is its own derivative. It turns out that
+$f = e^x$ in this case. The easiest way to prove this fact is to
+consider the Taylor series expansion and differentiate each term in the
+expansion
+
+$$\begin\{aligned\}
+    \frac\{d\}\{dx\}\left (e^x \right ) &= \frac\{d\}\{dx\} \left (1 + x + \frac\{x^2\}\{2!\} + \frac\{x^3\}\{3!\} + \dotsc \right ) \\
+    &= \frac\{d\}\{dx\} \left ( 1 \right ) + \frac\{d\}\{dx\} \left ( x\right ) + \frac\{d\}\{dx\} \left ( \frac\{x^2\}\{2!\} \right ) + \frac\{d\}\{dx\} \left ( \frac\{x^3\}\{3!\} \right )+ \dotsc \\
+    &= 0 + 1 + x +  \frac\{x^2\}\{2!\} + \frac\{x^3\}\{3!\} + \dotsc \\
+    &= e^x
+\end\{aligned\}$$ Let's now get a little more complicated again.
+
+$$\begin\{aligned\}
+    \frac\{df\}\{dx\} &= c f \\
+\end\{aligned\}$$
+
+In this case, we can use the chain rule to see that $f(x) = e^\{cx\}$.
+Let's try one more example.
+
+$$\begin\{aligned\}
+    \frac\{df\}\{dx\} &= f(x) + c
+\end\{aligned\}$$
+
+This is a little trickier. Let's try doing a substitution. Let
+$g(x) = f(x) + c$. Then note that
+
+$$\begin\{aligned\}
+    \frac\{df\}\{dx\} = \frac\{dg\}\{dx\}
+\end\{aligned\}$$
+
+Then the original equation turns into
+
+$$\begin\{aligned\}
+    \frac\{dg\}\{dx\} &= g 
+\end\{aligned\}$$ Which suggests of course that $g(x) = e^x$. It then
+follows that $f(x) = e^\{x\} - c$. Not too bad. You might notice that all
+of the equations we've looked at so far have only involved the first
+derivative of $f$. What happens if we have second derivatives? Let's
+look at this equation
+
+$$\begin\{aligned\}
+    \frac\{d^2 f\}\{dx^2\} &= 0
+\end\{aligned\}$$
+
+Well, let's let $g(x) = \frac\{df\}\{dx\}$. Then the equation above reduces
+to
+
+$$\begin\{aligned\}
+    \frac\{dg\}\{dx\} & = 0
+\end\{aligned\}$$
+
+We know from above then that $$\begin\{aligned\}
+    g(x) = \frac\{df\}\{dx\} =  c
+\end\{aligned\}$$ By integrating both sides we get $$\begin\{aligned\}
+    \int \frac\{df\}\{dx\} dx &= \int c dx \\
+    f(x) &= cx + d
+\end\{aligned\}$$ It follows that $f$ is any linear function. Now consider
+a more complex differential equation $$\begin\{aligned\}
+    \frac\{d^2 f\}\{dx^2\} & = f \\\
+\end\{aligned\}$$ We claim that it follows that $f(x) = e^x$. Why? Taking
+the first derivative of $f$ returns $f$, so it repeating the operation
+also provides the first derivative. Let's consider a more complicated
+equation
+
+$$\begin\{aligned\}
+    \frac\{d^2 f\}\{dx^2\} &= \frac\{df\}\{dx\} \\
+\end\{aligned\}$$ Let's try integrating both sides $$\begin\{aligned\}
+    \int \frac\{d^2 f\}\{dx^2\} &= \int \frac\{df\}\{dx\} dx \\
+    \frac\{df\}\{dx\} + c &= f + d \\
+    \frac\{df\}\{dx\} &= f + C 
+\end\{aligned\}$$ In the last step we have combined the constants and set
+$C = d - c$. Now we've already solved this last equation so we know that
+$$\begin\{aligned\}
+    f(x) &= e^\{x\} - C
+\end\{aligned\}$$ Ok, let's go one step more complex again.
+$$\begin\{aligned\}
+    \frac\{d^2 f\}\{dx^2\} &= \frac\{d f\}\{dx\} + f
+\end\{aligned\}$$ Let's hypothesize for this equation that $f(x)$ takes
+the form $e^\{cx\}$ for some constant $c$. This is a guess for now, but
+primarily guided by our good luck with exponential functions so far.
+Let's plug it in and see what happens
+
+$$\begin\{aligned\}
+    \frac\{d^2 f\}\{dx^2\} &= \frac\{df\}\{dx\} + f \\
+    \frac\{d^2\}\{dx^2\} \left (e^\{cx\} \right ) &= \frac\{d\}\{dx\} \left (e^\{cx\} \right ) + e^\{cx\} \\
+    c^2 e^\{cx\} &= c e^\{cx\} + e^\{cx\} \\
+    (c^2 - c - 1)e^\{cx\} &= 0
+\end\{aligned\}$$ We can solve this last equation by using the quadratic
+formula $$\begin\{aligned\}
+    c &= \frac\{1 \pm \sqrt\{5\}\}\{2\}
+\end\{aligned\}$$ Ok so we know have at least two solutions for $f$
+$$\begin\{aligned\}
+    f(x) &= e^\{\frac\{1 + \sqrt\{5\}\}\{2\} x\}
+\end\{aligned\}$$ Are there more solutions we can find? To answer this
+question, let's start by rearranging our original equation
+$$\begin\{aligned\}
+    \frac\{d^2 f\}\{dx^2\} &= \frac\{df\}\{dx\} + f \\
+    \frac\{d^2 f\}\{dx^2\} - \frac\{df\}\{dx\} - f &= 0 \\
+    \left ( \frac\{d^2\}\{dx^2\} - \frac\{d\}\{dx\} - I\right ) f &= 0 
+\end\{aligned\}$$ Here we, use $I$ to denote the identity transformation.
+We can now define an abstract operator $$\begin\{aligned\}
+    L &= \frac\{d^2\}\{dx^2\} - \frac\{d\}\{dx\} - I
+\end\{aligned\}$$ By saying that $L$ is an operator, we mean that $L$ is a
+function that transforms other functions. Note that a solution of the
+equation $$\begin\{aligned\}
+    Lf &= 0
+\end\{aligned\}$$  is also a solution of our original differential
+equation. One of the properties of $L$ (that you'll prove formally in
+the exercises is that $L$ is linear). This means we can linearly combine
+solutions of $L$. In particular, for any $a$, $b$, we have that
+$$\begin\{aligned\}
+    f &= ae^\{\frac\{1 + \sqrt\{5\}\}\{2\}\} + b e^\{\frac\{1 - \sqrt\{5\}\}\{2\}\}
+\end\{aligned\}$$ is a solution.
+
+## Taylor Series Solutions
+
+So far, we've demonstrated intuitive methods for solving ordinary
+differential equations. These methosd are powerful for a broad range of
+differential equations, but more structured techniques can be necessary
+to solve more complex equations. The series method starts by expressing
+a potential solution as a series
+
+$$\begin\{aligned\}
+    f(x) &= c_0 + c_1 x + c_2 x^2 + \dotsc \\
+    &= \sum_\{i=0\}^\infty c_i x^i
+\end\{aligned\}$$
+
+The goal of a series based solution is to solve the equation by
+constructing a formula for the $c_i$. Let's consider the following
+differential equation
+
+$$\begin\{aligned\}
+    \frac\{\d^2 f\}\{d x^2\} + x \frac\{df\}\{dx\} + f &= 0 \\
+    \left ( \frac\{d^2\}\{dx^2\} + x \frac\{d\}\{dx\} + I \right ) f  &= 0
+\end\{aligned\}$$
+
+This equation is just a bit more complex than the previous second order
+equation we considered. Let's substitute the series expansion for $f$
+into the equation.
+
+$$\begin\{aligned\}
+    \left ( \frac\{d^2\}\{dx^2\} + x \frac\{d\}\{dx\} + I \right ) \left ( \sum_\{i=0\}^\infty  c_i x^i \right) &= 0 \\ 
+    \left ( \sum_\{i=2\}^\infty c_i i (i-1) x^\{i-2\}  \right ) + \left ( \sum_\{i=0\}^\infty c_i i x^\{i\} \right) + \left ( \sum_\{i=0\}^\infty c_i x^i \right) &= 0 \\
+    \left ( \sum_\{j=0\}^\infty c_\{j+2\} (j+2)(j+1) x^\{j\}  \right ) + \left ( \sum_\{j=0\}^\infty c_\{j\} j x^\{j\} \right) + \left ( \sum_\{j=0\}^\infty c_j x^j \right) &= 0  \\
+    \sum_\{j=0\}^\{\infty\} (c_j(j+1) + c_\{j+2\}(j+2)(j+1)) x^j &= 0
+\end\{aligned\}$$
+
+Since the total equation equals $0$, each term in the power series must
+equal $0$). Taking the general term in the expansion above we obtain
+
+$$\begin\{aligned\}
+    c_j(j+1) + c_\{j+2\}(j+2)(j+1) &= 0 \\
+    c_j + c_\{j+2\}(j+2) &= 0 \\
+    c_\{j+2\} &= -\frac\{c_j\}\{j+2\}
+\end\{aligned\}$$
+
+Note that this expansion doesn't constrain the values of $c_0$ and
+$c_1$. But given arbitrary $c_0$ and $c_1$ we have a corresponding
+solution
+
+$$\begin\{aligned\}
+    f(x) &= \sum_\{j=0\}^\infty c_i x^i
+\end\{aligned\}$$
+
+where the $c_i$ are set by the recurrence relation.
+
+## Fourier Series Solutions
+
+The series solution in the previous section started by assuming that the
+desired solution could be represented by a Taylor series. We can choose
+to make a different assumption by assuming that our desired solution can
+be written as a Taylor series
+
+$$\begin\{aligned\}
+    y &= \sum_\{n=1\}^\infty b_n \sin (n \pi x)
+\end\{aligned\}$$
+
+To solve a differential equation through this assumption, we plug in
+this equation into our desired differential equation. Let's worth
+through an example to see how this works.
+
+$$\begin\{aligned\}
+    \frac\{d^2 y\}\{d x^2\} &= 2y + 3x \\
+    \frac\{d^2\}\{dx^2\} \left ( \right ) &= 2 \left ( \right ) + 3 x
+\end\{aligned\}$$
+
+## Exercises
+
+1.  Prove that $L = \frac\{d^2\}\{dx^2\} - \frac\{d\}\{dx\} - I$ is a linear
+    operator.
+
+2.  Prove that for any $a, b$,
+    $$f = ae^\{\frac\{1 + \sqrt\{5\}\}\{2\}\} + b e^\{\frac\{1 - \sqrt\{5\}\}\{2\}\}$$
+    is a solution of the equation $L f = 0$ (where
+    $L = \frac\{d^2\}\{dx^2\} - \frac\{d\}\{dx\} - I$).
+
+
+# Lie Groups and Lie Algebra \{#chap:lie\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:math_basics\]](#chap:math_basics)\{reference-type="ref+label"
+reference="chap:math_basics"\},
+[\[chap:manifold\]](#chap:manifold)\{reference-type="ref+label"
+reference="chap:manifold"\}\
+**Difficulty Level:** \*\*\*\
+
+------------------------------------------------------------------------
+
+Lie groups (pronounced \"Lee\") are mathematical groups that are also
+differentiable manifolds. Lie groups arise repeatedly in quantum
+mechanics as the correct structure to model continuous groups of
+transformations. As we will see in this chapter, the group of rotations
+in three dimensions is given by $\mathrm\{SO\}(3)$, a Lie group. Or the
+group of distance preserving transformations is given by
+$\mathrm\{E\}(3)$. Another foundational concept is that of the
+representation of Lie groups
+
+## Definitions
+
+A real Lie group is a group which is also a finite-dimensional real
+smooth manifold. The group is written multiplicatively, and the group
+operations of multiplication and inversion are smooth maps on the
+manifold. Formally, the map $$\begin\{aligned\}
+    \mu:G \times G \to G \quad \mu(x, y) = xy
+\end\{aligned\}$$ is a smooth map from the product manifold $G \times G$
+to $G$.
+
+Consider the set of $2 \times 2$ invertible matrices $$\begin\{aligned\}
+    \textrm\{GL\}(2, \mathbb\{R\}) &= \left \{A = \begin\{pmatrix\} a & b \\ c & d \end\{pmatrix\} | \det A \neq 0\right \} 
+\end\{aligned\}$$ We claim that $\textrm\{GL\}(2, \mathbb\{R\})$ is a Lie
+group. More generally, $\textrm\{GL\}(n, \mathbb\{R\})$ of $n \times n$
+invertible matrices is a Lie group as is $\textrm\{GL\}(n, \mathbb\{C\})$.
+So too are the special linear groups of matrices with determinant $1$
+$$\begin\{aligned\}
+    \textrm\{SL\}(n, \mathbb\{R\}) &= \{ A \in M_\{n\times n\}(\mathbb\{R\}) | \det A = 1 \} \\
+    \textrm\{SL\}(n, \mathbb\{C\}) &= \{ A \in M_\{n\times n\}(\mathbb\{C\}) | \det A = 1 \} \\
+\end\{aligned\}$$ The orthogonal and special orthogonal groups of
+orthogonal real matrices form a Lie group $$\begin\{aligned\}
+    O(n) &= \{ A \in M_\{n \times n\}(\mathbb\{R\}) | \det A \neq 0, A^T = A^\{-1\} \} \\
+    SO(n) &= \{ A \in M_\{n \times n\}(\mathbb\{R\}) | \det A = 1, A^T = A^\{-1\} \}
+\end\{aligned\}$$ as do the unitary and special unitary groups of complex
+matrices. $$\begin\{aligned\}
+    U(n) &= \{ U \in M_\{n \times n\}(\mathbb\{C\}) | \det U \neq 0, U^* = U^\{-1\} \} \\
+    SU(n) &= \{ U \in M_\{n \times n\}(\mathbb\{C\}) | \det U = 1, U^T = U^\{-1\} \}
+\end\{aligned\}$$
+
+## Lie Algebras
+
+Every Lie group has associated with it the associated Lie algebra.
+
+$$\begin\{aligned\}
+    \textrm\{Lie\}(G) &= \{ X \in M(n, \mathbb\{C\}) | \textrm\{exp\}(t X) \in G, \ \forall t \in \mathbb\{R\} \}
+\end\{aligned\}$$ This algebra has with it an associated bracket structure
+$$\begin\{aligned\}
+    [X, Y] &= XY - YX
+\end\{aligned\}$$
+
+## Exercises
+
+1.  Prove that $\textrm\{GL\}(2, \mathbb\{R\})$ is a Lie group
+
+2.  Prove that $\textrm\{GL\}(n, \mathbb\{R\})$ is a Lie group
+
+3.  Prove that $\textrm\{Lie\}(G)$ is an algebra
+
+
+# Generating Functions \{#chap:generating_functions\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:math_basics\]](#chap:math_basics)\{reference-type="ref+label"
+reference="chap:math_basics"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+Generating functions are tools for converting sequences into functions.
+There are a few choices for performing this conversion. Ordinary
+generating functions use an expansion in powers of $x$
+
+$$\begin\{aligned\}
+    G(a_n; x) &= \sum_\{n=0\}^\infty a_n x^n
+\end\{aligned\}$$
+
+## Generating Functions in Probability
+
+To ease calculations, we define the *generating function* of a
+probability distribution as $$\begin\{aligned\}
+    g(k) = \sum_\{n=0\}^\{\infty\}e^\{-nk\}P_n
+\end\{aligned\}$$ which gives:
+
+$$\begin\{aligned\}
+\label\{Eq14\}
+\langle n^m \rangle = \lim_\{k\rightarrow 0\}\left[(-1)^m\frac\{d^mg(k)\}\{dk^m\}\right]
+\end\{aligned\}$$
+
+which alters the calculation to the evaluation of derivatives.
+
+For the Poisson distribution, we have:
+
+$$\label\{Eq15\}
+g(k)= \sum_\{n=0\}^\{\infty\}e^\{-kn\}\frac\{a^n\}\{n!\}e^\{-a\}=exp\left[a\left(e^\{-k\}-1\right)\right]$$
+
+Using the generating function, we have:
+
+$$\begin\{aligned\}
+&\langle n \rangle = -\lim_\{k \rightarrow 0\} \left\{-ae^\{-k\} exp \left[a \left(e^\{-k\}-1\right)\right]\right\}=a \notag\\
+&\langle n^2 \rangle = -\lim_\{k\rightarrow 0\} \left\{ \left(a e^\{-k\}+a^2 e^\{-2k\}\right) exp\left[ a \left(e^\{-k\}-1\right)\right] \right\} = a + a^2 \notag
+\end\{aligned\}$$
+
+
+# Hilbert Spaces \{#chap:hilbert\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:math_basics\]](#chap:math_basics)\{reference-type="ref+label"
+reference="chap:math_basics"\},
+[\[chap:calculus\]](#chap:calculus)\{reference-type="ref+label"
+reference="chap:calculus"\},
+[\[chap:vectors\]](#chap:vectors)\{reference-type="ref+label"
+reference="chap:vectors"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+Some of the most interest vector spaces in physics and machine learning
+are infinite dimensional. The words infinite-dimensional can be scary to
+beginners, so this chapter provides examples of concrete infinite
+dimensional spaces that are built on familiar mathematical concepts. A
+Hilbert space is an important special case of infinite dimensional on
+which there exists a natural inner product.
+
+## Spaces of functions
+
+Let $a, b \in \mathbb\{R\}$ denote an interval $[a, b]$. Let
+$f: [a, b] \to \mathbb\{R\}$ and $g: [a, b] \to \mathbb\{R\}$ both be
+functions. Note then that for $c, d\in \mathbb\{R\}$, we have that
+$cf, dg$ are both functions $[a, b] \to \mathbb\{R\}$. Similarly, $f+g$ is
+a function $[a, b] \to \mathbb\{R\}$. Combining these two facts, we have
+that $cf + dg$ is a function. It follows that the set of such functions
+forms a vector space. Often times, the space of all functions is too
+big, so we restrict to continuous functions. We denote the space of all
+continuous functions from $[a, b]\to \mathbb\{R\}$ as
+$C([a, b],\mathbb\{R\})$.
+
+We can define an inner product on this vector space.
+
+$$\braket\{f|g\} = \int_a^b f g dx$$ The physicists reading along might
+find this notation evocative. For the rest of our readers, you'll learn
+more about this \"bra-ket\" notation later in this book when we cover
+some quantum mechanics.
+
+## Hilbert Spaces \{#hilbert-spaces\}
+
+Let's start off with an abstract definition of a Hilbert space then
+explain the intuition behind it.
+
+A *Hilbert Space* $\mathcal\{H\}$ is a complex vector space on which there
+is an inner product $\langle x | y \rangle$ which associates to each
+pair of elements $x, y \in \mathcal\{H\}$ a complex number and which
+satisfies the following properties
+
+1.  $\langle y | x \rangle = \overline\{\langle x | y \rangle\}$: The
+    inner product is conjugate symmetric
+
+2.  $\langle a x_1 + b x_2 | y \rangle = a \langle x_1 | y \rangle + b \langle x_2 | y \rangle$
+
+3.  If $x \neq 0$, then $\langle x | x \rangle > 0$ and if $x = 0$ then
+    $\langle x | x \rangle = 0$
+
+We also require that $\mathcal\{H\}$ be *complete*, that is limits must
+exist in the space. Let's consider a more concrete example: The sequence
+space $\ell^2$ is given by the set of infinite sequences
+$\mathbf\{z\} = (z_1, z_2, \dotsc)$ such that $$\begin\{aligned\}
+\sum_\{n=1\}^\infty |z_n|^2 < \infty
+\end\{aligned\}$$ The inner product is defined by $$\begin\{aligned\}
+\langle \mathbf\{z\} | \mathbf\{w\} \rangle = \sum_\{n=1\}^\infty z_n \overline\{w_n\}
+\end\{aligned\}$$
+
+As another example, let $L^2([a, b])$ be the space of functions
+$f:[a, b] \to \mathbb\{R\}$ Let the inner product be defined by
+$$\begin\{aligned\}
+\langle f | g \rangle = \int_a^b f(x)g(x) dx
+\end\{aligned\}$$ $L^2([a, b])$ becomes a Hilbert space under this inner
+product.
+
+## Exercises
+
+1.  Let $\{\left | q\right \rangle \}$ be an orthonormal basis for
+    Hilbert space $\mathcal\{H\}$. Prove that
+    $$\sum_i \left | q \right \rangle \left \langle q \right | = I$$
+    where $I$ is the identity operator on the Hilbert space
+    $\mathcal\{H\}$. []\{#operatoridentity label="operatoridentity"\}
+
+2.  Prove that $\ell^2$ is a Hilbert space according to our definition.
+
+3.  Prove that $L^2([a, b])$ is a Hilbert space according to our
+    defnition.
+
+
+# Poisson Brackets and Symplectic Manifolds \{#chap:poisson_bracket\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:manifold\]](#chap:manifold)\{reference-type="ref+label"
+reference="chap:manifold"\}\
+**Difficulty Level:** \*\*\*\
+
+------------------------------------------------------------------------
+
+Symplectic manifolds arise in classical mechanics as a useful model of
+the phase space of the system.
+
+## Mathematical Definitions
+
+A symplectic manifold is a smooth manifold $M$ that has a closed
+non-degenerate differential 2-form $\omega$. Formally, a 2-form is a
+function from the manifold to the second exterior power of the cotangent
+space for the manifold. $$\begin\{aligned\}
+\omega: M \to \wedge^2 T_p^* M
+\end\{aligned\}$$
+
+Non-degenerate means that if there exists $X \in T_p M$ such that
+$\omega(X, Y) = 0$ for all $Y \in T_p M$ then $X = 0$.
+
+Let $M$ be a smooth manifold of dimension $n$. Consider the cotangent
+bundle $T^*M$. Then the canonical symplectic form is given by
+$$\begin\{aligned\}
+\omega = \sum_\{i=1\}^n dp_i \wedge dq^i
+\end\{aligned\}$$ Here $(q^1,\dotsc,q^n)$ are local coordinates on $M$ and
+$(p_1,\dotsc,p_n)$ are fiberwise coordinates with respect to cotangent
+vectors $dq^1,\dotsc,dq^n$.
+
+## Poisson Bracket
+
+A Poisson Bracket is a function, typically denoted by
+$\{\cdot, \cdot \}$ that satisfies the following properties.
+
+-   Anticommutativity: $$\begin\{aligned\}
+    \{f, f\} &= - \{g, f\}
+    \end\{aligned\}$$
+
+-   Bilinearity: For $a, b \in \mathbb\{R\}$ $$\begin\{aligned\}
+    \{af + bg, h\} &= a\{f, h\} + b \{g, h\}\\
+    \{h, af + bg\} &= a\{h, f\} + b \{h, g\}
+    \end\{aligned\}$$
+
+-   Leibniz's Rule $$\begin\{aligned\}
+    \{fg, h\} &= \{f, h\}g + f\{g, h\} 
+    \end\{aligned\}$$
+
+-   Jacobi Identity: $$\begin\{aligned\}
+    \{f, \{g, h\}\} + \{g, \{h, f\}\} + \{h, \{f, g\}\} &= 0
+    \end\{aligned\}$$
+
+In canonical coordinates, the Poisson bracket takes the form
+$$\begin\{aligned\}
+\{f, g\} &= \sum_\{i=1\}^N \left ( \frac\{\partial f\}\{\partial q_i\}\frac\{\partial g\}\{\partial p_i\} - \frac\{\partial f\}\{\partial p_i\} \frac\{\partial g\}\{\partial q_i\} \right )
+\end\{aligned\}$$
+
+
+# An Introduction to Information Theory \{#chap:calculus\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:math_basics\]](#chap:math_basics)\{reference-type="ref+label"
+reference="chap:math_basics"\}\
+**Difficulty Level:** \*\
+
+------------------------------------------------------------------------
+
+The entropy of a information set $Y$, otherwise known as the Shannon
+entropy, is defined below. Note that while this entropy is defined
+similarly to the entropy used in Thermodynamics, it is not the same
+term. $$\begin\{aligned\}
+H(Y) &= -\sum_\{i\} p_i \log_2 (p_i)
+\end\{aligned\}$$ In this equation, $p_i$ is the probability of $i$-th
+possible occurrence within the data set. Imagine a data set containing
+results for whether a flipped coin resulted in either heads or tails.
+Suppose the number of trials is $50$ and exactly $25$ of the flips were
+tails and $25$ of the flips were heads. In this case, the two different
+occurrences are heads and tails and each have a probability of occurring
+of $\frac\{1\}\{2\}$. Using the equation above, we would calculate that the
+entropy of the data set would be 1. This means that this data set has
+maximum entropy. In other words, this data set has no order to it is
+equally likely for one to get any of the occurrences.
+
+If, on the other hand, we somehow had the flip of the coin result in all
+heads or all tails, then the probability of one of the occurrences would
+be 0 while the other one would be 1. When evaluating the entropy of this
+case, we would find that one of the terms would be $$\begin\{aligned\}
+0 * -\infty
+\end\{aligned\}$$ In this case, the $0$ term dominates which means that
+the entropy of this case is $0$. This means, as clearly seen, the data
+set is perfectly determined and we know whether or not we will get heads
+or tails. This means that the entropy term we defined will always be
+between 0 and 1 where 1 is the most disordered and 0 is the most ordered
+as far as data set information is concerned.
+
+Specific conditional entropy is similarly defined and is represented as
+follows where Y is again our data set and X is one possible feature from
+which we can separate our data which has some specific occurrence x'.
+$$\begin\{aligned\}
+H(Y|X=x') &= -\sum_\{i\} p_i \log_2 (p_i)\\
+\end\{aligned\}$$ In this case, $p_i$ is again the probability of $i$-th
+possible occurrence within the data set however now our data set is
+further conditioned based on the specific value of $X$, $x'$. Using our
+previous example of flipping coins, imagine now that of those 50 trials,
+20 of them were done with gloves on and the others were done without any
+gloves on at all. Of the 20 trials done with gloves on, 19 of them
+resulted in heads while only 1 resulted in tails whereas where there
+were no gloves on, 24 of them resulted in tails while only 6 of them
+resulted in heads. We can therefore evaluate the specific conditional
+entropy for when gloves were on and when gloves were off as done below.
+$$\begin\{aligned\}
+H(Y|X=\textrm\{gloves\}) &= -(\frac\{19\}\{20\}\log_2(\frac\{19\}\{20\})+\frac\{1\}\{20\}\log_2(\frac\{1\}\{20\}))=0.286\\
+H(Y|X=\textrm\{no\ gloves\}) &= -(\frac\{24\}\{30\}\log_2(\frac\{24\}\{30\})+\frac\{6\}\{30\}\log_2(\frac\{6\}\{30\}))=0.722
+\end\{aligned\}$$ We can then define the general conditional entropy as
+shown below. $$\begin\{aligned\}
+H(Y|X) &= \sum_\{x_i\} p_\{x_i\} H(Y|X=x_i)
+\end\{aligned\}$$ In our example, the conditional entropy of the data set
+on whether or not the person was wearing gloves is calculated below.
+$$\begin\{aligned\}
+H(Y|X) = \frac\{20\}\{50\} * 0.286 + \frac\{30\}\{50\} * 0.722=0.548
+\end\{aligned\}$$ Once the conditional entropy is determined, we can then
+determine how much information was gained as a result of the $X$ feature
+being used to classify the data. This is formally defined as follows
+where I represents the information gain or mutual information.
+$$\begin\{aligned\}
+I(Y;X) &= H(Y) - H(Y|X)
+\end\{aligned\}$$ In general, you want to maximize the information gain
+when choosing the attributes X that will further classify your data set
+Y. Note that for our example, $I(Y;X) = 0.452$. This term is essentially
+a way to quantify how much more we know about Y when given X and will
+always be greater than or equal to 0. Below are listed several
+identities that will be used throughout the derivation of the rest of
+the chapter. $$\begin\{aligned\}
+    I(A;B) &= H(A)-H(A|B)\\
+    I(A;B) &= H(B)-H(B|A)\\
+    I(A;B) &= H(A)+H(B)-H(A,B)\\
+    I(A;B) &= H(A,B)-H(A|B)-H(B|A)\\
+    I(A,B;C) &= I(A;C)+I(B;C|A)\geq 0\\
+    H(B|A) &= H(A,B) - H(A)
+\end\{aligned\}$$ In the above equations, terms such as $H(A,B)$ denote
+joint terms.
+
+
+# Partial Differential Equations \{#chap:pde\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:calculus\]](#chap:calculus)\{reference-type="ref+label"
+reference="chap:calculus"\},
+[\[chap:ode\]](#chap:ode)\{reference-type="ref+label"
+reference="chap:ode"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+Partial differential equations impose constraints on the partial
+derivatives of a function. Intuitively, if you can reason about the
+\"local\" behavior of a function from physical principles, you can often
+write down a set of relations between these partial derivatives that
+your physical system must satisfy. A very broad range of interesting
+systems can be specified with partial differential equations and we will
+encounter them repeatedly as we explore various physical systems in the
+remainder of this book.
+
+However, the generality of partial differential equations comes with the
+accompanying limitation that there doesn't exist a general method to
+solve such equations. In fact, for any given partial differential
+equation of interest, there can be many different partial solutions that
+will be of interest to practitioners.
+
+Here's an example of a very simple partial differential equation. Let
+$v: \mathbb\{R\}^2 \to \mathbb\{R\}$ be a function. Then we define the
+partial differential equation
+
+$$\begin\{aligned\}
+    \frac\{\partial^2 v\}\{\partial x \partial y\} = 0
+\end\{aligned\}$$
+
+Introducing some common notation, we may also write this equation as
+
+$$\begin\{aligned\}
+    v_\{xy\} = 0
+\end\{aligned\}$$
+
+We claim that any equation of the form $$\begin\{aligned\}
+  u(x, y) = f(x) + g(y)  
+\end\{aligned\}$$ will be a solution to this equation. Note that this
+means that there exists an extremely large solution space of equations
+for this simple PDE.
+
+## Notation
+
+We'll start by introducing a few useful bits of notation in this
+section. The Laplace operator $\nabla^2$ is defined for a function
+$u(x_1, \dotsc, x_n)$ on $n$ variables as $$\begin\{aligned\}
+    \nabla^2 u = \frac\{\partial u\}\{\partial x_1^2\} + \dotsc + \frac\{\partial u\}\{\partial x_n^2\} = u_\{11\} + \dotsc + u_\{nn\}
+\end\{aligned\}$$
+
+## Separation of Variables
+
+A common strategy used when solving differential equations is to posit
+that the solution has the form
+
+$$\begin\{aligned\}
+    f(x, y) &= u(x)v(y)
+\end\{aligned\}$$
+
+This assumption often enables us to reduce a partial differentiable
+equation to ordinary differential equations. Let's take an example.
+
+$$\begin\{aligned\}
+    \frac\{\partial f\}\{\partial x\} + \frac\{\partial f\}\{\partial y\} = 0
+\end\{aligned\}$$
+
+Plugging in the separation of variables assumption we obtain the
+equation.
+
+$$\begin\{aligned\}
+    \frac\{\partial\}\{\partial x\} \left ( u(x) v(y)) \right ) + \frac\{\partial\}\{\partial y\} \left ( u(x) v(y) \right) &= 0 \\
+    v(y)\frac\{\partial u(x)\}\{\partial x\} + u(x) \frac\{\partial v(y)\}\{\partial y\} &= 0 \\
+    v(y) \frac\{\partial u(x)\}\{\partial x\} &= - u(x) \frac\{\partial v(y)\}\{\partial y\} \\
+    \frac\{1\}\{u(x)\}\frac\{\partial u(x)\}\{\partial x\} &= -\frac\{1\}\{v(y)\}\frac\{\partial v(y)\}\{\partial y\} 
+\end\{aligned\}$$ Note that at the last line, left hand side is a function
+purely of $x$ and the right hand side is a function purely of $y$. Since
+this equality must hold for all $x$ and $y$, both sides must equal a
+constant. We thus have two ordinary differential equations
+
+$$\begin\{aligned\}
+  \frac\{1\}\{u(x)\}\frac\{\partial u(x)\}\{\partial x\} &= \lambda \\ -\frac\{1\}\{v(y)\}\frac\{\partial v(y)\}\{\partial y\}  &= \lambda \\
+\end\{aligned\}$$
+
+These two equations can be solved using the techniques we learned
+earlier for ordinary differential equations.
+
+## Fourier Transforms
+
+Another common solution techniques for PDEs is to apply the Fourier
+transform to simplify the equation. Fourier transforms satisfy the
+property that the time derivative of an input is reduced to a
+multiplication in the frequency domain. This property can allow for
+considerable simplification of PDEs. We will learn how to use this
+technique in later chapters. We note briefly that there are a number of
+more advanced transforms such as the inverse scattering transform that
+also prove useful for more complex PDE systems.
+
+## Green's Functions
+
+Suppose that $L$ is a linear differential operator that acts on
+distributions over $\mathbb\{R\}^n$. Then the Green's function $G(x, s)$
+is a distribution over $\mathbb\{R\}^n$ that satisfies the following
+equation
+
+$$L G(x, s) = \delta(x -s)$$
+
+Recall that the Dirac delta satisfies the following property
+
+$$\int \delta(x - s) f(s) ds = f(x)$$
+
+Let's plug in the defining equation for a Green's function:
+
+$$\begin\{aligned\}
+    \int L G(x, s) f(s) ds &= f(x) \\
+    L \left ( \int G(x, s) f(s) ds \right ) &= f(x)
+\end\{aligned\}$$
+
+That is, $$\begin\{aligned\}
+u = \int G(x, s)f(s) ds
+\end\{aligned\}$$ is a solution to the general differential equation
+
+$$\begin\{aligned\}
+L u = f 
+\end\{aligned\}$$
+
+If we can find the Green's function for $L$, we can use it to find
+entire families of solutions.
+
+## Discussion
+
+As a parting note in this section, we'll mention that traditionally
+partial differential equations have been the \"language\" of classical
+physics. Part of the thesis of this book is that differentiable programs
+form a more useful common language for physics. The core reasoning
+behind this argument is that unlike partial differential equations,
+differentiable programs have a universal solution method via gradient
+descent.
+
+
+# Probability and Statistics \{#chap:probability\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:math_basics\]](#chap:math_basics)\{reference-type="ref+label"
+reference="chap:math_basics"\}\
+**Difficulty Level:** \*\
+
+------------------------------------------------------------------------
+
+This chapter introduces the concept of random sampling and empirical (or
+observational) probability. The chapter starts by introducing the
+foundational notion of a probability distribution. We then will learn to
+use permutations and multinomial expansions to determine discrete
+probability distributions and how to determine probabilities and $m$-th
+moments using continuous probability distributions.
+
+## Random Sampling and Empirical Probability
+
+Consider a large population, so large in fact that it cannot analyzed
+from the study of all its component. We want to infer the behavior of
+the whole population, based on what can be extracted from a small
+sample. Ideally this sample should be selected randomly with no inherent
+bias in the sampling technique. However since sampling is random, some
+random draws will give a better representation of the population than
+others. Thus, there is an uncertainty about how much the sample differs
+from the population. This uncertainty is measured by the probability.
+
+One of the most known methods to determine the probability is the
+theoretical or classical method, which considers the nature of the
+phenomena to be studied. An example is the flipping coin experiment. In
+this case, the nature of the experiment defines that there would be one
+of only two possible results, *head* or *tail*, and thus the probability
+is defined as $1/2$.
+
+The theoretical method is preferable to determine the probability since
+is very intuitive. However it is not always applicable, specially in the
+case of large samples, where the nature of the experiment is hard to
+predict. An alternative of this is the so called empirical or
+observational method, which consist on using several trials or samples
+of the population to determine the probability.
+
+Consider the coin flipping experiment. In this case we would like to
+find the probability of get a head. To do this, we would count the
+number of heads we can get after a number $N$ of samples. The samples
+are completely random since the next experiment is not correlated with
+the previous. If we track the evolution of the outcomes
+(Fig.[\[fig1a\]](#fig1a)\{reference-type="ref" reference="fig1a"\}), we
+would observe that no conclusions can be drawn from the first few
+samples, but rather after performing a big number of experiment, where
+we would be able to see a clear tendency of $1/2$.
+
+## Permutation and Multinomial Expansion
+
+Consider the experiment of finding the probability of getting $N_H$
+heads and $N_T$ tails, regardless of order, from a sample of $N$ coins.
+In this case, we need to include a factor associated with the number of
+permutations with $N_H$ and $N_T$. To show this, we adopt the view of a
+random walk, where a head is a positive step and a tail is a negative
+step. For example the experiment $HHTHHTTH$ results in an end position
+
+$$\begin\{aligned\}
+X = 1+1-1+1+1-1-1+1 = 2
+\end\{aligned\}$$
+
+Count the number of ways $M(X,N)$ of ending at any location $X$ after
+$N$ steps, and assume probability is proportional to this number.
+Separate $N$ steps into positive steps $N_H$ and negative steps $N_T$.
+Thus, $$\begin\{aligned\}
+\label\{Eq1\}
+N = N_T + N_H
+\end\{aligned\}$$
+
+The end location of a path $X$ is given by: $$\begin\{aligned\}
+\label\{Eq2\}
+X = N_H - N_T
+\end\{aligned\}$$
+
+The combinatoric number of ways of distributing $N_H$ and $N_T$ steps
+into $N = N_H + N_T$ is: $$\label\{Eq3\}
+M(N_H,N_T)=\frac\{(N_H+N_T)!\}\{N_H!N_T!\}=\frac\{N!\}\{N_H!N_T!\}$$
+
+Using ([\[Eq1\]](#Eq1)\{reference-type="ref" reference="Eq1"\}) and
+([\[Eq2\]](#Eq2)\{reference-type="ref" reference="Eq2"\}), we have
+$N_H=(N+X)/2$ and $N_T=(N-X)/2$. This gives (Fig.
+[\[fig1\]](#fig1)\{reference-type="ref" reference="fig1"\}): $$\label\{Eq4\}
+M(X,N)=\frac\{N!\}\{[(N+X)/2]![(N-X)/2]!\}$$
+
+This equation is valid for $|X| \leq N$, and integer values of
+$(N \pm X)=2$.
+
+Alternatively, $M(X,N)$ can be built recursively using:
+$$\begin\{aligned\}
+\label\{Eq5\}
+M(X,N+1)=M(X+1,N) + M(X-1,N)
+\end\{aligned\}$$
+
+The probability of getting $N_H$ heads and $N_T$ tails is given by:
+$$\begin\{aligned\}
+\label\{Eq6\}
+P(N_H,N_T)=M(N_H,N_T)P_H^\{N_H\}P_T^\{N_T\}=\frac\{N!\}\{N_H!N_T!\}P_H^\{N_H\}P_T^\{N_T\}
+\end\{aligned\}$$
+
+This probability is summed over the number of heads to give the binomial
+expansion: $$\begin\{aligned\}
+\label\{Eq7\}
+\sum_\{N_H=0\}^N \frac\{N!\}\{N_H!(N-N_H)!\}P_H^\{N_H\}P_T^\{N_T\}&=\sum_\{N_H\}\sum_\{N_T\}*\frac\{N!\}\{N_H!N_T!\}P_H^\{N_H\}P_T^\{N_T\}\notag\\ &=(P_H+P_T)^N
+\end\{aligned\}$$
+
+where the $*$ indicates a sum with the constraint $N_H+N_T=N$.
+
+We can generalize this to $N$ independent experiments with $r$ possible
+outcomes (*e.g.* a dice has 6 possible outcomes). For a given
+experiment, the probabilities are $P_1, P_2, . . . , P_r$. The
+probability of getting $N_1, N_2, . . . , N_r$ is: $$\label\{Eq8\}
+\frac\{N!\}\{N_1!N_2!...N_r!\}P_1^\{N_1\}P_2^\{N_2\}...P_r^\{N_r\}$$
+
+which is a term in the multinomial expansion: $$\label\{Eq9\}
+\sum_\{N_1\}\sum_\{N_2\}...\sum_\{N_r\}*\frac\{N!\}\{N_1!N_2!...N_r!\}P_1^\{N_1\}P_2^\{N_2\}...P_r^\{N_r\}=(P_1+P_2+...+P_r)^N$$
+
+## Probability Density
+
+From the experiment of coin flipping, we can observe that if we
+continuously increase the number of coins, the distribution of discrete
+probabilities resemble a continuous probability distribution
+(Fig. [\[fig4\]](#fig4)\{reference-type="ref" reference="fig4"\}). We call
+this distribution the probability density, and is use it to study the
+statistics of continuous variables or large scale samples.
+
+We can also observe that for the case of coin flipping, the probability
+density resembles a normal distribution, also know as Gaussian
+distribution, defined as:
+
+$$\begin\{aligned\}
+\label\{Eq20\}
+f(x) = \frac\{1\}\{(2\pi)^\{1/2\}\sigma\}\exp\left[-\frac\{\left(x - \langle x \rangle \right)^2\}\{2\sigma^2\}\right]
+\end\{aligned\}$$
+
+where $\langle x \rangle$ is the expected value of $x$, and $\sigma$ the
+standard deviation from the expected value.
+
+The shape for the probability distribution for the coin flipping
+experiment is not arbitrary, it is a direct consequence of the central
+limit theorem. The theorem states that for $N$ independent random
+variables $x_1, x_2,..., x_N$ selected from a probability distribution
+with variance $\sigma^2_x$, and a sample mean $$\begin\{aligned\}
+\bar\{x\} = \frac\{\left(x_1+x_2+...+x_N\right)\}\{N\},
+\end\{aligned\}$$ the probability distribution for sufficiently large $N$
+approaches a Gaussian distribution with standard deviation
+$\frac\{\sigma_y\}\{\sqrt\{N\}\} = \frac\{\sigma_x\}\{\sqrt\{N\}\}=N^\{1/2\}$
+regardless of the distribution for $x$. For example, individual
+non-interacting particles may obey a complex probability distribution
+with mean energy $\langle \epsilon \rangle$ and standard deviation
+$\Delta \epsilon$; however, a collection of $N$ particles tends to a
+Gaussian distribution with standard deviation $\Delta \epsilon/N^\{1/2\}$
+
+The simple example of coin flipping or dice throwing has equal
+probabilities for all outcomes (flat distribution). However, we are
+generally interested in the properties of systems with more complex
+probability distributions. Consider an experiment that can have integer
+outcomes $n$ ranging from $0$ to $\infty$. For a given experiment, the
+probability that the outcome of that experiment is $n$ is $P_n$ (with
+$P_n\geq 0$ for all $n$), and each experiment is uncorrelated from the
+previous experiments. Our goal now is to evaluate averages from the
+distribution and to define several properties of the distribution. To
+proceed, we use a particular distribution as a model probability
+distribution, namely the Poisson distribution given by
+(Fig. [\[fig2\]](#fig2)\{reference-type="ref" reference="fig2"\}):
+
+::: marginfigure
+![image](figures/Mathematical Foundations/probability_and_statistics/poisson.png)\{width="\\linewidth"\}
+:::
+
+$$\label\{Eq10\}
+P_n=\frac\{a^n\}\{n!\}e^\{-a\}$$
+
+where $a$ is a characteristic spread in the distribution.
+
+Normalization of the probability distribution requires that:
+$$\label\{Eq11\}
+\sum_\{n=0\}^\{\infty\}P_n=\sum_\{n=0\}^\{\infty\}\frac\{a^n\}\{n!\}e^\{-a\}=1$$
+
+which requires the property $\sum_\{n=0\}^\{\infty\}\frac\{a^n\}\{n!\}=e^a$.
+
+We define the $m$th moment of the distribution to be: $$\label\{Eq12\}
+\langle n^m\rangle =\sum_\{n=0\}^\{\infty\}n^mP_n$$
+
+For example the mean $\langle n \rangle$ is given by: $$\begin\{aligned\}
+\label\{Eq13\}
+\langle n \rangle &= \sum_\{n=0\}^\{\infty\} n \frac\{a^n\}\{n!\}e^\{-a\} =  \sum_\{n=1\}^\{\infty\} \frac\{a^n\}\{(n-1)!\}e^\{-a\} \notag\\
+&= \sum_\{n=1\}^\{\infty\} a \frac\{a^\{n-1\}\}\{(n-1)!\}e^\{-a\} = a \sum_\{n=0\}^\{\infty\} \frac\{a^\{n\}\}\{(n)!\}e^\{-a\}=a
+\end\{aligned\}$$
+
+We define the *variance* $\sigma^2$ of the distribution to be
+$$\begin\{aligned\}
+\sigma^2=\langle \left( n - \langle n \rangle \right)^2 \rangle = \langle n^2 \rangle - \langle n \rangle ^2, 
+\end\{aligned\}$$
+
+which gives $\sigma^2 = a$ for the Poisson distribution. The variance is
+a simple measure of the spread in the distribution (variance is the
+square of the standard deviation $\sigma$).
+
+A more complete characterization of the uncertainty in the distribution
+is given by the *information entropy* $S$ of the distribution, given by:
+$$\begin\{aligned\}
+\label\{Eq16\}
+S = -\sum_\{n=0\}^\{\infty\}P_n \log P_n
+\end\{aligned\}$$
+
+which tends to zero if the distribution is single-valued and increases
+with an increase in the spread of the distribution.
+
+We extend these concepts to a random variable X that can take r discrete
+values $(x_1,x_2,...,x_r)$. Similar to before, the probability
+distribution satisfies $P(x_i) \geq 0$ and is normalized such that
+$\sum_\{i=1\}^r P(x_i)=1$. The moments of the distribution are given by:
+$$\begin\{aligned\}
+\label\{Eq17\}
+\langle X^m \rangle = \sum_\{i=1\}^r x_i^m P(x_i)
+\end\{aligned\}$$
+
+The mean is $\langle X \rangle$, and the variance $\sigma_X^2$ is
+$\langle X^2 \rangle - \langle X \rangle^2$.
+
+The probability distribution for a continuous variable $x$ is stated by
+the *probability density* $f(x)$, which gives the probability:
+
+$$\begin\{aligned\}
+P(a\leq x \leq b) = \int_a^b f(x)dx 
+\end\{aligned\}$$
+
+The probability density is nonnegative $(f(x) \geq 0$ for all $x)$, and
+normalized (complete) such that: $$\begin\{aligned\}
+\int_\Omega f(x)dx = 1
+\end\{aligned\}$$
+
+where $\Omega$ implies integration over the entire range of $x$.
+
+
+# Covariant Derivatives and Connections \{#chap:covariant_derivative\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:manifold\]](#chap:manifold)\{reference-type="ref+label"
+reference="chap:manifold"\}\
+**Difficulty Level:** \*\*\*\
+
+------------------------------------------------------------------------
+
+The covariant derivative provides a method of defining derivatives to be
+taken along the tangent vectors of a manifold. Importantly, the
+covariant derivative is defined so as to be independent of the choice of
+local coordinate system.
+
+## Mathematical Definition
+
+Let $M$ be a manifold and let $p \in M$ be a point on the manifold. Let
+$f: M \to \mathbb\{R\}$ be a real valued function on the manifold. Let
+$$\begin\{aligned\}
+v : M \to T_p M
+\end\{aligned\}$$ be a vector field on $M$. Then we denote the covariant
+derivative $$\begin\{aligned\}
+(\nabla_v f)_p \in T_p M,
+\end\{aligned\}$$ to be the tangent vector at $p$ such that the following
+properties hold
+
+$$\begin\{aligned\}
+(\nabla_\{gx + hy\} u)_p &= (\nabla_x u)_p g + (\nabla_y u)_p h \\
+(\nabla_v (u + w))_p &= (\nabla_v u)_p + (\nabla_v w)_p \\
+(\nabla_v (fu))_p &= f(p)(\nabla_v u)_p  + (\nabla_v f)_p u_p
+\end\{aligned\}$$
+
+The goal of this definition is to make the definition of the covariant
+derivative independent of the choice of coordinate basis. For another
+definition, suppose that we have a differentiable curve
+$$\begin\{aligned\}
+\phi:[-1, 1] \to M
+\end\{aligned\}$$ such that $\phi(0) = p$ and $\phi'(0) = v$. Then we
+define the covariant derivative to be $$\begin\{aligned\}
+(\nabla_v f)_p &= (f \circ \phi)'(0) \\
+&= \lim_\{t \to 0\} \frac\{f(\phi(t)) - f(p)\}\{t\}
+\end\{aligned\}$$ We can then view the covariant derivative as a function
+mapping points in the manifold $M$ to real scalars $(nabla_v f)_p$
+$$\begin\{aligned\}
+\nabla_v f: M \to \mathbb\{R\}
+\end\{aligned\}$$

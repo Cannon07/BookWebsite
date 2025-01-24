@@ -1,0 +1,34 @@
+# Geometric Operators for Shape Analsis \{#chap:geometric_shape\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:molecular_hamiltonian\]](#chap:molecular_hamiltonian)\{reference-type="ref+label"
+reference="chap:molecular_hamiltonian"\},\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+\"\"\" Given many variants of geometry representations (meshes with
+different samplings, point clouds, triangle soups), the operator
+approach has been adopted to design algorithms that are invariant to the
+geometry representation. The operator approach considers the
+discretization of some continuous operator, whose behavior mimics that
+of the continuous counterpart, thus remaining stable and consistent
+across geometry representations. While the intrinsic Laplace--Beltrami
+operator has been a ubiquitous choice thanks to its often desirable
+properties such as invariance to isometries, it fails to capture the
+spatial embedding of a shape because it discards extrinsic information.
+To address these challenges, several alternative operators for shape
+analysis have been proposed in recent work, including the
+Dirichlet-to-Neumann operator and the Dirac operator, in addition to
+variants of modified Laplacian operators. I will give an extensive
+survey on these operators and explain how these operators can be
+utilized in the geometric learning setting. Finally, I will talk about a
+neural architecture to learn task-specific geometric operators, whose
+design is inspired by the success of the operator approach to shape
+analysis. \"\"\"
+
+References [@wang2018steklov], [@wang2019intrinsic],
+[@wang2019learning].

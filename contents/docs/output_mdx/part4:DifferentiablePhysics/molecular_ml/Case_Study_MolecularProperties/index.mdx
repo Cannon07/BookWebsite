@@ -1,0 +1,208 @@
+# Case study: Identifying Photovoltaic Materials \{#chap:photovoltaic_case\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:graphconvs\]](#chap:graphconvs)\{reference-type="ref+label"
+reference="chap:graphconvs"\},
+[\[chap:equivariant_networks\]](#chap:equivariant_networks)\{reference-type="ref+label"
+reference="chap:equivariant_networks"\},
+[\[chap:molecular_dynamics\]](#chap:molecular_dynamics)\{reference-type="ref+label"
+reference="chap:molecular_dynamics"\},
+[\[chap:dft\]](#chap:dft)\{reference-type="ref+label"
+reference="chap:dft"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+TODO: Physika case study
+
+The case study will focus on developing deep learning models to predict
+properties relevant for identifying promising photovoltaic materials.
+Chapter 1's section on photovoltaics provides an overview of materials
+development in the field of photovoltaics and highlights milestones over
+the past few decades.
+
+![Parity plots for bandgap predictions using different featurization
+techniques. A: ECFP, B: Graph Convolution, and C: Weave
+](figures/gapParityNew.png)\{#fig:gapParity width="70%"\}
+
+### Data
+
+Our data is sourced from **Citrination**, the open database and
+analytics platform of Citrine Informatics. The dataset is sourced from
+the Harvard Organic Photovoltaic Dataset (HOPV15), which was retrieved
+through the Citrination API. The dataset is a collation of experimental
+photovoltaic data through literature and quantum-chemical calculations
+performed over a range of prospective organic photovoltaic materials.
+There are over 2.3 million data entries, each with their respective
+identifying notation, also called as SMILES (Simplified Molecular Input
+Line Entry System), and material properties, including HOMO and LUMO
+levels, HOMO-LUMO gap, power conversion efficiency (PCE), Open Circuit
+Voltage (OCV) and short-circuit current density (SCCD). In Figure
+[\[fig:properties\]](#fig:properties)\{reference-type="ref"
+reference="fig:properties"\}, the distribution of our dataset is shown
+for each property that was extracted. We can infer that most of them
+follow a normal distribution and thus be easily captured by an accurate
+ML model.
+
+![Parity plots for HOMO level predictions using different featurization
+techniques. A: ECFP, B: Graph Convolution, and C: Weave
+](figures/homoParityNew.png)\{#fig:gapParity width="70%"\}
+
+### Methods and Model Optimization
+
+Similar to the previous case study, MoleculeNet[@Pande] in conjunction
+with the open-source package DeepChem is employed for featurization and
+model development for predictions of relevant properties in the context
+of photovoltaic materials. To bridge the gap between material
+characteristics and input needed for Deepchem, RDKit, a chemical
+informatics library for Python, is used to generate descriptors useful
+for machine learning from molecules as input.
+
+The study can be broken down into three parts: first, accessing and
+locally visualizing the dataset from Citrination; using DeepChem and
+RDKit tools to perform the required machine learning techniques for a
+smaller part of the dataset; and lastly, using the full dataset with
+superior computational resources (Google Cloud) to create new Machine
+Learning (ML) models.
+
+From the DeepChem library, we used three different featurization methods
+to train ML models on four properties that are most relevant in the
+context of photovoltaics: PCE, OCV, SCCD and gap. The featurization
+methods chosen are similar to the previous case study:
+Extended-Connectivity Fingerprints (ECFP), Graph Convolutions (GC), and
+Weave. [@Wu2018MoleculeNet:Learning] The whole data set was split into a
+80:10:10 ratio for training, validation, and testing subsets. Finally, a
+brief analysis of loss per epoch for the GC and Weave techniques in SCCD
+training is presented as a way to study the particularly bad performance
+of these methods in predicting some of the properties of interest.
+
+The ECFP featurization technique has been implemented alongside a Random
+Forest regressor to train ML models that predict the properties of
+interest, one model per property. The GC featurization method was
+implemented alongside a neural network with 3 hidden convolutional
+layers and two fully connected layers in a regression scheme to
+accurately predict the relevant property. Max pooling, zero padding,
+batch normalization and Relu activation function is applied in every
+hidden convolutional layer, while tanh activation function and batch
+normalization is applied in the fully connected (dense) layers. For the
+training process, the learning rate was selected to be 0.001, batch size
+of 250 and number of epochs were 10 for all 2.4 million data points
+available from Citrination. Finally, Adam optimizer was selected to
+minimize the Mean Squared Error (MSE) loss function after applying a
+normalization transformation to all available data. This featurization
+method was implemented alongside a neural network, the structure and
+hyper parameters of which is identical with the one utilized in Graph
+Convolution model explained above.
+
+Multitask training and prediction was used for Weave model and GraphConv
+model.
+
+Hyperparameter Optimization (Model Learning): Grid search method was
+used for hyperparameter optimization. Number of training epochs
+($n_epochs$), batch size and learning rate were the parameters over
+which the optimization was performed.
+
+Weave model configuration: $N_epochs = 150$, $batch size = 16$, and
+learning rate $= 0.0001$ were identified as the optimal set of
+hyperparameters for the Weave model. DeepChem's default Weave model
+architecture was used: 2 Weave layer + dense layer + batchnorm layer +
+WeaveGather layer + output dense layer.
+
+   Evaluation Set    Size     Gap (eV)           HOMO Level (eV)  
+  ---------------- --------- ---------- ------- ----------------- -------
+                                RMSE      MAE         RMSE          MAE
+      Training      1840823    0.035     0.027        0.025        0.018
+     Validation     230103     0.035     0.027        0.025        0.019
+      Testing       230103     0.035     0.027        0.025        0.018
+
+  : Performance with the Weave Model.
+
+GraphConv Model Configuration: $N_epochs$ = 100, batch size = 8, and
+learning rate = $0.001$ were identified as the optimal set of
+hyperparameters for the GraphConv model. DeepChem's default GraphConv
+model architecture was used: 2 graph convolutional layers + dense
+layer + batchnorm layer + graphGather layer + output dense layer.
+
+   Evaluation Set    Size     Gap (eV)           HOMO Level (eV)  
+  ---------------- --------- ---------- ------- ----------------- -------
+                                RMSE      MAE         RMSE          MAE
+      Training      1840823    0.034     0.026        0.023        0.017
+     Validation     230103     0.034     0.026        0.023        0.017
+      Testing       230103     0.034     0.026        0.023        0.017
+
+  : Performance the GraphConv Model.
+
+Homo task and Gap task were conducted by two separate ECFP models (ECFP
+is not supported with multitasking).
+
+ECFP Model Configuration: number of estimators = 250 was selected as the
+hyperparameter for Homo task. Everything else followed DeepChem's
+default model setting.
+
+   Evaluation Set    Size     Gap (eV)           HOMO Level (eV)  
+  ---------------- --------- ---------- ------- ----------------- -------
+                                RMSE      MAE         RMSE          MAE
+      Training      1840823    0.020     0.013        0.017        0.011
+     Validation     230103     0.049     0.032        0.042        0.028
+      Testing       230103     0.049     0.032        0.042        0.028
+
+  : Performance the GraphConv Model.
+
+### Results
+
+Each of the three featurization methods were used to train ML models to
+predict the four properties of interest, yielding a total of twelve
+different models. These were evaluated over testing data sets that
+correspond to 10% of our input data. A summary of the prediction error
+distributions of each model is shown in Table
+[\[tab:results\]](#tab:results)\{reference-type="ref"
+reference="tab:results"\}.
+
+Table [\[tab:results\]](#tab:results)\{reference-type="ref"
+reference="tab:results"\} shows that, in general, the models based on the
+ECFP featurization technique outperform those reliant on GC and Weave.
+This result is a little surprising, since the GC and Weave methods are
+more involved, both conceptually and computationally. It would be
+expected that the more complex a model is, the better the results.
+Furthermore, the errors associated with the ECFP models are very small
+compared to their respective data sets, indicating that this
+featurization technique yields accurate results.
+
+### Discussion
+
+The SCCD predictions using GC and Weave techniques had their losses (in
+non-normalized SSE) measured as a function of epoch used for training,
+as one can see in Figure
+[\[fig:lossEpoch\]](#fig:lossEpoch)\{reference-type="ref"
+reference="fig:lossEpoch"\}. As it can be observed, the GC model seems to
+have reached reasonable convergence in the losses per epoch plot, while
+the Weave model apparently either needs a higher number of epochs for a
+more accurate prediction estimation, or it is not a good model for
+predicting this property with the architecture used (as will be further
+elaborated in the following paragraph). Additionally, the models trained
+on the GC and Weave featurizations can have their performance enhanced
+by adding more layers to the neural networks and by manually tuning the
+hyper-parameters.
+
+### Conclusions
+
+As debated above, among the three different featurization methods, those
+models based on the ECFP technique are the cheapest, from a
+computational standpoint, and have higher accuracy. Approaches to
+enhance the performance of GC and weave based models are presented
+albeit with a higher computational cost. An in-depth analysis of
+possible correlations present in the data (both in terms of
+property-property correlations as well as molecular structure-property
+correlations) should be conducted in order to add intuition to models we
+have been using as a black box. Furthermore, multitask models to predict
+all of the properties of interest, using the same featurization
+techniques as the ones in this report, should be trained to capture
+these possible correlations. For example, supppose PCE and OCV are
+related. Models based on GC are quite accurate at predicting OCV, but
+perform poorly at predicting PCE. However, if there was only one
+GC-based model trained to predict both of them together, it provides an
+opportunity to \"learn\" the correlation, and have a better performance
+on its PCE predictions.

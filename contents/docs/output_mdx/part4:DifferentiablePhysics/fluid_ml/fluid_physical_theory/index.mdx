@@ -1,0 +1,75 @@
+# Physical Theories for Fluids \{#chap:fluid_theory\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:qft_basics\]](#chap:qft_basics)\{reference-type="ref+label"
+reference="chap:qft_basics"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+We introduce a simple formulation of fluid dynamics as a physical
+theory. This simple formulation will serve as a foundation for the more
+sophisticated theories of fluid dynamics we will present in subsequent
+chapters.
+
+The state space of a fluid is given by the flow field of the fluid over
+some specified geometric region $D \subseteq \mathbb\{R\}^3$. Formally,
+this would be a vector field which we can define as type
+$$\begin\{aligned\}
+    D \to \mathbb\{R\}^3
+\end\{aligned\}$$
+
+Notice here that we assume that the fluid is incompressible and has
+constant density. In this basic model .
+
+For this first simple model of fluid evolution, we will avoid dealing
+with the complexities of turbulence or other effects and assume that we
+are dealing with simple convective flow.
+
+$$\begin\{aligned\}
+    \frac\{\partial u\}\{\partial t\} + c \nabla \cdot u &= 0
+\end\{aligned\}$$
+
+We assume conservation of mass, momentum, and energy in this system.
+
+We assume that we have the ability to draw observations of the
+underlying vector field $u$ subject to a noise model given by
+$\mathcal\{N\}(b, \sigma)$ where $b$ is a bias term and $\sigma$ is a
+noise term.
+
+The model is parameterized by a set of initial conditions on the
+geometry $$\begin\{aligned\}
+    u_0: D \to \mathbb\{R\}^3
+\end\{aligned\}$$ In the case of convective flow, this initial condition
+is often called the initial wave. The parameter $c$ is the initial speed
+of the wave.
+
+::: center
+       States                           $\mathcal\{S\} = D \to \mathbb\{R\}^3$
+  ----------------- ---------------------------------------------------------------------------
+     Symmetries                                $\mathcal\{G\} = \{\}$
+      Operators      $\mathcal\{O\} = \{ \frac\{\partial u\}\{\partial t\} + c \nabla \cdot u = 0\}$
+     Parameters                   $\mathcal\{W\} = \{u_0: D \to \mathbb\{R\}^3, c\}$
+     Constraints                               $\mathcal\{C\} =  \{\}$
+   Hyperparameters                             $\mathcal\{HP\} = \{\}$
+     Observables               $\mathcal\{B\} = \{u(x, t) + \mathcal\{N\}(b, \sigma) \}$
+
+[]\{#phs:theory:static:particle label="phs:theory:static:particle"\}
+:::
+
+We can convert this physical theory into a simple differentiable program
+
+``` \{.python language="python"\}
+class ConvectiveFluid(D $\subseteq$ $\mathbb\{R\}^3$, $u_0$: $D \to \mathbb\{R\}^3$)
+
+  def simulate(t: $\mathbb\{R\}$):
+    u : $D  \to \mathbb\{R\}^3$
+    return solve($\partial$(u, t) + c $\nabla \cdot$(u) = 0, $u_0$, 0, t)
+```
+
+We can apply different methods to implement `solve` such as finite
+differences, PINNs, neural operators and more. We will study certain
+concrete implementations in the coming chapters.

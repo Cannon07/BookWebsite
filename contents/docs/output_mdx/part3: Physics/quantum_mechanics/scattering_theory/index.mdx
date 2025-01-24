@@ -1,0 +1,69 @@
+# Scattering Theory \{#chap:quantum_harmonic\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:harmonic\]](#chap:harmonic)\{reference-type="ref+label"
+reference="chap:harmonic"\},
+[\[chap:quantum_mechanics\]](#chap:quantum_mechanics)\{reference-type="ref+label"
+reference="chap:quantum_mechanics"\},
+[\[chap:position_and_momentum\]](#chap:position_and_momentum)\{reference-type="ref+label"
+reference="chap:position_and_momentum"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+A scattering process studies the collision of particles. Mathematically
+for a scattering process, we start from an input state of particles and
+end with a final state. The scattering process can be modeled either
+classically or quantum mechanically.
+
+## Classical Scattering
+
+Broadly, classical scattering can be broken into elastic and ineleastic
+scattering. Elastic scattering conserves energy and treats particles as
+point objects that don't change in the collision. Inelastic collisions
+allow for the possibility of deformation and the loss of energy during
+the collision process.
+
+## Quantum Mechanical Scattering
+
+The transformation process can be modeled as a time dependent
+perturbation since the shifting event can often be tightly focused in
+time (a particle collision for example)
+
+Let us start by writing the Hamiltonian to model the scattering process
+as as $$\begin\{aligned\}
+    H &= H_0 + V_I(r) \\
+    H_0 &= \frac\{p^2\}\{2m\}
+\end\{aligned\}$$ The eigenvalues of the kinetic energy component $H_0$
+are $$\begin\{aligned\}
+E_k &= \frac\{\hbar^2k^2\}\{2m\}
+\end\{aligned\}$$
+
+Let $\alpha(t)$ denote the state at time $t$. We have the transition
+equation
+
+$$\begin\{aligned\}
+    |\alpha(t)\rangle_I &= U_I(t)|\alpha(t_0) \rangle_I\\
+\end\{aligned\}$$ Here $U_I$ satisfies the equation $$\begin\{aligned\}
+    i\hbar\frac\{\partial\}\{\partial t\} U_I(t, t_0) &= V_I(t) U_I(t, t_0)
+\end\{aligned\}$$ where $$\begin\{aligned\}
+    U_I(t_0) &= I \\
+    V_I(t) &= \exp(iH_0t/\hbar)V\exp(-iH_0t/\hbar)
+\end\{aligned\}$$
+
+This equation has solution $$\begin\{aligned\}
+U_I(t) &= 1 - \frac\{i\}\{\hbar\}\int_\{t_0\}^T V_I(t')U_I(t', t_0)dt'
+\end\{aligned\}$$ Note that this equation is integrating operators. We can
+then derive the following general solution for the transmission
+probability from basis state $i$ to basis state $n$
+
+$$\begin\{aligned\}
+    \langle n | U_I(t)| i \rangle = \delta_\{ni\} - \frac\{i\}\{\hbar\}\sum_m \langle n|V|m \rangle \int_\{t_0\}^t e^\{i\omega_\{nm\}t'\} \langle m | U_I(t')|i \rangle dt'
+\end\{aligned\}$$
+
+For specific scattering potentials, we can then derive specific
+scattering amplitudes. Such scattering amplitudes arise often in high
+energy physics applications.

@@ -1,0 +1,845 @@
+# Spectroscopy \{#chap:spectroscopy\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:spin\]](#chap:spin)\{reference-type="ref+label"
+reference="chap:spin"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+Spectroscopy is one of the fundamental techniques used for materials
+characterization, and studies the interaction between matter and
+electromagnetic radiation. The physics of spectroscopy is governed by
+the interaction between light and matter.
+
+## The Interaction of Light and Matter
+
+Matter is composed of atoms or molecules, and often has infinitely many
+energy eigenstates. Spectral lines are associated with allowed
+transitions between two of these energy eigenstates. From a physical
+perspective, it is often sufficient to take only two of the possible
+energy eigenstates into account.
+
+An example worth discussing is laser transition, where the pumping of
+the laser can be described by a relaxation process into the upper laser
+level and out of the lower laser level. The resulting model is simple,
+often referred to as a two-level atom, and is mathematically analogous
+to a spin $\frac\{1\}\{2\}$ particle in an external magnetic field. This is
+due to the fact that the spin can only be parallel or anti-parallel to
+the field -- it has two energy levels and energy eigenstates. The
+interaction of the two-level atom with the electric field of an
+electromagnetic wave is described by the Bloch equations.
+
+## Diffraction
+
+Consider a collection of $N$ particles in a material. To probe distances
+at the angstrom range, we would irradiate the sample with X-rays or
+neutrons; our discussion will assume X-ray scattering. A beam with
+wavelength $\lambda$ illuminates the sample. The incident beam is
+coherent, *i.e.* all photons are in-phase. Due to a difference between
+the refractive index of the particles and their surroundings, each
+particle acts as a scattering center
+
+Compare the pathlengths for scattering from 2 different particles. The
+position of the $i$th and $j$th particles are located at $\vec\{r\}_i$ and
+$\vec\{r\}_j$, respectively. The difference in the pathlength of the 2
+photons in Fig. [\[fig4\]](#fig4)\{reference-type="ref" reference="fig4"\}
+is given by the difference between lengths $B$ and $A$, since these are
+the only segments that differ between the two photons.
+
+Define the incident wavevector: $$\begin\{aligned\}
+\vec\{q\}_0 &= \frac\{2\pi n\}\{\lambda\}\vec\{u\}_0
+\end\{aligned\}$$
+
+where $n$ is the index of refraction of the solution, and $\vec\{u\}_0$ is
+a unit vector that defines the direction of the incident light.
+Similarly, define the scattered wavevector:
+
+$$\begin\{aligned\}
+\vec\{q\}_s = \frac\{2\pi n\}\{\lambda\}\vec\{u\}_s
+\end\{aligned\}$$
+
+The fixed detector orientation relative to the source is defined by the
+angle $\theta$.
+
+Using these definitions, the two lengths $B$ and $A$ are given:
+$$\begin\{aligned\}
+B &= (\vec\{r\}_i - \vec\{r\}_j)\cdot \vec\{u\}_s \\
+A &= (\vec\{r\}_i - \vec\{r\}_j)\cdot \vec\{u\}_0
+\end\{aligned\}$$
+
+The pathlength difference is given by: $$\begin\{aligned\}
+B - A = (\vec\{r\}_i - \vec\{r\}_j)\cdot (\vec\{u\}_s - \vec\{u\}_0)
+\end\{aligned\}$$
+
+This results in a phase difference given by: $$\begin\{aligned\}
+\phi_\{ij\} &= \frac\{2\pi n\}\{\lambda\}(B - A) = \frac\{2\pi n\}\{\lambda\}(\vec\{u\}_s - \vec\{u\}_0) \cdot (\vec\{r\}_i - \vec\{r\}_j)
+\end\{aligned\}$$
+
+Define the scattering vector $\vec\{q\}$ as $$\begin\{aligned\}
+\vec\{q\} = \frac\{2\pi n\}\{\lambda\}(\vec\{u\}_s - \vec\{u\}_0)
+\end\{aligned\}$$
+
+whose magnitude is: $$\begin\{aligned\}
+q = |\vec\{q\}| = \frac\{4\pi n\}\{\lambda\}\sin\left(\frac\{\theta\}\{2\}\right)
+\end\{aligned\}$$
+
+We have $$\begin\{aligned\}
+\phi_\{ij\} = \vec\{q\}\cdot (\vec\{r\}_i - \vec\{r\}_j)
+\end\{aligned\}$$
+
+The electric field of light scattered by the $i$th particle relative to
+the phase of light scattered by the $k$th particle is: $$\begin\{aligned\}
+\label\{Eq16\}
+E_i = E_0C \cos(2\pi\nu t - \phi _\{ik\})
+\end\{aligned\}$$
+
+where $n$ is the frequency, $E_0$ is the amplitude of the incident
+electric field, and $C$ incorporates a number of experiment-specific
+parameters (*e.g.* distance to detector, wavelength, polarizability).
+The intensity of the scattered light is proportional to the total
+electric field squared. The average scattering intensity $I_s$ is given
+by the intensity averaged over a complete oscillation period and is
+given by: $$\begin\{aligned\}
+\label\{Eq17\}
+I_s &= 2I_0C^2\nu\int_0^\{1/\nu\}dt\left[ \sum_\{i=1\}^N\cos(2\pi\nu t - \phi_\{ik\}) \right]^2 \notag\\
+&= 2I_0C^2\nu\int_0^\{1/\nu\}dt \sum_\{i=1\}^N \sum_\{j=1\}^N\cos(2\pi\nu t - \phi_\{ik\})\cos(2\pi\nu t - \phi_\{jk\}) \notag\\
+&= 2I_0C^2\nu\int_0^\{1/\nu\}dt \sum_\{i=1\}^N \sum_\{j=1\}^N[\cos(4\pi\nu t - \phi_\{ik\}- \phi_\{jk\}) + \cos(\phi_\{ik\}- \phi_\{jk\})]
+\end\{aligned\}$$
+
+which makes use of the property:
+
+$$\begin\{aligned\}
+\cos A \cos B = \frac\{1\}\{2\}\cos(A + B) + \frac\{1\}\{2\}\cos (A- B)
+\end\{aligned\}$$
+
+Noting that $$\begin\{aligned\}
+\label\{Eq19\}
+\int_0^\{1/\nu\}dt\cos(4\pi\nu t - \phi_\{ik\} - \phi_\{jk\}) =0
+\end\{aligned\}$$
+
+and, $$\begin\{aligned\}
+\label\{Eq20\}
+\phi_\{ik\} - \phi_\{jk\} = \phi_\{ij\}
+\end\{aligned\}$$
+
+we have, $$\begin\{aligned\}
+\label\{Eq21\}
+I_s &= I_0C^2\sum_\{i=1\}^N\sum_\{j=1\}^N\cos\phi_\{ij\} \notag\\
+ &= I_0C^2\sum_\{i=1\}^N\sum_\{j=1\}^N\cos[\vec\{q\}\cdot(\vec\{r\}_i - \vec\{r\}_j)]
+\end\{aligned\}$$
+
+Measuring $I_s$ at zero scattering angle ($\theta = 0$) gives the
+unknown parameters $I_0$ and $A$. Therefore,
+
+$$\begin\{aligned\}
+\frac\{I_s(\vec\{q\})\}\{I_s(\vec\{q\}=\vec\{0\})\} = \frac\{1\}\{N^2\}\sum_\{i=1\}^N\sum_\{j=1\}^N\cos[\vec\{q\}\cdot(\vec\{r\}_i - \vec\{r\}_j)]
+\end\{aligned\}$$
+
+Define the structure factor $S(\vec\{k\})$ to be: $$\begin\{aligned\}
+S(\vec\{k\}) = \frac\{1\}\{N^2\}\sum_\{i=1\}^N\sum_\{j=1\}^N \bigg\langle \exp\left[ i\vec\{k\}\cdot (\vec\{r\}_i - \vec\{r\}_j) \right] \bigg\rangle
+\end\{aligned\}$$
+
+we can write:
+
+$$\begin\{aligned\}
+\frac\{I_s(\vec\{q\})\}\{I_s(\vec\{q\}=\vec\{0\})\} = Re[S(\vec\{q\})]
+\end\{aligned\}$$
+
+Rotational invariance gives $S(\vec\{k\}) = S(-\vec\{k\})$, thus:
+
+$$\begin\{aligned\}
+\frac\{I_s(\vec\{q\})\}\{I_s(\vec\{q\}=\vec\{0\})\} = S(\vec\{q\})
+\end\{aligned\}$$
+
+Expand the structure factor into $i = j$ and $i \neq j$. This gives:
+$$\begin\{aligned\}
+S(\vec\{k\}) & = \frac\{1\}\{N^2\}N + \frac\{1\}\{N^2\}N(N-1)\bigg\langle \exp\left[ i\vec\{k\}\cdot (\vec\{r\}_1 - \vec\{r\}_2) \right] \bigg\rangle \notag\\
+& = \frac\{1\}\{N\} + \frac\{1\}\{N^2\}\frac\{N(N-1)\int\prod_\{i=1\}^Nd\vec\{r\}_ie^\{i\vec\{k\}\cdot (\vec\{r\}_1 - \vec\{r\}_2)\}e^\{-\beta U\}\}\{\int\prod_\{i=1\}^Nd\vec\{r\}_ie^\{-\beta U\}\}\notag\\
+&= \frac\{1\}\{N\} + \frac\{1\}\{N^2\} \int d\vec\{r\}_1d\vec\{r\}_2\rho^\{(2,N)\}(\vec\{r\}_1,\vec\{r\}_2)e^\{i\vec\{k\}\cdot (\vec\{r\}_1 - \vec\{r\}_2)\} \notag\\
+&= \frac\{1\}\{N\} + \frac\{1\}\{N^2\} \int d\vec\{r\}_1d\vec\{r\}_\{12\}\rho^2g(r_\{12\})e^\{i\vec\{k\}\cdot\vec\{r\}_\{12\}\} \notag\\
+&= \frac\{1\}\{N\} + \frac\{1\}\{N\}\rho \int d\vec\{r\}g(r)e^\{i\vec\{k\}\cdot\vec\{r\}\} = N^\{-1\} + N^\{-1\}\rho\tilde\{g\}(\vec\{k\}) \notag
+\end\{aligned\}$$
+
+where $\tilde\{g\}(\vec\{k\})$ is the Fourier transform of $g(\vec\{k\})$.
+This demonstrates that the results of a scattering experiment give a
+direct measure of the pair distribution of the particles in a material.
+
+
+# Fermions and Bosons
+
+Particles come in two fundamental types, fermions and bosons. These two
+particles are differentiated by whether they obey the Pauli exclusion
+principle, which states that two particles with half-integer spins
+cannot occupy the same quantum state.
+
+## Statistics of Particles
+
+As we briefly mentioned, fermions and bosons obey different statistical
+properties.
+
+### Bose-Einstein Statistics
+
+Bosons are indistinguishable from one-another and can occupy the same
+energy state. The probability density collection for a set of bosons is
+given by
+
+$$\begin\{aligned\}
+f(E_i) = \frac\{g_i\}\{e^\{(E_i - \mu)/k_BT\} - 1\},
+\end\{aligned\}$$ where $g_i$ is the degeneracy (the number of quantum
+states that share the same energy level), $k_B$ is Boltzmann's constant,
+$E_i$ is the energy of the $i$-th possible state, $T$ is the absolute
+temperature, and $\mu$ is the chemical potential. This equation can be
+derived from the form of the grand canonical ensemble that we
+encountered earlier in the book.
+
+### Fermi-Dirac Statistics
+
+The Fermi-Dirac statistics describe the distributions ion over energies
+for an ensemble of particles that obey the Pauli exclusion principle and
+which is at thermal equilibrium. As a technical condition, these
+particles have half integer spin and are called fermions. The energy
+distribution is given by the following probability density function.
+
+$$\begin\{aligned\}
+    f(E_i) = \frac\{1\}\{1 + e^\{(E_i - \mu)/k_BT\}\},
+\end\{aligned\}$$
+
+This formula can also be derived from the grand canonical ensemble.
+Electrons are examples of fermions.
+
+
+# Phonon Gas \{#chap:phonons\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:phase_equilibrium\]](#chap:phase_equilibrium)\{reference-type="ref+label"
+reference="chap:phase_equilibrium"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+Analogous to the relationship of photons to electromagnetic or light
+energy, phonons are a definite discrete unit of quantum vibrational
+mechanical energy. Phonons and electrons transport are the main
+mechanism of energy diffusion in crystals. Thus for non-conducting
+crystals, heat transport is mostly carried by phonons transport, and so
+a proper description of the thermodynamic of phonons is necessary to
+understand the origins of the thermal properties of solids.
+
+In this chapter, we use statistical mechanics to derive the
+thermodynamic of phonon gases, which are the normal modes of low
+temperature solids. At low temperatures, atoms in a crystal remain close
+to their equilibrium position, so a simple model can be developed to
+describe the energy states of this particles. At the end of this chapter
+we will derive the heat capacity of crystals due to the contribution of
+phonons considering two different approaches: the *Einstein Model* which
+consider all phonons vibrating at the same frequency (valid for optical
+phonons); and the *Debye Model* which consider a linear dispersion of
+frequencies (valid for acoustic phonons at low temperatures).
+
+## Crystalline Solid
+
+::: marginfigure
+![image](figures/Physics/statistical_mechanics/phonon_gas/PhononGas4.png)\{width="\\linewidth"\}
+:::
+
+The atoms in a crystal are arranged in a regular array of points in
+space with a variety of possible crystalline lattices
+(Fig. [\[fig4\]](#fig4)\{reference-type="ref" reference="fig4"\}). At zero
+temperature, the atomic coordinates are uniquely locked into spatial
+positions that minimize the energy. At finite temperature, the atoms
+fluctuate about the energy-minimum positions, leading to lattice
+vibrations that govern the thermodynamic behavior
+(Fig. [1.1](#fig5)\{reference-type="ref" reference="fig5"\}).
+
+![Schematic showing the atoms in a crystal in their locked,
+energy-minimum positions at $T = 0$ and the lattice vibrations that
+occur at finite
+temperature](figures/Physics/statistical_mechanics/phonon_gas/atoms _in_crystel5.png)\{#fig5
+width="\\linewidth"\}
+
+## Thermodynamic contribution of lattice vibrations
+
+Consider N atoms with positions $$\begin\{aligned\}
+\{\vec\{r\}\} = \vec\{r\}_1, \vec\{r\}_2,\dotsc,\vec\{r\}_N
+\end\{aligned\}$$ in a crystalline lattice. Define the potential energy
+$V\left(\{\vec\{r\}\}\right)$ that describes the energy for a given system
+configuration $\{\vec\{r\}\}$. As before, we will simplify notation to
+$V(\vec\{r\})$ when the meaning is clear from context. A minimum-energy
+configuration $$\begin\{aligned\}
+\{\vec\{r\}^\{(0)\}\} &= \vec\{r\}^\{(0)\}_1, \vec\{r\}^\{(0)\}_2,\dotsc,\vec\{r\}^\{(0)\}_N
+\end\{aligned\}$$ satisfies the condition $$\begin\{aligned\}
+\nabla_\{\vec\{r\}_i\} V\left(\vec\{r\}^\{(0)\}\right) = \nabla_\{\vec\{r\}_i\} V|_0 = \vec\{0\}
+\end\{aligned\}$$ for $i = 1,2,...,N$. The atomic positions
+$\{\vec\{r\}^\{(0)\}\}$ define the regular crystalline lattice.
+
+Expand the potential energy about $\{\vec\{r\}\} = \{\vec\{r\}^\{(0)\}\}$,
+such that: $$\begin\{aligned\}
+V\left(\vec\{r\}\right) \approx \  &V\left(\vec\{r\}^\{(0)\}\right) + \sum_\{i=1\}^N \left(\nabla_\{\vec\{r\}_i\} V|_0\right)\cdot \left(\vec\{r\}_i - \vec\{r\}^\{(0)\}_i \right) + \notag\\ &\frac\{1\}\{2\} \sum_\{i=1\}^N \sum_\{j=1\}^N \left(\nabla_\{\vec\{r\}_i\} \nabla_\{\vec\{r\}_j\} V|_0\right) \left(\vec\{r\}_i - \vec\{r\}^\{(0)\}_i \right) \left(\vec\{r\}_j - \vec\{r\}^\{(0)\}_j \right) + \dotsc \notag
+\end\{aligned\}$$
+
+The linear term is zero (by definition), thus the energy is:
+$$\begin\{aligned\}
+\label\{Eq17\}
+V \approx V_0 + \frac\{1\}\{2\} \sum_\{i=1\}^N \sum_\{j=1\}^N \sum_\{\alpha,\gamma = x,y,z\} s_\{i\alpha\}s_\{j\gamma\}K_\{i\alpha j \gamma\}
+\end\{aligned\}$$ where $$\begin\{aligned\}
+s_\{i\alpha\} &= \hat\{e\}_\alpha \cdot \left(\vec\{r\}_i - \vec\{r\}^\{(0)\}_i \right) \\ 
+K_\{i\alpha j \gamma\} &= \nabla_\{\vec\{r\}_i\} \nabla_\{\vec\{r\}_j\} V|_0
+\end\{aligned\}$$
+
+The matrix $K_\{i\alpha j \gamma\}$ can be diagonalized into normal modes
+(eigenvectors) with effective elastic constants (eigenvalues). Since
+there are $3N-6\approx 3N$ degrees of freedom, there are $3N$ normal
+modes.
+
+The potential energy is written as: $$\begin\{aligned\}
+\label\{Eq18\}
+V = V_0 + \frac\{1\}\{2\}\sum_\{l=1\}^\{3N\} \tilde\{K\}_l \xi_l^2
+\end\{aligned\}$$
+
+where $\xi_l$ is the magnitude of the $l$th normal mode.
+
+The total energy of the system is then written as: $$\begin\{aligned\}
+\label\{Eq19\}
+E = \sum_\{l=1\}^\{3N\}\frac\{\tilde\{p\}_l^2\}\{2\tilde\{m\}_l\} + \frac\{1\}\{2\}\sum_\{l=1\}^\{3N\}\tilde\{K\}_l \xi_l^2 + V_0
+\end\{aligned\}$$
+
+where $\tilde\{p\}_l$ and $\tilde\{m\}_l$ are the effective momentum and
+mass of the $l$th normal mode, respectively.
+
+The total energy $E$ is decomposed into normal modes with an
+individual-mode energy in the form of a harmonic oscillator. These
+normal modes are called *phonons*. Phonons act as quasi-particles which
+means they are distinguishable and independent, *i.e.* they don't
+interact between each other.
+
+The Hamiltonian (sum of kinetic and potential energy) of the $l$th
+phonon is given by $$\begin\{aligned\}
+H_l &= \frac\{\tilde\{p\}_l^2\}\{2\tilde\{m\}_l\} + \frac\{1\}\{2\}K_l\xi^2_l
+\end\{aligned\}$$ This harmonic oscillator energy results in the quantized
+energy: $$\begin\{aligned\}
+\label\{Eq20\}
+E_l = \left(j_l + \frac\{1\}\{2\}\right)\hslash\omega_l
+\end\{aligned\}$$
+
+where $j_l = 0,1,2...$, and the phonon frequency is
+$\omega_l = \sqrt\{\frac\{\tilde\{K\}_l\}\{\tilde\{m\}_l\}\}$.
+
+The canonical partition function $Q$ is given by: $$\begin\{aligned\}
+\label\{Eq21\}
+Q(T,V,N) &= \sum_\{j_1 = 0\}^\infty \sum_\{j_2 = 0\}^\infty ... \sum_\{j_\{3N\} = 0\}^\infty e^\{\left[ -\beta V_0 - \beta \sum_\{l=1\}^\{3N\} \left(j_l + \frac\{1\}\{2\}\right)\hslash\omega_l \right]\} \notag\\
+&= e^\{ -\beta V_0 \} \prod_\{l=1\}^\{3N\} \sum_\{j_l = 0\}^\infty e^\{-\beta\left(j_l + \frac\{1\}\{2\}\right)\hslash\omega_l\} \notag\\
+&=e^\{ -\beta V_0 \} \prod_\{l=1\}^\{3N\} \frac\{e^\{-\beta\frac\{1\}\{2\}\hslash\omega_l\}\}\{1 - e^\{-\beta\hslash\omega_l\}\}
+\end\{aligned\}$$
+
+where we use the mathematical property $$\begin\{aligned\}
+\sum_\{n=0\}^\infty z^n &= \frac\{1\}\{1 - z\}
+\end\{aligned\}$$
+
+This gives the Helmholtz free energy: $$\begin\{aligned\}
+F = -k_BT\log Q = V_0 + k_BT \sum_\{l=1\}^\{3N\}\left[\log\left(1-e^\{-\beta\hslash\omega_l\}\right) + \frac\{1\}\{2\}\beta\hslash\omega_l \right] \notag
+\end\{aligned\}$$
+
+The average energy is given by: $$\begin\{aligned\}
+\label\{Eq.E_Phonons\}
+\langle E \rangle = -\frac\{\partial \log Q\}\{\partial \beta\} = V_0 + \sum_\{l=1\}^\{3N\} \left( \frac\{\hslash\omega_le^\{-\beta\hslash\omega_l\}\}\{1 - e^\{-\beta\hslash\omega_l\}\} + \frac\{1\}\{2\}\hslash\omega_l \right)
+\end\{aligned\}$$
+
+The next step is to analyze two competing models for the phonon
+frequencies $\omega_l$.
+
+## Einstein model
+
+In the Einstein model, we assume there is a single characteristic
+frequency of the crystal, defined as the Einstein frequency $\omega_E$.
+This model is a good approximation for optical phonons.
+
+The average energy for this model is given by: $$\begin\{aligned\}
+\langle E \rangle = V_0 + \frac\{3N\hslash\omega_E\}\{2\} + \frac\{3N\hslash\omega_Ee^\{-\beta\hslash\omega_l\}\}\{1-e^\{-\beta\hslash\omega_E\}\} \notag   
+\end\{aligned\}$$
+
+For this model, the heat capacity is given by: $$\begin\{aligned\}
+C_V = \left( \frac\{\partial \langle E \rangle\}\{\partial T\} \right)_\{V,N\} =  \frac\{3Nk_B \left( \frac\{\hslash\omega_E\}\{k_BT\} \right) ^2 e^\{-\frac\{\hslash\omega_E\}\{k_BT\}\}\}\{\left(1-e^\{\frac\{-\hslash\omega_E\}\{k_BT\}\}\right)^2\} = \frac\{3Nk_B \left( \frac\{\theta_E\}\{T\} \right) ^2 e^\{-\frac\{\theta_E\}\{T\}\}\}\{\left(1-e^\{\frac\{\theta_E\}\{T\}\}\right)^2\} \notag
+\end\{aligned\}$$
+
+where we define $$\begin\{aligned\}
+\theta_E = \frac\{\hslash\omega_E\}\{k_B\}
+\end\{aligned\}$$
+
+In the limit $T \rightarrow \infty$ the heat capacity $$\begin\{aligned\}
+C_V \rightarrow 3Nk_B
+\end\{aligned\}$$ This is known as the Dulong-Petit Law. As we learned
+before, the equipartition theorem states that the energy receives $k_BT$
+per thermally active degree of freedom for a harmonic oscillator
+(quantized energy is linear in the quantum index). In the limit
+$T \rightarrow 0$ the heat capacity $$\begin\{aligned\}
+C_V \rightarrow 0
+\end\{aligned\}$$ The heat capacity approaches zero exponentially in the
+small-$T$ limit (Fig. [\[fig6\]](#fig6)\{reference-type="ref"
+reference="fig6"\}).
+
+::: marginfigure
+![image](figures/Physics/statistical_mechanics/phonon_gas/Fig6.png)\{width="\\linewidth"\}
+:::
+
+## Debye model
+
+The Debye model treats the solid as an elastic material. This
+approximation is usually accurate to describe acoustic phonons at low
+temperatures.
+
+Vibrational modes in an elastic solid correspond to sound waves, thus
+the frequencies satisfy $$\begin\{aligned\}
+\omega=ck
+\end\{aligned\}$$ where $c$ is the speed of sound in the solid and
+$$\begin\{aligned\}
+k = m\pi/L
+\end\{aligned\}$$ where $m=1,2,\dotsc$.
+
+Thus, for considering a long particle chain, we convert the sum over
+normal modes into a integral over the frequencies $\omega$ using:
+$$\begin\{aligned\}
+\sum_\{l=1\}^\{3N\} \left( \frac\{1\}\{e^\{\beta\hslash\omega_l\} - 1\} + \frac\{1\}\{2\} \right)\hslash\omega_l &=\sum_\{m_1\}\sum_\{m_2\}\sum_\{m_3\} \left( \frac\{1\}\{e^\{\beta\hslash\omega_l\} - 1\} + \frac\{1\}\{2\} \right)\hslash\omega_l \notag\\
+&= \iiint \left[\left( \langle n \rangle + \frac\{1\}\{2\} \right)\hslash\omega_l\right] dm_1dm_2dm_3 \notag\\
+&=\iiint_0^\{k_c\} \left(\frac\{L\}\{\pi\}\right)^3 \left[\left( \langle n \rangle + \frac\{1\}\{2\} \right)\hslash\omega_l\right] dk_1dk_2dk_3 \notag\\
+&= \int_0^\{k_c\} 4\pi\left(\frac\{L\}\{\pi\}\right)^3 \left( \langle n \rangle + \frac\{1\}\{2\} \right)\hslash\omega_l k^2 dk \notag\\
+&= \int_0^\{\omega_D\}D(\omega) \left( \langle n \rangle + \frac\{1\}\{2\} \right) \hslash\omega_l d\omega\notag
+\end\{aligned\}$$
+
+where $$\begin\{aligned\}
+D(\omega) = \frac\{4L^3\omega^2\}\{\pi^2c^3\}
+\end\{aligned\}$$ is the density of states of acoustic phonons , and
+$$\begin\{aligned\}
+\langle n \rangle = \frac\{1\}\{e^\{\beta\hslash\omega_l\} - 1\}
+\end\{aligned\}$$ is the Bose-Einstein Distribution. In this equation
+$k_c$ is a cutoff wavemode (to be determined), and $\omega_D = Ck_c$ is
+called the Debye frequency.
+
+A complete conversion will include one longitudinal mode with $c_l$ and
+two transverse modes with $c_t$ . This gives: $$\begin\{aligned\}
+\label\{Eq22\}
+\sum_l \left( \frac\{1\}\{e^\{\beta\hslash\omega_l\} - 1\} + \frac\{1\}\{2\} \right)\hslash\omega_l &= \int_0^\{\omega_D\} \frac\{4L^3\omega^2\}\{\pi^2\}\left(\frac\{1\}\{c_l^3\} + \frac\{2\}\{c_t^3\} \right) \left( \langle n \rangle + \frac\{1\}\{2\} \right) \hslash\omega_l d\omega \notag\\
+&=\int_0^\{\omega_D\} D(\omega) \left( \langle n \rangle + \frac\{1\}\{2\} \right) \hslash\omega_l d\omega
+\end\{aligned\}$$
+
+where we defined a new form for the density of states given by
+$$\begin\{aligned\}
+D(\omega) = \frac\{4L^3\omega^2\}\{\pi^2\}\left(\frac\{1\}\{c_l^3\} + \frac\{2\}\{c_t^3\} \right)
+\end\{aligned\}$$
+
+To find $\omega_D$ we must enforce that $$\begin\{aligned\}
+\sum_l 1 &= 3N,
+\end\{aligned\}$$ Thus we have: $$\begin\{aligned\}
+\sum_l 1 &= \int_0^\{\omega_D\}D(\omega) \left( \langle n \rangle + \frac\{1\}\{2\} \right) d\omega \notag\\
+&= \left(\frac\{L\}\{\pi\}\right)^3 \left(\frac\{1\}\{c_l^3\} + \frac\{2\}\{c_t^3\} \right) \frac\{\omega_D^3\}\{3\} = 3N \notag\\&\Rightarrow \omega_D = \frac\{\pi\}\{L\}\left[\frac\{9N\}\{\left(\frac\{1\}\{c_l^3\} + \frac\{2\}\{c_t^3\} \right)\}\right]^\{1/3\} \notag
+\end\{aligned\}$$
+
+For convenience, use $\omega_D$ as a parameter, thus we can define the
+density of states as: $$\begin\{aligned\}
+\label\{Eq23\}
+D(\omega) = \frac\{9N\omega^2\}\{\omega_D\}
+\end\{aligned\}$$
+
+::: marginfigure
+![image](figures/Physics/statistical_mechanics/phonon_gas/Fig7.png)\{width="\\linewidth"\}
+:::
+
+Define the Debye temperature $$\begin\{aligned\}
+\theta_D = \frac\{\hslash\omega_D\}\{k_B\}
+\end\{aligned\}$$ which defines the temperature scale for vibrational
+fluctuations. To test this model, we find the heat capacity:
+$$\begin\{aligned\}
+C_V &= -k_B\beta^2\left(\frac\{\partial\langle E\rangle\}\{\partial\beta\}\right) \\
+&= 9Nk_B\frac\{T^3\}\{\theta_D^3\}\int_0^\{\theta_D/T\}\frac\{x^4e^\{-x\}\}\{\left(1-e^\{-x\}\right)^2\} dx 
+\end\{aligned\}$$
+
+In the limit $T \rightarrow \infty$ the heat capacity approaches:
+$$\begin\{aligned\}
+C_V \rightarrow 9Nk_B\frac\{T^3\}\{\theta_D^3\}\int_0^\{\theta_D/T\}dxx^2 = 3Nk_B \notag
+\end\{aligned\}$$
+
+which is expected (Dulong-Petit Law), since at high temperatures all
+phonon modes become activated.
+
+In the limit $T \rightarrow 0$ the heat capacity scales as:
+$$\begin\{aligned\}
+C_V \rightarrow 9Nk_B\frac\{T^3\}\{\theta_D^3\}\int_0^\{\infty\}\frac\{x^4e^\{-x\}\}\{\left(1-e^\{-x\}\right)^2\} dx \sim Nk_B\frac\{T^3\}\{\theta_D^3\}
+\end\{aligned\}$$
+
+To obtain a qualitative picture of the Debye $T^3$ law, we suppose that
+all phonon modes of wavevector less than $K_T$ have the classical
+thermal energy $k_BT$ and that modes between $K_T$ and the Debye cutoff
+$K_D$ are not excited at all. Of the $3N$ possible modes, the fraction
+excited is $$\begin\{aligned\}
+(K_T/K_D)^3 &=(T/\theta)^3
+\end\{aligned\}$$ because this is the ratio of the volume of the inner
+sphere to the outer sphere. The energy is $$\begin\{aligned\}
+U \approx k_BT \cdot 3N(T/\theta)^3
+\end\{aligned\}$$ and the heat capacity is $$\begin\{aligned\}
+C_v &=\frac\{\partial U\}\{\partial T\} = 12Nk_B(T/\theta)^3
+\end\{aligned\}$$
+
+The heat capacity predicted by the Einstein and the Debye models are
+very similar. However, the low temperature of the heat capacity of
+non-conducting solids matches the Debye model, *i.e.* $C_V \sim NT^3$
+(Fig. [\[fig7\]](#fig7)\{reference-type="ref" reference="fig7"\}). This is
+because at low temperatures only acoustic phonons are activated, which
+is better represented in the Debye model.
+
+
+# Electrons in Metals \{#chap:electrons_in_metals\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:ideal_gas\]](#chap:ideal_gas)\{reference-type="ref+label"
+reference="chap:ideal_gas"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+Electrons are fundamental elementary particles that are fermions. With
+this information, together with a correct quantum-mechanical model for
+the energy levels of electrons, we can derive the thermodynamic
+properties of electrons present inside metals. These electrons can
+modeled as an ideal gas of fermions with high densities, assuring the
+occupation of many single particle energy levels due to the Pauli
+exclusion principle, and making the interaction between particles
+negligible.
+
+In this chapter we will develop the thermodynamic description of
+electrons in metals.
+
+## Fermi-Dirac statistics for conducting electrons in a metal
+
+Electrons in a metal can be modeled as a gas of non-interacting fermions
+considering the following assumptions:
+
+-   Electrons in a metal have high densities (many atoms per unit volume
+    each contribute to the conducting electrons).
+
+-   Since no two electrons (fermions) can exist in the same state, a
+    high density system fills many of the single particle energy levels
+
+-   The lowest unoccupied state will have a kinetic energy much larger
+    than $k_BT$, thus thermal excitations result in energetics with
+    large kinetic energy and comparatively negligible potential energy
+    of interaction.
+
+-   The large kinetic energy associated with these electrons results in
+    large conductivity of electrons in metals
+
+Using the results for the thermodynamic behavior of non-interacting
+fermions, we want to find the behavior of an ideal gas of electrons in a
+metal. Based on the previous assumptions, electrons in a metal act as
+non-interacting particles with quantized energies given by:
+$$\begin\{aligned\}
+E_\{\vec\{n\}\} = \frac\{h^2\}\{8mL^2\}\left(n_x^2+n_y^2+n_z^2\right) \hspace\{1.0cm\} \text\{(translational modes)\} \notag
+\end\{aligned\}$$
+
+which are the energy levels for a particle in a box for a particles with
+mass $m$.
+
+The average number of electrons in the $\vec\{n\}$ state is:
+$$\begin\{aligned\}
+\label\{Eq7\}
+\langle n_\{\vec\{n\}\} \rangle = \frac\{1\}\{e^\{\beta (E_\{\vec\{n\}\} - \mu)\} + 1\} = f(E_\{\vec\{n\}\})
+\end\{aligned\}$$
+
+where we have defined the Fermi function $$\begin\{aligned\}
+f(\varepsilon) = \frac\{1\}\{e^\{\beta(\varepsilon - \mu)\} + 1\}
+\end\{aligned\}$$.
+
+The total number of electrons is given by: $$\begin\{aligned\}
+\langle N \rangle = 2 \sum_\{n_x = 1\}^\infty \sum_\{n_y = 1\}^\infty \sum_\{n_z = 1\}^\infty \frac\{1\}\{e^\{\beta (E_\{\vec\{n\}\} - \mu)\} + 1\} =  2 \sum_\{n_x = 1\}^\infty \sum_\{n_y = 1\}^\infty \sum_\{n_z = 1\}^\infty f(E_\{\vec\{n\}\})
+\end\{aligned\}$$
+
+where we include a factor of 2 since the electrons can exist in spin-up
+and a spin-down states.
+
+For sufficiently large $V$, the spectrum of translational wavemodes is
+effectively a continuum. Therefore, we can convert this summation to an
+integral over $\vec\{n\}$, resulting in: $$\begin\{aligned\}
+\langle N \rangle &= 2 \int_0^\infty dn_x \int_0^\infty dn_y \int_0^\infty dn_z f(E_\{\vec\{n\}\})\\
+&= 2 \int_0^\infty dk_x \frac\{L\}\{\pi\} \int_0^\infty dk_y \frac\{L\}\{\pi\} \int_0^\infty dk_z \frac\{L\}\{\pi\} f[\varepsilon (\vec\{k\})] \notag\\
+&= 2 \frac\{L^3\}\{\pi^3\} \frac\{1\}\{2^3\} \int_\{-\infty\}^\infty dk_x \int_\{-\infty\}^\infty dk_y \int_\{-\infty\}^\infty dk_z f[\varepsilon (\vec\{k\})] \\ 
+&= \frac\{2V\}\{(2\pi)^3\} \int d\vec\{k\} F[\varepsilon (\vec\{k\})] 
+\end\{aligned\}$$
+
+where we have used a coordinate change from $\vec\{n\}$ to
+$\vec\{k\} = \frac\{\pi\}\{L\}\vec\{n\}$, and the energy is now written as
+$$\begin\{aligned\}
+\varepsilon(\vec\{k\}) = \frac\{\hslash^2 k^2\}\{2m\}
+\end\{aligned\}$$
+
+Define the chemical potential at $T =0$ to be $$\begin\{aligned\}
+ \mu(T=0)=\varepsilon_F
+\end\{aligned\}$$ This is referred to as the Fermi energy. Consider the
+form of the Fermi function at $T=0$, $$\begin\{aligned\}
+f(\varepsilon) = \begin\{cases\}
+1 & \textrm\{ for \}\varepsilon \le \varepsilon_F \\ 
+0 & \textrm\{ for \}\varepsilon > \varepsilon_F
+\end\{cases\}
+\end\{aligned\}$$ Define the Fermi momentum $p_F$ according to
+$$\begin\{aligned\}
+\varepsilon_F &= \frac\{p^2_F\}\{2m\} = \frac\{\hslash^2 k_F^2\}\{2m\}
+\end\{aligned\}$$ Thus, at $T = 0$, $\langle N \rangle$ is found to be:
+$$\begin\{aligned\}
+ \label\{AveN_electrons\}
+\langle N \rangle = \frac\{2V\}\{(2\pi)^3\} \frac\{4\}\{3\}\pi k_F^3 = \frac\{8\}\{3\}\pi\frac\{V(2m)^\{3/2\}\}\{h^3\}\varepsilon_F^\{3/2\}
+\end\{aligned\}$$ where the fermi energy $\varepsilon_F$ is given
+explicitly by: $$\begin\{aligned\}
+ \label\{FermiEnergy\}
+\varepsilon_F = \left(\frac\{3\rho\}\{8\pi\}\right)^\{2/3\} \frac\{h^2\}\{2m\}
+\end\{aligned\}$$
+
+A typical metal (*Cu*) has a mass density of $9g/cm^3$. Assuming each
+atom donates a single electron to the conducting electron gas, this
+density has a Fermi temperature: $$\begin\{aligned\}
+\theta_F = \frac\{\varepsilon_F\}\{k_B\} \approx 80,000K
+\end\{aligned\}$$
+
+this verifies that the Fermi energy $\varepsilon_F$ is sufficiently
+large to make the ideal gas approximation valid at room temperature. At
+room temperature, only states with energy very near
+$\varepsilon \approx \varepsilon_F$ will be affected by thermal energy
+$k_BT$. The spread in the distribution is approximately $2k_BT$
+(Fig. [\[fig1\]](#fig1)\{reference-type="ref" reference="fig1"\}).
+
+::: marginfigure
+![image](figures/Physics/statistical_mechanics/electrons_in_metals/Fig1.png)\{width="\\linewidth"\}
+:::
+
+The pressure is found using the relationship for Fermi particles
+$$\label\{Eq9\}
+pV = 2k_BT\sum_\alpha \log \left(1 + e^\{-\beta \varepsilon_\alpha + \beta \mu\} \right)$$
+
+Following a similar derivation as before, we write $$\begin\{aligned\}
+\label\{Eq10\}
+pV &= \frac\{2V\}\{(2\pi)^3\} \int d\vec\{k\} \log \{ 1 + e^\{-\beta [ \varepsilon (\vec\{k\}) - \mu]\} \} \\
+&= \frac\{4\pi V (2m)^\{2/3\}\}\{h^3\} \int_0^\infty d\varepsilon \varepsilon^\{1/2\} \log \left[ 1 + e^\{-\beta ( \varepsilon - \mu)\} \right]
+\end\{aligned\}$$
+
+where we have used $\varepsilon = \frac\{\hslash^2 k^2\}\{2m\}$.
+
+In the limit $T \rightarrow 0$ or $\beta \rightarrow \infty$, we have
+$$\begin\{aligned\}
+1 + e^\{-\beta ( \varepsilon - \mu)\} \rightarrow  e^\{\beta ( \varepsilon_F - \varepsilon)\}
+\end\{aligned\}$$ for $\varepsilon < \varepsilon_F$ and $$\begin\{aligned\}
+ 1 + e^\{-\beta ( \varepsilon - \mu)\} \rightarrow 1
+\end\{aligned\}$$ for $\varepsilon > \varepsilon_F$. Therefore, the
+pressure is written as:
+
+$$\begin\{aligned\}
+pV &= \frac\{4\pi V (2m)^\{3/2\}\}\{h^3\} \int_0^\{\varepsilon_F\} d\varepsilon \varepsilon^\{1/2\} (\varepsilon_F - \varepsilon)\\
+&= \frac\{16\pi V (2m)^\{2/3\}\}\{15h^3\} \varepsilon_F^\{5/2\} 
+\end\{aligned\}$$
+
+This pressure at $T = 0$ is approximately $10^6 \textrm\{ atm\}$. This
+large pressure plays an important role in halting the collapse of a star
+(white dwarf) because this enormous pressure offsets the gravitational
+forces that otherwise drive the collapse.
+
+The average energy $\langle E \rangle$ is found using: $$\begin\{aligned\}
+\label\{Eq12\}
+\langle E \rangle = 2\sum_\alpha \varepsilon_\alpha \frac\{e^\{-\beta \varepsilon_\alpha + \beta \mu\}\}\{1 + e^\{-\beta \varepsilon_\alpha + \beta \mu\}\}
+\end\{aligned\}$$
+
+Following a similar derivation as before, we write $$\begin\{aligned\}
+\langle E \rangle &= \frac\{2V\}\{(2\pi)^3\} \int d\vec\{k\} \varepsilon(\vec\{k\}) \frac\{1\}\{e^\{\beta [ \varepsilon(\vec\{k\}) - \mu]\}+1\} \notag\\
+&= \frac\{4\pi V (2m)^\{2/3\}\}\{h^3\} \int_0^\infty d\varepsilon \varepsilon^\{3/2\} \frac\{1\}\{e^\{\beta [ \varepsilon - \mu]\}+1\} \notag\\
+&= \frac\{4\pi V (2m)^\{2/3\}\}\{h^3\} \int_0^\infty d\varepsilon \varepsilon^\{3/2\} F(\varepsilon) \notag
+\end\{aligned\}$$
+
+where we have used $\varepsilon = \frac\{\hslash^2 k^2\}\{2m\}$.
+
+::: marginfigure
+![image](figures/Physics/statistical_mechanics/electrons_in_metals/Fig2.png)\{width="\\linewidth"\}
+:::
+
+We apply integration by parts to this equation and use
+([\[AveN_electrons\]](#AveN_electrons)\{reference-type="ref"
+reference="AveN_electrons"\}) to get: $$\begin\{aligned\}
+\langle E \rangle = - \frac\{3\langle N \rangle\}\{5\varepsilon_F^\{3/2\}\} \int_0^\{\infty\} d\varepsilon \varepsilon^\{5/2\} \frac\{df\}\{d\varepsilon\}
+\end\{aligned\}$$
+
+where $$\begin\{aligned\}
+\frac\{df\}\{d\varepsilon\} &= -\frac\{\beta e^\{\beta (\varepsilon - \mu)\}\}\{[e^\{\beta (\varepsilon - \mu)\} + 1]^2\}
+\end\{aligned\}$$
+
+In the limit $T\rightarrow0$, the function $-\frac\{df\}\{d\varepsilon\}$
+becomes peaked near $\varepsilon \approx \varepsilon_F$
+(Fig. [\[fig2\]](#fig2)\{reference-type="ref" reference="fig2"\}), and we
+can effectively expand the integrand near $\varepsilon = \varepsilon_F$
+to get: $$\begin\{aligned\}
+\varepsilon^\{5/2\} \approx \varepsilon_F^\{5/2\} + \frac\{5\}\{2\}\varepsilon_F^\{3/2\}(\varepsilon - \varepsilon_F) + \frac\{15\}\{8\}\varepsilon_F^\{1/2\}(\varepsilon - \varepsilon_F)^2 + ...
+\end\{aligned\}$$
+
+Since $\frac\{df(\varepsilon)\}\{d\varepsilon\}$ is even about
+$\varepsilon_F$ in this limit, the odd-order terms will integrate to
+zero, leaving only the even terms. Thus, the final form of the average
+energy is going to be: $$\begin\{aligned\}
+\langle E \rangle = \langle N \rangle \varepsilon_F \left[A +B\left(\frac\{T\}\{\theta_F\}\right)^2 +...\right]
+\end\{aligned\}$$
+
+A precise calculation of this low-temperature expansion gives:
+$$\begin\{aligned\}
+\
+\langle E \rangle = \frac\{3\}\{5\}\langle N \rangle \varepsilon_F \left[1 +\frac\{5\pi^2\}\{12\}\left(\frac\{T\}\{\theta_F\}\right)^2 +...\right]
+\end\{aligned\}$$
+
+Therefore, the heat capacity for a metal in the limit of small
+temperature is given by
+
+$$\begin\{aligned\}
+C_V = \frac\{3\}\{5\}\langle N \rangle \varepsilon_F \frac\{5\pi^2\}\{12\}2\frac\{T\}\{\theta_F^2\} = \frac\{\pi^2\}\{2\}\langle N \rangle k_B\frac\{T\}\{\theta_F\}
+\end\{aligned\}$$
+
+giving a linear temperature dependence in the small-$T$ limit.
+
+The limiting behavior in the small-$T$ limit suggests that a plot of
+$C_V/T$ approaches a constant as $T\rightarrow 0$. This proves to be the
+behavior of the heat capacity for metals in the limit of small $T$. As
+temperature increases, the fluctuations in the metal nuclei also
+contribute to the heat capacity
+(Fig. [\[fig3\]](#fig3)\{reference-type="ref" reference="fig3"\}).
+
+
+# Semiconductors \{#chap:semiconductors\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:quantum_mechanics\]](#chap:quantum_mechanics)\{reference-type="ref+label"
+reference="chap:quantum_mechanics"\},
+[\[chap:stat_thermo\]](#chap:stat_thermo)\{reference-type="ref+label"
+reference="chap:stat_thermo"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+Semiconductors are materials with electrical conductivity between that
+of a metallic conductor and a nonmetallic insulator. Semiconductors have
+a number of interesting physical properties. For one, their resistivity
+drops as temperatures rise (unlike metals which have higher resistivity
+at higher temperatures). Semiconductors can also have their conducting
+properties altered by the addition of \"dopants\", impurities introduced
+into the crystal structure of a semiconductor. A substance with two
+differently doped regions can form a \"semiconductor junction\".
+
+In this chapter, we introduce the foundations of semiconductor physics
+and consider how to build differentiable programs that predict
+semiconductor structure and behavior.
+
+## Basic Semiconductor Physics
+
+Semiconductors are marked by their unique conductivity behavior, between
+that for conductors and insulators. To understand this behavior more
+precisely, we will need to delve into the physics of electronic band
+structure. An isolated atom has electrons that occupy atomic orbitals.
+What happens to the electronic structure then when two atoms come
+together to form a molecule? Pauli's exclusion principle dictates that
+two electrons can't have the quantum number in a molecule. This means
+that each atomic orbital in a diatomic molecule splits into two
+molecular orbitals
+
+Now consider a more complex situation, where $N$ identical atoms come
+together to form crystal lattice. In this case, the atomic orbitals of
+individual atoms will overlap. The Pauli exclusion principle then
+dictates that we can't have two electrons in the solid that have the
+same quantum numbers. This forces each atomic orbital for each atom to
+split into $N$ discrete molecular orbitals. Macroscopic solids have very
+large numbers of atoms, so these $N$ discrete molecular orbitals
+effectively form a continuum since the energy gap between adjacent
+molecular orbitals will be very small.
+
+### Fermi Level
+
+For a solid state body, the Fermi level is the thermodynamic work
+required to add one electron to the body. This quantity is usually
+referred to as $\mu$.
+
+### Band Gap
+
+For semiconductors, the band gap is the distance between the valence
+band and the conduction band. It represents the amount of energy
+required to promote an electron to participating in conduction.
+
+![The band-gap structure of an example
+material.](figures/Physics/condensed_matter/semiconductors/band gap structure (1).png)\{#fig:bandgap\}
+
+### Bravais Lattice and Reciprocal Lattice
+
+To study the mathematical properties of semiconductor systems, we need
+to be able to formulate the repeating lattice structure of the material
+in our equations. Let's start by defining a lattice. Conceptually, a
+lattice is defined by its unit cell, which is given by three primitive
+lattice vectors $$\begin\{aligned\}
+\vec\{a_1\}, \vec\{a_2\}, \vec\{a_3\}
+\end\{aligned\}$$ The Bravais lattice is the infinite set of points
+described by
+
+$$\vec\{r\} = n_1 \vec\{a_1\} + n_2 \vec\{a_2\} + n_3 \vec\{a_3\}, \quad n_1, n_2, n_3 \in \mathbb\{Z\}$$
+
+To model physical crystals, we also need to consider the *primitive unit
+cell*. This unit cell is given by
+
+$$\textbf\{r\} = \{x_1 \vec\{a_1\} + x_2 \vec\{a_2\} + x_3 \vec\{a_3\} | 0 \leq x_1, x_2, x_3 < 1 \}$$
+
+We then say that a crystal is an arrangement of atoms within the
+primitive unit cell. Note that not all the atoms have to be of the same
+type.
+
+## Solving Schrodinger's Equation in Lattices
+
+Let's consider how to solve Schrodinger's equation for particles in a
+lattice. Physically, we expect that the potential energy of the system
+obeys the following symmetry
+
+$$\begin\{aligned\}
+V(\vec\{x\} + \vec\{a\}) = V(\vec\{x\}) 
+\end\{aligned\}$$
+
+That is, the potential energy repeats for each primitive unit cell. The
+solutions of Schrodinger's equation for such a system are given by
+Bloch's theorem which states that for electrons in a crystal lattice,
+with a potential $V$ that obeys the symmetry
+
+$$\begin\{aligned\}
+V(\vec\{x\} + \vec\{a\}) = V(\vec\{x\}), 
+\end\{aligned\}$$
+
+There exists a basis of wave functions which have the following
+properties: Each wave function $\psi_i$ is an energy eigenstate of
+Schrodinger's equation. We can write $\psi_i$ as $$\begin\{aligned\}
+\psi_i(r) = e^\{i k \cdot r\} u_i(r)
+\end\{aligned\}$$
+
+Where $u(r)$ has the same periodicity as the crystal. That is,
+$$\begin\{aligned\}
+u(r + \vec\{a\}) = u(r)
+\end\{aligned\}$$ We say that a function with the form $$\begin\{aligned\}
+\psi_\{i\}(r) = e^\{ik\cdot r\}u_\{i\}(r)
+\end\{aligned\}$$ is a Bloch wave. Note that the Block theorem means that
+given bloch state can be identified with a wave vector $k$.
+
+::: marginfigure
+![image](figures/Physics/condensed_matter/semiconductors/pn junction.png)\{width="\\linewidth"\}
+:::
+
+## Doping
+
+Doping is the introduction of impurities into semiconductor for the
+purpose of changing its properties and behaviors.
+
+P-type semiconductors have electron acceptors embedded into the
+underlying semiconductor, whhile N-type semiconductors have electron
+donors embedded into the underlying semiconductor.

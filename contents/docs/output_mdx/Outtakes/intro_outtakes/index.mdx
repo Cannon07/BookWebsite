@@ -1,0 +1,278 @@
+# Materials Design
+
+Materials are an integral part of every tangible product in our every
+day life. Novel materials have enabled modern civilization as we have
+progressed with innovations from the light bulb to bridges to airplanes.
+Advanced functional materials pervade through our everyday lives from
+the LED bulb, which uses nitride-based semiconductors, to the electric
+car, which uses lithium moving between two host structures namely
+graphite and layered oxides. Despite these amazing success stories, the
+journey towards a stable functioning product is a long and arduous one,
+typically taking at least two decades from the initial lab demonstration
+to a functioning device. Thus, the challenge of designing a new material
+for an application is under-appreciated. An excellent illustration of
+this challenge is the story of Thomas Edison and the light bulb. Sir
+Humphry Davy, an English chemist, invented the world's first electric
+lamp, by connecting alternating metal piles of zinc and copper to
+charcoal electrodes long before the light bulb. This produced a bright
+arc of light, called the arc lamp. \[Insert an illustration of the
+Davy's arc lamp\] When Edison performed a seemingly exhaustive search,
+at least in his mind, he tried 3000 materials followed by 6000 plants,
+but could not identify tungsten. In fact, Coolidge was the one that
+identified tungsten in 1910.
+
+With approximately nineteen million known organic compounds and half a
+million inorganic materials in addition to the rapidly growing number of
+chemical systems synthesized, efficient screening procedures towards
+specific engineering applications becomes increasingly important.
+Material design calls for a high-dimensional combinatorial search if
+more than one material is used for an application, which is the case
+more often than not. Coinciding with strides in the materials science
+field, machine learning is experiencing its own surge with many
+innovations arriving at an unprecedented speed. The combination of these
+two fields has itself seen much growth recently with machine learning
+presenting an opportunity to quickly sift through large quantities of
+materials [@Butler2018MachineScience; @Ramprasad2017MachineProspects].
+The book aims to address how deep learning can accelerate materials
+discovery and optimization, which is a typical example of an area in the
+low-data regime. An overview of high-dimensional material-search
+strategies are discussed with surrogate models and machine (deep)
+learning as tools for a range of application areas including batteries,
+solar photovoltaics and fuel cells.
+
+## Materials for Batteries
+
+Global emissions scenario studies highlight the importance of the
+transport sector for climate change mitigation [@edenhofer2015climate]
+with transport being responsible for about 23% of total energy-related
+carbon dioxide emissions worldwide[@fischedick2014industry]. The sector
+is growing more rapidly than most others, with emissions projected to
+double by 2050. A major contributor to emissions from the transportation
+sector is aviation. Electric aviation with sustainable power presents an
+excellent path towards deep decarbonization of this sector. The progress
+in this direction currently hinges on development in power generation
+systems, which translate to several battery design
+challenges[@bills2020performance; @fredericks2018performance] including
+a multi-fold increase in the specific energy (energy storage capacity
+per weight). These challenges can be achieved through materials
+innovation in all the three integral components that batteries are
+composed of: an anode, a cathode and an electrolyte, shown in Fig XX.
+Therefore, batteries are an illustrative example of a materials design
+challenge where machine learning can potentially accelerate material
+discovery and optimization to enable the transition to electrification
+of mobility.
+
+All step changes have involved innovation on the material side
+
+Batteries are essentially composed of three integral components: anode,
+cathode with the electrolyte interfacing between them. It functions by
+shuttling Li-ions between the anode and the cathode through the
+electrolyte. The performance of the battery is determined by the choice
+of these three components.
+
+In this book, we primarily focus on designing the main components rather
+than the interfaces. Modern electronics and electric cars are powered by
+Li-ion batteries. The innovation story around Li-ion batteries was
+honored with the Nobel Prize in Chemistry in 2019 to Stanley
+Whittingham, John B. Goodenough and Akira Yoshino.
+
+## Anode Material Design
+
+Modern Li-ion batteries use a graphite host material, originally
+demonstrated by Nobel Prize winner, Akira Yoshino. Under a fully charged
+state, the lithium ions reside in graphite. When the cell is discharged,
+the lithium ions move from the graphite host to the cathode host
+material. The energy produced is the difference in lithium's affinity
+towards the anode and cathode host materials. Thus, a good anode
+material would bind to lithium very weakly, while the opposite is
+desired of a cathode. Despite a number of possible host materials, only
+a very limited set have seen success in practice. This is due to the
+very long design cycle associated with experimental testing.
+
+## Cathode Material Design
+
+On the cathode side, many portable electronics still use lithium cobalt
+oxide, invented by John Goodenough in 1980, for which he won the Nobel
+Prize. Minor variants of this original idea swapping part of the cobalt
+with nickel, manganese and aluminium, power most of the electric cars
+today. While there has been impressive progress over the last decade,
+there are still numerous sectors of transportation that remain
+well-beyond the abilities of current batteries. This include long-haul
+trucking and aviation, which require several-fold increase in specific
+energy (energy per weight). This requires moving beyond the current
+design space and there is an extremely large design space of oxides,
+fluorides, oxyfluorides, sulfides that offer promise.
+
+## Electrolyte Design
+
+The electrolyte, often called the secret sauce, is typically a liquid
+that comprises of solvent(s) and salt. Modern lithium-ion batteries
+contain at least 2-3 main solvents with a dozen additives. The additives
+play an extremely important role in determining the longevitity of the
+battery, operating window and safety. Given that most of organic
+chemistry (millions of compounds) is a valid design space, the design of
+an electrolyte is probably the grandest challenge facing a battery
+scientist. This is best exemplified by a statement from the famous
+battery scientist, Jeff Dahn, "Go get the Sigma-Alrich catalog, put on
+the table, open it up, and every single thing there is potentially a
+good additive. I am not joking. Then you learn that generally two
+additives is better than one, three is better than two, then you have a
+huge space to work in."
+
+## Materials for Solar Cells
+
+One important part of bringing down the emissions is to clean up the
+grid. Solar energy is one efficient way to bring down the emissions,
+using the fusion energy from the sun into electrons that could be used
+to do work. Solar cells (also called a photovoltaic cell, PV) work by
+converting incoming solar radiation into electrical energy. The
+performance of a solar cell is largely determined by the chosen
+material. The efficiency timeline of development of solar cells is
+carefully
+[https://www.nrel.gov/pv/cell-efficiency.html](curated by National Renewable Energy Laboratory (NREL)).
+
+The performance of the device is determined by the ability of the
+material to absorb light and create an electron-hole pair. This
+electron-hole pair should reach the external circuit before they
+recombine. The ability of a material to absorb light is determined by a
+quantity known as band gap. Semiconductors are materials that typically
+possess moderate band gap (1-3 eV) and are ideal candidates to match
+with the incoming solar spectrum. They are characterized by their
+efficiency numbers, which quantifies what fraction of the incident
+energy from the solar radiation is converted to electrical energy.
+
+Silicon is one of the most popular materials and remains among the most
+widely used photovoltaic material today. A single-junction Silicon solar
+cell has improved in efficiency from around 13% in 1980s to over 25%
+today. Alongside, GaAs has been a material widely studied with
+efficiency increase from around 280% in the early 2000s to around 31%
+today. Another class of materials widely explored are thin-film solar
+cells made up of CIGS (Copper Indium Galium Selenide) and CdTe (Cadium
+Telleuride)m which have grown in efficiency from 20% to 23% over the
+last couple of decades. Photovoltaic materials can broadly be classified
+based on composition into organic and inorganic photovoltaics where
+perovskites photovoltaics are typically organic-inorganic hybrid
+materials.
+
+*Organics photovoltaics*: The development of organic semiconductors for
+photovoltaic devices stems from efforts to find cheaper altearnatives to
+semiconductor grade silicon and has led to unexpected performance for an
+alternative choice of materials to convert sunlight to
+electricity.[@inganas2018organic] Novel materials and developed concepts
+have improved the resulting photovoltage in organic photovoltaic
+devices, where
+[reports](https://www.nrel.gov/pv/insights/assets/pdfs/cell-pv-eff-emergingpv.pdf)
+over the last couple of years (2019-2020) of polymer/acceptor based
+devices indicate above 17.4% power conversion efficiency in sunlight
+(PCE).[@zhao2017molecular; @hou2018organic] The exploration of organic
+materials for this application began with the realization that organic
+dyes have very strong optical absorption, which can be leveraged to
+absorb sections of the solar spectrum. Many dyes have been
+studied[@merritt1976organic] including chlorophyll, which absorbs
+sunlight in green
+plants.[@tang1975transient; @tang1975chlorophyll; @tang1975photovoltaic; @inganas1981charge; @inganas1983photoelectrochemistry]
+Dyes in organic optoelectronic devices in the form of bilayer devices in
+1986 was the first published demonstration of a photovoltaic devices
+with a 1% power conversion efficiency.[@tang1986two] Polymers were
+another class of organic materials that gained interest when the field
+underwent a fundamental transition from bilayer structures to bulk
+heterojunctions with the advantage that bulk heterojunctions host a
+large amount of interfaces between donor and acceptor rather than a
+single plane as in the case of bilayer junctions. Along this line of
+work, key developments in the last couple of decade of the 20th century
+include the identification of fullerene
+(C$_\{60\}$)[@hummelen1995preparation] and derivatives as promising
+acceptors and a range of polymers as donors: poly(paraphenylene
+vinylene) (PPV)[@smilowitz1993photoexcitation] and the polythiophene
+(PT) family[@yohannes1998photoelectrochemical] that led to organic light
+emitting diodes (OLEDs).[@berggren1994light] In the early 2000s, focus
+shifted towards developing alternating copolymers[@blouin2008toward]
+with donors and acceptors in a main chain polymer as an approach to
+enhance the photovoltage, the overlap with the solar spectrum, and
+reduce energy losses. Specific alternating copolymers worth highlighting
+include alternating copolymers of quinoxaline with thiophene and
+isoindigo with thiophene, which led to PCEs in the range 5-9
+%.[@wang2013conformational; @wang2011f] Over the last couple of decades,
+higher PCEs within organics have been achieved through material
+development towards non-fullerene acceptors, novel polymer-polymer
+blends and ternary materials, where multiple donors and acceptors are
+blended.[@inganas2018organic]
+
+*Perovskite (inorganic-organic) photovoltaics*: The most studied
+perovskite solar cells (PSCs) are organic--halide perovskites. Halide
+perovskites have revolutionized the emerging photovoltaic technologies
+since they have emerged as light harvesters and hole-transport
+materials.[@hao2014lead] Organic--inorganic hybrid perovskite compounds
+based on metal halides adopt the ABX$_3$ perovskite structure, where the
+B atom is a metal cation and X is typically F$_2$, Br$_2$, Cl$_2$ or
+I$_2$. A promising family of perovskite compounds can be represented as
+CH$_3$NH$_3$PbX$_3$ (X $=$ I, Cl, Br) perovskite absorbers (PCEs $>$
+15%), however, efforts toward lead-free perovskites (PCEs $\approx$ 6%)
+have led to the identification of a class that can be represented as
+CH$_3$NH$_3$SnX$_3$ where (X $=$ I, Cl, Br or combinations).
+Furthermore, although there are broad material development prospects for
+perovskite solar cells, the associated lead toxicity and instability
+resulting from the use of organic--inorganic hybrid halide lead
+perovskites limit their application. Over the past few years, the
+development of environmentally-friendly, stable and efficient perovskite
+materials have long-term practical significance from the standpoint of
+commercialization. The highest PCE achieved for an inorganic lead-free
+perovskite solar cell was around 4.8% for CsSnX$_3$ but exhibits poor
+air stability. Therefore, an active research topic in the field of
+photovoltaics is the development of inorganic (or stable
+organic-inorganic) lead-free perovskite light absorbing materials.
+
+The material search space is extraordinarily large and rich with the
+number of possible organic-inorganic material combinations for
+photovoltaics.
+
+## Materials for Superconductivity
+
+Another holy grail towards an electrified future is to bring down the
+transmission losses, which can be about 5-10% of the electricity
+generation. There has been on-going search for superconducting materials
+that would be functional at or near room temperature for several
+decades. This has proved to be elusive.
+
+Superconductivity is the property of a material to exhibit zero
+resistance to the flow of current. The phenomenon of superconductivity
+was originally discovered in 1911 by Heike Onnes when he was measuring
+the electrical conductivity of pure metals, mercury and then
+subsequently tin and lead. He observed that resistance of a solid
+mercury wire at 4.2 K suddenly vanished. Within two years, in 1913, he
+won the Nobel Prize in Physics for this discovery. This led to a
+century-long race to increase the critical temperature, i.e. the highest
+temperature below which a material is superconducting. Over the next
+several decades, metals and intermetallics, such as Nb, Nb$_3$Sn,
+Nb$_3$Ge were tested and exhibited critical temperatures in the range of
+10-30K.
+
+Then, in the late 1980s, there was renewed interest following a seminal
+discovery by Bednorz and Müller that perovskites based on Lanthanum
+Barium Copper Oxide (LBCO) was superconducting. They won the Nobel Prize
+in Physics in 1987 for this discovery and following this, numerous
+perovskite based materials were tested. The family of materials, called
+cuprate superonductors, were able to reach a critical temperature of
+133-138 K. The highest-temperature superconductor in this family is
+material comprising of mercury, barium, calcium, copper and oxygen.
+
+In the last decade, high pressure was used to stabilize materials in
+exotic structures, which have exhibited superconductivity. Among these,
+hydrogen sulfide (H$_2$S) has been shown to be superconducting at 150
+gigapascal (GPa) pressure with a critical temperature of 80 K. Following
+this, other hydrides such as scandium hydride and lanthanum hydride have
+been studied. The current record holder is lanthanum hydride with a
+critical temperature of 250 K at a pressure of 170 GPa.
+
+Alongside these developments, another interesting direction is to use
+angular twist between materials to trigger superconductivity. In 2018,
+it was demonstrated that twisted bi-layer graphene with a magic angle of
+1.1$^\circ$ exhibits superconductivity albeit at very low temperatures.
+
+The problem of superconductivity is fundamentally a material search
+problem. Given the numerous possible degrees of freedom (twist,
+pressure), no serious constraints placed on possible materials, the
+search space of possible superconductors is truly enormous. If indeed
+deep learning is able discover a new superconductor with a critical
+temperature of around 300K, it will undoubtedly deserve a Nobel
+Prize.[@kitano2016artificial]

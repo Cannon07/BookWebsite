@@ -1,0 +1,1249 @@
+# The Green's Function for the Klein-Gordon Equation \{#chap:klein_gordon_greenns\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:qft_basics\]](#chap:qft_basics)\{reference-type="ref+label"
+reference="chap:qft_basics"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+In the previous chapter, we learned how to solve the Klein-Gordon
+equation for simple free fields. Solving the Klein-Gordon equation for
+more complex fields with potentials requires additional mathematical
+infrastructure. In particular, we will make use of the Green's function.
+
+## Defining the Green's Function
+
+The Green's function for the Klein-Gordon equation is also commonly
+called the propagator in quantum field theory. The Green's function is
+defined as the solution to the following equation
+
+$$\begin\{aligned\}
+    -(\partial^2 + m^2)D(x) &= \delta^\{(4)\}(x)
+\end\{aligned\}$$
+
+Recall that the Klein-Gordon equation is defined on Minkowski space,
+where we define
+
+$$\begin\{aligned\}
+    \partial^2 = \frac\{\partial^2\}\{\partial t^2\} - \frac\{\partial^2\}\{\partial x_1^2\} - \frac\{\partial^2\}\{\partial x_2^2\} - \frac\{\partial^2\}\{\partial x_3^2\}
+\end\{aligned\}$$
+
+$m \in \mathbb\{R\}$ is an arbitrary real number. Recall that the general
+form of Green's functions is as distributions and not as functions so we
+expect $D(x)$ to define a distribution and not a function. To solve the
+equation above, we use the Fourier representation of the Dirac delta
+function
+
+$$\begin\{aligned\}
+    \delta^\{(4)\}(x) = \frac\{1\}\{(2\pi)^4\} \int e^\{ikx\} d^4 k
+\end\{aligned\}$$
+
+As a first note, recall that $k,x  \in \mathbb\{R\}^\{1,3\}$ are elements of
+Minkowski space. So the notation above is actually shorthand for
+
+$$\begin\{aligned\}
+    kx \equiv k_0 t - k_1 x_1 - k_2 x_2 - k_3 x_3
+\end\{aligned\}$$
+
+Recall that the dirac delta $\delta^\{(4)\}(x)$ defines a functional and
+is a distribution and not a function. So the integral on the right hand
+side above should be read as defining a mapping
+
+$$\begin\{aligned\}
+    g(x) \mapsto \frac\{1\}\{(2\pi)^4\} \int e^\{ikx\} g(x) d^4 k
+\end\{aligned\}$$
+
+To find a solution, as is often the case with differential equations, we
+turn to exponential functions. Let's compute
+
+$$\begin\{aligned\}
+-(\partial^2 + m^2 ) e^\{ikx\} &= -\left (\frac\{\partial^2\}\{\partial t^2\} - \frac\{\partial^2\}\{\partial x_1^2\} - \frac\{\partial^2\}\{\partial x_2^2\} - \frac\{\partial^2\}\{\partial x_3^2\}  + m^2 \right ) e^\{i(k_0t - k_1x_1 - k_2x_2 - k_3x_3)\}  \\
+&= -\left ((ik_0)^2e^\{ikx\} - (-ik_1)^2e^\{ikx\} - (-ik_2)^2 e^\{ikx\} - (-ik_3)^2 e^\{ikx\} + m^2 e^\{ikx\}\right ) \\
+&= -((ik_0)^2 - (-ik_1)^2 - (-ik_2)^2  - (-ik_3)^2 +m^2)e^\{ikx\} \\
+&= -(-k_0^2 + k_1^2 + k_2^2  + k_3^2 + m^2)e^\{ikx\} \\
+&= -(-k^2 + m^2)e^\{ikx\} \\
+&= (k^2 - m^2)e^\{ikx\} 
+\end\{aligned\}$$ That is, $e^\{ikx\}$ is an eigenfunction of the operator
+$-(\partial^2 + m^2)$. We could then hypothesize that the Green's
+function of the Klein-Gordon operator would be given by the following
+\"function\".
+
+$$\begin\{aligned\}
+    \frac\{1\}\{(2\pi)^4\} \int \frac\{e^\{ikx\}\}\{k^2-m^2\} d^4 k
+\end\{aligned\}$$ Then, by applying the Klein-Gordon operator, we would
+obtain, by differentiating through the integral $$\begin\{aligned\}
+    (-\partial^2 + m^2) \left [ \frac\{1\}\{(2\pi)^4\} \int \frac\{e^\{ikx\}\}\{k^2 - m^2\} d^4 k \right ] &= \frac\{1\}\{(2\pi)^4\} \int \frac\{-(\partial^2 +m^2) e^\{ikx\}\}\{k^2 - m^2\} d^4 k \\
+    &= \frac\{1\}\{(2\pi)^4\} \int \frac\{(k^2-m^2)e^\{ikx\}\}\{k^2-m^2\} d^4 k  \\
+    &= \frac\{1\}\{(2\pi)^4\} \int e^\{ikx\} d^4 k \\
+    &= \delta^\{(4)\}(x)
+\end\{aligned\}$$ This calculation works almost everywhere. The exception
+is at those points where $k^2 = m^2$. Expanding out the equation, this
+is the surface of points $$\begin\{aligned\}
+    k_0^2 - k_1^2 - k_2^2 - k_3^3 = m^2
+\end\{aligned\}$$ Such a surface is vanishingly small compared to the
+entirety of $\mathbb\{R\}^\{1,3\}$. We know that for point singularities, it
+is sometimes possible to complete the function by taking a limit. The
+limit completion technique used for this function is called the
+$(i\varepsilon)$ prescription. The idea is to prevent the singularity on
+the surface $k^2 = m^2$ by adding a small nonzero value, the
+$i\varepsilon$. That is, we define the distribution $$\begin\{aligned\}
+    \frac\{1\}\{(2\pi)^4\} \int \frac\{e^\{ikx\}\}\{k^2-m^2 + i\epsilon\} d^4 k
+\end\{aligned\}$$ How are we to interpret this expression? It's easiest to
+concretely represent the expression as a mapping $$\begin\{aligned\}
+    g(x) \mapsto \frac\{1\}\{(2\pi)^4\} \lim_\{\varepsilon \to 0\} \int \frac\{e^\{ikx\}\}\{k^2 - m^2 + i \epsilon\} g(x) d^4 k
+\end\{aligned\}$$ Let us now apply the Klein-Gordon operator to this
+distribution by differentiating through the integral sign and through
+the limit $$\begin\{aligned\}
+    &= (-\partial^2 + m^2) \left [ \frac\{1\}\{(2\pi)^4\} \lim_\{\varepsilon \to 0\} \int \frac\{e^\{ikx\}\}\{k^2 - m^2 + i \varepsilon\} g(x) d^4k\right ] \\
+    &= \frac\{1\}\{(2\pi)^4\} \lim_\{\varepsilon \to 0\} \int \frac\{(-\partial^2 + m^2)e^\{ikx\}\}\{k^2 - m^2 + i\varepsilon\} g(x) d^4 k \\
+    &= \frac\{1\}\{(2\pi)^4\} \lim_\{\varepsilon \to 0\} \int \frac\{(k^2 - m^2)e^\{ikx\}\}\{k^2 - m^2 + i\varepsilon\} g(x) d^4 k \\
+\end\{aligned\}$$ We claim that $$\begin\{aligned\}
+    \lim_\{\varepsilon \to 0\} \int \frac\{(k^2-m^2)e^\{ikx\}\}\{k^2-m^2+i\varepsilon\} g(x) d^4k &= \int e^\{ikx\} g(x) d^4k
+\end\{aligned\}$$
+
+It then follows that $$\begin\{aligned\}
+\frac\{1\}\{(2\pi)^4\} \lim_\{\varepsilon \to 0\} \int \frac\{(k^2-m^2) e^\{ikx\}\}\{k^2-m^2+i\varepsilon\} d^4 k = \frac\{1\}\{(2\pi)^4\} \int e^\{ikx\} d^4 k = \delta^\{(4)\}(x)
+\end\{aligned\}$$ holds as an equality of distributions.
+
+We see in these manipulations, the $g(x)$ term is just carried around.
+From now on, when performing manipulations with distributions, we will
+often not show the \"test function\" $g(x)$ and the limit explicitly,
+but will just perform manipulations directly. If you are confused about
+how an operation is valid, write out the test function and limit in full
+detail to convince yourself.
+
+## Exercises
+
+1.  For a given test function $g$, prove that $$\begin\{aligned\}
+        \lim_\{\varepsilon \to 0\} \int \frac\{(k^2-m^2)e^\{ikx\}\}\{k^2-m^2+i\varepsilon\} g(x) d^4k &= \int e^\{ikx\} g(x) d^4k
+        
+    \end\{aligned\}$$ State the assumptions about $g$ that you make to
+    prove this statement.
+
+2.  Prove that $$\begin\{aligned\}
+        \frac\{1\}\{(2\pi)^4\} \lim_\{\varepsilon \to 0\} \int \frac\{(k^2-m^2) e^\{ikx\}\}\{k^2-m^2+i\varepsilon\} d^4 k = \frac\{1\}\{(2\pi)^4\} \int e^\{ikx\} g(x) d^4 k = \delta^\{(4)\}(x)
+        
+    \end\{aligned\}$$ holds as a limit in the topology of distributions.
+
+
+# An Introduction to Gauge Theories \{#chap:gauge_theories\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:qft_basics\]](#chap:qft_basics)\{reference-type="ref+label"
+reference="chap:qft_basics"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+Gauge theories arise in quantum field theories that obey a local
+symmetry that is position dependent. In this chapter, we introduce the
+basics of gauge theories.
+
+## The XY Model
+
+The XY model provides a toy example of a gauge theory. This model is an
+example of what is called a *nonlinear sigma model* and involves a
+$O(N)$ isovector $n$ with unit length which has the $O(N)$ invariant
+interaction
+
+$$\begin\{aligned\}
+Z(K) = \int \prod_r dn(r) \exp \Bigg [ K \sum_\{\langle r, r' \rangle\} n(r) \cdot n(r') \Bigg ], \qquad |n| = 1
+\end\{aligned\}$$
+
+Here $\langle r, r' \rangle$ means that $r$, $r'$ are nearest neighbors
+in a lattice. We can write $$\begin\{aligned\}
+    n(r) = i \cos \theta(r) + j \sin \theta(r)
+\end\{aligned\}$$ Here we assume that we operate in two dimensions. We
+define the correlation function
+
+$$\begin\{aligned\}
+G_\{\alpha\beta\}(r - r') &= \langle e^\{i\alpha \theta(r)\} e^\{i\beta \theta(r')\} \rangle
+\end\{aligned\}$$
+
+The invariance that this theory satisfies is $$\begin\{aligned\}
+\theta(r) \mapsto \mathcal\{S\}(\theta(r)) = \theta(r) + \theta_0, \quad \forall r
+\end\{aligned\}$$
+
+## $\mathcal\{Z\}_2$ Gauge theory in two dimensions
+
+Consider a square lattice.
+
+$$\begin\{aligned\}
+    Z(K) = \sum_s \Bigg [ K \sum_\{\square\} s_i s_j s_k s_l \Bigg ]
+\end\{aligned\}$$ Here $\square$ denotes squares in the lattice. Ising
+variables are placed on bonds in the lattice. Note that reversing all
+spins
+
+$$\begin\{aligned\}
+    s_i \mapsto -s_i
+\end\{aligned\}$$ preserves the model. Note that this model also satisfies
+a local symmetry when we only flip the spins $B(r)$ that adjoin the
+lattice point. This means that products of spins around closed loops
+will survive the gauge transformation (since 2 or 0 will flip).
+
+
+# String Theory and Quantum Gravity
+
+
+# An Introduction to Feynman Diagrams \{#chap:feynman_diagrams\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:qft_basics\]](#chap:qft_basics)\{reference-type="ref+label"
+reference="chap:qft_basics"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+In this chapter, we introduce the basics of Feynman diagrams, a powerful
+technology for modeling relativistic quantum processes. Feynman diagrams
+provide conceptual models for complex interacting quantum processes. In
+this chapter we introduce the basic theory of Feynman diagrams and
+Feynman rules as a mathematical technique for evaluating integrals
+before briefly explaining how these techniques can be used for more
+complex physical systems.
+
+## Feynman Diagrams for Evaluating Integrals
+
+In this section, we use Feynman diagrams to evaluate an integral.
+
+$$\begin\{aligned\}
+    Z = \int_\{-\infty\}^\{\infty\} e^\{a q^2 + b q^4 + cq\} dq
+\end\{aligned\}$$
+
+The presence of the quartic term means that we can't directly evaluate
+this integral using techniques we've developed for evaluating Gaussian
+integrals. One possibility for removing the quartic term is to expand it
+out as a Taylor series:
+
+$$\begin\{aligned\}
+    e^\{bq^4\} &= 1 + bq^4 + \frac\{b^2q^8\}\{2!\} + \frac\{b^2q^\{12\}\}\{3!\} + \dotsc
+\end\{aligned\}$$
+
+Plugging this expansion back into the earlier expression yield
+
+$$\begin\{aligned\}
+    \int_\{-\infty\}^\{\infty\} e^\{a q^2 + b q^4 + cq\} dq
+    &= \int_\{-\infty\}^\{\infty\} e^\{a q^2 + cq\} \left [ \sum_\{n=0\}^\infty \frac\{b^n q^\{4n\}\}\{n!\} \right ] dq \\
+    &= \sum_\{n=0\}^\{\infty\} \frac\{b^n\}\{n!\} \int_\{-\infty\}^\{\infty\} q^\{4n\} e^\{aq^2 + cq\} dq
+\end\{aligned\}$$ We note that $$\begin\{aligned\}
+    \frac\{d\}\{dc\} e^\{aq^2 + cq\} &= q e^\{aq^2 + cq\}
+\end\{aligned\}$$ Repeating the derivative, we obtain $$\begin\{aligned\}
+    \frac\{d^2\}\{dc\} d^\{aq^2 + cq\} &= \frac\{d\}\{dc\} (qe^\{aq^2 + cq\}) \\
+    &= q \frac\{d\}\{dc\} (e^\{aq^2 + cq\}) \\
+    &= q^2 e^\{aq^2 + cq\} 
+\end\{aligned\}$$ We see now that we can iterate as many times as desired
+to obtain $$\begin\{aligned\}
+    \frac\{d^\{4n\}\}\{dc^\{4n\}\} e^\{aq^2 + cq\} &= q^\{4n\} e^\{aq^2 + cq\}
+\end\{aligned\}$$ We can then differentiate through the integral sign
+$$\begin\{aligned\}
+    \int_\{-\infty\}^\{\infty\} q^\{4n\}e^\{aq^2 + cq\} dq &= \frac\{d^\{4n\}\}\{dc^\{4n\}\} \int_\{-\infty\}^\{\infty\} e^\{aq^2 + cq\} dq
+\end\{aligned\}$$
+
+Returning to the expression above, we obtain that $$\begin\{aligned\}
+    \int_\{-\infty\}^\{\infty\} e^\{aq^2 + bq^4 + cq\} dq &= \sum_\{n=0\}^\{\infty\} \frac\{b^n\}\{n!\} \frac\{d^\{4n\}\}\{dc^\{4n\}\} \int_\{-\infty\}^\{\infty\} e^\{aq^2 + cq\} dq \\
+    &= \left [ \sum_\{n=0\}^\infty \frac\{b^n\}\{n!\}\left ( \frac\{d^4\}\{dc^4\}\right )^n\right ] \int_\{-\infty\}^\{\infty\} e^\{aq^2 + cq\} dq \\
+    &= e^\{b \frac\{d^4\}\{dc^4\}\} \int_\{-\infty\}^\{\infty\} e^\{aq^2 + cq\} dq
+\end\{aligned\}$$
+
+Note that above, we are treating $\frac\{d^4\}\{dc^4\}$ as an linear
+operator and taking its exponential. To tackle the inner integral, we
+complete the square in the exponential. $$\begin\{aligned\}
+    \int_\{-\infty\}^\{\infty\} e^\{aq^2 + cq\} dq &= \int_\{-\infty\}^\{\infty\} e^\{a\left (q^2 + \frac\{c\}\{a\}q + \frac\{c^2\}\{4a^2\}\right ) - \frac\{c^2\}\{4a\}\} dq \\
+    &= e^\{-\frac\{c^2\}\{4a\}\}\int_\{-\infty\}^\infty e^\{a\left (q + \frac\{c\}\{2a\}\right )^2 \} dq
+\end\{aligned\}$$ We apply the change of variable $r = q + \frac\{c\}\{2a\}$.
+Note then that $dr = dq$ $$\begin\{aligned\}
+    \int_\{-\infty\}^\{\infty\} e^\{aq^2 + cq\} dq &=
+    e^\{-\frac\{c^2\}\{4a\}\} \int_\{-\infty\}^\{\infty\} e^\{ar^2\} dr
+\end\{aligned\}$$ Applying the formula for the Gaussian integral we obtain
+$$\begin\{aligned\}
+    \int_\{-\infty\}^\{\infty\} e^\{ar^2\} dr &= \sqrt\{-\frac\{\pi\}\{a\}\}
+\end\{aligned\}$$ It follows that $$\begin\{aligned\}
+    \int_\{-\infty\}^\{\infty\} e^\{aq^2 + cq\} dq &= e^\{-\frac\{c^2\}\{4a\}\} \sqrt\{-\frac\{\pi\}\{a\}\}
+\end\{aligned\}$$ We then substitute this expression into the earlier
+operator evaluation $$\begin\{aligned\}
+    Z &= e^\{b \frac\{d^4\}\{dc^4\}\} \int_\{-\infty\}^\{\infty\} e^\{aq^2 + cq\} dq \\
+    &= \sqrt\{-\frac\{\pi\}\{a\}\} e^\{b \frac\{d^4\}\{dc^4\}\} \left [ e^\{-\frac\{c^2\}\{4a\}\}  \right ]
+\end\{aligned\}$$ Let's pause here and take stock of what we've achieved.
+We've rewritten our original integral as the application of a linear
+operator in $c$, $$\begin\{aligned\}
+\sqrt\{-\frac\{\pi\}\{a\}\}e^\{b\frac\{d^4\}\{dc^4\}\},
+\end\{aligned\}$$ to a function in $c$, $e^\{-\frac\{c^2\}\{4a\}\}$. What's the
+advantage of this representation? Computing this quantity outright isn't
+straightforward. However, we have two exponential quantities, and we can
+expand both as power series to obtain a representation of $Z$ as a power
+series in two indices $n$, $m$ $$\begin\{aligned\}
+    Z &= \sqrt\{-\frac\{\pi\}\{a\}\} \left [ \sum_\{n=0\}^\{\infty\} \frac\{b^n\}\{n!\} \left ( \frac\{d^4\}\{dc^4\} \right )^n \right ] \left [
+     \sum_\{m=0\}^\infty \frac\{\left(-\frac\{c^2\}\{4a\} \right )^m\}\{m!\} \right ] \\
+     &= \sqrt\{-\frac\{\pi\}\{a\}\} \sum_\{n=0\}^\infty \sum_\{m=0\}^\infty \frac\{b^n(-1)^m\}\{n!m!(4a)^m\} \left ( \frac\{d^4\}\{dc^4\}\right )^n c^\{2m\} \\
+     &= \sqrt\{-\frac\{\pi\}\{a\}\} \sum_\{n=0\}^\{\infty\} \sum_\{m=0\}^\{\infty\} Z_\{n,m\}
+\end\{aligned\}$$ Here we define intermediate quantities $$\begin\{aligned\}
+    Z_\{n, m\} &= \frac\{b^n(-1)^m\}\{n!m!(4a)^m\} \left ( \frac\{d^4\}\{dc^4\}\right )^n c^\{2m\} 
+\end\{aligned\}$$ Note that these $Z_\{n,m\}$ are no longer functions and
+are numbers! For example, we take $$\begin\{aligned\}
+    Z_\{3, 2\} &= \frac\{b^3\}\{3!2!(4a)^2\} \frac\{d^\{12\}\}\{dc^\{12\}\} c^4 \\
+    &= \frac\{b^3\}\{3!2!4^2 a^2\} (4\cdot 3 \cdot 2 \cdot \dotsc \cdot -8) \frac\{1\}\{c^8\}
+\end\{aligned\}$$ While we don't have an analytical expression for $Z$, we
+can evaluate any $Z_\{n,m\}$ term. We can then do a series expansion out
+to any $N$, $M$ we desire as follows: $$\begin\{aligned\}
+    \tilde\{Z\} &= \sqrt\{-\frac\{\pi\}\{a\}\}\sum_\{n=0\}^N \sum_\{m=0\}^M Z_\{n,m\}
+\end\{aligned\}$$
+
+Each $Z_\{n, m\}$ can be viewed as a combinatorial object in its own
+right. To understand what this means, consider the manipulations
+
+$$\begin\{aligned\}
+    Z_\{1, 4\} &= \frac\{b(-1)^4\}\{4!4^4a^4\} \frac\{d^4\}\{dc^4\} c^8 \\ 
+    &= \frac\{b(-1)^4\}\{4!4^4a^4\} (8 \cdot 7 \cdot 6 \cdot 5) c^4 \\
+    &= \frac\{8\cdot 7 \cdot 6 \cdot 5\}\{4!4^4\} \frac\{(-1)^4bc^4\}\{a^4\} \\
+    &= \binom\{8\}\{4\} \frac\{(-1)^4bc^4\}\{4^4a^4 \}
+\end\{aligned\}$$ The presence of the choose operation suggests that there
+are discrete objects underlying $Z_\{n,m\}$. What could these objects be?
+Let's start by looking at the coefficients for $a$, $b$, $c$. Note that
+$Z_\{1,4\}$ contains $b$, $\frac\{1\}\{a^4\}$, $c^4$ as its coefficient
+powers. Can we construct a discrete object that contains these
+coefficients? For example, consider the following diagram.\
+
+Here we have two lines intersecting at a vertex. The inputs to the lines
+are labeled with $c$ coefficients. The vertex is labeled with $b$
+coefficients and the line segments with $\frac\{1\}\{a\}$ coefficients. If
+we multiply all these coefficients, we can consider them as contributing
+a term $\frac\{bc^4\}\{a^4\}$. More abstractly, we can think of $Z_\{1,4\}$ as
+counting contributions from all diagrams which are made of 4 lines and
+one vertex. For example, consider this alternative diagram where there
+is a loop at the vertex and one line as an unconnected component. Note
+that this diagram contributes the same term $\frac\{bc^4\}\{a^4\}$.\
+
+We can view these simple diagrams as simple Feynman diagrams for our
+system. By enumerating all the diagrams that provide a term
+$\frac\{bc^4\}\{a^4\}$ according to our rules, we could obtain the
+coefficient for this term in our power series. We know from the
+calculation above that the coefficient is $$\begin\{aligned\}
+    \{8 \choose 4\}\frac\{(-1)^4\}\{4^4\}
+\end\{aligned\}$$ We leave as an exercise for the reader how to obtain
+this coefficient from the two diagrams above.
+
+## Exercises
+
+1.  Evaluate the term $Z_\{4, 3\}$ for $a=-3$, $b=2$, $c=1$.
+
+2.  Derive a double series expansion for the integral $$\begin\{aligned\}
+        Z = \int_\{-\infty\}^\{\infty\} e^\{-aq^2 + bq^7 + cq\} dq
+    \end\{aligned\}$$
+
+
+# Wick's Theorem and Feynman Diagrams \{#chap:feynman_diagrams_more\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:qft_basics\]](#chap:qft_basics)\{reference-type="ref+label"
+reference="chap:qft_basics"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+Feynman diagrams arise as a tool to organize complex perturbative
+calculations arising in quantum mechanics and quantum field theory. In
+particular, we can view Feynman diagrams as indexing terms in the Dyson
+series.
+
+Wick's theorem provides the mathematical basis for the perturbative
+expansion that underpins Feynman diagrams.
+
+## Normal Ordering
+
+A product of quantum fields is said to be normal ordered if all creation
+operators are to the left of all annihilation operators. If a product of
+operators is denoted by $O$, the normal-ordering of this product is
+denoted $:O:$. To give a few examples, $$\begin\{aligned\}
+    :\hat\{a\}^\dagger \hat\{a\}: &= \hat\{a\}^\dagger \hat\{a\}\\
+    :\hat\{a\} \hat\{a\}^\dagger: &= \hat\{a\}^\dagger \hat\{a\}\\    
+\end\{aligned\}$$ where $\hat\{a\}^\dagger$ is a creation operator and
+$\hat\{a\}$ is an annihilation operator.
+
+## Wick's Theorem
+
+Wick's theorem is a tool for simplifying the computation of a higher
+order derivative into a combinatorial sum of lower order terms.
+
+We define the contraction of an operator to be the difference between
+the product and the normal form of the product $$\begin\{aligned\}
+\contraction\{\}\{A\}\{\}\{B\} AB &= AB - :AB:
+\end\{aligned\}$$
+
+The general statement is given by $$\begin\{aligned\}
+    ABCDEF\dotsc &= :ABCDEF \dotsc : + \sum_\{\textrm\{single contractions\}\} :\contraction\{\}\{A\}\{\}\{B\} ABCDEF\dotsc : \
+    &+ \sum_\{\textrm\{double contractions\}\} :\contraction\{\}\{A\}\{\}\{B\}
+    \contraction\{A\}\{B\}\{\}\{C\}
+    ABCDEF\dotsc : + \dotsc 
+\end\{aligned\}$$
+
+### Proof Sketch
+
+Let us consider the $N=2$ case of Wick's theorem. In this case, the
+formula simplifies to $$\begin\{aligned\}
+    AB &= :AB: + :\contraction\{\}\{A\}\{\}\{B\} AB:
+\end\{aligned\}$$ This statement is true by definition. To prove the more
+general form, we proceed by induction. The new operator we add for the
+$N$ operator case must either be a creation or annihiliation operator.
+We can simplify on these two cases using the inductive assumption.
+
+## An Alternative Formulation
+
+Suppose that we have $N$ real random variables that form a vector
+
+$$\begin\{aligned\}
+    |X\rangle &= [x_1,\dotsc,x_n],\quad x_i \in \mathbb\{R\}
+\end\{aligned\}$$ We define a partition function over these variables by
+$$\begin\{aligned\}
+    Z(J) &= \prod_\{i=1\}^N \int_\{-\infty\}^\{\infty\} dx_i e^\{-S_0(X) + \langle J | X \rangle\}
+\end\{aligned\}$$ Here $J$ is a source field vector $$\begin\{aligned\}
+    |J\rangle &= [J_1, \dotsc, J_n] \\
+    \langle J | X \rangle &= \sum_\{i=1\}^N J_i x_i
+\end\{aligned\}$$ Recall that for a $1$-dimensional example, we have the
+Gaussian integral $$\begin\{aligned\}
+    \int_\{-\infty\}^\{\infty\} e^\{-\frac\{1\}\{2\}mx^2 + Jx\} &= \sqrt\{\frac\{2\pi\}\{m\}\} \exp \Bigg [ \frac\{J^2\}\{2m\} \Bigg ]
+\end\{aligned\}$$ Let's now consider the matrix action $$\begin\{aligned\}
+    S(J) &= -\frac\{1\}\{2\}\langle X | M | X \rangle + \langle J | X \rangle
+\end\{aligned\}$$ Here let $M$ be a real symmetric matrix that has
+orthonormal eigen vectors $$\begin\{aligned\}
+    M|\alpha \rangle &= m_\{\alpha\}|\alpha \rangle \\
+    \langle \alpha | \beta \rangle &= \delta_\{ab\}
+\end\{aligned\}$$ We can expand vectors $|X\rangle$ and $|J\rangle$ in
+terms of this orthonormal basis $$\begin\{aligned\}
+    |X\rangle &= \sum_\{\alpha\}x_\alpha |\alpha \rangle \\
+    |J\rangle &= \sum_\{\alpha\}J_\alpha |\alpha \rangle \\
+\end\{aligned\}$$ These two equations mean that $$\begin\{aligned\}
+    \langle J | X \rangle &= \sum_\{\alpha\}J_\alpha x_\alpha
+\end\{aligned\}$$
+
+Since the mapping $x_i \mapsto x_\alpha$ is orthogonal, the jacobian
+$\mathcal\{J\}$ is identity. We can rewrite the action $S$ now as
+$$\begin\{aligned\}
+    S(J) &= -\frac\{1\}\{2\}\langle X | M | X \rangle + \langle J | X \rangle \\
+    &= \sum_\{\alpha\} \left ( -\frac\{1\}\{2\}x_\alpha^2m_\alpha + J_\alpha x_\{\alpha\} \right )
+\end\{aligned\}$$ We can now factor the partition function into a producct
+of Gaussian integrals $$\begin\{aligned\}
+    Z(J) &= \prod_\{i=1\}^N \int_\{-\infty\}^\{\infty\} e^\{-S(J)\} \\
+    &= \prod_\{\alpha\} \int_\{-\infty\}^\{\infty\} dx_\alpha \exp \Bigg [ \sum_\{\alpha\} \left ( -\frac\{1\}\{2\}m_\alpha x_\alpha^2 + J_\alpha x_\alpha \right ) \Bigg ] \\
+    &= \prod_\{\alpha\} \left ( \int_\{-\infty\}^\{\infty\} dx_\{\alpha\} \exp \Bigg [ -\frac\{1\}\{2\}m_\alpha x_\alpha^2 + J_\alpha x_\alpha \Bigg ] \right ) \\
+    &= \prod_\{\alpha\} \sqrt\{\frac\{2\pi\}\{m_\alpha\}\} e^\{\frac\{\frac\{1\}\{2\}J_\alpha\frac\{1\}\{m_\alpha\}J_\alpha\}\{2m_\{\alpha\}\}\} \\
+    &= \frac\{(2\pi)^\{N/2\}\}\{\sqrt\{\det M\}\} e^\{\frac\{1\}\{2\}\langle J | M^\{-1\}| J \rangle\}
+\end\{aligned\}$$
+
+## Isserlis' Theorem
+
+Isserlis' Theorem is the statistical mechanical analogue of Wick's
+theorem and provides a way to compute expectations of products of
+multivariate normals. Let $$\begin\{aligned\}
+(X_1,\dotsc, X_n) \in \mathcal\{N\}(\vec\{0\}, \Sigma)
+\end\{aligned\}$$ be a zero mean multivariate normal. Then we can compute
+$$\begin\{aligned\}
+    E[X_1\dotsc X_n] &= \sum_\{p \in P^2_n\} \prod_\{(i,j) \in p\}  E[X_i X_j]
+\end\{aligned\}$$ where $p$ is a pairing of $\{1,\dotsc, n\}$ into pairs
+and $P^2_n$ is the set of all such pairs.
+
+## Feynman Diagrams
+
+Consider an expression of the form
+
+$$\begin\{aligned\}
+    \langle 0 | \mathcal\{T\}\{\phi_I(x_1)\dotsc \phi_I(x_n)\}|0 \rangle
+\end\{aligned\}$$ We can apply Wick's theorem to the case where $n=4$ to
+represent it as the sum of three diagrams. $$\begin\{aligned\}
+\langle 0 | \mathcal\{T\} \{\phi_1\phi_2\phi_3\phi_4\}|0 \rangle &= 
+\begin\{tikzpicture\}[baseline=\{([yshift=-.5ex]current bounding box.center)\}]
+\node[main] (1) \{$1$\}; 
+\node[main] (2) [below of=1] \{$3$\};
+\node[main] (3) [right of=1] \{$2$\};
+\node[main] (4) [below of=3] \{$4$\};
+\draw (1) -- (2);
+\draw (3) -- (4);
+\end\{tikzpicture\}
++
+\begin\{tikzpicture\}[baseline=\{([yshift=-.5ex]current bounding box.center)\}]
+\node[main] (1) \{$1$\}; 
+\node[main] (2) [right of=1] \{$2$\};
+\node[main] (3) [below of=1] \{$2$\};
+\node[main] (4) [below of=2] \{$4$\};
+\draw (1) -- (2);
+\draw (3) -- (4);
+\end\{tikzpicture\}
++
+\begin\{tikzpicture\}[baseline=\{([yshift=-.5ex]current bounding box.center)\}]
+\node[main] (1) \{$1$\}; 
+\node[main] (2) [right of=1] \{$2$\};
+\node[main] (3) [below of=1] \{$2$\};
+\node[main] (4) [below of=2] \{$4$\};
+\draw (1) -- (4);
+\draw (3) -- (2);
+\end\{tikzpicture\}
+\end\{aligned\}$$ Physically, these expressions are usually interpreted as
+particles being created and annihilated at vertices. This intuition is
+often very useful, but we will also find it useful to view Feynman
+diagrams as purely combinatorial constructs as well.
+
+
+# Renormalization and the Renormalization Group \{#chap:renormalization_group\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:qft_basics\]](#chap:qft_basics)\{reference-type="ref+label"
+reference="chap:qft_basics"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+Renormalization provides systematic tools for handling the infinities
+that arise in Feynman integrals. The renormalization group provides a
+structured method for looking at a physical system at multiple length
+scales and serves as a structural explanation of the techniques that
+arise in renormalization. The mathematical tools of the renormalization
+group come up in statistical mechanics and quantum field theory in
+particular.
+
+## Renormalization
+
+There exist a number of methods to systematically cancel the infinities
+by the introduction of counterterms. Such counterterms are closely tied
+to the regularization methods that we learned about in the previous
+chapter, with counterterms typically dependent on the cutoff parameter
+$\Lambda$. In this section, we briefly survey such infinities.
+
+### On-shell Scheme
+
+In the on-shell renormalization scheme, parameters in the Lagrangian are
+replaced with "physical" parameters that are set by reference to
+experimental data.
+
+### Minimal Subtraction Scheme
+
+The minimal subtraction scheme follows a similar procedure, but only
+absorbs divergent terms into the counterterms.
+
+## Basic Formulation of Renormalization Group
+
+Suppose that we have state variables $\{s_i\}$ and coupling constants
+$\{J_k\}$. Let us suppose the system state is then defined by a
+Hamiltonian $$\begin\{aligned\}
+    H(\{s_i\}, \{J_k\})
+\end\{aligned\}$$ Suppose then that we have a transformation
+$$\begin\{aligned\}
+    \{s_i\} \mapsto \{\tilde\{s_i\}\}
+\end\{aligned\}$$ where $$\begin\{aligned\}
+    |\{s_i\}| > |\{\tilde\{s\}_i\}|
+\end\{aligned\}$$ That is, the transformation shrinks the number of state
+variables. If we have a function $\beta$ $$\begin\{aligned\}
+    \beta(\{Z_k\}) = \{\tilde\{Z\}_k\}
+\end\{aligned\}$$ such that $$\begin\{aligned\}
+    H(\{s_i\}, \{Z_k\}) = H(\{\tilde\{s\}_i\}, \{\tilde\{Z\}_k\})
+\end\{aligned\}$$ then we say that the system is renormalizable.
+
+
+# Regularization Techniques \{#chap:qed_calculation\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:qft_basics\]](#chap:qft_basics)\{reference-type="ref+label"
+reference="chap:qft_basics"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+Many observable quantities in quantum field theory lead to infinite
+quantities. Regularization is a family of techniques used to control
+these infinities through the use of a finite quantity called the
+regulator.
+
+## Pauli-Villars Regularization
+
+This technique introduces a fictitious mass term into integrals.
+Consider the photon propagator in momentum space $$\begin\{aligned\}
+    \frac\{1\}\{k^2 + i \epsilon\}
+\end\{aligned\}$$ This propagator is replaced by the propagator
+$$\begin\{aligned\}
+    \frac\{1\}\{k^2 + i\epsilon\} - \frac\{1\}\{k^2 - \Lambda^2 + i\epsilon\}
+\end\{aligned\}$$ Here $\Lambda$ is viewed as a fictitious heavy mass.
+
+## Dimensional Regularization
+
+Dimensional regularization writes a Feynman integral as a function that
+depends on the spacetime dimension $d$. By assuming that dimension is a
+continuous complex variable, the function can be analytically continued
+to all of the complex plane, including at points at which the original
+integral was singular. The value of this analytic continuation is used
+as a reasonable proxy for the originally singular integral.
+
+Consider the following loop integral $$\begin\{aligned\}
+    \int \frac\{d^4 p\}\{(2\pi)^4\} \frac\{1\}\{(p^2 + m^2)^2\}
+\end\{aligned\}$$ Here the integral is explicitly set for $d=4$. We
+rewrite this integral to be in terms of $d$ explicitly $$\begin\{aligned\}
+\int \frac\{d^d p\}\{(2\pi)^4\} \frac\{1\}\{(p^2 + m^2)^2\}
+\end\{aligned\}$$ If the function $f$ only depends on $p^2$, then we have
+the radial identity $$\begin\{aligned\}
+    \int d^d p f(p^2) &= \frac\{(2\pi)^\{d/2\}\}\{\Gamma(d/2)\} \int_0^\infty p^\{d-1\} f(p^2)
+\end\{aligned\}$$ Let us consider the case where $d = 4 - \epsilon$ where
+$\epsilon$ is considered to be a small quantity. Then we can evaluate
+$$\begin\{aligned\}
+    \frac\{(2\pi)^\{(4-\epsilon)/2\}\}\{\Gamma(\frac\{4 - \epsilon\}\{2\})\} \int_0^\infty \frac\{d^\{4-\epsilon\}p\}\{(2\pi)^\{4-\epsilon\}\} \frac\{p^\{3-\epsilon\}\}\{(p^2 +m^2)^2 \} &= \frac\{2^\{\epsilon - 4\}\pi^\{\epsilon/2 -1\}\}\{\sin(\frac\{\pi \epsilon\}\{2\}\Gamma(1 - \epsilon/2)\} m^\{-\epsilon\} \\
+    &= \frac\{1\}\{8\pi^2\epsilon\} - \frac\{1\}\{16\pi^2\} \left (\ln \frac\{m^2\}\{4\pi\} _ \gamma \right ) + O(\epsilon)
+\end\{aligned\}$$
+
+## Zeta Function Regularization
+
+Sometimes we have energy quantities of the form $$\begin\{aligned\}
+    \sum_m \frac\{\hbar |\omega_n|\}\{2\}
+\end\{aligned\}$$ If $\omega_n$ doesn't decay fast enough, this sum will
+diverge. We can instead choose to evaluate the quantity
+$$\begin\{aligned\}
+    \sum_m \frac\{\hbar |\omega_n|\}\{2\}|\omega_n|^\{-s\}
+\end\{aligned\}$$
+
+
+# The Standard Model \{#chap:standard_model\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:qft_basics\]](#chap:qft_basics)\{reference-type="ref+label"
+reference="chap:qft_basics"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+In previous chapters, we've introduced you to the fundamental forces
+that govern all known physics: the electromagnetic, weak, strong, and
+gravitational forces. A major goal of modern physics is to unify all
+these forces into one theory that describes all known physics. For the
+present, such a goal is beyond the reach of modern physics, but
+researchers have achieved considerable success in unifying three of the
+known forces (electromagnetic, weak, and strong forces) into one unified
+theory called the standard model.
+
+In many ways the standard model represents the frontier of known
+physics. It has been extensively experimentally tested and produced
+extraordinarily accurate predictions. It is also fundamentally limited,
+not being capable of explaining gravity.
+
+## The Standard Model Lagrangian
+
+Mathematically, the standard model builds on the machinery of quantum
+field theory we've introduced earlier in the book. In particular, the
+standard model is defined by a standard Lagrangian that describes the
+associated field theory. We will introduce this Lagrangian by writing
+down the components of the Lagrangian that correspond to different
+forces and interactionns.
+
+### Quantum Chromodynamics
+
+$$\begin\{aligned\}
+    \mathcal\{L\}_\{QCD\} = \sum_\{\psi\} \bar\{\psi\}_i (i\gamma^\{\mu\}(\partial_\{\mu\} \delta_\{ij\} - i g_s G_\{\mu\}^aT_\{ij\}^a)) \psi_j - \frac\{1\}\{4\} G_\{\mu\nu\}^a G^\{\mu\nu\}_a
+\end\{aligned\}$$
+
+### Electroweak Force
+
+$$\begin\{aligned\}
+    \mathcal\{L\}_\{EW\} = \sum_\{\psi\} \bar\{\psi\} \gamma^\{\mu\} \left ( i \partial_\mu - g' \frac\{1\}\{2\} Y_W B_\{\mu\} - g \frac\{1\}\{2\} \vec\{\tau\}_L \vec\{W\}_\{\mu\} \right ) \psi -\frac\{1\}\{4\} W_\{\mu\nu\}^a W^a_\{\mu\nu\} - \frac\{1\}\{4\} B^\{\mu \nu\} B_\{\mu \nu\}
+\end\{aligned\}$$
+
+Where $B_\{\mu\}$ is a U(1) gauge field. $Y_W$ is the weak hypercharge,
+the generator of the $U(1)$ group. $\vec\{W\}_\{\mu\}$ is the 3-component
+$\mathrm\{SU\}(2)$ gauge field. $\vec\{\tau\}_L$ are the Pauli matrices.
+$g'$ and $g$ are the $U(1)$ and $\mathrm\{SU\}(2)$ coupling constants.
+$W^\{a\mu \nu\}$ and $B^\{\mu \nu\}$ are the field strength tensors for the
+weak isospin and weak hypercharge fields.
+
+### Higgs
+
+The Higgs Lagrangian before symmetry breaking, the Higgs Lagrangian is
+
+$$\begin\{aligned\}
+    \mathcal\{L\}_H = \varphi^\{\dagger\} \left ( \partial^\{\mu\} - \frac\{i\}\{2\} \left (g' Y_W B^\{\mu\} + g \vec\{\tau\} \vec\{W\}^\{\mu\} \right ) \right ) \left ( \partial_\{\mu\} + \frac\{i\}\{2\} \left ( g' Y_W B_\{\mu\} + g \vec\{\tau\}\vec\{W\}_\{\mu\} \right ) \right) \varphi - \frac\{\lambda^2\}\{4\} (\varphi^\{\dagger\} \varphi  - v^2)^2
+\end\{aligned\}$$
+
+### Yukawa
+
+The portion of the Lagrangian for the Yukawa coupling is given by
+
+$$\begin\{aligned\}
+\mathcal\{L\}_\{Yukawa\} = \bar\{U\}_L G_u U_R \varphi^0 - \bar\{D\}_L G_u U_R \varphi^\{-\} + \bar\{U\}_L G_d D_R \varphi^+ + \bar\{D\}_L G_d D_R \varphi^0 + hc
+\end\{aligned\}$$ Here $G_\{u,d\}$ are 3x3 matrices of Yukawa couplings.
+
+## Symmetries
+
+The standard model has symmetry group
+$\mathrm\{SU\}(3) \times \mathrm\{SU\}(2) \times U(1)$. The colour group
+$\mathrm\{SU\}(3)$ is the symmetry group for the strong interaction and
+$\mathrm\{SU\}(2) \times \mathrm\{SU\}(1)$ for the electroweak interaction
+spontaneously broken by the Higgs interaction.
+
+
+# An Introduction to Interacting Fields \{#chap:perturbative_expansion\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:qft_basics\]](#chap:qft_basics)\{reference-type="ref+label"
+reference="chap:qft_basics"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+The quantum fields we have considered till now have all been free,
+without interactions. In this chapter, we will study the basics of how
+to study interacting field theory. Mathematically, interacting field
+theory is considerably more complex than free field theory since the
+product of operator valued distributions is not defined in general.
+
+## Dyson's Formula
+
+Suppose that we have a Hamiltonian split into a free part and an
+interaction part $$\begin\{aligned\}
+    H &= H_0 + V_S(t)
+\end\{aligned\}$$ The interaction picture of quantum mechanics defines the
+quantity $$\begin\{aligned\}
+    V_I(t) &= e^\{iH_0(t-t_0)\}V_S(t)e^\{-iH_0(t-t_0)\}
+\end\{aligned\}$$
+
+Suppose we write the update operator as $$\begin\{aligned\}
+    \psi(t) &= U(t, t_0) \psi(t_0)
+\end\{aligned\}$$ This operator is called the Dyson operator. This
+operator satisfies a few properties
+
+-   Identity $$\begin\{aligned\}
+            U(t, t) &= I
+        
+    \end\{aligned\}$$
+
+-   Composition $$\begin\{aligned\}
+            U(t, t_0) &= U(t, t_1) U(t_1, t_0)
+        
+    \end\{aligned\}$$
+
+-   Time Reversal $$\begin\{aligned\}
+            U^\{-1\}(t, t_0) &= U(t_0, t)
+        
+    \end\{aligned\}$$
+
+-   Unitarity $$\begin\{aligned\}
+            U^\dagger(t, t_0) U(t, t_0) &= 1
+        
+    \end\{aligned\}$$
+
+We state but don't prove the fact that these properties imply the
+following $$\begin\{aligned\}
+    i\frac\{d\}\{dt\}U(t, t_0) \psi(t_0) &= V(t)U(t, t_0) \psi(t_0)
+\end\{aligned\}$$ This defines an integral equation $$\begin\{aligned\}
+    U(t, t_0) &= 1 - i\int_\{t_0\}^t V(t_1) U(t_1, t_0)
+\end\{aligned\}$$ This equation can be iterated to solve $$\begin\{aligned\}
+    U(t, t_0) &= 1 - i\int_\{t_0\}^t V(t_1) U(t_1, t_0) \\
+    &= 1 -i\int_\{t_0\}^t V(t_1)\left (1 - i \int_\{t_0\}^\{t_1\} V(t_2)U(t_2, t_0) \right ) \\
+     &= 1 -i\int_\{t_0\}^t V(t_1) - i \int_\{t_0\}^\{t_1\} \int_\{t_0\}^\{t_2\} V(t_1)V(t_2)U(t_2, t_0)  \\
+    %&= \dotsc \\
+    &= 1 -i\int_\{t_0\}^t V(t_1) - i \int_\{t_0\}^\{t_1\} \int_\{t_0\}^\{t_2\} V(t_1)V(t_2) - \int_\{t_0\}^\{t_1\}\int^\{t_2\}_\{t_0\} \int^\{t_3\}_\{t_0\} V(t_1)V(t_2)V(t_3) + \dotsc 
+\end\{aligned\}$$ Note the condition we have that $$\begin\{aligned\}
+    t_1 > t_2 > \dotsc > t_n
+\end\{aligned\}$$ We define the time ordering operator which reorders its
+arguments to be in descending time order. Now let us define the terms
+$$\begin\{aligned\}
+    U_n &= (-i)^n \int_\{t_0\}^\{t_1\} \dotsc \int_\{t_0\}^\{t_n\} \mathcal\{T\} V(t_1)\dotsc V(t_n)
+\end\{aligned\}$$ By noting the symmetry of the system, we can simplify
+the integral $$\begin\{aligned\}
+    U_n &= \frac\{(-i)^n\}\{n!\} \int_\{t_0\}^t \dotsc \int_\{t_0\}^t \mathcal\{T\} V(t_1)\dotsc V(T_n)
+\end\{aligned\}$$ We now have the expansion $$\begin\{aligned\}
+    U(t, t_0) &= \sum_\{n=0\}^\infty U_n \\
+    &= \mathcal\{T\} \exp \left ( -i \int_\{t_0\}^t V(\tau) \right )
+\end\{aligned\}$$ This is typically referred to as Dyson's Formula.
+
+## The $S$-Matrix
+
+We define the $S$-matrix by the formula $$\begin\{aligned\}
+    S &= \lim_\{t_2 \to \infty\} \lim_\{t_1 \to -\infty\} U(t_2, t_1)
+\end\{aligned\}$$
+
+Using Dyson's formula, we can write the $S$-matrix as $$\begin\{aligned\}
+    S &= \mathcal\{T\} \exp \left ( -i \int_\{-\infty\}^\infty V(\tau) \right )
+\end\{aligned\}$$ Let us call the $n$-th term of the exponential's Taylor
+expansion $S_n$. The Feynman diagrams can be viewed as constituent terms
+in $S_n$
+
+## Perturbative Expansion of Correlation Functions
+
+In this section we will introduce perturbation theory for quantum
+fields. In particular, we will compute the quantity $$\begin\{aligned\}
+    \langle \Omega | \mathcal\{T\}\phi(x)\phi(y) | \Omega \rangle
+\end\{aligned\}$$ for the $\phi^4$ interacting theory. Note that this is
+the simplest theory which isn't directly solvable as a Gaussian
+integral. Here $|\Omega\rangle$ is the ground state of the interacting
+theory. Recall that for the free theory, the same interaction function
+is simply given by $$\begin\{aligned\}
+    \langle 0 | \mathcal\{T\} \phi(x) \phi(y) | 0 \rangle_\{\textrm\{free\}\} &= D_F(x-y) \\
+    &= \int \frac\{d^4p\}\{(2\pi)^4\}\frac\{ie^\{-ip\cdot(x-y)\}\}\{p^2-m^2+i\epsilon\}
+\end\{aligned\}$$ Recall that this is an equality of distributions and not
+of functions.
+
+The Hamiltonian for the $\phi^4$ theory is given by $$\begin\{aligned\}
+    H &= H_0 + H_\{\textrm\{int\}\} \\
+    &= H_\{\textrm\{Klein-Gordon\}\} + \int d^3 x \frac\{\lambda\}\{4!\} \phi^4(x) 
+\end\{aligned\}$$ The basic strategy in perturbation theory is to
+construct a power series for the correlation function in terms of
+parameter $\lambda$.
+
+## $\varphi^4$-Theory
+
+The simplest interacting field theory that we will consider is
+$\varphi^4$-theory which adds a quartic interaction term to the
+Klein-Gordon Lagrangian
+
+$$\begin\{aligned\}
+    \mathcal\{L\}(\varphi) &= \frac\{1\}\{2\}[\partial^\mu \varphi \partial \varphi - m^2 \varphi^2] - \frac\{\lambda\}\{4!\}\varphi^4
+\end\{aligned\}$$
+
+## Higher Order Interaction Terms
+
+We can use Wick's theorem to reduce higher order interaction terms to
+pairwise interaction terms.
+
+
+# Lattice Quantum Field Theory \{#chap:lattice_qft\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:qft_basics\]](#chap:qft_basics)\{reference-type="ref+label"
+reference="chap:qft_basics"\}\
+**Difficulty Level:** \*\*\*\
+
+------------------------------------------------------------------------
+
+Lattice quantum field theories study field theories defined on a
+lattice. Lattice quantum field theories have the powerful advantage that
+they describe mathematicaly well-defined objects (unlike most standard
+quantum field theories), but with the major disadvantage that it is not
+know if solutions to a lattice quantum field theory converge to the
+correct continuum solution in all cases.
+
+![An example of a 3D
+lattice](figures/part2b/lattice_qft/lattice_grid.png)\{#fig:my_label\}
+
+
+# Quantum Field Theory Basics \{#chap:qft_basics\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:schrodinger\]](#chap:schrodinger)\{reference-type="ref+label"
+reference="chap:schrodinger"\},
+[\[chap:dirac_equation\]](#chap:dirac_equation)\{reference-type="ref+label"
+reference="chap:dirac_equation"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+Quantum field theory builds machinery to handle relativistic quantum
+mechanical systems with an unbounded number of particles. This chapter
+will introduce considerable mathematical machinery, but we will aim to
+motivate this machinery by tying back to examples you've already studied
+at depth through this book.
+
+## Relativistic Quantum Mechanics
+
+The standard form of Schrodinger's equation we have seen thus far is not
+relativistically invariant. Quantum field theory arose from attempts to
+modify Schrodinger's equation to become relativistically invariant by
+modifying the base form of Schrodinger's equation to respect Lorentz
+invariance. The Klein-Gordon equation provides a simple first
+relativistically invariant variant of Schrodinger's equation for
+spinless particles without interactions.
+
+The Dirac equation extends the base Klein-Gordon equation to add spin,
+necessary to model particles such as electrons, but requires the
+introduction of more sophisticated machinery in terms of spinors. We
+will return to this equation shortly.
+
+## Quantum Field Theory
+
+The basic idea of second quantization is that fields themselves need to
+be promoted to operator quantities in order to model quantum
+field-theoretic systems. This is called second quantization as opposed
+to first quantization, which is the procedure used for classical
+quantities like position and momentum.
+
+## Quantum Field Theory as a Physical Theory
+
+States $\mathcal\{S\}$ are given by Hilbert space $\mathcal\{H\}$ of wave
+functions as we saw earlier for quantum mechanics, but we will need to
+use a larger Hilbert space. In particular, we will choose the Fock
+space. Let's quickly motivate this construction. The suitable Hilbert
+space for particle is $\mathcal\{H\} = L^2(\mathbb\{R\}^3)$. The Hilbert
+space for $n$ particles is the tensor product $\mathcal\{H\}^\{\otimes n\}$.
+Let $S_+$ be the tensor symmetrization operator. Then the bosonic Fock
+space is
+
+$$\begin\{aligned\}
+ F_+(\mathcal\{H\}) = \overline\{\bigoplus_\{n=0\}^\infty S_+(\mathcal\{H\}^\{\otimes n\}\}) 
+\end\{aligned\}$$
+
+The bar above indicates the Hilbert space completion. This definition is
+a little complicated to digest, but you can think of it as allowing for
+quantum states of arbitrarily many particles.
+
+What then is a field? In mathematical language, a field $\phi$ is an
+operator-valued distribution defined on $F_+(\mathcal\{H\})$. That is,
+$\phi$ maps functions in $F_+(\mathcal\{H\})$ to operators. If we squint
+we can pretend that points in $\mathbb\{R\}^3$ are points in
+$F_+(\mathcal\{H\})$. (Pretend the Dirac delta $\delta_x$ at
+$x \in \mathbb\{R\}^3$ is in $\mathcal\{H\} = L^2(\mathbb\{R\}^n)$. Then the
+field $\phi$ maps $\delta_x$ to an operator. That is, there is an
+operator for every point of space!)
+
+For symmetries $\mathcal\{G\}$, unlike in nonrelativistic quantum
+mechanics, it is more convenient to define a quantum field theory by its
+Lagrangian. Here we describe a simple field theory with quartic
+self-interaction
+
+$$\begin\{aligned\}
+ \mathcal\{L\} = \frac\{1\}\{2\} (\partial_\{\mu\} \phi) (\partial^\{\mu\} \phi) - \frac\{1\}\{2\} m^2 \phi^2 - \frac\{\lambda\}\{4!\} \phi^4 
+\end\{aligned\}$$
+
+Here $\mathcal\{L\}$ is another operator-valued distribution. As a
+mathematical note, the Hilbert space $F_+(\mathcal\{H\})$ we defined above
+isn't right. You can pretend we still live in this space, but it's an
+open mathematical problem to find the \"correct\" space.
+
+We define the time evolution operator $U(t_2, t_1)$ to be the operator
+such that $$\begin\{aligned\}
+ | \psi(t_2) \rangle = U(t_2, t_1) |\psi(t_1) \rangle 
+\end\{aligned\}$$ This time evolution operator can be expanded in terms of
+the Dyson series $$\begin\{aligned\}
+U(t_2, t_1) &= T\left [ \exp \left ( -i \int_\{t_1\}^\{t_2\} dt H_I(t) \right ) \right ]
+\end\{aligned\}$$
+
+where $T$ is the time ordering operator and $H_I$ is the interaction
+Hamiltonian. Parameters are given by
+
+$$\begin\{aligned\}
+\mathcal\{W\} = \{m, \lambda, |\psi(0)\rangle \}
+\end\{aligned\}$$ where $m$, $\lambda$ are the \"bare mass\" and \"bare
+coupling constant\" and $|\psi(0)\rangle$ is the initial condition of
+the wave function.
+
+The domain of Applicability $\mathcal\{C\}$ is set by constraints Mass
+$m_r < M$ where $m_r$ is the physically measureable mass and $M$ is some
+ceiling parameter. Hyperparameters $\mathcal\{HP\}$ are $M$, the mass
+limit, and noise parameter $\epsilon$
+
+::: center
+       States                                     $\mathcal\{S\} = F_+(\mathcal\{H\})$
+  ----------------- --------------------------------------------------------------------------------------------
+     Symmetries                                         $\mathcal\{G\} = \{\}$
+      Operators      $\mathcal\{O\} = \{ T \left [ \exp\left ( -i \int_\{t_1\}^\{t_2\} dt H_I(t) \right ) \right ]\}$
+     Parameters                           $\mathcal\{W\} = \{m, \lambda, |\psi(0)\rangle \}$
+     Constraints                                    $\mathcal\{C\} =  \{m_r < M\}$
+   Hyperparameters                                $\mathcal\{HP\} = \{M, \epsilon\}$
+     Observables                       $\mathcal\{B\} = \{f(x) = x + \mathcal\{N\}(b, \sigma) \}$
+
+[]\{#phs:theory:qft label="phs:theory:qft"\}
+:::
+
+## Mathematical Preliminaries
+
+In this section, we introduce a few additional pieces of mathematical
+infrastructure that we will find useful in subsequent chapters.
+
+### Scattering Matrix
+
+Physical observables in quantum field theory are generally written in
+terms of the scattering matrix $S$ $$\begin\{aligned\}
+ S = \lim_\{t_2 \to \infty\} \lim_\{t_1 \to -\infty\} U(t_2, t_1) 
+\end\{aligned\}$$ This is called a \"matrix\", since the intuition is that
+term $\langle \psi_i | S | \psi_j \rangle$ captures the probability of
+\"basis state\" $\psi_j$ transitioning to $\psi_i$ over infinite time.
+If the input and output states are well chosen, this term can be
+estimated from experiment with some noise $\textrm\{Normal\}(0, \epsilon)$
+
+### Second Quantization
+
+Let's define the number operator $N$
+$$N = \sum_i \hat\{a\}_i^\{\dagger\} \hat\{a\}_i$$ The number operator counts
+the number of particles in a system. Here $\hat\{a\}_i^\dagger$ is the
+creation operator and $\hat\{a\}_i$ is the annihilation operator.
+
+### Operator Valued Distributions
+
+Quantum fields are typically mathematically modeled as operator valued
+distributions. Conceptually, this corresponds to a type of generalized
+function that maps each point in space time to a given operator. This
+mathematical abstraction is known to be leaky though, since multiplying
+two distributions is often an ill-specified operation, making it
+difficult to model interacting quantum fields.
+
+
+# A Simple Detailed QED Calculation \{#chap:qed_calculation\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:qft_basics\]](#chap:qft_basics)\{reference-type="ref+label"
+reference="chap:qft_basics"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+In this chapter we study the scattering reaction $$\begin\{aligned\}
+    e^+e^- \mapsto \mu^+\mu^-
+\end\{aligned\}$$
+
+![$e^+e^-\mapsto \mu^+\mu^-$ scattering
+process.](figures/Differentiable Physics/QFT ML/QED Calculation/electronmuon.png)\{#fig:qed_basic
+width="50%"\}
+
+This diagram has the following amplitude
+
+$$\begin\{aligned\}
+    \mathcal\{M\} &= \bar\{v\}^\{s'\}(p')(-ie\gamma^\{\mu\})u^s(p)\left ( \frac\{-ig_\{\mu\nu\}\}\{q^2\}\right ) \bar\{u\}^r(k)(-ie\gamma^\nu)v^\{r'\}(k')
+\end\{aligned\}$$
+
+## Real Space Feynman Rules
+
+Terms are computed from Feynman diagrams according to the Feynman rules.
+We list the Feynman rules for QED
+
+-   Integration coordinates $x_j$ are represented by vertices
+
+-   Bosonic propagators are represented by wiggly lines connecting two
+    vertices.
+
+-   Fermionic propagators are represented by straight lines connecting
+    two vertices.
+
+-   A bosonic field $A_\mu(x_i)$ is given by a wiggly line attached to a
+    point.
+
+-   A fermionic field $\psi(x_i)$ is given by a straight line attached
+    to a point with the arrow towards the point.
+
+-   An anti-fermionic field $\overline\{\psi\}(x_i)$ is given by a
+    straight line attached to the point with the arrow pointed away from
+    the point.
+
+## Momentum Space Feynman Rules
+
+It is often useful to compute Feynman rules in momentum space rather
+than in real space. Analogous transformations of these rules exist for
+momentum space.
+
+
+# An Introduction to the Klein-Gordon Field \{#chap:klein_gordon\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:qft_basics\]](#chap:qft_basics)\{reference-type="ref+label"
+reference="chap:qft_basics"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+In this chapter we introduce the structure of the Klein-Gordon field. We
+start by deriving the classical Klein-Gordon equation from Schrodinger's
+equation along the lines of special relativity, and then discuss
+commutation relationships to quantize the field.
+
+## Klein Gordon Equation
+
+We can attempt to modify the energy term in the Schrodinger equation to
+more closely match the updated form for energy from special relativity.
+
+$$\begin\{aligned\}
+    \frac\{1\}\{c^2\} \frac\{\partial^2\}\{\partial t^2\} \psi - \nabla^2 \psi + \frac\{m^2c^2\}\{\hbar^2\} \psi = 0
+\end\{aligned\}$$
+
+The d'Alembert operator is denoted by $\Box$ and is defined by
+$$\begin\{aligned\}
+\Box = -\eta^\{\mu \nu\} \partial_\{\mu\} \partial_\{\nu\} = \frac\{1\}\{c^2\} \frac\{\partial^2\}\{\partial t^2\} - \nabla^2
+\end\{aligned\}$$ If we define $$\begin\{aligned\}
+    \mu &= \frac\{mc\}\{\hbar\}
+\end\{aligned\}$$ we can write the Klein-Gordon equation in simplified
+form as $$\begin\{aligned\}
+    (\Box + \mu^2) \psi &= 0
+\end\{aligned\}$$
+
+## Derivation from Schrodinger's Equation
+
+Recall that the Schrodinger equation for a free particle is given by
+$$\begin\{aligned\}
+    \frac\{\hat\{p\}^2\}\{2m\} \psi = \hat\{E\} \psi
+\end\{aligned\}$$ where $$\begin\{aligned\}
+    \hat\{p\} = -i \hbar \nabla
+\end\{aligned\}$$ and $$\begin\{aligned\}
+    \hat\{E\} = i \hbar \frac\{\partial\}\{\partial t\}
+\end\{aligned\}$$
+
+Recall the definition of energy in special relativity $$\begin\{aligned\}
+    E = \sqrt\{p^2c^2 + m^2c^4\} 
+\end\{aligned\}$$ Let's quantize this equation by inserting in the
+corresponding operators $$\begin\{aligned\}
+    i\hbar\frac\{\partial\}\{\partial t\} \psi = \sqrt\{(-i\hbar \nabla)^2c^2 + m^2c^4\} \psi 
+\end\{aligned\}$$ Taking the square root of an operator is quite
+challenging, so let's go back and deal with the squared equation.
+$$\begin\{aligned\}
+    E^2 = p^2c^2 + m^2c^4
+\end\{aligned\}$$ Quantizing this equation and simplifying, we get
+$$\begin\{aligned\}
+    (-i\hbar \frac\{\partial\}\{\partial t\})^2 \psi &= ((-i\hbar \nabla)^2 c^2 + m^2 c^4) \psi \\
+    -\hbar^2 \frac\{\partial^2\}\{\partial t^2\} \psi &= - \hbar^2 \nabla^2 c^2\psi + m^2c^4 \psi \\
+    -\frac\{1\}\{c^2\} \frac\{\partial^2\}\{\partial t^2\} \psi &= \frac\{m^2c^2\}\{\hbar^2\} \psi - \nabla^2 \psi
+\end\{aligned\}$$
+
+## Solving the Free Klein-Gordon Equation
+
+From the previous section, we have the energy equation from relativity
+$$\begin\{aligned\}
+    E^2 &= p^2 c^2 + m^2 c^4
+\end\{aligned\}$$ To simplify calculations in field theory, it is common
+to assume "natural" units where $$\begin\{aligned\}
+    c &= \hbar = 1
+\end\{aligned\}$$ Under these units we have $$\begin\{aligned\}
+    E^2 &= p^2 + m^2
+\end\{aligned\}$$ We can then propose an ansatz for the family of
+solutions to the Klein-Gordon equation as follows $$\begin\{aligned\}
+\psi(t, \vec\{x\}) &= e^\{i(E t - \vec\{p\}\cdot \vec\{x\})\}
+\end\{aligned\}$$ We leave as an exercise to the reader that this proposed
+$\psi$ is a solution to the Klein-Gordon equation. To construct the
+general solution to the equation, we integrate over all possible values
+of $E$ and $\vec\{p\}$ subject to the relativistic constraint that
+$E^2 = p^2 + m^2$ $$\begin\{aligned\}
+    \psi(t, \vec\{x\}) &= \int dE \int d\vec\{p\} \psi(t, \vec\{p\}) \delta(E^2 - \vec\{p\}^2 - m^2) e^\{i(E t - \vec\{p\} \cdot \vec\{x\})\}
+\end\{aligned\}$$ To simplify this expression, we make use of the
+relationship $$\begin\{aligned\}
+E(\vec\{p\}) &= \pm \sqrt\{\vec\{p\}^2 - m^2\}
+\end\{aligned\}$$ Let us define $$\begin\{aligned\}
+\omega &= \sqrt\{\vec\{p\}^2 - m^2\}
+\end\{aligned\}$$ Then we can replace the integral over $dE$ with just the
+sum of these two possible values of $E$ for a given $\vec\{p\}$
+$$\begin\{aligned\}
+    \psi(t, \vec\{x\}) &= \int d\vec\{p\} \frac\{\psi(t, \vec\{p\})\}\{2 \omega(\vec\{p\})\} (e^\{i(\omega(\vec\{p\}) t - \vec\{p\} \cdot \vec\{x\})\} + e^\{i(-\omega(\vec\{p\}) t - \vec\{p\} \cdot \vec\{x\})\}
+\end\{aligned\}$$
+
+## Commutation Relations and Quantization
+
+For a discrete quantum system of $n$ particles, we know that particles
+satisfy the following commutation relationship $$\begin\{aligned\}
+    [q_i, p_j] &= i \delta_\{ij\} \\
+    [q_i, q_j] &= [p_i, p_j] = 0
+\end\{aligned\}$$ For quantum field theories we instead have continuous
+particle densities $\phi(x)$ and momentum densities $\pi(x)$. Recall
+that $\phi(x),\pi(x)$ are both operators. We then transform the above
+discrete relationships into the following continuous relationships
+$$\begin\{aligned\}
+    [\phi(x), \pi(y)] &= i \delta^\{(3)\}(x-y) \\
+    [\phi(x), \phi(y)] &= [\pi(x), \pi(y)] = 0
+\end\{aligned\}$$ Recall then that the classical Klein-Gordon field is
+$$\begin\{aligned\}
+    \phi(t, \vec\{x\}) &= \int \frac\{d^3p\}\{(2\pi)^3\} e^\{i p \cdot x\} \phi(p, t)
+\end\{aligned\}$$
+
+Here $\phi(p, t)$ is the Fourier transform into momentum space of the
+classical field.
+
+## Defining the Free Field
+
+Crudely, to obtain the free field solution, we replace the spatial wave
+function by the spatial density and the momentum wave function by the
+momentum density. $$\begin\{aligned\}
+    \psi(t, \vec\{x\}) &\mapsto \phi(t, \vec\{x\}) \\
+    \psi(t, \vec\{p\}) &\mapsto \pi(t, \vec\{p\})
+\end\{aligned\}$$ We can then plug into the earlier solution we derived to
+obtain $$\begin\{aligned\}
+    \phi(t, \vec\{x\}) &= \int d\vec\{p\} \frac\{\pi(t, \vec\{p\})\}\{2 \omega(\vec\{p\})\} (e^\{i(\omega(\vec\{p\}) t - \vec\{p\} \cdot \vec\{x\})\} + e^\{i(-\omega(\vec\{p\}) t - \vec\{p\} \cdot \vec\{x\})\}
+\end\{aligned\}$$
+
+
+# Renormalization versus Renormalization Group \{#chap:renormalization_group\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:qft_basics\]](#chap:qft_basics)\{reference-type="ref+label"
+reference="chap:qft_basics"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+Renormalization provides a systematic set of rules to perform
+corrections to infinities that arise in quantum field-theoretic
+calculations in order to arrive at finite numbers. This process is
+typically done in two steps: first, regularization is applied to remove
+infinite terms in integrals. Second, parameters of the Lagrangian are
+adjusted to match known experimental measurements. These adjustments are
+interpreted as corrections due to field interactions.
+
+## Classical Analogs
+
+Before the introduction of Einstein's relativity theory, classical
+physics studied the concept of an aether that spread across all of space
+and time. Charged particles moving in the aether would, due to
+self-induction, appear to have a higher mass than the base particle.
+Similar calculations where undertaken in hydrodynamics for the inertia
+of particles suspended in a fluid. These calculations also yielded
+infinities analogous to those that arise in quantum field theory.
+
+## Regularization Methods
+
+There are a variety of methods for controlling the divergent integrals
+that arise in quantum field theoretic calculations. One method is
+lattice regularization, in which integrals are replaced with finite sums
+over meshes. Another method is to cut off large momenta above some level
+$\Lambda$.
+
+## Renormalization Group in Critical Phenomenon
+
+For low and high temperatures, perturbative expansions yield solutions
+to the correlation functions for Ising models. However, near the
+critical crossover point $\xi$, these methods fail since there is a
+singularity. The renormalization group constructs a transformation that
+shifts the position of the critical point. You can then solve at $\xi$
+in the renormalization representation and recover the original solution.
+
+## Quantum Field Theory Setup
+
+We consider the simple $\phi^4$ quantum field theory. This is a
+non-Gaussian theory with action
+
+$$\begin\{aligned\}
+    S &= \int \Bigg [ \frac\{1\}\{2\}(\nabla \phi(x))^2 + \frac\{1\}\{2\}m_0^2 \phi^2(x) + \frac\{\lambda_0\}\{4!\}\phi^4(x) \Bigg ] d^4 x \\
+    &= S_0 + s_I
+\end\{aligned\}$$
+
+The two point correlation function is defined as
+
+$$\begin\{aligned\}
+    G(x) &= \langle \phi(x)\phi(0) \rangle \\
+    &= \frac\{\int[\mathcal\{D\}\phi] \phi(x) \phi(0) e^\{-S\}\}\{\int [\mathcal\{D\}\phi] e^\{-S\}\}
+\end\{aligned\}$$
+
+Assuming $\lambda_0$ is $0$ we land back to a Gaussian integral which we
+can solve.

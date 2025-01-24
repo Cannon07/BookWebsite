@@ -1,0 +1,1138 @@
+# Graph Convolutional Neural Networks \{#chap:graphconvs\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:ml_basics\]](#chap:ml_basics)\{reference-type="ref+label"
+reference="chap:ml_basics"\},
+[\[chap:grad_descent\]](#chap:grad_descent)\{reference-type="ref+label"
+reference="chap:grad_descent"\},
+[\[chap:convnets\]](#chap:convnets)\{reference-type="ref+label"
+reference="chap:convnets"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+Graph convolutional neural networks are one of the most foundational
+machine learning tools for modeling physical systems. The core reason
+for this is that graphs map naturally onto many physical systems. For
+example, a molecule can be converted into a graph by taking atoms as
+nodes and bonds as edges. Crystals can be converted into periodic graphs
+the same way.
+
+The graph neural network starts with some initial representation for
+each node (often each atom) in the system. This representation is
+updated iteratively by combining information across edges (chemical
+bonds). After multiple rounds of message passing, the training reaches
+learned node feature vectors (atomic feature vectors) which are
+subsequently combined to create a system-level embedding vector.
+
+Graph neural networks also have a number of connections to fundamental
+theory. RNNs, convolutional neural networks and transformers can all be
+viewed as special instances of the more generic framework of graph
+neural networks, providing a hint at their general capabilities.
+
+![Graph Convolutional Networks repeatedly update feature vectors at each
+node (and/or edge) of the graph, and take readouts at the final
+layer.](figures/Differentiable Models/gcns/Graph_convolutional_network.png)\{#fig:gcn_image\}
+
+## The Type of a Graph
+
+A graph is made up of a collection of nodes and edges. Each node and
+each edge has associated with it a local feature descriptor. Each node
+has a set of neighbors. The neighborhood structure of the graph is
+encoded implicitly by the collection of its edges.
+
+``` \{.python language="python"\}
+class Node(feat: $\mathbb\{R\}^N$)
+class Edge(u: Node, v: Node, feat: $\mathbb\{R\}^M$)
+class Graph(nodes: Node[K], edges: Edge[M])
+```
+
+It can often be useful to construct an explicit \"adjacency\" matrix $A$
+which encodes at position $A_\{i,j\}$ whether there is an edge between $i$
+and $j$. We leave it as an exercise for the reader to transform the
+representation of a graph specified above into an adjacency matrix.
+
+## Graph Convolutional Layers
+
+We can represent a graph convolutional layer by the equation
+
+$$\begin\{aligned\}
+    f(H_i, A) &= \sigma(AH_i W_i)
+\end\{aligned\}$$
+
+Here $W_i$ is the weight matrix for this layer and $\sigma$ is a
+nonlinear activation function. $A$ is the adjacency matrix. $H_i$ is the
+current feature representation for the graph. For $i=0$, $H_i = X$, the
+matrix of input features.
+
+Note that if $X$ is a feature matrix, $A X$ sums feature representation
+across the neighbors of the node. Self-links are usually added to a
+adjacency matrix $A$ to allow the original feature vector for a node to
+be retained. $$\begin\{aligned\}
+    \hat\{A\} &= A + I
+\end\{aligned\}$$
+
+Another challenge with this basic computation is that nodes with many
+neighbors will rapidly build larger feature representations. To correct
+for this effect, we will need to normalize feature representations by
+the node degree. To control for node degree, we need to divide each node
+through by its degree. Let $D$ be the degree matrix which has the degree
+of each node on its diagonal. Note that $D$ consists of the row sums of
+$A$
+
+$$\begin\{aligned\}
+    D_\{ii\} &= \sum_j A_\{ij\}
+\end\{aligned\}$$
+
+Then we consider the updated rule
+
+$$\begin\{aligned\}
+    f(X, A) &= \sigma(D^\{-1\}AXW)
+\end\{aligned\}$$
+
+``` \{.python language="python"\}
+
+class GraphConvolution(W: $\mathbb\{R\}$[d, c]):
+  def $\lambda$(A: $\mathbb\{N\}$[N, N], X: $\mathbb\{R\}$[N, d]):
+    D = for j: sum(for i: A[i, j])
+    $\sigma$(D$^\{-1\}$*A*X*W)
+    
+```
+
+## Graph Attention
+
+Let $1,\dotsc,n$ be the nodes in the graph. Let $\mathcal\{N\}_i$ be the
+set of neighbors of node $i$. A graph attention mechanism can be written
+as
+
+$$\begin\{aligned\}
+    y_i = \frac\{1\}\{\mathcal\{C\}(\{f_j \in \mathcal\{N\}_i\})\} \sum_\{j \in \mathcal\{N\}_i\} w(f_i, f_j) h(f_j)
+\end\{aligned\}$$
+
+Here $h, w$ are neural networks, and $\mathcal\{C\}$ normalizes the sum of
+local features in neighborhood $\mathcal\{N\}_i$. Graph attention
+architectures may prove more useful in certain learning problems than
+plain graph convolutions.
+
+
+# Gauge Equivariant Neural Networks \{#chap:gauge_equivariant_networks\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:ml_basics\]](#chap:ml_basics)\{reference-type="ref+label"
+reference="chap:ml_basics"\},
+[\[chap:grad_descent\]](#chap:grad_descent)\{reference-type="ref+label"
+reference="chap:grad_descent"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+A gauge is an assignment of a local frame of reference to each point on
+a manifold. A gauge transformation is a continuous set of
+transformations, one for each point on a manifold. Gauge equivariant
+convolutional networks[@cohen2019gauge] are a form of equivariant
+network that satisfy a local equivariance to the gauge element at each
+point on the manifold. Gauge equivariant networks have since found use
+cases in physical systems with natural choice of gauge.
+
+## Gauge Transformations
+
+Let $M$ be a manifold. A gauge is given by a position dependent map
+$w_p$. $$\begin\{aligned\}
+    w_p : \mathbb\{R\}^d \to T_p M
+\end\{aligned\}$$ This map determines a reference frame is given by
+mapping the basis set $e_1,\dotsc, e_d$ through the gauge
+$$\begin\{aligned\}
+    w_p(e_1),\dotsc, w_p(e_d)
+\end\{aligned\}$$ A local gauge transformation is given by a position
+dependent linear transformation. $$\begin\{aligned\}
+    g_p \in GL(d, \mathbb\{R\})
+\end\{aligned\}$$ The change of frame/basis transformation is given by
+$$\begin\{aligned\}
+    w_p \mapsto w_p g_p
+\end\{aligned\}$$ The gauge transformation provides a method for changing
+the reference frame at each point. The new basis after a transformation
+is given by $$\begin\{aligned\}
+    w_p(e_1)g_p,\dotsc, w_p(e_d)g_p
+\end\{aligned\}$$ Suppose we have some component vector
+$v \in \mathbb\{R\}^d$. Under a change of basis, this vector transforms
+$$\begin\{aligned\}
+    v \mapsto g_p^\{-1\} v
+\end\{aligned\}$$ so that the composition $$\begin\{aligned\}
+(w_p g_p)(g_p^\{-1\} v) &= w_p v
+\end\{aligned\}$$ remains unchanged. The group $G = GL(d, \mathbb\{R\})$ is
+referred to as the structure group for the theory. In practice, we often
+choose to restrict $G$ to $SO(d)$ so that the gauge transformation is
+orthonormal.
+
+The exponential map provides transport between different points on the
+manifold. $$\begin\{aligned\}
+    \textrm\{exp\}_p: T_p M \to M
+\end\{aligned\}$$ Conceptually, this map takes a point in the tangent
+space $T_p M$ and follows it for one (infinitesimal) unit of distance to
+arrive at a new point on the manifold.
+
+## Gauge Equivariant Convolution for Scalar Fields
+
+We form an idealized mathematical model of a filter as a function
+
+$$\begin\{aligned\}
+    K: \mathbb\{R\}^d \to \mathbb\{R\}
+\end\{aligned\}$$ The gauge $w_p$ lets us map $\mathbb\{R\}^d$ to $T_p M$.
+Let $f: M \to \mathbb\{R\}$ be a signal on the manifold. Then we can
+convolve filter $K$ against $f$ by the formula $$\begin\{aligned\}
+    (K * f)(p) &= \int_\{\mathbb\{R\}^d\} K(v) f(\textrm\{exp\}_p w_p(v)) dv
+\end\{aligned\}$$ What happens if we change the gauge? To make $K * f$
+invariant to gauge transformations, we must have that $$\begin\{aligned\}
+K(g^\{-1\} v) &= K(v)
+\end\{aligned\}$$ If the structure group is $SO(d)$, then we are mandating
+that filter $K$ must be rotationally invariant.
+
+## General Gauge Equivariant Convolutions
+
+$$\begin\{aligned\}
+K(v): \mathbb\{R\}^\{C_\{in\}\} \to \mathbb\{R\}^\{C_\{out\}\}
+\end\{aligned\}$$
+
+$$\begin\{aligned\}
+(K*f)(p) &= \int_\{\mathbb\{R\}^d\} K(v) \rho_\{in\}(g_\{p \leftarrow \exp v\}) f(\exp v) dv
+\end\{aligned\}$$
+
+The gauge is invariant if and only if $$\begin\{aligned\}
+\forall g \in G, \  K(g^\{-1\}v) &= \rho_\{out\}(g^\{-1\})K(v)\rho_\{in\}(g)
+\end\{aligned\}$$
+
+## Efficiency Considerations
+
+In the case where the gauge is chosen to be the icosahedron, we can
+consider the gauge equivariant convolution as an approximation to a
+spherical convolution.
+
+
+# Convolutional Neural Networks \{#chap:convnets\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:ml_basics\]](#chap:ml_basics)\{reference-type="ref+label"
+reference="chap:ml_basics"\},
+[\[chap:grad_descent\]](#chap:grad_descent)\{reference-type="ref+label"
+reference="chap:grad_descent"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+Convolutional networks are designed to process grid structured inputs
+such as images more efficiently than fully connected networks. The core
+idea is to make use of translational invariance in images (e.g. a dog in
+a picture should still remain a dog if shifted in the picture).
+Convolutional networks achieve this by using the mathematical operation
+of convolution which is natively translation invariant.
+
+Each convolution in a convolutional network has a set of learned weights
+called a filter. Each filter is applied to the entire input grid by
+sliding the filter over the image. The use of these filters reduces the
+number of parameters when compared with a fully connected network. The
+output of a convolutional layer is a new output grid with a possibly
+different set of dimensions.
+
+![A convolutional network accepts a grid of input with width, height,
+and depth. Each convolutional layer transforms an input grid into an
+output grid.
+](figures/Differentiable Models/conv_nets/convolutional network241.jpg)\{#fig:my_label
+width="90%"\}
+
+## The Convolution Operation
+
+In its most general form, convolution is an operation on two functions
+of a real$-$valued argument. To motivate the definition of convolution,
+the following two functions are shown as examples.
+
+Suppose a user is interested in tracking the location of a spaceship
+with a laser sensor. The laser sensor provides a single output $x(t)$,
+the position of the spaceship at time $t$. Both $x$ and $t$ are
+real$-$valued, there can be a different reading from the laser sensor at
+any instant in time.
+
+Now suppose that the laser sensor is somewhat noisy. To obtain a less
+noisy estimate of the spaceship's position, an average of several
+measurements can be taken. Of course, more recent measurements are more
+relevant, so this should be a weighted average that gives more weight to
+recent measurements. This is done with a weighting function $w(a)$,
+where $a$ is the age of a measurement. If this is applied such that
+there is a weighted average operation at every moment, there is a new
+function s providing a smoothed estimate of the position of the
+spaceship: $$\begin\{aligned\}
+s(t) &= \int x(a)w(t-a)da
+\end\{aligned\}$$ This operation is called convolution. The convolution
+operation is typically denoted with an asterisk: $$\begin\{aligned\}
+s(t) &= (x * w)(t)
+\end\{aligned\}$$ In general, convolution is defined for any functions for
+which the above integral is defined, and may be used for other purposes
+besides taking weighted averages. In convolutional network terminology,
+the first argument (in this example, the function $x$) to the
+convolution is often referred to as the input and the second argument
+(in this example, the function $w$) as the kernel. The output is
+sometimes referred to as the feature map. Usually, for data on a
+computer, time will be discretized, and the sensor will provide data at
+regular intervals. In the example above, it might be more realistic to
+assume that the laser provides a measurement once per second. The time
+index t can then take on only integer values. If it is now assumed that
+$x$ and $w$ are defined only on integer $t$, the discrete convolution is
+then defined as: $$\begin\{aligned\}
+s(t) &= (x*w)(t) = \sum^\infty_\{a=-\infty\} x(a)w(t-a)
+\end\{aligned\}$$ In machine learning applications, the input is usually a
+multidimensional array (tensor) of data and the kernel is usually a
+multidimensional array (tensor) of parameters that are adapted by the
+learning algorithm. Because each element of the input and kernel must be
+explicitly stored separately, it is usually assumed that these functions
+are zero everywhere but the finite set of points for which we store the
+values. This means that in practice, the infinite summation can be
+implemented as a summation over a finite number of array elements. Since
+convolutions are used over more than one axis at a time, a larger
+dimension kernel $K$ is generally needed. The convolution for the
+example of a two$-$ dimensional image $I$ is
+
+$$\begin\{aligned\}
+S(i,j) &=(I*K)(i,j) = \sum_m \sum_n I(m,n)K(i-m,j-n)
+\end\{aligned\}$$ A convolution is commutative thus the following is
+equivalently true: $$\begin\{aligned\}
+S(i,j) &= (K*I)(i,j)=\sum_m \sum_n I(i-m,j-n)K(m,n)
+\end\{aligned\}$$ Usually the latter formula is more straightforward to
+implement in a machine learning library, because there is less variation
+in the range of valid values of $m$ and $n$.
+
+It may be necessary to skip over some positions of the kernel in order
+to reduce the computational cost (at the expense of not extracting the
+features as finely). This can be thought of as downsampling the output
+of the full convolution function. If only every s pixels in each
+direction in the output are sampled, then a downsampled convolution
+function c is defined such that: $$\begin\{aligned\}
+Z_\{i,j,k\} &= c(K,V,s)_\{i,j,k\} = \sum_\{l,m,n\}[V_\{l,(j-1)*s+m,(k-1)*s+n\}K_\{i,l,m,n\}]
+\end\{aligned\}$$ where $Z$ is the output, $K$ is the kernel, and $V$ is
+the observed data. $s$ in this equation is referred to as the stride of
+the downsampled convolution. It is possible to have separate strides for
+each direction of motion.
+
+### Motivating the Definitions
+
+Convolution leverages three important ideas that can help improve a
+machine learning system: sparse interactions, parameter sharing and
+equivariant representations. Moreover, convolution provides a means for
+working with inputs of variable size. There is also a natural connection
+to differential equations.
+
+Convolutional networks typically have sparse interactions (also referred
+to as sparse connectivity or sparse weights). This is accomplished by
+making the kernel smaller than the input. For example, when processing
+an image, the input image might have thousands or millions of pixels,
+however small, meaningful features such as edges can be detected with
+kernels that occupy only tens or hundreds of pixels.
+
+Parameter sharing refers to using the same parameter for more than one
+function in a model. In a fully connected neural net, each element of
+the weight matrix is used exactly once when computing the output of a
+layer. It is multiplied by one element of the input and then never
+revisited. As a synonym for parameter sharing, one can say that a
+network has tied weights, because the value of the weight applied to one
+input is tied to the value of a weight applied elsewhere. In a
+convolutional neural net, each member of the kernel is used at every
+position of the input (except perhaps some of the boundary pixels,
+depending on the design decisions regarding the boundary). The parameter
+sharing used by the convolution operation means that rather than
+learning a separate set of parameters for every location, only one set
+is learned. This further improves the memory requirements and
+statistical efficiency.
+
+In the case of convolution, the particular form of parameter sharing
+causes the layer to have a property called equivariance to translation.
+For example, let $I$ be a function giving image brightness at integer
+coordinates. Let g be a function mapping one image function to another
+image function, such that $I' = g(I)$ is the image function with
+$$\begin\{aligned\}
+I'(x, y) = I(x-1,y)
+\end\{aligned\}$$ This shifts every pixel of $I$ one unit to the right. If
+this transformation is applied to $I$, then convolution is applied, the
+result will be the same as if the convolution is applied to $I'$, then
+applied the transformation $g$ to the output. When processing time
+series data, this means that convolution produces a sort of timeline
+that shows when different features appear in the input. Similarly with
+images, convolution creates a 2-D map of where certain features appear
+in the input. Convolution is not naturally equivariant to some other
+transformations, such as changes in the scale or rotation of an image.
+Other mechanisms are necessary for handling these kinds of
+transformations.
+
+## Formalizing the Convolutional Network
+
+Suppose that we have a $N \times N$ dimensional input $X_\{ij\}$. Suppose
+that we have a $m \times m$ weight filter $w_\{ij\}$. For simplicity, let
+us suppose that we take steps of size $1$. We can compute the $i,j$-th
+element of output $X'$ as follows
+
+$$\begin\{aligned\}
+    X'_\{ij\} &= \sum_\{a=0\}^\{m-1\} \sum_\{b=0\}^\{m-1\} w_\{ab\} X_\{i+a,j+b\}
+\end\{aligned\}$$ Note the indices carefully. Our definition means that
+the size of the output $X'$ will be $(N - m +1)\times(N - m + 1)$ due to
+edge effects. Let's transform this update rule into Physika code
+
+``` \{.python language="python"\}
+class conv2d(w: $\mathbb\{R\}[m, m]$):
+  def $\lambda$(X: $\mathbb\{R\}[N, N]$) $\to$ $\mathbb\{R\}[N-m+1,N-m+1]$:
+    X$'$ = zeros(N-m+1, n-m+1)
+    for i j a b:
+      X$'$[i, j] += w[a, b]*X[i, j]
+    X$'$
+```
+
+Implementations of convolutions don't usually use nested for-loops in a
+high level language, since in practice, very efficient hardware
+operations are used under the hood to parallelize these calculations to
+the degree possible on modern hardware.
+
+### Pooling Layers
+
+A typical layer of a convolutional network consists of three stages. In
+the first stage, the layer performs several convolutions in parallel to
+produce a set of linear activations. In the second stage, each linear
+activation is run through a nonlinear activation function, such as the
+rectified linear activation function. This stage is sometimes called the
+detector stage. In the third stage, we use a pooling function to modify
+the output of the layer further.
+
+A pooling function replaces the output of the net at a certain location
+with a summary statistic of the nearby outputs. For example, the max
+pooling operation reports the maximum output within a rectangular
+neighborhood. Other popular pooling functions include the average of a
+rectangular neighborhood, the $L^2$ norm of a rectangular neighborhood,
+or a weighted average based on the distance from the central pixel. In
+all cases, pooling helps to make the representation become approximately
+invariant to small translations of the input. Invariance to translation
+means that if the input is translated by a small amount, the values of
+most of the pooled outputs do not change. This is important for
+detecting whether or not a feature is present and not caring about its
+exact location (i.e. identifying a human face). Pooling over spatial
+regions produces invariance to translation, but the pool is applied over
+the outputs of separately parameterized convolutions, the features can
+learn which transformations to become invariant to.
+
+Since pooling summarizes the responses over a whole neighborhood, it is
+possible to use fewer pooling units than detector units, by reporting
+summary statistics for pooling regions spaced $k$ pixels apart rather
+than $1$ pixel apart. This improves the computational efficiency of the
+network because the next layer has roughly $k$ times fewer inputs to
+process. This reduction in the input size can also result in improved
+statistical efficiency and reduced memory requirements for storing the
+parameters.
+
+For many tasks, pooling is essential for handling inputs of varying
+size. For example, if the goal is to classify images of variable size,
+the input to the classification layer must have a fixed size. This is
+usually accomplished by varying the size of an offset between pooling
+regions so that the classification layer always receives the same number
+of summary statistics regardless of the input size. For example, the
+final pooling layer of the network may be defined to output four sets of
+summary statistics, one for each quadrant of an image, regardless of the
+image size.
+
+## Deep Convolutional Networks
+
+One of the most powerful parts of a convolutional architecture is
+composability. For example, we can chain a series of convolutions
+together that performs the following series of shape changes by chaining
+together $k$ convolutional layers $$\begin\{aligned\}
+\mathbb\{R\}^\{N \times N\} \to \mathbb\{R\}^\{(N-m+1)\times(N-m+1)\}  \to \dotsc \to \mathbb\{R\}^\{(N-km+1)\times(N-km+1)\}
+\end\{aligned\}$$ The shapes in the sequence above are shrinking
+continuously, placing a natural limit on the depth of any such network.
+Is there a way to prevent shrinkage? One trick is to perform
+zero-padding which pads the original array with zeros before convolving.
+
+    def pad(X: $\mathbb\{R\}[N, N]$, m) $\to$ $\mathbb\{R\}[N+m-1,N+m-1]$:
+      X' = zeros(N+m-1, N+m-1)
+      X'[:N, :N] = X
+      X'
+
+By zero-padding before applying convolution, we get the following
+sequence of shape transformations $$\begin\{aligned\}
+\mathbb\{R\}^\{N \times N\} \to \mathbb\{R\}^\{(N+m-1)\times(N+m-1)\} \to
+\mathbb\{R\}^\{N \times N\}
+\end\{aligned\}$$ We can chain as many of these padded convolutions in a
+sequence as we would like. Convolutions can also be applied to 1
+dimensional inputs, 3 dimensional inputs or to arbitrary $d$ dimensional
+input. We simply need to change the number of nested for-loops we
+perform.
+
+## Residual Networks
+
+The residual network is a common motif in convolutional (and
+non-convolutional) architectures that we briefly introduce here. It
+provides a mechanism to preserve a copy of the original input to the
+layer in addition to applying a learned transformation.
+
+::: marginfigure
+![image](figures/Differentiable Models/conv_nets/residual_0.png)
+:::
+
+``` \{.python language="python"\}
+class Residual(sublayer: Module, M: $\mathbb\{N\}$, dropout: $\mathbb\{R\}$):
+    def $\lambda$(tensors: [Tensor]) $\to$ Tensor:
+      tensors[0] + Dropout(sublayer(tensors))    
+```
+
+
+# Recurrent Neural Networks \{#chap:rnns\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:ml_basics\]](#chap:ml_basics)\{reference-type="ref+label"
+reference="chap:ml_basics"\},
+[\[chap:grad_descent\]](#chap:grad_descent)\{reference-type="ref+label"
+reference="chap:grad_descent"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+Recurrent neural networks (RNNs) make use of sequential structure in a
+data source. RNNs learn a transformation that is repeated at each step
+to process input data. Usually, the sequential structure corresponds to
+time, but RNNs have also been applied to sequential data such as natural
+language texts or genomic sequences.
+
+![A recurrent neural network unfolds a self-connection out over time.
+](figures/Differentiable Models/rnns/Self Connection-neural network1.png)\{#fig:my_label\}
+
+## Recurrent Neural Network Equations
+
+Assume that we have a series of inputs $x_1,\dotsc,x_T$. A recurrent
+network constructs a series of hidden state vectors $h_1,\dotsc, h_T$
+for each time step in the network. These hidden states are updated based
+at each time step $t$ based on the input $x_t$ and the previous hidden
+state $h_\{t-1\}$. The update rule is parameterized by a set of weights
+$\theta$. Formally, the update equations are
+
+$$\begin\{aligned\}
+\hat\{y\}_t, h_t = f(h_\{t-1\}, x_t; \theta)
+\end\{aligned\}$$ Here $f$ is some transformation function, commonly
+implemented by a fully connected network. The total loss is the sum of
+the losses at each timestep for each output prediction.
+$$\begin\{aligned\}
+    \mathcal\{L\}_\{\textrm\{total\}\} = \sum_\{i=1\}^T \mathcal\{L\}(\hat\{y\}_t, y_t)
+\end\{aligned\}$$
+
+The gradient update for all parameters $\Theta$ is computed as usual
+with a gradient descent step. $$\begin\{aligned\}
+    \Theta = \Theta - \alpha \frac\{\partial \mathcal\{L\}_\{\textrm\{total\}\}\}\{\partial \Theta\}
+\end\{aligned\}$$
+
+Here is the code for the full model definition.
+
+``` \{.python language="python"\}
+class RNN(f: FullyConnectedNetwork, N : $\mathbb\{N\}$, d : $\mathbb\{N\}$, T : $\mathbb\{N\}$):
+  def $\lambda$(X : $\mathbb\{R\}$[N, T, d]) $\to$ $\mathbb\{R\}$[N, T]:
+    out = zeros(N, T)
+    for i in N:
+      x, y = X[i], Y[i] 
+      ht = zeros(H, 1)
+      for t in T:
+        out[i], ht = f(ht || x[t])
+    out
+```
+
+Here we use the operator `||` to denote concatenation of vectors.
+
+## Vanishing Gradients and The Challenge of Long$-$Term Dependencies
+
+Recurrent neural networks often struggle to handle very long input
+sequences. Since the loss function $\mathcal\{L\}_\{\textrm\{total\}\}$
+includes terms from all time steps, gradients will have to propagate
+backwards through long chains of updates. Each gradient update step can
+be viewed conceptually as adding a little bit of noise to a propagating
+signal, which means that gradients become less useful deeper back in
+time. For this reason, many RNN implementations truncate backwards
+updates in time past some set number of steps (say 50 or 100).
+
+The basic problem is that gradients propagated over many stages tend to
+either vanish (most of the time) or explode (rarely, but with much
+damage to the optimization). Even it is assumed that the parameters are
+such that the recurrent network is stable (can store memories, with
+gradients not exploding), the difficulty with long-term dependencies
+arises from the exponentially smaller weights given to long-term
+interactions (involving the multiplication of many Jacobians) compared
+to short-term ones. Recurrent networks involve the composition of the
+same function multiple times, once per time step. These compositions can
+result in extremely nonlinear behavior. In particular, the function
+composition employed by recurrent neural networks somewhat resembles
+matrix multiplication. Take the equation $$\begin\{aligned\}
+h^\{(t)\} &= W^Th^\{(t-1)\}
+\end\{aligned\}$$ as a very simple recurrent neural network lacking a
+nonlinear activation function, and lacking inputs x. It may be
+simplified to $$\begin\{aligned\}
+    h^\{(t)\} = (W^t)^Th^\{(0)\}
+\end\{aligned\}$$ and if W admits an eigendecompostion of the form
+$$\begin\{aligned\}
+    W=Q\Lambda Q^T
+\end\{aligned\}$$ with orthogonal Q, the recurrence may be simplified
+further to $$\begin\{aligned\}
+    h^\{(t)\}=Q^T\Lambda^tQh^\{(0)\}
+\end\{aligned\}$$ The eigenvalues are raised to the power of t causing
+eigenvalues with magnitude less than one to decay to zero and
+eigenvalues with magnitude greater than one to explode. Any component of
+$h^\{(0)\}$ that is not aligned with the largest eigenvector will
+eventually be discarded. This problem remains an active area of research
+within machine learning.
+
+## More Sophisticated Update Rules
+
+In the discussion above, we introduced the time update function $f$ as a
+fully connected network, but more complex update rules have been found
+empirically to improve performance, especially with respect to long
+timescale behavior. Here is one such update rule that uses the
+$\mathrm\{tanh\}$ function for example. $$\begin\{aligned\}
+    a_t &= b + W h_\{t-1\} + U x_\{t\} \\
+    h_t &= \tanh(a_t) \\
+    o_t &= c + V h_\{t\} \\
+    \hat\{y\}_t &= \textrm\{softmax\}(o_t)
+\end\{aligned\}$$
+
+Here are a few other structural changes which can help improve RNN
+performance
+
+1.  Use time skips so that rather than going from $t$ to $t+1$, the
+    network goes from $t$ to $t+d$. This allows the gradients to
+    diminish much more slowly.
+
+2.  Use units with linear self-connections and a weight near one on
+    these connections. Accumulate a running average, $\mu^\{(t)\}$, of
+    some value $v^\{(t)\}$ by applying the update equation
+    $$\begin\{aligned\}
+    \mu^\{(t)\} = \mu^\{(t-1)\}\alpha + (1-\alpha)v^\{(t)\}
+    \end\{aligned\}$$ where $\alpha$ is the linear self-connection and if
+    it is near one, the running average remembers information about the
+    past for a long time, and when it is near zero, information about
+    the past is rapidly discarded.
+
+3.  Leverage LSTM (Long Short$-$Term Memory) structure. Currently the
+    most effective sequence model and used in most RNNs. This model is a
+    gated RNN which allows the network to accumulate information over a
+    long duration and then decide whether or not to forget some of that
+    information once it has been used. The LSTM includes intermediate
+    steps such as \"input gates\", \"output gates\" and \"forget gates\"
+    that can help preserve internal structure.
+
+![The internal structure of an LSTM
+cell.](figures/Differentiable Models/rnns/Internal Structure of LSTM Cell.png)\{#fig:my_label\}
+
+
+# Transformers \{#chap:transformer\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:ml_basics\]](#chap:ml_basics)\{reference-type="ref+label"
+reference="chap:ml_basics"\},
+[\[chap:grad_descent\]](#chap:grad_descent)\{reference-type="ref+label"
+reference="chap:grad_descent"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+Recurrent neural networks provide powerful tools for working with
+series, but also have a powerful efficiency disadvantage. Because inputs
+have to be processed step by step, there are limits to how far RNNs can
+be parallelized on a modern processor. Transfomers offer an alternative
+interpretation of sequence handling that allow for more efficient
+processing.
+
+![Transformers use the attention mechanism to estimate the importance of
+each input in a
+sequence.](figures/Differentiable Models/transformers/Transformers-Attention Mechanism.png)\{#fig:transformer\}
+
+## Tokenizers and Vocabularies
+
+Transformers assume that input comes as a sequence $x_1,\dotsc,x_L$. In
+many applications, we can assume that each input is an integer
+$$\begin\{aligned\}
+    x_i \in \{1,\dotsc,N\}
+\end\{aligned\}$$ where $N$ is a large but finite number. These integers
+are assumed to index into a vocabulary set $V$, where $i$ represents
+some element of the vocabulary. Tokenization is the process of
+transforming an arbitrary input sequence into a sequence of integers
+drawn from the given vocabulary. An embedding matrix is typically used
+to associate to each index in the vocabulary an associated high
+dimensional embedding vector $$\begin\{aligned\}
+    W: \mathbb\{R\}^\{d \times N\}
+\end\{aligned\}$$
+
+Position encoding is a technique for representing the position $i$ of
+input $x_i$ in the original sequence to the model. The
+`PositionEncoding` layer provides a way to represent the position of a
+token by a continuous value.
+
+``` \{.python language="python"\}
+class PositionEncoding(L: $\mathbb\{N\}$, M: $\mathbb\{N\}$, $\ell$ : $\mathbb\{N\}$=1e4):
+  def $\lambda$() $\to$ $\mathbb\{R\}$[L, M]:
+    pos = [1..L]
+    dim = [1..M]
+    phase = pos / ($\ell$ ** (dim/M))   
+    where(d % 2 == 0, sin(phase), cos(phase))
+```
+
+## Transformer Equations
+
+The attention mechanism consists of three terms. First there are a set
+of query vectors $q_i \in \mathbb\{R\}^p$ for $i = 1,\dotsc,m$, then a set
+of key vectors $k_j \in \mathbb\{R\}^p$ for $j = 1,\dotsc,n$, and then a
+set of value vectors $v_j \in \mathbb\{R\}^r$. Here $r$ and $p$ are the
+sizes of low dimensional learned embeddings. The key $k_j$ and value
+$v_j$ are conceptually attached to the same input $j$. For query $q_i$
+we write the attention mechanism as
+
+$$\begin\{aligned\}
+    \textrm\{Attn\}(q_i, \{k_j\}, \{v_j\}) &= \sum_\{j=1\}^n \alpha_\{ij\} v_j \\
+    \alpha_\{ij\} &= \frac\{\exp(q_i^Tk_j)\}\{\sum_\{j'=1\}^n\exp(q_i^Tk_\{j'\})\}
+\end\{aligned\}$$ For self-attention networks, we write $$\begin\{aligned\}
+    q = h_Q(f),\qquad k=h_K(f),\qquad v=h_V(f)
+\end\{aligned\}$$ where $h_Q$, $h_K$, and $h_V$ are embedding neural
+networks.
+
+One of the most powerful properties of the attention mechanism is
+permutation invariance. Shuffling the order of the inputs does not
+change the output from the system. Let's look at the pseudocode for the
+attention mechanism.
+
+``` \{.python language="python"\}
+class Attention(m : $\mathbb\{N\}$, n: $\mathbb\{N\}$, p: $\mathbb\{N\}$):
+  def $\lambda$(query: $\mathbb\{R\}$[m, p], key: $\mathbb\{R\}$[n, p], value: $\mathbb\{R\}$[n, p]): $\mathbb\{R\}$[m, p]:
+    softmax(query*key$^T$/ sqrt(p)) * value
+
+class AttentionHead(D: $\mathbb\{N\}$, Q: $\mathbb\{N\}$, K: $\mathbb\{N\}$):
+    q = Linear(D, Q)
+    k = Linear(D, K)
+    v = Linear(D, K)
+
+    def $\lambda$(query: $\mathbb\{R\}$[m, D], key: $\mathbb\{R\}$[n, D], value: $\mathbb\{R\}$[n, D]):
+      Attention(q(query), k(key), v(value))
+```
+
+In practice, we will often find it useful empirically to run multiple
+attention heads in parallel, much as we want to learn multiple
+convolutional filters in parallel.
+
+``` \{.python language="python"\}
+class MultiHeadAttention(H: $\mathbb\{N\}$, D: $\mathbb\{N\}$, Q: $\mathbb\{N\}$, K: $\mathbb\{N\}$):
+    heads = [AttentionHead(D, Q, K) for _ in H]
+    linear = Linear(H * K, D)
+
+    def $\lambda$(query: $\mathbb\{R\}$[p], key: $\mathbb\{R\}$[p, n], value: $\mathbb\{R\}$[r, d]):
+      linear(concat([h(query, key, value) for h in heads]))  
+```
+
+We introduce a simple feed forward layer for use in more complex
+architectures.
+
+``` \{.python language="python"\}
+def FeedForward(I: $\mathbb\{N\}$, F: $\mathbb\{N\}$):
+  def $\lambda$(X):
+    Linear(I, F) $\circ$ ReLU() $\circ$ Linear(F, I)(X)
+```
+
+There are several variants of the transformer that have been considered
+in the literature. In this chapter, we consider the originally proposed
+sequence-to-sequence encoder-decoder architecture. The encoder encodes
+the input sequence into a vector representation and the decoder undoes
+the encoding to make the prediction for the output sequence.
+
+``` \{.python language="python"\}
+class EncoderLayer(M: $\mathbb\{N\}$, H: $\mathbb\{N\}$, F: $\mathbb\{N\}$, dropout: $\mathbb\{R\}$):
+    Q = K = max(M // H, 1)
+    attention = Residual(
+        MultiHeadAttention(H, M, Q, K), M, dropout)
+    feed_forward = Residual(
+        FeedForward(M, F), M, dropout)
+
+    def $\lambda$(src: $\mathbb\{R\}$[A, B]):
+      src = attention(src, src, src)
+      feed_forward(src)
+```
+
+The `Encoder` chains together a sequence of encoding layers.
+
+``` \{.python language="python"\}
+class Encoder(L: $\mathbb\{N\}$, M: $\mathbb\{N\}$, H: $\mathbb\{N\}$, F: $\mathbb\{N\}$, dropout: $\mathbb\{R\}$):
+    layers = [
+        EncoderLayer(M, H, F, dropout) for _ in L]
+
+    def $\lambda$(src: $\mathbb\{R\}$[L, D]):
+        src += PositionEncoding(L, D)
+        for layer in layers:
+          src = layer(src)
+        src
+```
+
+The decoder layer plays a similar role to the encoder layer, but with
+the critical different that the decoder attempts to match the embedding
+produced by the encoder to the target sequence.
+
+``` \{.python language="python"\}
+
+        
+class DecoderLayer(M: $\mathbb\{N\}$, H: $\mathbb\{N\}$, F: $\mathbb\{N\}$, dropout: $\mathbb\{R\}$):
+    Q = K = max(M // H, 1)
+    attention_1 = Residual(
+        MultiHeadAttention(H, M, Q, K), M, dropout)
+    attention_2 = Residual(
+        MultiHeadAttention(H, M, Q, K), M, dropout)
+    feed_forward = Residual(
+        Feedforward(M, F), M, dropout )
+
+    def $\lambda$(tgt: $\mathbb\{R\}$[L, D], memory: Tensor) $\to$ Tensor:
+        tgt = attention_1(tgt, tgt, tgt)
+        tgt = attention_2(tgt, memory, memory)
+        feed_forward(tgt)
+```
+
+The `Decoder` chains together a series of decoder layers.
+
+``` \{.python language="python"\}
+class Decoder(L: $\mathbb\{N\}$, M: $\mathbb\{N\}$, H: $\mathbb\{N\}$, F: $\mathbb\{N\}$, dropout: $\mathbb\{R\}$):
+    layers = [
+        DecoderLayer(M, H, F, dropout)
+        for _ in L]
+    linear = Linear(M, M)
+
+    def $\lambda$(tgt: $\mathbb\{R\}$[L, D], memory: Tensor) $\to$ Tensor:
+        tgt += PositionEncoding(L, D)
+        for layer in layers:
+          tgt = layer(tgt, memory)
+        softmax(linear(tgt), dim=-1)
+```
+
+The `Transformer` itself simply chains a decoder and an encoder to
+prdouce the full sequence-to-sequence architecture.
+
+``` \{.python language="python"\}
+class Transformer(NE: $\mathbb\{N\}$, ND: $\mathbb\{N\}$, M: $\mathbb\{N\}$, H: $\mathbb\{N\}$, F: $\mathbb\{N\}$, dropout: $\mathbb\{R\}$):
+    encoder = Encoder(NE, M, H, F, dropout)
+    decoder = Decoder(ND, M, H, F, dropout)
+
+    def $\lambda$(src: $\mathbb\{R\}$[L, D], tgt: $\mathbb\{R\}$[L, D]) $\to$ Tensor:
+        decoder(tgt, encoder(src))
+```
+
+## Masked Language Modeling
+
+Masked language modeling is a type of pretraining in which a random
+portion of the input data is removed and the model is trained to fill in
+the missing data. The major advantage of this pretraining is it can be
+done in a fully self supervised fashion. This and similar pretraining
+methods have proven highly influential in recent years.
+
+
+# Equivariant Neural Networks \{#chap:equivariant_networks\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:ml_basics\]](#chap:ml_basics)\{reference-type="ref+label"
+reference="chap:ml_basics"\},
+[\[chap:grad_descent\]](#chap:grad_descent)\{reference-type="ref+label"
+reference="chap:grad_descent"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+In this chapter we define what it means for a neural network to be
+equivariant to a group $G$. This definition will prove useful as we
+define concrete equivariant networks in subsequent chapters.
+
+## $G$-function Transformations
+
+Suppose that $\mathcal\{X\}$ is a space upon which group $G$ acts. An
+element $g \in G$ has an action on functions $$\begin\{aligned\}
+f: \mathcal\{X\} \to \mathbb\{R\}^n
+\end\{aligned\}$$ by the definition $$\begin\{aligned\}
+g \cdot f (x) &= f(g^\{-1\}x)
+\end\{aligned\}$$ The transformation $$\begin\{aligned\}
+f \mapsto g \cdot f
+\end\{aligned\}$$ is sometimes referred to as a $G$-function transform.
+
+## Equivariant Neural Layers
+
+We can define a neural network as a function $$\begin\{aligned\}
+\psi_\theta: \mathcal\{V\} \to \mathcal\{Y\}
+\end\{aligned\}$$ where $\theta$ is a set of weight parameters. Note here
+that $$\begin\{aligned\}
+\mathcal\{V\}, \mathcal\{Y\} \subseteq \mathbb\{R\}^n
+\end\{aligned\}$$ are subsets of $\mathbb\{R\}^n$.
+
+Equivariant networks attempt to learn a function that is invariant to
+the action of some group $G$. That is, we seek to learn a function
+$\psi_\theta$ such that
+
+$$\begin\{aligned\}
+\psi_\theta(g \cdot x) &= g \cdot \psi_\theta(x)
+\end\{aligned\}$$ Given a set of group representations $$\begin\{aligned\}
+T_g: \mathcal\{V\} \to \mathcal\{V\} 
+\end\{aligned\}$$ for $g \in G$, then a function $\psi$ is equivariant to
+$G$ if there exists a transformation $$\begin\{aligned\}
+ S_g: \mathcal\{Y\} \to \mathcal\{Y\}   
+\end\{aligned\}$$ such that $$\begin\{aligned\}
+S_g(\psi_\theta(v)) &= \psi_\theta(T_g(v))
+\end\{aligned\}$$ In general given $(T_g, S_g)$ we want to learn
+$\psi_\theta$ from data. We say that such a $\psi_\theta$ is a
+$G$-equivariant neural network.
+
+You will prove in the exercises that a composition of equivariant maps
+is equivariant, so if we can construct a suitable set of equivariant
+layers $e_i$, we can build rich families of equivariant architectures
+through composition $$\begin\{aligned\}
+e &= e_1 \circ e_2 \circ \dotsc \circ e_k
+\end\{aligned\}$$
+
+## Linear Layers through Equivariant Convolutions
+
+We will address the construction of linear and nonlinear equivariant
+layers separately since they require different transformations.
+
+The linear portion of traditional convolutional layer we have defined
+previously is naturally equivariant to translations. (This true up to
+artifacts of padding and edge effects; to make it mathematically true,
+consider an infinitely large grid $\mathbb\{Z\}^2$ for the image in
+question).
+
+We can define a general notion of a group convolution for group $G$ by
+the equation $$\begin\{aligned\}
+(\psi \ast \phi)(h) &= \sum_g \psi(g) \phi(g^\{-1\} h)
+\end\{aligned\}$$ Here is a conversion of this basic definition into
+Physika
+
+``` \{.python language="python"\}
+class DiscreteGroupConvolution(G: Group, w: $\mathbb\{R\}[|G|]$):
+  def $\lambda$(X: $\mathbb\{R\}[|G|]$) -> $\mathbb\{R\}[|G|]$:
+    X$'$ = zeros(|G|)
+    for g h:
+      X$'$[h] += w[g]*X[$g^\{-1\}$*h]
+    return X$'$
+```
+
+If the group is continuous, the definition is given by $$\begin\{aligned\}
+(\psi \ast \phi)(h) &= \int_g \psi(g) \phi(g^\{-1\} h) d\mu
+\end\{aligned\}$$ The integral is defined with respect to the \"Haar
+measure\", which provides a mathematically sound way of integrating
+across broad families of continuous groups. Constructing a general layer
+for a continuous group is trickier than for a discrete group since the
+infinite summation cannot be done directly and has to to be performed by
+some finite approximation (such as summing up terms in a fourier
+decomposition).
+
+It turns out that such group convolutions provide a natural framework to
+construct $G$-equivariant layers. In fact, under broad conditions, a
+linear function is $G$-equivariant if and only if it is defined by a
+group convolution.
+
+For finite groups, the group convolution equation can be directly
+implemented. For continuous groups, matters become more complicated.
+
+## Representation Theory
+
+Group representations prove useful for modeling $G$-equivariant
+functions when $G$ is a continuous group.
+
+Suppose that group $G$ has irreducible representations $$\begin\{aligned\}
+\rho_0,\dotsc, \rho_k
+\end\{aligned\}$$ Suppose that we had functions $$\begin\{aligned\}
+f_0: \rho_0(G) \to \mathbb\{R\}^n,\dotsc, f_k: \rho_k(G) \to \mathbb\{R\}^n
+\end\{aligned\}$$ that acted respectively on the sets of matrices output
+by the representations $\rho_i$. Suppose that
+$\rho_i(G) \subseteq \mathbb\{R\}^\{n \times n\}$ Then we can construct a
+function $f$ by \"summing\" these constituent functions
+$$\begin\{aligned\}
+f &: \rho_0(G) \oplus \dotsc \oplus \rho_k(G) \to \mathbb\{R\}^\{kn\} \\
+f &= f_0 \oplus \dotsc \oplus f_k
+\end\{aligned\}$$
+
+For the specific case of linear functions, $f_i$ can be represented by a
+vector of components $w_i$ (since each $\rho_i(g)$ is a $n \times n$
+matrix for any $g \in G$). In this case, $f$ is just a vector of
+parameters
+
+$$\begin\{aligned\}
+&f_i \in \mathbb\{R\}^\{n\} \\
+&f \in \mathbb\{R\}^\{kn\}
+\end\{aligned\}$$
+
+Irreducible representations provide a sort of \"basis set\" for the
+group, so it is in fact possible to decompose any function on the group
+$G$ into functions on the irreducible representations. Consequently, if
+you can construct meaningful group convolutions for each of the
+irreducible representations, you can construct a group convolution for
+the full group. In future chapters, we will explore how to construct
+explicit equivariant layers for more complex groups.
+
+## Equivariant Nonlinearities
+
+A challenge in construcing equivariant architectures is that we want to
+construct nonlinear operations that are equivariant. The Clebsch-Gordon
+coefficients we saw previously prove very useful for providing a method
+of blending information across the irreducible representations of a
+group $$\begin\{aligned\}
+f_i' &= \sum_j \sum_k CG_\{j,k,i\} f_i f_j
+\end\{aligned\}$$
+
+If we view the $f_i$ as vectors, then we can view this Clebsch-Gordon
+transformation as an equivariant nonlinear transformation.
+
+## Exercises
+
+1.  Prove that the composition of two $G$-equivariant functions is
+    $G$-equivariant.
+
+
+# Geometry Processing \{#chap:geometry_processing\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:ml_basics\]](#chap:ml_basics)\{reference-type="ref+label"
+reference="chap:ml_basics"\},
+[\[chap:probability\]](#chap:probability)\{reference-type="ref+label"
+reference="chap:probability"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+[TODO: This is sciml talk notes from talk by Yu
+Wang]\{style="color: red"\} The shape analysis community in graps has a
+long history of building group transformation invariant algorithms.
+
+## Shape Analysis
+
+[TODO: Look at shape analysis review article with Yu Wang and Justin
+Solomon]\{style="color: red"\}
+
+Two tasks
+
+-   Distance
+
+-   Segmentation
+
+-   Shape Description
+
+-   Correspondance: Given two shapes, find 1-1 mapping.
+
+Shape analysis is the generalization of image analysis to 3D. It's
+something of a 2.5D problem since the boundary of the image is what ends
+up really matters.
+
+## Operator Approach to Shape Analysis
+
+For example, consider a mesh representation of a shape. There are many
+possible meshes you can use.
+
+We define a shape as the discretization of a continuous operator on a
+surface ([TODO: I'm not entirely sure how this
+works.]\{style="color: red"\}) You use the Laplacian operator
+
+$$\begin\{aligned\}
+    \mathbb\{R\}^2: \Delta^2: \frac\{\partial^2\}\{\partial x^2\} + \frac\{\partial^2\}\{\partial y^2\}
+\end\{aligned\}$$
+
+The Laplace-Beltrami operator is a linear operator defined on a
+manifold. You can use the finite element method to discretize the
+operator. This will result in the derivation of a \"cotangent\"
+Laplacian.
+
+$$\begin\{aligned\}
+    \Delta_M: \frac\{1\}\{\sqrt\{|det g|\} \partial_i(\sqrt\{|det g|\})g^\{ij\}...
+\end\{aligned\}$$
+
+Some you have some discretized geometry operator
+$S: \mathbb\{R\}^\{n \times n\}$. This type of analysis is called spectral
+analysis.
+
+[TODO: How does this relate to the rest of the
+book?]\{style="color: red"\}
+
+The goal here is to create an innvariance to the representation of the
+mesh.
+
+ShapeDNA advocates using Laplacian eigenvalues as vector representation
+for shape retrieval.
+
+Operator spectrum provides a shape2vector approach. Shape -\>
+eigenvalues -\> semantics. Map from eigenvalues to semantics can be
+learned.
+
+Why does a operator representation have robustness to noise? The lower
+eigenvalues are more stable to perturbation
+
+Heat kernel signatures. Here $k_t$ is also known as a Green's funciton.
+
+$$\begin\{aligned\}
+    h_t(x) &= k_t(x, x) \\
+    k_t(x, y) &= \sum_\{i=0\}^\infty e^\{-\lambda_i t\} \phi_i(x) \phi_j(y) 
+\end\{aligned\}$$
+
+$h_t(x)$ is a function for each point on the surface.
+
+Wave kernel signature contains a filter signature other than
+$f(\lambda) = e^\{-\lambda t\}$. Optimal spectral decompositions consider
+a differetn filter.
+
+## Intrinsic and Extrinsic Operators
+
+Extrinsic geometry care about the embedding of a shape in
+$\mathbb\{R\}^3$. Intrinsic shapes are invariant to isometry. An isometry
+is length preserving. The Laplacian operator is invariant to isometries.
+
+An intrinsic geometry is any origami equivalent to a flat piece of
+paper.
+
+People usually work with intrinsic operators but extrinsic operators are
+starting to become popular.
+
+## Operators for Geometric Analysis
+
+### Dirichlet to Neumann Operators $\mathcal\{S\}$
+
+Consider a volume $\Omega$ bounded $\Gamma = \partial \Omega$. The
+neumann data is $$\begin\{aligned\}
+    g_n &= \frac\{\partial\}\{\partial n\} u(\Gamma)
+\end\{aligned\}$$ DtN operator is $$\begin\{aligned\}
+    g \mapsto g_n
+\end\{aligned\}$$ Also called the Stekhov-Poincare operator. $\mathcal\{S\}$
+can be written as a composition of 4 operators, boundary operators. This
+can be generalized to open surface.
+
+The operator $\mathcal\{V\}$ the single layer potential is defined as
+$$\begin\{aligned\}
+    [V\phi](x) &= \int_\Gamma G(x, y) \phi(y) dy
+\end\{aligned\}$$ $$\begin\{aligned\}
+    v(x, y) &= \frac\{1\}\{|x-y|\}
+\end\{aligned\}$$ is an inverse distance operator. The operator
+$\mathcal\{S\}$ encodes the extrinsic geometry of the system.
+
+Level sets of Steklov eigenfunctions conform to mean curvatures.
+
+### Dirac Operators
+
+$$\begin\{aligned\}
+    D = \sqrt\{\Delta\}
+\end\{aligned\}$$ [TODO: Look at \"Surface Networks\" paper. Also look up
+extrinsic dirac operators paper]\{style="color: red"\}
+
+## Learnable Operators
+
+[TODO: Look up HodgeNet, DiffusionNet, PD-MeshNet, MeshCNN and
+others]\{style="color: red"\}

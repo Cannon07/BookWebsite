@@ -1,0 +1,152 @@
+# Wick's Theorem and Feynman Diagrams \{#chap:feynman_diagrams_more\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:qft_basics\]](#chap:qft_basics)\{reference-type="ref+label"
+reference="chap:qft_basics"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+Feynman diagrams arise as a tool to organize complex perturbative
+calculations arising in quantum mechanics and quantum field theory. In
+particular, we can view Feynman diagrams as indexing terms in the Dyson
+series.
+
+Wick's theorem provides the mathematical basis for the perturbative
+expansion that underpins Feynman diagrams.
+
+## Normal Ordering
+
+A product of quantum fields is said to be normal ordered if all creation
+operators are to the left of all annihilation operators. If a product of
+operators is denoted by $O$, the normal-ordering of this product is
+denoted $:O:$. To give a few examples, $$\begin\{aligned\}
+    :\hat\{a\}^\dagger \hat\{a\}: &= \hat\{a\}^\dagger \hat\{a\}\\
+    :\hat\{a\} \hat\{a\}^\dagger: &= \hat\{a\}^\dagger \hat\{a\}\\    
+\end\{aligned\}$$ where $\hat\{a\}^\dagger$ is a creation operator and
+$\hat\{a\}$ is an annihilation operator.
+
+## Wick's Theorem
+
+Wick's theorem is a tool for simplifying the computation of a higher
+order derivative into a combinatorial sum of lower order terms.
+
+We define the contraction of an operator to be the difference between
+the product and the normal form of the product $$\begin\{aligned\}
+\contraction\{\}\{A\}\{\}\{B\} AB &= AB - :AB:
+\end\{aligned\}$$
+
+The general statement is given by $$\begin\{aligned\}
+    ABCDEF\dotsc &= :ABCDEF \dotsc : + \sum_\{\textrm\{single contractions\}\} :\contraction\{\}\{A\}\{\}\{B\} ABCDEF\dotsc : \
+    &+ \sum_\{\textrm\{double contractions\}\} :\contraction\{\}\{A\}\{\}\{B\}
+    \contraction\{A\}\{B\}\{\}\{C\}
+    ABCDEF\dotsc : + \dotsc 
+\end\{aligned\}$$
+
+### Proof Sketch
+
+Let us consider the $N=2$ case of Wick's theorem. In this case, the
+formula simplifies to $$\begin\{aligned\}
+    AB &= :AB: + :\contraction\{\}\{A\}\{\}\{B\} AB:
+\end\{aligned\}$$ This statement is true by definition. To prove the more
+general form, we proceed by induction. The new operator we add for the
+$N$ operator case must either be a creation or annihiliation operator.
+We can simplify on these two cases using the inductive assumption.
+
+## An Alternative Formulation
+
+Suppose that we have $N$ real random variables that form a vector
+
+$$\begin\{aligned\}
+    |X\rangle &= [x_1,\dotsc,x_n],\quad x_i \in \mathbb\{R\}
+\end\{aligned\}$$ We define a partition function over these variables by
+$$\begin\{aligned\}
+    Z(J) &= \prod_\{i=1\}^N \int_\{-\infty\}^\{\infty\} dx_i e^\{-S_0(X) + \langle J | X \rangle\}
+\end\{aligned\}$$ Here $J$ is a source field vector $$\begin\{aligned\}
+    |J\rangle &= [J_1, \dotsc, J_n] \\
+    \langle J | X \rangle &= \sum_\{i=1\}^N J_i x_i
+\end\{aligned\}$$ Recall that for a $1$-dimensional example, we have the
+Gaussian integral $$\begin\{aligned\}
+    \int_\{-\infty\}^\{\infty\} e^\{-\frac\{1\}\{2\}mx^2 + Jx\} &= \sqrt\{\frac\{2\pi\}\{m\}\} \exp \Bigg [ \frac\{J^2\}\{2m\} \Bigg ]
+\end\{aligned\}$$ Let's now consider the matrix action $$\begin\{aligned\}
+    S(J) &= -\frac\{1\}\{2\}\langle X | M | X \rangle + \langle J | X \rangle
+\end\{aligned\}$$ Here let $M$ be a real symmetric matrix that has
+orthonormal eigen vectors $$\begin\{aligned\}
+    M|\alpha \rangle &= m_\{\alpha\}|\alpha \rangle \\
+    \langle \alpha | \beta \rangle &= \delta_\{ab\}
+\end\{aligned\}$$ We can expand vectors $|X\rangle$ and $|J\rangle$ in
+terms of this orthonormal basis $$\begin\{aligned\}
+    |X\rangle &= \sum_\{\alpha\}x_\alpha |\alpha \rangle \\
+    |J\rangle &= \sum_\{\alpha\}J_\alpha |\alpha \rangle \\
+\end\{aligned\}$$ These two equations mean that $$\begin\{aligned\}
+    \langle J | X \rangle &= \sum_\{\alpha\}J_\alpha x_\alpha
+\end\{aligned\}$$
+
+Since the mapping $x_i \mapsto x_\alpha$ is orthogonal, the jacobian
+$\mathcal\{J\}$ is identity. We can rewrite the action $S$ now as
+$$\begin\{aligned\}
+    S(J) &= -\frac\{1\}\{2\}\langle X | M | X \rangle + \langle J | X \rangle \\
+    &= \sum_\{\alpha\} \left ( -\frac\{1\}\{2\}x_\alpha^2m_\alpha + J_\alpha x_\{\alpha\} \right )
+\end\{aligned\}$$ We can now factor the partition function into a producct
+of Gaussian integrals $$\begin\{aligned\}
+    Z(J) &= \prod_\{i=1\}^N \int_\{-\infty\}^\{\infty\} e^\{-S(J)\} \\
+    &= \prod_\{\alpha\} \int_\{-\infty\}^\{\infty\} dx_\alpha \exp \Bigg [ \sum_\{\alpha\} \left ( -\frac\{1\}\{2\}m_\alpha x_\alpha^2 + J_\alpha x_\alpha \right ) \Bigg ] \\
+    &= \prod_\{\alpha\} \left ( \int_\{-\infty\}^\{\infty\} dx_\{\alpha\} \exp \Bigg [ -\frac\{1\}\{2\}m_\alpha x_\alpha^2 + J_\alpha x_\alpha \Bigg ] \right ) \\
+    &= \prod_\{\alpha\} \sqrt\{\frac\{2\pi\}\{m_\alpha\}\} e^\{\frac\{\frac\{1\}\{2\}J_\alpha\frac\{1\}\{m_\alpha\}J_\alpha\}\{2m_\{\alpha\}\}\} \\
+    &= \frac\{(2\pi)^\{N/2\}\}\{\sqrt\{\det M\}\} e^\{\frac\{1\}\{2\}\langle J | M^\{-1\}| J \rangle\}
+\end\{aligned\}$$
+
+## Isserlis' Theorem
+
+Isserlis' Theorem is the statistical mechanical analogue of Wick's
+theorem and provides a way to compute expectations of products of
+multivariate normals. Let $$\begin\{aligned\}
+(X_1,\dotsc, X_n) \in \mathcal\{N\}(\vec\{0\}, \Sigma)
+\end\{aligned\}$$ be a zero mean multivariate normal. Then we can compute
+$$\begin\{aligned\}
+    E[X_1\dotsc X_n] &= \sum_\{p \in P^2_n\} \prod_\{(i,j) \in p\}  E[X_i X_j]
+\end\{aligned\}$$ where $p$ is a pairing of $\{1,\dotsc, n\}$ into pairs
+and $P^2_n$ is the set of all such pairs.
+
+## Feynman Diagrams
+
+Consider an expression of the form
+
+$$\begin\{aligned\}
+    \langle 0 | \mathcal\{T\}\{\phi_I(x_1)\dotsc \phi_I(x_n)\}|0 \rangle
+\end\{aligned\}$$ We can apply Wick's theorem to the case where $n=4$ to
+represent it as the sum of three diagrams. $$\begin\{aligned\}
+\langle 0 | \mathcal\{T\} \{\phi_1\phi_2\phi_3\phi_4\}|0 \rangle &= 
+\begin\{tikzpicture\}[baseline=\{([yshift=-.5ex]current bounding box.center)\}]
+\node[main] (1) \{$1$\}; 
+\node[main] (2) [below of=1] \{$3$\};
+\node[main] (3) [right of=1] \{$2$\};
+\node[main] (4) [below of=3] \{$4$\};
+\draw (1) -- (2);
+\draw (3) -- (4);
+\end\{tikzpicture\}
++
+\begin\{tikzpicture\}[baseline=\{([yshift=-.5ex]current bounding box.center)\}]
+\node[main] (1) \{$1$\}; 
+\node[main] (2) [right of=1] \{$2$\};
+\node[main] (3) [below of=1] \{$2$\};
+\node[main] (4) [below of=2] \{$4$\};
+\draw (1) -- (2);
+\draw (3) -- (4);
+\end\{tikzpicture\}
++
+\begin\{tikzpicture\}[baseline=\{([yshift=-.5ex]current bounding box.center)\}]
+\node[main] (1) \{$1$\}; 
+\node[main] (2) [right of=1] \{$2$\};
+\node[main] (3) [below of=1] \{$2$\};
+\node[main] (4) [below of=2] \{$4$\};
+\draw (1) -- (4);
+\draw (3) -- (2);
+\end\{tikzpicture\}
+\end\{aligned\}$$ Physically, these expressions are usually interpreted as
+particles being created and annihilated at vertices. This intuition is
+often very useful, but we will also find it useful to view Feynman
+diagrams as purely combinatorial constructs as well.

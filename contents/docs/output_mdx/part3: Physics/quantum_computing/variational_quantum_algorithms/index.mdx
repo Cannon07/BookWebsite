@@ -1,0 +1,79 @@
+# Variational Quantum Algorithms \{#chap:variation_quantum_algorithms\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:quantum_circuits\]](#chap:quantum_circuits)\{reference-type="ref+label"
+reference="chap:quantum_circuits"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+A variational quantum algorithm is a quantum circuit parameterized by a
+given set of parameters $\theta$. Variational quantum algorithms can be
+used to combine classical learning techniques with quantum circuits. The
+main motivation for using VQA algorithms is that noisy intermediate
+scale qubit (NISQ) devices have high noise, high error, limited
+connectivity and cannot yet make use of quantum error correction.
+Intuitively, the parameters act as a mechanism for controlling the error
+on these devices.
+
+VQA algorithms off-board parameterization to classical machine learning
+algorithms and use the minimal viable quantum circuit for the task at
+hand.
+
+## Basic Formulation
+
+A variational quantum problem is set up much like a standard machine
+learning problem. A loss, denoted $C$ is optimized to find an optimal
+set of parameters. Optimization is performed with standard machine
+learning algorithms. $$\begin\{aligned\}
+    \theta^* = \arg\min_\{\theta\} C(\theta)
+\end\{aligned\}$$
+
+The variation is that the loss function $C$ is implemented by a quantum
+circuit. The general quantum loss function is expressed in the form
+
+$$\begin\{aligned\}
+    C(\theta) &= \sum_k f_k(\mathrm\{Tr\}[O_kU(\theta)\rho_kU^\{\dagger\}(\theta)])
+\end\{aligned\}$$
+
+Here $U(\theta)$ is a parameterized unitary transformation, $\rho_k$ are
+the input training samples, $O_k$ are the observables, and $f_k$ are
+arbitrary functions.
+
+The form of a parameterized unitary $U(\theta)$ is called its ansatz.
+The generic $U(\theta)$ can be broken down as a sequence of simpler
+unitary transformations
+
+$$\begin\{aligned\}
+    U(\theta) = U_L(\theta_L) \dotsc U_1(\theta_1)
+\end\{aligned\}$$
+
+and each $U_i(\theta)$ can be further decomposed as
+
+$$\begin\{aligned\}
+    U_i(\theta) &= \prod_j e^\{-i\theta_jH_j\} W_j
+\end\{aligned\}$$ where the $H_j$ are Hermitian operators and the $W_j$
+are unparameterized unitary transformations. At a high level, this
+decomposition is similar to decompositions seen in deep networks, which
+sequences of chained transformations. An ansatz then corresponds roughly
+to a family of architectures (like convolutional networks or
+transformers).
+
+## The Parameter Shift Rule
+
+For classical differentiable programs, we use automatic differentiation
+methods to find gradients. But $C$ is a quantum loss; how can we find
+the gradient of $C$ with respect to its parameters? The parameter shift
+rule is a variant of the finite difference method which suffices to take
+derivatives.
+
+Suppose that $f_k$ is the identity function, and that $\theta_l$
+parameterizes unitary $e^\{i\theta_l \sigma_l\}$ where $\sigma$ is a Pauli
+operator. Then the parameter shift rule is given by
+
+$$\begin\{aligned\}
+    \frac\{\partial C\}\{\partial \theta_l\} &= \sum_k \frac\{1\}\{\sin 2 \alpha \} \left ( C(\theta_l + \frac\{\pi\}\{4l\}) - C(\theta_l - \frac\{\pi\}\{4l\}) \right )
+\end\{aligned\}$$

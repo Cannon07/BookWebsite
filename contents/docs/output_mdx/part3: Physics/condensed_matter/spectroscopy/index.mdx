@@ -1,0 +1,169 @@
+# Spectroscopy \{#chap:spectroscopy\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:spin\]](#chap:spin)\{reference-type="ref+label"
+reference="chap:spin"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+Spectroscopy is one of the fundamental techniques used for materials
+characterization, and studies the interaction between matter and
+electromagnetic radiation. The physics of spectroscopy is governed by
+the interaction between light and matter.
+
+## The Interaction of Light and Matter
+
+Matter is composed of atoms or molecules, and often has infinitely many
+energy eigenstates. Spectral lines are associated with allowed
+transitions between two of these energy eigenstates. From a physical
+perspective, it is often sufficient to take only two of the possible
+energy eigenstates into account.
+
+An example worth discussing is laser transition, where the pumping of
+the laser can be described by a relaxation process into the upper laser
+level and out of the lower laser level. The resulting model is simple,
+often referred to as a two-level atom, and is mathematically analogous
+to a spin $\frac\{1\}\{2\}$ particle in an external magnetic field. This is
+due to the fact that the spin can only be parallel or anti-parallel to
+the field -- it has two energy levels and energy eigenstates. The
+interaction of the two-level atom with the electric field of an
+electromagnetic wave is described by the Bloch equations.
+
+## Diffraction
+
+Consider a collection of $N$ particles in a material. To probe distances
+at the angstrom range, we would irradiate the sample with X-rays or
+neutrons; our discussion will assume X-ray scattering. A beam with
+wavelength $\lambda$ illuminates the sample. The incident beam is
+coherent, *i.e.* all photons are in-phase. Due to a difference between
+the refractive index of the particles and their surroundings, each
+particle acts as a scattering center
+
+Compare the pathlengths for scattering from 2 different particles. The
+position of the $i$th and $j$th particles are located at $\vec\{r\}_i$ and
+$\vec\{r\}_j$, respectively. The difference in the pathlength of the 2
+photons in Fig. [\[fig4\]](#fig4)\{reference-type="ref" reference="fig4"\}
+is given by the difference between lengths $B$ and $A$, since these are
+the only segments that differ between the two photons.
+
+Define the incident wavevector: $$\begin\{aligned\}
+\vec\{q\}_0 &= \frac\{2\pi n\}\{\lambda\}\vec\{u\}_0
+\end\{aligned\}$$
+
+where $n$ is the index of refraction of the solution, and $\vec\{u\}_0$ is
+a unit vector that defines the direction of the incident light.
+Similarly, define the scattered wavevector:
+
+$$\begin\{aligned\}
+\vec\{q\}_s = \frac\{2\pi n\}\{\lambda\}\vec\{u\}_s
+\end\{aligned\}$$
+
+The fixed detector orientation relative to the source is defined by the
+angle $\theta$.
+
+Using these definitions, the two lengths $B$ and $A$ are given:
+$$\begin\{aligned\}
+B &= (\vec\{r\}_i - \vec\{r\}_j)\cdot \vec\{u\}_s \\
+A &= (\vec\{r\}_i - \vec\{r\}_j)\cdot \vec\{u\}_0
+\end\{aligned\}$$
+
+The pathlength difference is given by: $$\begin\{aligned\}
+B - A = (\vec\{r\}_i - \vec\{r\}_j)\cdot (\vec\{u\}_s - \vec\{u\}_0)
+\end\{aligned\}$$
+
+This results in a phase difference given by: $$\begin\{aligned\}
+\phi_\{ij\} &= \frac\{2\pi n\}\{\lambda\}(B - A) = \frac\{2\pi n\}\{\lambda\}(\vec\{u\}_s - \vec\{u\}_0) \cdot (\vec\{r\}_i - \vec\{r\}_j)
+\end\{aligned\}$$
+
+Define the scattering vector $\vec\{q\}$ as $$\begin\{aligned\}
+\vec\{q\} = \frac\{2\pi n\}\{\lambda\}(\vec\{u\}_s - \vec\{u\}_0)
+\end\{aligned\}$$
+
+whose magnitude is: $$\begin\{aligned\}
+q = |\vec\{q\}| = \frac\{4\pi n\}\{\lambda\}\sin\left(\frac\{\theta\}\{2\}\right)
+\end\{aligned\}$$
+
+We have $$\begin\{aligned\}
+\phi_\{ij\} = \vec\{q\}\cdot (\vec\{r\}_i - \vec\{r\}_j)
+\end\{aligned\}$$
+
+The electric field of light scattered by the $i$th particle relative to
+the phase of light scattered by the $k$th particle is: $$\begin\{aligned\}
+\label\{Eq16\}
+E_i = E_0C \cos(2\pi\nu t - \phi _\{ik\})
+\end\{aligned\}$$
+
+where $n$ is the frequency, $E_0$ is the amplitude of the incident
+electric field, and $C$ incorporates a number of experiment-specific
+parameters (*e.g.* distance to detector, wavelength, polarizability).
+The intensity of the scattered light is proportional to the total
+electric field squared. The average scattering intensity $I_s$ is given
+by the intensity averaged over a complete oscillation period and is
+given by: $$\begin\{aligned\}
+\label\{Eq17\}
+I_s &= 2I_0C^2\nu\int_0^\{1/\nu\}dt\left[ \sum_\{i=1\}^N\cos(2\pi\nu t - \phi_\{ik\}) \right]^2 \notag\\
+&= 2I_0C^2\nu\int_0^\{1/\nu\}dt \sum_\{i=1\}^N \sum_\{j=1\}^N\cos(2\pi\nu t - \phi_\{ik\})\cos(2\pi\nu t - \phi_\{jk\}) \notag\\
+&= 2I_0C^2\nu\int_0^\{1/\nu\}dt \sum_\{i=1\}^N \sum_\{j=1\}^N[\cos(4\pi\nu t - \phi_\{ik\}- \phi_\{jk\}) + \cos(\phi_\{ik\}- \phi_\{jk\})]
+\end\{aligned\}$$
+
+which makes use of the property:
+
+$$\begin\{aligned\}
+\cos A \cos B = \frac\{1\}\{2\}\cos(A + B) + \frac\{1\}\{2\}\cos (A- B)
+\end\{aligned\}$$
+
+Noting that $$\begin\{aligned\}
+\label\{Eq19\}
+\int_0^\{1/\nu\}dt\cos(4\pi\nu t - \phi_\{ik\} - \phi_\{jk\}) =0
+\end\{aligned\}$$
+
+and, $$\begin\{aligned\}
+\label\{Eq20\}
+\phi_\{ik\} - \phi_\{jk\} = \phi_\{ij\}
+\end\{aligned\}$$
+
+we have, $$\begin\{aligned\}
+\label\{Eq21\}
+I_s &= I_0C^2\sum_\{i=1\}^N\sum_\{j=1\}^N\cos\phi_\{ij\} \notag\\
+ &= I_0C^2\sum_\{i=1\}^N\sum_\{j=1\}^N\cos[\vec\{q\}\cdot(\vec\{r\}_i - \vec\{r\}_j)]
+\end\{aligned\}$$
+
+Measuring $I_s$ at zero scattering angle ($\theta = 0$) gives the
+unknown parameters $I_0$ and $A$. Therefore,
+
+$$\begin\{aligned\}
+\frac\{I_s(\vec\{q\})\}\{I_s(\vec\{q\}=\vec\{0\})\} = \frac\{1\}\{N^2\}\sum_\{i=1\}^N\sum_\{j=1\}^N\cos[\vec\{q\}\cdot(\vec\{r\}_i - \vec\{r\}_j)]
+\end\{aligned\}$$
+
+Define the structure factor $S(\vec\{k\})$ to be: $$\begin\{aligned\}
+S(\vec\{k\}) = \frac\{1\}\{N^2\}\sum_\{i=1\}^N\sum_\{j=1\}^N \bigg\langle \exp\left[ i\vec\{k\}\cdot (\vec\{r\}_i - \vec\{r\}_j) \right] \bigg\rangle
+\end\{aligned\}$$
+
+we can write:
+
+$$\begin\{aligned\}
+\frac\{I_s(\vec\{q\})\}\{I_s(\vec\{q\}=\vec\{0\})\} = Re[S(\vec\{q\})]
+\end\{aligned\}$$
+
+Rotational invariance gives $S(\vec\{k\}) = S(-\vec\{k\})$, thus:
+
+$$\begin\{aligned\}
+\frac\{I_s(\vec\{q\})\}\{I_s(\vec\{q\}=\vec\{0\})\} = S(\vec\{q\})
+\end\{aligned\}$$
+
+Expand the structure factor into $i = j$ and $i \neq j$. This gives:
+$$\begin\{aligned\}
+S(\vec\{k\}) & = \frac\{1\}\{N^2\}N + \frac\{1\}\{N^2\}N(N-1)\bigg\langle \exp\left[ i\vec\{k\}\cdot (\vec\{r\}_1 - \vec\{r\}_2) \right] \bigg\rangle \notag\\
+& = \frac\{1\}\{N\} + \frac\{1\}\{N^2\}\frac\{N(N-1)\int\prod_\{i=1\}^Nd\vec\{r\}_ie^\{i\vec\{k\}\cdot (\vec\{r\}_1 - \vec\{r\}_2)\}e^\{-\beta U\}\}\{\int\prod_\{i=1\}^Nd\vec\{r\}_ie^\{-\beta U\}\}\notag\\
+&= \frac\{1\}\{N\} + \frac\{1\}\{N^2\} \int d\vec\{r\}_1d\vec\{r\}_2\rho^\{(2,N)\}(\vec\{r\}_1,\vec\{r\}_2)e^\{i\vec\{k\}\cdot (\vec\{r\}_1 - \vec\{r\}_2)\} \notag\\
+&= \frac\{1\}\{N\} + \frac\{1\}\{N^2\} \int d\vec\{r\}_1d\vec\{r\}_\{12\}\rho^2g(r_\{12\})e^\{i\vec\{k\}\cdot\vec\{r\}_\{12\}\} \notag\\
+&= \frac\{1\}\{N\} + \frac\{1\}\{N\}\rho \int d\vec\{r\}g(r)e^\{i\vec\{k\}\cdot\vec\{r\}\} = N^\{-1\} + N^\{-1\}\rho\tilde\{g\}(\vec\{k\}) \notag
+\end\{aligned\}$$
+
+where $\tilde\{g\}(\vec\{k\})$ is the Fourier transform of $g(\vec\{k\})$.
+This demonstrates that the results of a scattering experiment give a
+direct measure of the pair distribution of the particles in a material.

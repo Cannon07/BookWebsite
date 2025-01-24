@@ -1,0 +1,107 @@
+# Modeling the Mechanics of Trajectories \{#chap:trajectory_modeling\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:molecular_hamiltonian\]](#chap:molecular_hamiltonian)\{reference-type="ref+label"
+reference="chap:molecular_hamiltonian"\},\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+Molecular dynamics simulations can yield very large datasets, especially
+when studying large molecules with hundreds of thousands to millions of
+atoms across long time scales. Traditionally, extracting meaningful
+structural information from such large datasets has proven challenging,
+but new techniques inspired by ideas from information theory may prove
+useful. In this chapter, we study some techniques for studying such
+datasets: Markov State Models, VampNets,, denoising probabilistic
+models, and long short-term memory networks [@wang2021denoising],
+[@tsai2020learning]. These methods provide powerful tools to study
+biophysical phenomenon from molecular dynamics simulations.
+
+## Markov State Models
+
+Markov state models model the evolution of a trajectory as a Markov
+random walk between a collection of \"metastable\" states in the state
+space.
+
+$$\begin\{aligned\}
+\{X_t\}
+\end\{aligned\}$$ where $X_t \in \Omega$, a state space. We suppose that
+there exists a feature space $$\begin\{aligned\}
+\chi(X_t) &= (\chi_0(X_t),\dotsc, \chi_N(X_t))
+\end\{aligned\}$$ that extract meaningful information about the system.
+The full trajectory $\{X_t\}$ is clustered in this feature space to
+extract $K$ feature vectors $$\begin\{aligned\}
+\xi_1,\dotsc,\xi_k
+\end\{aligned\}$$ that model the cluster centers. A transition matrix $K$
+is estimated to model the jumps between these cluster centers.
+
+## Hidden Markov Models
+
+Hidden Markov Models are similar to Markov state models but add a
+probabilistic interpretation of each metastable state that allows for
+more gradual transition between different states. This method assumes an
+emission process whereby a hidden state $Z_t$ controls the measured
+state $X_t$ at every time step. The emission probability for $X_t$ given
+$Z_t$ is modeled by a normal distribution
+
+$$\begin\{aligned\}
+X_t \sim \mathcal\{N\}(\mu_t, \Sigma_t)
+\end\{aligned\}$$ where $\mu_t$ and $\Sigma_t$ are the emission mean and
+standard deviation.
+
+## VAMPNets
+
+A VAMPNet uses a variational autoencoder to learn the feature embedding
+$\chi$ rather than choosing a hand-designed feature vector.
+
+![Architecture of a VAMPNet. $x_t$ and $x_\{t+\tau\}$ are molecular
+configurations at time $t$ and $t+\tau$ respectively. A variational
+score is computed to optimize the
+network.](figures/Differentiable Physics/Neural Potentials/Trajectory Modeling/vampnet1.png)\{#fig1
+width="70%"\}
+
+## The Information Bottleneck Principle
+
+An alternative approach to learning the featurization $\chi$ proceeds
+from the infromation bottleneck principle. We seek to learn a
+representation $Z$ of the input data $X_t$ that is maximally predictive
+of some target information source $Y$. Viewed as a diagram, we write
+
+$$\begin\{aligned\}
+    X \to Z \to Y
+\end\{aligned\}$$
+
+As an optimization problem, this can be written as
+
+$$\begin\{aligned\}
+    \min_\{Z|X, Y|Z\} I(X;Z) - I(Z;Y)
+\end\{aligned\}$$ where $I(x, y)$ is the mutual information function. This
+direct optimization problem is usually intractable, so we typically
+optimize a lower bound instead. This lower bound is constructed out of
+two quantities, the distortion and the rate. The distortion $D$ measures
+quality of reconstruction of the target $Y$ and the rate measure the
+information per sample drawn.
+
+The rate-distortion curve is a relaxation of the original optimization
+problem: given a suitable variational family and data distribution,
+there is an optimal quality to sandwich the variational inequality
+$$\begin\{aligned\}
+    H - D \leq I(X; Z) \leq R
+\end\{aligned\}$$ where $I(X; Z)$ is the mutual information between inputs
+and latent state as measured by an encoder. The embedding $Z$ is the
+bottleneck between $X$ and $Y$.
+
+The state-predictive information bottleneck adapts the information
+bottleneck into the problem of predicting the future state
+$y_\{t+\Delta t\}$ from $X_t$ and uses it to construct a suitable loss
+function for optimization.
+
+### Exercises
+
+1.  Estimate the amount of computation required to compute clusters for
+    a protein with 100 amino acids for a molecular dynamics trajectory
+    of one microsecond.

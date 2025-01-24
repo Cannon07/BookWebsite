@@ -1,0 +1,218 @@
+# Case Studies in Material Science \{#ch:ml_ms\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:graphconvs\]](#chap:graphconvs)\{reference-type="ref+label"
+reference="chap:graphconvs"\},
+[\[chap:molecular_ml\]](#chap:molecular_ml)\{reference-type="ref+label"
+reference="chap:molecular_ml"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+In this chapter, we walk through two case studies building deep learning
+models for predicting collective properties of materials. The first case
+study focuses on predicting melting and boiling points of liquids, which
+is relevant in several applications. For example, in electrochemical
+storage and conversion devices, a design condition involving both
+melting and boiling points for the electrolyte composition is the
+existence in liquid phase through the desirable temperature range of
+operation. The second case study focuses on predicting solubility of
+salts and additives in liquids, which is relevant in every
+multi-component liquid-phase material for a variety of application
+areas.
+
+## Melting and Boiling Points of Liquids
+
+An example application where rapid screening is necessary is that of
+electrochemical systems such as batteries. Liquid electrolytes in
+batteries generally consist of a lithium salt dissolved in a solvent.
+These electrolytes allow for the transport of Li ions which is the key
+performance variable determining Li-ion batteries. At present, a
+chemical class known as carbonates are the commonly used solvents, but
+they suffer from sensitivity to temperature and are volatile and
+flammable [@Yamada2019AdvancesElectrolytes]. There is an urgent need to
+find electrolyte solvents that are non-flammable and have a wider
+temperature range of operation.
+
+This presents a need to identify new solvents that can carry novel
+electrochemical systems forward. Screening of these solvents to hone in
+on the most promising candidates is desired to speed up the discovery
+process. In particular, urgency towards addressing the current climate
+crisis means that fast screening could help meet the immediate need for
+improved green technologies. Choice of solvent employed in the
+electrolyte can have significant impact on overall cell performance, and
+an extensive list of criteria for the ideal candidate emerges [@Ue2014].
+One of these criteria is the size of the operating temperature window of
+the cell, for which the solvent plays a large role. It is necessary that
+the electrolyte remains a liquid during operation to provide sufficient
+conductivity. Close to its melting point, the liquid becomes viscous and
+the conductivity drops precipitously. Thus, this places restrictions on
+the allowed melting points and boiling points of the electrolyte
+solvent. Given the richness of organic chemistry (millions of possible
+compounds), experimental testing of each compound is nearly impossible.
+Additionally, as new solvents are synthesized, their properties such as
+these critical points may not be immediately available.
+
+Prediction of melting and boiling points using statistical mechanics is
+a challenging procedure and would represent a slow screening process. On
+the other hand, utilizing the recent advances within machine learning
+techniques allows for the leapfrogging from the molecular structure to
+the melting and boiling points. In particular, innovations in molecular
+featurization techniques have opened the door to encoding chemical
+structure along with atomic features [@Wu2018MoleculeNet:Learning]. In
+this case study, we show and contrast the use of extended connectivity
+fingerprints (ECFP), graph convolutional neural network models (GCNN),
+and Weave models to simultaneously predict the melting and boiling
+points of $\approx$`<!-- -->`\{=html\}3900 substances from the molecular
+structure of each. The dataset used for this case study was collected
+with no restrictions on their material class thereby giving a general
+set of materials. Data was collected from the Pubchem which is the
+world's largest open chemistry database [@10.1093/nar/gky1033] by
+parsing over 500,000 compound identifiers to identify materials for
+which both boiling and melting points were reported.
+
+We show that ECFP was unable to provide satisfactory predictions in this
+context, but both GCNN and Weave demonstrated promising predictive
+capabilities, with the Weave model providing the best performance when
+testing.
+
+The overall workflow for this case study can be broken down into two
+stages: data collection and model optimization.
+
+### Models
+
+The Deepchem package [@ramsundar2019deep] was used in this case study to
+employ all the three featurization techniques discussed. These three
+techniques all share the property of working to include structural
+features into the models [@Wu2018MoleculeNet:Learning]. This is
+particularly important in the context of melting and boiling points as
+they are governed by interatomic interactions. For each of the
+featurization techniques and models studied, 5-fold cross validation was
+used to avoid over-optimizing towards a given subset of the data and to
+optimize hyperparameters. 20 % of the total data was set aside for
+testing, and the remaining data used an 80-20 split for training and
+validation. As we are interested in predicting both melting and boiling
+points, we used multitask models to simultaneously train for both
+quantities. Hypothetically, both melting and boiling points should be
+influenced by similar atomic features, particularly those related to
+bonding strength.
+
+### Model Optimization
+
+The procedure for model optimization for each featurization algorithm
+was to separate a test set and optimize the model on training and
+validation sets using 5-fold cross-validation. Each hyperparameter was
+input as a range over which the model was initialized and trained in
+separate for loops and the RMSE performance over each iteration was
+analyzed. The hyperparameters yielding the best cross-validation score
+were taken to be those that produced the optimized model. Once all three
+models were optimized, they were trained on the full train-validation
+set and performance was compared on the separated test set (which was
+kept constant to allow for direct performance comparison). Performance
+was evaluated by calculating the RMSE, mean absolute percent error
+(MAPE), and visualized using parity plots. The equations for calculating
+the RMSE and MAPE are as follows:
+
+$$\text\{RMSE\} = \sqrt\{\sum_i^N \frac\{(\hat\{y_i\}-y_i)^2\}\{N\}\}$$
+
+$$\text\{MAPE\} = \frac\{100\%\}\{N\} \sum^N_i \frac\{y_i-\hat\{y_i\}\}\{y_i\}$$
+
+:::: center
+::: \{#table:hyp_para\}
+   Optimized Hyperparameters (architecture)    GC    Weave
+  ------------------------------------------ ------ -------
+                \# of Features                 75     75
+             \# of Hidden Layers               1       2
+                Channel Width                 100     \-
+                  Batch Size                   25     60
+                Learning Rate                 0.01   0.001
+                    Epochs                     20     100
+
+  : Comparison of the optimized parameters for GCNN and Weave.
+:::
+::::
+
+### Model Performance Evaluation
+
+In this section, we briefly discuss qualitative evaluation results for a
+ECFP featurization, graph convolution model, and weave model.
+
+The ECFP algorithm computes hashed out fixed length matrices for each
+molecule which we fed into two different regressors: support vector
+regressor (SVR) and random forest regressor (RFR). Two parameters were
+optimized for the case of SVR: regularisation parameter (C) and width of
+no penalty ($\epsilon$). Similarly, two parameters were optimized for
+the case of RFR: depth of trees and number of estimators. However, even
+the best fit gives high RMSE and MAPE for both melting and boiling
+points. Both SVR and RFR models from Scikit-learn python library were
+relatively quick in training time, indicating simplicity and a
+deficiency of essential features to explain physical properties of
+molecules in ECFP featurizer. Moreover, ECFP misses out on the
+connectivity of the structure which could play an important role in
+determining the critical points of the system.
+
+When optimizing the graph convolutional model, hyperparameters were
+individually tuned in the following order: channel width, batch size,
+learning rate, and number of epochs. For each of these parameters a
+range of potential values were iterated over, with the others held
+fixed. The optimal hyperparameter was selected considering both the
+5-fold CV score and the computational weight of selecting the value. For
+example, if the score plateaus as a function of a given parameter, but
+increasing parameter means heavier computation time, then the lowest
+value where the score converges is chosen. In some cases the trends were
+hard to rationalize and the optimal value was not obvious, so some user
+judgement was necessary.
+
+Using these optimized parameters, GCNN was evaluated on the test set.
+RMSE scores of 51.42 and 52.20 for melting and boiling points
+respectively were obtained. For melting point most of the error stems
+from points on the right side of the figure where the model under
+predicts the melting points. Similarly, for boiling point most of the
+incorrectly predicted points lie to the top left of the figure
+indicating over prediction of the boiling points. This could be due to
+the inclusion of structure in the model overestimating the strength of
+the bond interactions. In comparison to ECFP, GCNN resulted in a much
+improved model.
+
+For the weave model, melting point and boiling point predictions were
+significantly improved with RMSE errors of 50.31 and 48.06. The
+optimized hyperparameters on this limited dataset are given in Table
+[1.1](#table:hyp_para)\{reference-type="ref" reference="table:hyp_para"\}.
+In comparison to the other models which only used temperatures below the
+700 K threshold, Weave's metrics were marginally better than GCNN. Time
+taken to compute train model and prediction took 12 minutes which is
+higher than Graph convolution due to increased complexity of pair-wise
+interactions in updating atom features. The RMSE and MAPE are the least
+with respect to GCNN and ECFP featurizers. The source of improvement is
+most likely the pairwise features of Weave allowing a more accurate
+representation of the interatomic interactions than the other models.
+
+### Conclusions
+
+In this case study we have demonstrated the usage of ECFP, GCNN, and
+Weave models to simultaneously predict melting points and boiling points
+on a wide class of materials. We show that when using the truncated
+dataset ECFP demonstrated poor predictive capabilities, but GCNN and
+Weave showed promising performances. Weave was able to yield slightly
+lower RMSE than GCNN for both critical points, but this was at the
+expense of computation time during fitting. However, despite the
+increase in computational weight, we believe that Weave showed the best
+predictive power, and thus is the best model of the three featurization
+techniques. We attribute this improved performance to the inclusion of
+pair-wise interactions beyond nearest neighbours. Additionally, using a
+more systematic approach to optimizing the hyperparameters could open
+the door to even better displayed performances.
+
+## Liquid Crystals (Transition Temperature)
+
+Liquid crystals (LCs) are a state of matter which has properties between
+those of conventional liquids and those of solid crystals. One
+industrially relevant application of LCs is liquid crystal displays,
+which are a form of visual displays used in electronic devices wherein a
+layer of a liquid crystal is sandwiched between two transparent
+electrodes. A thermotropic nematic liquid crystal transitions to an
+isotropic liquid at the nematic--isotropic transition temperature (TNI),
+which depends on the molecular order of the mesophase.

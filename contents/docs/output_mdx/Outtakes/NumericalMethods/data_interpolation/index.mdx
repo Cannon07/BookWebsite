@@ -1,0 +1,339 @@
+# Polynomial Interpolation \{#chap:polynomial\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:linear_systems\]](#chap:linear_systems)\{reference-type="ref+label"
+reference="chap:linear_systems"\}\
+**Difficulty Level:** \*\
+
+------------------------------------------------------------------------
+
+In this chapter, we will introduce the two notions of curve fitting and
+interpolation and explain the difference between the two methods. We
+explain how solving polynomial interpolation with simultaneous equations
+is an ill-conditioned problem. We will then study how to perform
+polynomial interpolation using Newton's interpolating polynomial.
+
+## Curve Fitting vs. Interpolation
+
+When data points are assumed to be approximate, we do not require that
+our resulting curve passes exactly through them, but the idea is to get
+as close as possible on average. In contrast, interpolation assumes the
+data points are known exactly or at least to very good precision, and a
+curve is chosen that passes through each of the data points instead of
+just as near as possible as in the least squares approach. If we have
+$n$ data points we wish to interpolate, either we can fit a polynomial
+of degree $n - 1$ or find $n - 1$ line segments which connect the dots
+or use splines.
+
+## Generalized Least Squares
+
+In the last chapter, we have seen how to fit a linear model over the
+entire range of data. This resulted in the model predicting well in
+certain parts of the feature-space while performing poorly in other
+parts. Now, we'll try to do similar modeling, while dividing the state
+space into a finite number of buckets (or bins). This enables us to fit
+independent models for each bucket, thereby increasing accuracy.
+
+::: example
+The housing prices with additional features like Area, Number of Rooms,
+Lot Area, etc are given. Try to improve the accuracy by modeling three
+linear models as following
+
+Divide the data into three bins as
+
+1.  For Price of house less than 5 percent
+
+2.  For price of house between 5 and 10 percent
+
+3.  For price of house greater than 10 percent
+
+Fit individual models for each bin, such that the classification
+accuracy is at-least 90 percent for each bin starting with using just
+one feature (or) until you run out of features.
+
+*Output:*
+
+    Without Different models for different bins: 
+    RMS Error: 0.034287
+    RMS Error in Dollars: 261440.790301
+    Mean Guess RMS Error in Dollars: 367118.703181
+    Ratio of RMS Error: 0.712142
+    Accuracy =
+    0.6418
+    0.5972
+    0.5843
+
+    With Different models for different bins: 
+    Number of features chosen for bin 1: 2
+    Number of features chosen for bin 2: 5
+    Number of features chosen for bin 3: 5
+    Accuracy =
+    0.9997
+    0.9384
+    0.9116
+    RMS Error: 0.023483
+    RMS Error in Dollars: 179061.680696
+    Mean Guess RMS Error in Dollars: 367118.703181
+    Ratio of RMS Error: 0.487749
+:::
+
+## Introduction to Interpolation
+
+Polynomial interpolation is the most common method used to estimate the
+intermediate values between precise data points. The general formula for
+an $(n-1)$th order polynomial can be written as $$\begin\{aligned\}
+f(x) = p_1x^\{n-1\} + p_2x^\{n-2\} +  . . . + p_\{n-1\}x + p_n
+\vspace\{-8pt\}
+\end\{aligned\}$$ For $n$ data points, there is one and only one
+polynomial of order $(n-1)$ that passes through all the points.
+Polynomial interpolation consists of determining the unique $(n-1)$th
+order polynomial that fits $n$ data points. This polynomial then
+provides a formula to compute intermediate values.
+
+::: marginfigure
+![image](figures/part1b/data_interpolation/interpolation.PNG)\{width="2.4in"\}
+:::
+
+### Determining Polynomial Coefficients
+
+We need $n$ data points to determine the $n$ coefficients. This allows
+us to generate $n$ linear algebraic equations that we can solve
+simultaneously for the coefficients.\
+
+:::: example
+Determine the coefficients of the parabola $f(x)$ which passes through
+the points: (-2,-1),(-0.5,-10) and (1,62). $$\begin\{aligned\}
+f(x) = p_1x^2 + p_2x + p_3
+\vspace\{-8pt\}
+\end\{aligned\}$$ Each of these pairs can be substituted into above
+equation to yield a system of three equations:
+
+$$\begin\{aligned\}
+\begin\{gathered\}
+-1 = p_1(-2)^2 + p_2(-2) + p_3, -10 = p_1(-0.5)^2 + p_2(-0.5) + p_3\\
+62 = p_1(1)^2 + p_2(1)x + p_3
+\end\{gathered\}
+\end\{aligned\}$$ or in matrix form as shown on the right.
+
+::: marginfigure
+$$\begin\{aligned\}
+\begin\{bmatrix\}
+4 & -2 & 1 \\ 
+0.25 & -0.5 & 1 \\ 
+1 & 1 & 1 
+\end\{bmatrix\}
+\left \{
+\begin\{tabular\}\{c\}
+$p_1$ \\
+$p_2$ \\
+$p_3$ 
+\end\{tabular\}
+\right \}
+=
+\left \{
+\begin\{tabular\}\{c\}
+-1 \\
+-10 \\
+62 
+\end\{tabular\}
+\right \}
+\end\{aligned\}$$
+:::
+
+Thus, the problem reduces to solving three simultaneous linear algebraic
+equations for the three unknown coefficients. When solved in MATLAB we
+get $p_1 = 18$, $p_2 = 39$ and $p_3 = 5$. Thus, the parabola that passes
+exactly through the three points is $$\begin\{aligned\}
+f(x) = 18x^2 + 39x + 5
+\end\{aligned\}$$
+::::
+
+Although the approach in the above example provides an easy way to
+perform interpolation, it has a serious deficiency. To understand this
+flaw, notice that the coefficient matrix has a decided structure which
+can be seen clearly by expressing it in general terms.
+
+::: marginfigure
+$$\begin\{bmatrix\}
+x_1^2 & x_1 & 1 \\ 
+x_2^2 & x_2 & 1 \\  
+x_3^2 & x_3 & 1 
+\end\{bmatrix\}
+\left \{
+\begin\{tabular\}\{c\}
+$p_1$ \\
+$p_2$ \\
+$p_3$ 
+\end\{tabular\}
+\right \}
+=
+\left \{
+\begin\{tabular\}\{c\}
+$f(x_1)$ \\
+$f(x_2)$ \\
+$f(x_3)$ 
+\end\{tabular\}
+\right \}
+\vspace\{-6pt\}$$
+:::
+
+Coefficient matrices of this form are referred to as
+$\textit\{Vandermonde matrices\}$. Such matrices are very ill-conditioned.
+That is, their solutions are very sensitive to round-off errors. The
+ill-conditioning becomes even worse as the number of simultaneous
+equations becomes larger. In this lecture, we will describe an
+alternative that is well-suited for computer implementation, the Newton
+polynomials.\
+
+## Newton Interpolating Polynomial
+
+### Linear Interpolation
+
+The simplest form of interpolation is to connect two data points with a
+straight line, depicted graphically in
+Fig.[\[fig:2\]](#fig:2)\{reference-type="ref" reference="fig:2"\}. Using
+similar triangles,
+
+::: marginfigure
+![image](figures/part1b/data_interpolation/linear.png)\{width="2.4in"\}
+:::
+
+$$\begin\{aligned\}
+\dfrac\{f_1(x)-f(x_1)\}\{x-x_1\} = \dfrac\{f(x_2)-f(x_1)\}\{x_2-x_1\}
+\end\{aligned\}$$ which can be rearranged to yield
+
+$$\begin\{aligned\}
+f_1(x) = f(x_1) + \dfrac\{f(x_2)-f(x_1)\}\{x_2-x_1\}(x-x_1) 
+\end\{aligned\}$$ which is the *Newton linear-interpolation* formula. The
+notation $f_1(x)$ designates that this is a first-order interpolating
+polynomial. Notice that besides representing the slope of the line
+connecting the points, the term $$\begin\{aligned\}
+[f(x_2) - f(x_1)]/(x_2 - x_1)
+\end\{aligned\}$$ is a finite-difference approximation of the first
+derivative. In general, the smaller the interval between the data
+points, the better the approximation. As the interval decreases, a
+continuous function will be better approximated by a straight line.
+
+### Quadratic Interpolation
+
+The error in the example resulted from approximating a curve with a
+straight line. Consequently, a strategy for improving the estimate is to
+introduce some curvature into the line connecting the points. If three
+data points are available, this can be accomplished with a second-order
+polynomial (also called a quadratic polynomial or a parabola). A
+particularly convenient form for this purpose is $$\begin\{aligned\}
+f_2(x) = b_1 + b_2(x-x_1) + b_3(x-x_1)(x-x_2)
+\end\{aligned\}$$ with $x = x_1$, $b_1$ could be evaluated as
+$b_1 = f(x_1)$. This is substituted in the main equation which is
+evaluated at $x = x_2$, to get $$\begin\{aligned\}
+b_2 = \dfrac\{f(x_2)-f(x_1)\}\{x_2-x_1\}
+\end\{aligned\}$$ Finally $b_1$ and $b_2$ can be substituted into the main
+equation which is evaluated at $x = x_3$ and solved for
+$$\begin\{aligned\}
+b_3 = \dfrac\{\dfrac\{f(x_3)-f(x_2)\}\{x_3 - x_2\} - \dfrac\{f(x_2)-f(x_1)\}\{x_2 - x_1\}\}\{x_3-x_1\}
+\end\{aligned\}$$ Notice that, as was the case with linear interpolation,
+$b_2$ still represents the slope of the line connecting points $x_1$ and
+$x_2$. Thus, the first two terms of the main equation are equivalent to
+linear interpolation between $x_1$ and $x_2$. The last term,
+$b_3(x-x_1)(x-x_2)$, introduces the second-order curvature into the
+formula. Thus the terms are added sequentially to capture increasingly
+higher-order curvature.
+
+### General form of Newton's Interpolating Polynomials
+
+The preceding analysis can be generalized to fit an $(n-1)$th-order
+polynomial to $n$ data points. The $(n-1)$th-order polynomial is
+$$\begin\{aligned\}
+f_\{n-1\}(x) = b_1 + b_2(x-x_1) + ... + b_n(x-x_1)(x-x_2)...(x-x_\{n-1\})
+\end\{aligned\}$$ As was done previously with linear and quadratic
+interpolation, data points can be used to evaluate the coefficients
+$b_1, b_2, . . . , b_n$ . For an $(n - 1)$th-order polynomial, $n$ data
+points are required. $$\begin\{aligned\}
+b_1 &= f(x_1)\\
+b_2 &= f[x_2,x_1] \\
+b_3 &= f[x_3,x_2,x_1], ... \\
+b_n &= f[x_n,x_\{n-1\},...,x_2,x_1]
+\end\{aligned\}$$ where the bracketed function evaluations are finite
+divided differences.
+
+::: marginfigure
+![image](figures/part1b/data_interpolation/polynomial.png)\{width="2.4in"\}
+:::
+
+For example, the $n$th finite divided difference is $$\begin\{aligned\}
+f[x_n,x_\{n-1\},...,x_2,x_1] = \dfrac\{f[x_n,x_\{n-1\},...,x_2] - f[x_\{n-1\},x_\{n-2\},...,x_1]\}\{x_n - x_1\} 
+\end\{aligned\}$$ These differences can be used to evaluate the
+coefficients, which can then be substituted into the main equation to
+yield the general form of Newton's interpolating polynomial:
+$$\begin\{aligned\}
+\begin\{gathered\}
+f_\{n-1\}(x) = f(x_1) + (x - x_1)f[x_2,x_1] + (x - x_1)(x -  x_2)f[x_3,x_2,x_1]+\\ ... + (x - x_1)(x - x_2)...(x - x_\{n-1\})f[x_n,x_\{n-1\},...,x_2,x_1] 
+\end\{gathered\}
+\end\{aligned\}$$ We should note that it is not necessary that the data
+points used be equally spaced or that the abscissa values necessarily be
+in ascending order.\
+
+::::: example
+You are an engineer at Tesla and you want to estimate the Coefficient of
+drag ($C_d$) and Coefficient of rolling resistance ($C_\{rr\}$) given the
+power v/s velocity profile of a real car. The load power on the vehicle
+can be calculated based on the velocity profile v(t) as
+$$P(t) = F_\{total\}.v(t) = \frac\{1\}\{2\}\rho C_dA.v(t)^3 + C_\{rr\}mg.v(t) + \alpha.v(t)^2 + \beta$$
+where $P(t)$ is the load power, $\rho$ is the density of air, $A$ is the
+frontal area of the vehicle, $v(t)$ is the instantaneous velocity, $m$
+is the total mass of the vehicle, $\alpha$ and $\beta$ are constants and
+$g$ is acceleration due to gravity. Given: $\rho = 1.17 kg/m^3$,
+$A = 5.5 m^2$, $m = 1600 kg$, $g = 9.81 m/s^2$ and the values of power
+and velocity at four points as (0,0), (12,3858.98),(28.667,36725.26),
+(35.334,66608.53). Evaluate the power at $v_t = 22 m/s$, $C_d$ and
+$C_\{rr\}$ using Newton interpolation.
+
+*Solution*: *MATLAB implementation of Newton Interpolation*:
+
+::: marginfigure
+    v = [0; 12; 28.667; 35.334]; 
+    p = [0; 3858.98; 36725.26; 66608.53];
+    v_int = 22; 
+:::
+
+    mass = 1600; rho = 1.17; A_F = 5.5; g = 9.81; v_int = 22;
+    v = [0; 12; 28.667; 35.334]; %m/s
+    p = [0; 3858.98; 36725.26; 66608.53]; %Watt
+    n = length(v); b = zeros(n,n);b(:,1) = p(:); 
+    for j = 2:n
+        for i = 1:n-j+1
+            b(i,j) = (b(i+1,j-1)-b(i,j-1))/(v(i+j-1)-v(i))
+    vt = 1; p_int = b(1,1);
+    for j = 1:n-1
+        vt = vt*(v_int-v(j));
+        p_int = p_int + b(1,j+1)*vt;
+    end
+    C_D = (b(1,4))/(0.5*rho*A_F); # Coefficient of Drag
+    # Coefficient of Rolling Resistance
+    C_R = (b(1,2) - b(1,3)*(v(2) + v(1)) ...
+    + b(1,4)*(v(1)*v(2) + v(2)*v(3) + v(1)*v(3)))/(mass*g);
+
+::: marginfigure
+*Output*:
+
+        p_int = 1.7664e+04
+        C_D = 0.4399
+        C_R = 0.0075
+:::
+
+Solving the $(n-1)$th-order polynomial (here $n=4$) for the coefficient
+of $v_t^3$ and $v_t$ and comparing with the equation for Power $P(t)$ we
+get, $$\begin\{aligned\}
+\begin\{gathered\}
+b_4 = \frac\{1\}\{2\}\rho C_dA.v(t)^3 \\
+b_2 - b_3(v_2 + v_1) + b_4((v_1 \times v_2) + (v_2 \times v_3) + (v_1 \times v_3)) = C_\{rr\}mg.v(t) 
+\end\{gathered\}
+\end\{aligned\}$$
+:::::
+
+## Exercises
+
+1.  TODO

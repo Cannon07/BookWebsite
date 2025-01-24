@@ -1,0 +1,129 @@
+# Designing New Superconductors \{#chap:designing_superconductors\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:schrodinger\]](#chap:schrodinger)\{reference-type="ref+label"
+reference="chap:schrodinger"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+The first superconductor was discovered a century ago in 1911. With a
+century's research, scientists have discovered some classes of higher
+temperature superconductors such as cuprates that reach a critical
+temperature at 133-138 K. Other superconductors exhibit
+superconductivity at higher pressures, with the current record holder
+lanthanum hydride at a critical temperature of 250 K at a pressure of
+170 GPa. However, we remain far from the design of a room temperature,
+room pressure superconductor.
+
+We have studied a variety of deep learning techniques which permit for
+the prediction of complex material properties starting from material
+structure. In this chapter we apply some of the techniques we've learned
+to do a case study of the problem of predicting the critical temperature
+of a prospective superconductor. We will start this chapter with a brief
+overview of the classical theory of superconductors, followed by a
+review of some recent research into the use of deep learning techniques
+to predict critical temperature of superconductors.
+
+## Convolutional Featurizations
+
+Recent work [@konno2018deep] has proposed the use of deep learning
+architecture for superconducting materials design, trained it from a
+historical database of known superconductors.
+
+The base discovery rate for superconducting materials in screens is low,
+with a recent screen for superconducting materials finding that only 3%
+of materials screened were superconducting [@konno2018deep]. These
+numbers match low activity rates in pharmaceutical screening assays. At
+present screening depends on experimental intuition and is mostly trial
+and error.
+
+We have no training data yet that gives us strong clues on higher
+temperature superconductor theory, so we face a strong generalization
+challenge[@konno2018deep]. Although classical physical theories like BCS
+theory provide some guidance, known higher temperature superconductors
+such as cuprates have complex strong electron correlations that foil
+classical computational techniques.
+
+### Periodic Table Featurization
+
+For many potential superconducting materials, access to a spatial
+representation of the superconductors in question is not available, so
+featurization proves to be a channel. One idea is to simply encode
+materials as entries in the periodic table [@konno2018deep]. The basic
+idea is to take the periodic table as a subset of a 2 dimensional
+rectangle and then encode the fraction of the compound that belongs to
+each element. This representation is a form of two-dimensional one-hot
+encoding. We then do one additional split into s/p/d/f orbitals to
+represent the orbital characteristics of the valence electrons. This
+split allows the networks to learn to compute on the valence orbital
+blocks.
+
+![Periodic Table Featurization for Superconducting Materials.
+](figures/Differentiable Physics/Materials ML/Designing Superconductors/Periodic table Feautization_SC (1).png)\{#fig:periodic_featurization.\}
+
+This method is analogous to "imagification" strategies used elsewhere in
+scientific deep learning to process molecules [@goh2017chemception],
+genetic sequences [@movva2019deciphering], and microscopy
+[@christiansen2018silico] data. The periodic table was designed to
+structurally encode useful properties in a way that the human visual
+system could process. Given the relationships between convolutional
+neural networks and the human visual cortex, it's not a far stretch to
+re-use this visual encoding to understand material structure.
+
+### Dataset Augmentation
+
+Just training on known superconductor structures will fail to calibrate
+models since there will be insufficient negatives. Earlier work found
+that models trained only on known superconductors have a high false
+positive rate. Unfortunately, existing superconductor datasets don't
+usually measure non-superconductors.
+
+To solve this issue, we can use a data augmentation strategy. We can use
+compounds the from Crystallography Open Database that are not in the
+SuperCon superconductor dataset and reason that these compounds are
+unlikely to be superconducters, and so add them as training samples with
+$T_c = 0$.
+
+## Time Split Evaluation
+
+The model was evaluated on another dataset of materials discovered since
+2010 . This dataset contains 400 compounds with 330 non-superconductors.
+To remove potential information leakage, the authors time-split SuperCon
+and COD and use only compounds added before 2010 as training data.
+
+The baseline was randomly selecting any compound from this dataset and
+predicting it to have $T_c > 0$. Comparing against a Random Forest
+baseline which uses manually designed features such as atomic mass, band
+gap, atomic configuration and melting temperature, the convolutional
+model achieves strong performance. However, the method does not
+generalize well to $T_c > 10$ predictions (since only a few
+superconductors in the training datat have this higher superconducting
+temperature). The baseline also does much worse in this case. The
+original work notes that precision and recall is much higher for the
+deep learned model over the baseline in both cases.
+
+As a third test, the paper use training data sourced from before 2008 to
+see if they can find high-$T_c$ $\textrm\{Fe\}$ based superconductors
+(FeSCs), which were first discovered in 2008. Two precursor materials,
+LaFePO and LaFePFO were also removed from the training data since their
+discovery in 2006 spurred the development of FeSCs. 1,399 FeSCs known as
+of 2018 were used as the test set. 130 different training runs were
+used, which lead to stochastic variation in the predictions. The
+histogram below plots the number of predicted FeSCs on the test set from
+these various trained models. The work note that when they used a
+shallower 10 layer network (which had similar precision and $R^2$ as
+their models), they failed to identify FeSCs, and suggests that the
+depth of their networks may lead to greater generalizability.
+
+The use of time splits to validate the generalizability of the model is
+critical.
+
+## Limitations
+
+This method doesn't encode much of the known physics of superconductors,
+so there will be strong limitations on the generalizability to entirely
+unknown materials will be limited.

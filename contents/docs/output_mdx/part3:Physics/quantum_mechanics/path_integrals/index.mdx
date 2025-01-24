@@ -1,0 +1,81 @@
+# Path Integrals \{#chap:path_integrals\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:schrodinger\]](#chap:schrodinger)\{reference-type="ref+label"
+reference="chap:schrodinger"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+Path integral techniques provide a method of computing transition
+amplitudes for sophisticated quantum mechanical systems. Path integrals
+are useful in standard quantum mechanics, but invaluable in quantum
+field theory as we will learn in future chapters.
+
+The propagator defines the amplitude of transition from quantum state
+$q$ at time $0$ to $q'$ at time $T$ according to Hamiltonian $\hat\{H\}$
+$$K(q', T, q, 0) = \left \langle q' \middle |e^\{-i\hat\{H\} T\} \middle | q \right \rangle$$
+The propagator in theory defines the complete time evolution of a
+quantum system. The challenge in practice though is that the operator
+exponential $e^\{-i\hat\{H\}t\}$ is likely very complicated and infeasible
+to compute. Let's expand the Taylor series of this operator
+$$e^\{-i\hat\{H\}t\} = 1 - i\hat\{H\}t - \hat\{H\}^2 t^2 + \cdots$$ If the time
+$t$ is small, we can use the linear Taylor expansion to compute the
+propagator as
+$$K(q', t, q, 0) \approx \langle q' | q \rangle - it \langle q' | H | q \rangle$$
+Is there a way we can break down our more complex propagator $K$ using
+this linear Taylor expansion? To this, recall that if $\{|q_i\rangle \}$
+is an orthonormal basis for Hilbert space $\mathcal\{H\}$ then
+$$\sum_i | q_i \rangle \langle q_i | = I$$ Take our orthonormal basis to
+be the set of eigenstates of the position operator. Since there are
+uncountably many such operators, we will write this identity equation as
+$$\int dq | q \rangle \langle q | = I$$ We can split apart the matrix
+exponential as follows (this is valid since $\hat\{H\}$ commutes with
+itself).
+$$e^\{-i\hat\{H\}T\} = e^\{-i\hat\{H\}\frac\{T\}\{2\}\} e^\{-i\hat\{H\}\frac\{T\}\{2\}\}$$
+Note that using this identity, we can perform the calculation
+
+$$\begin\{aligned\}
+    K(q', T, q, 0) &= \left \langle q' \middle | e^\{-i\hat\{H\} T\} \middle | q \right \rangle \\
+    &= \left \langle q' \middle | e^\{-i\hat\{H\} \frac\{T\}\{2\}\} e^\{-i\hat\{H\} \frac\{T\}\{2\}\} \middle | q \right \rangle \\
+    &=  \langle q'  | e^\{-i\hat\{H\} \frac\{T\}\{2\}\} \int dq_1 | q_1 \rangle \langle q_1 | e^\{-i\hat\{H\} \frac\{T\}\{2\}\}  | q  \rangle \\
+    &= \int dq_1 \langle q'  | e^\{-i\hat\{H\} \frac\{T\}\{2\}\}  | q_1 \rangle \langle q_1 | e^\{-i\hat\{H\} \frac\{T\}\{2\}\}  | q  \rangle \\
+    &= \int dq K\left (q', T, q_1, \frac\{T\}\{2\} \right ) K\left (q_1, \frac\{T\}\{2\}, q, 0 \right )
+\end\{aligned\}$$ Now let $\delta = T/N$. You will show in the exercises
+$$K(q',T, q, 0) = \int dq_1 \cdots dq_n K_\{q', q_\{n\}\} \cdots K_\{q_1, q\} 
+    \label\{pathexpansion\}$$ where
+$K_\{q_i, q_\{i-1\}\} = K(q_i, i\delta, q_\{i-1\}, (i-1)\delta)$
+
+![Diagrammatic Expansion of
+Paths.](figures/Physics/quantum_mechanics/path_integrals/Expansion of Paths (1).png)\{#fig:path_integral
+width="\\linewidth"\}
+
+You can intuitively think of this expansion as traveling over all
+possible paths from $q$ to $q'$.
+
+``` \{.python language="python"\}
+
+sample_path : Rand[$\mathbb\{R\}^3 \to \mathbb\{R\}^3$]
+path_prob: ($\mathbb\{R\}^3 \to \mathbb\{R\}^3$) $\to$ $\mathbb\{R\}$
+
+def path_integral(q: $\mathbb\{R\}^3$, s: $\mathbb\{R\}^3$): $\mathbb\{C\}$
+  amplitude = 0
+  for i in range(N):
+    path = sample_path(q, s)
+    amplitude += path_prob(path)
+  return amplitude
+```
+
+### Exercises
+
+1.  Prove that the eigenfunctions of the position operator $\hat\{x\}$ are
+    given by the Dirac delta functions $\delta_\{x_0\} = \delta(x - x_0)$.
+
+2.  Prove the expansion equation for paths given in Equation
+    [\[pathexpansion\]](#pathexpansion)\{reference-type="ref"
+    reference="pathexpansion"\}.
+
+## 

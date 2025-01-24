@@ -1,0 +1,66 @@
+# Renormalization versus Renormalization Group \{#chap:renormalization_group\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:qft_basics\]](#chap:qft_basics)\{reference-type="ref+label"
+reference="chap:qft_basics"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+Renormalization provides a systematic set of rules to perform
+corrections to infinities that arise in quantum field-theoretic
+calculations in order to arrive at finite numbers. This process is
+typically done in two steps: first, regularization is applied to remove
+infinite terms in integrals. Second, parameters of the Lagrangian are
+adjusted to match known experimental measurements. These adjustments are
+interpreted as corrections due to field interactions.
+
+## Classical Analogs
+
+Before the introduction of Einstein's relativity theory, classical
+physics studied the concept of an aether that spread across all of space
+and time. Charged particles moving in the aether would, due to
+self-induction, appear to have a higher mass than the base particle.
+Similar calculations where undertaken in hydrodynamics for the inertia
+of particles suspended in a fluid. These calculations also yielded
+infinities analogous to those that arise in quantum field theory.
+
+## Regularization Methods
+
+There are a variety of methods for controlling the divergent integrals
+that arise in quantum field theoretic calculations. One method is
+lattice regularization, in which integrals are replaced with finite sums
+over meshes. Another method is to cut off large momenta above some level
+$\Lambda$.
+
+## Renormalization Group in Critical Phenomenon
+
+For low and high temperatures, perturbative expansions yield solutions
+to the correlation functions for Ising models. However, near the
+critical crossover point $\xi$, these methods fail since there is a
+singularity. The renormalization group constructs a transformation that
+shifts the position of the critical point. You can then solve at $\xi$
+in the renormalization representation and recover the original solution.
+
+## Quantum Field Theory Setup
+
+We consider the simple $\phi^4$ quantum field theory. This is a
+non-Gaussian theory with action
+
+$$\begin\{aligned\}
+    S &= \int \Bigg [ \frac\{1\}\{2\}(\nabla \phi(x))^2 + \frac\{1\}\{2\}m_0^2 \phi^2(x) + \frac\{\lambda_0\}\{4!\}\phi^4(x) \Bigg ] d^4 x \\
+    &= S_0 + s_I
+\end\{aligned\}$$
+
+The two point correlation function is defined as
+
+$$\begin\{aligned\}
+    G(x) &= \langle \phi(x)\phi(0) \rangle \\
+    &= \frac\{\int[\mathcal\{D\}\phi] \phi(x) \phi(0) e^\{-S\}\}\{\int [\mathcal\{D\}\phi] e^\{-S\}\}
+\end\{aligned\}$$
+
+Assuming $\lambda_0$ is $0$ we land back to a Gaussian integral which we
+can solve.

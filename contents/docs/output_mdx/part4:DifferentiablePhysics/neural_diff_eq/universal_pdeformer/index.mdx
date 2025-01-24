@@ -1,0 +1,27 @@
+# Universal Differential Transformer \{#chap:deep_onet\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:** [\[chap:dft\]](#chap:dft)\{reference-type="ref+label"
+reference="chap:dft"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+Idea: Pretrain a transformer on diff-eq (ODE/PDE) trajectories from many
+different types of PDEs. Use a mesh representation of the PDE data to
+allow for data from different mesh resolutions. Also include a basic
+representation of the transformer equation as one of the core data
+inputs to the transformer. The pretrained model should then be capable
+of predicting forward in time multiple different types of PDEs.
+
+This system could be useful then for multiscale physics. The transformer
+can jointly model a system such as a QM/MM system (say a protein enzyme
+with a catalytic region), or possibly a weather system. The joint
+transformer could also dynamically decide which regions to drop down to
+a higher resolution PDE simulation in order to run at larger timescales.
+
+This system could also train on MD trajectories. The challenge would be
+to handle very long trajectories for training and to enforce correctness
+constraints.

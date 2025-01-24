@@ -1,0 +1,149 @@
+# Differentiable Manifolds \{#chap:manifold\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:calculus\]](#chap:calculus)\{reference-type="ref+label"
+reference="chap:calculus"\},
+[\[chap:matrix_calculus\]](#chap:matrix_calculus)\{reference-type="ref+label"
+reference="chap:matrix_calculus"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+Modeling physical systems at times requires us to describe complex
+shapes and spaces that aren't just $\mathbb\{R\}^n$. Manifolds provide a
+powerful method for describing and analyzing such shapes. We will need
+to make use of manifolds for describing systems in general relativity
+and quantum mechanics.
+
+We note that it's also common to see the term manifold used informally
+in the machine learning literature to describe complex spaces. This
+usage is usually more metaphorical than literal but we will attempt to
+explore what these statements mean more rigorously.
+
+## Formal Definitions
+
+We start by defining some basic preliminaries from topology to
+facilitate our definition. A topological space is a set along a defined
+topology (a collection of open sets). A topological space $T$ is
+Hausdorff if for any two distinct points $x, y$, there exist disjoint
+open sets $U_x$, $U_y$ such that $$\begin\{aligned\}
+x \in U_x, y \in U_y, U_x \cap U_y = \emptyset
+\end\{aligned\}$$
+
+To give an example, the real numbers $\mathbb\{R\}$ form a Hausdorff
+topological space. The open sets for $\mathbb\{R\}$ are given by the open
+intervals $$\begin\{aligned\}
+    \mathcal\{U\}(\mathbb\{R\}) &= \{ (a, b) | a, b\in \mathbb\{R\}, a < b \}
+\end\{aligned\}$$ Then for any $x, y \in \mathbb\{R\}$, we can choose
+disjoint open sets $$\begin\{aligned\}
+    (a-\epsilon, a+\epsilon), (b-\epsilon, b+\epsilon)
+\end\{aligned\}$$ where $\epsilon$ is small enough that these sets don't
+intersect.
+
+A topological space $T$ is second countable if there exists a sequence
+of open sets $U_1, U_2, \dotsc$ such that any open subset of $T$ is a
+union of elements of this sequence. The real numbers are second
+countable since we can consider the set of open intervals with rational
+centers and radiii $$\begin\{aligned\}
+    \mathcal\{U\} &= \left \{ \left (\frac\{p\}\{q\} - \frac\{m\}\{n\}, \frac\{p\}\{q\} + \frac\{m\}\{n\} \right ) | p, q, m, n \in \mathcal\{N\} \right \}
+\end\{aligned\}$$
+
+A homeomorphism $T: U \to V$ is a continuous function between two
+topological spaces $U$ and $V$ which has a continuous inverse. For
+example, the exponential map is a homeomorphism $$\begin\{aligned\}
+    \mathrm\{exp\}: \mathbb\{R\} \to \mathbb\{R\}^+
+\end\{aligned\}$$
+
+Let $M$ be a topological space. A chart is a homeomorphism
+$$\begin\{aligned\}
+    \varphi: U \to \mathbb\{R\}^n
+\end\{aligned\}$$ where $U$ is an open subset of $M$ and and $\varphi(U)$
+is an open subset of $\mathbb\{R\}^n$. A differentiable atlas on
+topological space $M$ is a collection of charts $$\begin\{aligned\}
+   \mathcal\{A\} &= \{\varphi_i: U_i \to \mathbb\{R\}^n \}
+\end\{aligned\}$$ such that $$\begin\{aligned\}
+    \bigcup_i U_i = M
+\end\{aligned\}$$ and such that for all $i, j$ $$\begin\{aligned\}
+    \varphi_i \circ \varphi_j^\{-1\}
+\end\{aligned\}$$ is a differentiable function. The atlas is said to be
+smooth (or $C^\infty$) if the composition function
+$\varphi_i \circ \varphi_j^\{-1\}$ are infinitely differentiable.
+
+With these preliminaries in place, we can define a manifold as a
+topological space $M$ that is Hausdorff, second-countable, and which has
+a differentiable atlas. The manifold is called smooth ($C^\infty$) if
+the atlas is smooth.
+
+To take a trivial example, $\mathbb\{R\}^n$ is a manifold where the atlas
+consists of one function $\varphi = I$, where $I$ is the identity
+function. The intuition behind the definitions is that a manifold
+provides a way to describe a space that locally looks like the real
+numbers.
+
+![A tangent space for a
+sphere.](figures/Mathematical Foundations/manifolds/manifold_tangent1.png)
+
+Let $M$ be a $C^\{\infty\}$ manifold. A function $f:M \to \mathbb\{R\}$ is
+defined to be in $C^\{\infty\}(M)$ if for every chart
+$\varphi: U \to \mathbb\{R\}^n$, the composition $f \circ \varphi^\{-1\}$ is
+infinitely differentiable.
+
+Let $x \in M$. A derivation $d: C^\{\infty\}(M) \to \mathbb\{R\}$ at $x$ is
+a linear map that satisfies the Leibniz rule $$\begin\{aligned\}
+    d(fg) = d(f)g + fd(g)
+\end\{aligned\}$$ where $f, g \in C^\{\infty\}(M)$.
+
+Note that two derivations can be added to one another and multiplied by
+scalars in $\mathbb\{R\}$. Hence, the set of derivations forms a real
+vector space.
+
+The *tangent space* at $x \in M$, denoted $T_x M$ is the set of
+derivations $d$ defined at $x$. The tangent space provides a formal
+mechanism to compute the \"tangent lines\" to the manifold at a given
+point.
+
+Let $M$ be a differentiable manifold. Then the tangent bundle is given
+by the disjoint union of the tangent spaces of $M$. $$\begin\{aligned\}
+    TM := \bigsqcup_\{x \in M\} T_x M
+\end\{aligned\}$$
+
+::: marginfigure
+![image](figures/Mathematical Foundations/manifolds/tangent_bundle_circle1.png)
+:::
+
+Let $M$ be a smooth manifold. Let $x \in M$ be a point and $T_x M$ be
+the tangent space at that point. A cotangent vector $\alpha$ at $x$ is a
+linear functional $$\begin\{aligned\}
+    \alpha: T_x M \to \mathbb\{R\}
+\end\{aligned\}$$ The set of all cotangent vectors is denoted by
+$T_x^* M$. The cotangent bundle $T^* M$ is the disjoint union of the
+cotangent spaces of the manifold
+
+## Riemannian Manifolds
+
+A Riemannian Manifold adds a notion of distance to a differentiable
+manifold. Let $M$ be a smooth manifold. Let $g$ be such that for each
+$x \in M$, $g_x$ is a positive definite inner product on the vector
+space $T_x M$. The tuple $(M, g)$ is a Riemannian manifold.
+
+In general, $g$ is called the metric tensor for the manifold. We note
+that $\mathbb\{R\}^n$ is a Riemannian manifold. Note that for any
+$x \in \mathbb\{R\}N^n$, the following is a basis of the tangent space
+$$\begin\{aligned\}
+    \{\frac\{\partial\}\{\partial x_i\} \}
+\end\{aligned\}$$ Note that each of these quantities is a derivation by
+our rule above and hence a member of the tangent space. Then an
+arbitrary element of the tangent space $T_x \mathbb\{R\}^n$ can be written
+as $$\begin\{aligned\}
+    \sum_i a_i \frac\{\partial\}\{\partial x_i\}
+\end\{aligned\}$$ We then define an inner product as $$\begin\{aligned\}
+    g\left ( \sum_i a_i \frac\{\partial\}\{\partial x_i\}, \sum_j b_j \frac\{\partial\}\{\partial x_j\} \right ) &= \sum_i a_i b_i
+\end\{aligned\}$$
+
+## Exercises
+
+1.  Prove that $\frac\{\partial\}\{\partial x_i\}$ is a derivation for
+    $\mathbb\{R\}^n$

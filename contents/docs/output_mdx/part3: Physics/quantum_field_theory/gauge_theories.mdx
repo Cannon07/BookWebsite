@@ -1,0 +1,57 @@
+# An Introduction to Gauge Theories \{#chap:gauge_theories\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:qft_basics\]](#chap:qft_basics)\{reference-type="ref+label"
+reference="chap:qft_basics"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+Gauge theories arise in quantum field theories that obey a local
+symmetry that is position dependent. In this chapter, we introduce the
+basics of gauge theories.
+
+## The XY Model
+
+The XY model provides a toy example of a gauge theory. This model is an
+example of what is called a *nonlinear sigma model* and involves a
+$O(N)$ isovector $n$ with unit length which has the $O(N)$ invariant
+interaction
+
+$$\begin\{aligned\}
+Z(K) = \int \prod_r dn(r) \exp \Bigg [ K \sum_\{\langle r, r' \rangle\} n(r) \cdot n(r') \Bigg ], \qquad |n| = 1
+\end\{aligned\}$$
+
+Here $\langle r, r' \rangle$ means that $r$, $r'$ are nearest neighbors
+in a lattice. We can write $$\begin\{aligned\}
+    n(r) = i \cos \theta(r) + j \sin \theta(r)
+\end\{aligned\}$$ Here we assume that we operate in two dimensions. We
+define the correlation function
+
+$$\begin\{aligned\}
+G_\{\alpha\beta\}(r - r') &= \langle e^\{i\alpha \theta(r)\} e^\{i\beta \theta(r')\} \rangle
+\end\{aligned\}$$
+
+The invariance that this theory satisfies is $$\begin\{aligned\}
+\theta(r) \mapsto \mathcal\{S\}(\theta(r)) = \theta(r) + \theta_0, \quad \forall r
+\end\{aligned\}$$
+
+## $\mathcal\{Z\}_2$ Gauge theory in two dimensions
+
+Consider a square lattice.
+
+$$\begin\{aligned\}
+    Z(K) = \sum_s \Bigg [ K \sum_\{\square\} s_i s_j s_k s_l \Bigg ]
+\end\{aligned\}$$ Here $\square$ denotes squares in the lattice. Ising
+variables are placed on bonds in the lattice. Note that reversing all
+spins
+
+$$\begin\{aligned\}
+    s_i \mapsto -s_i
+\end\{aligned\}$$ preserves the model. Note that this model also satisfies
+a local symmetry when we only flip the spins $B(r)$ that adjoin the
+lattice point. This means that products of spins around closed loops
+will survive the gauge transformation (since 2 or 0 will flip).

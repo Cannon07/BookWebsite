@@ -1,0 +1,205 @@
+# Implicit Methods and Stiffness in Ordinary Differential Equations \{#chap:implicit_methods\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:calculus\]](#chap:calculus)\{reference-type="ref+label"
+reference="chap:calculus"\}\
+
+------------------------------------------------------------------------
+
+In this chapter we will learn what stiffness means and the implications
+stiffness has for solving ordinary differential equations. We will then
+learn how the implicit Euler's method can be used to solve stiff
+ordinary differential equations.
+
+## Stiff ODEs
+
+Stiffness is a subtle, difficult, and important concept in the numerical
+solution of ordinary differential equations. It depends on the
+differential equation, the initial conditions, and the numerical method.
+A *stiff* system is one which involves rapidly changing components
+together with slowly changing ones. In some cases, the rapidly varying
+components are ephemeral (lasting a short time) transients that die away
+quickly, after which the solution becomes dominated by the slowly
+varying components. Although the transient phenomena exist for only a
+short part of the integration interval, they can dictate the time step
+for the entire solution.
+
+Both individual ODEs and system of ODEs can be stiff. A simple example
+of a stiff ODE is given below for visualization. $$\begin\{aligned\}
+    \frac\{dy\}\{dt\} = -1000y+3000-2000e^\{-t\}
+\end\{aligned\}$$ Let the initial condition be $y(0)=0$. The analytical
+solution for this problem can be solved as $$\begin\{aligned\}
+y(t) = 3 - 0.998e^\{-1000t\}-2.002e^\{-t\}
+\end\{aligned\}$$
+
+::: marginfigure
+![image](figures/part1b/implicit_methods/stiff_0.png)\{width="2.5in"\}
+:::
+
+This solution is plotted and as it can be seen, the solution is
+initially dominated by the fast exponential term of $e^\{-1000t\}$.
+Although the solution appears to start at 1, there is actually a fast
+transient from $y$ = $0$ to $1$ that occurs in less than the 0.005 time
+unit. This transient is perceptible only when the response is viewed on
+the finer timescale in the inset. After a short period (t \< 0.005),
+this transient dies out and the solution becomes governed by the slow
+exponential ($e^\{-t\}$).
+
+Insight into the step size required for stability of such a solution can
+be gained by examining the homogeneous part of the differential
+equation. $$\begin\{aligned\}
+\frac\{dy\}\{dt\} = -1000y
+\end\{aligned\}$$ If $y(0)=y_0$, calculus can be used to determine the
+solution as $y = y_0e^\{-1000t\}$. Thus, the solution starts at $y_0$ and
+asymptotically approaches zero. Euler's method can be used to solve the
+same problem numerically: $$\begin\{aligned\}
+y_\{i+1\} = y_i + \dfrac\{dy_i\}\{dt\}h
+\end\{aligned\}$$ For this ODE, the above equation is simplified to
+$$\begin\{aligned\}
+y_\{i+1\} = y_i -1000y_ih = y_i(1-1000h)
+\end\{aligned\}$$ The stability of this formula clearly depends on the
+step size $h$. That is, $|1-1000h|$ must be less than $1$. Thus, if
+$h>2/1000$, $|y_i| \rightarrow \infty$ as $i \rightarrow \infty$. For
+the fast transient part of the solution ($e^\{-1000t\}$ term), this
+criterion shows that the step size to maintain stability must be less
+than $2/1000 = 0.002$. In addition, it should be noted that, whereas
+this criterion maintains stability (i.e., a bounded solution), an even
+smaller step size would be required to obtain an accurate solution.
+Thus, although the transient occurs for only a small fraction of the
+integration interval, it controls the maximum allowable step size.
+
+## Implicit methods and Adaptive time stepping
+
+One way of solving the above problem is to use adaptive time-stepping,
+to avoid the small time-step throughout. This is obtained by bounding
+the local truncation error as discussed in earlier chapter. Some Physika
+code for finding the adaptive time steps to solve the integral is given
+below.
+
+::: marginfigure
+![image](figures/part1b/implicit_methods/adaptive.png)\{width="2.5in"\}
+:::
+
+``` \{.python language="python"\}
+def adaptive_step($\frac\{dy\}\{dt\}$: $\mathbb\{R\} \to \mathbb\{R\}$, t$_i$: $\mathbb\{R\}$ = 0, t$_f$: $\mathbb\{R\}$ = 3, t_adp: $\mathbb\{R\}[n]$):
+  f_d = $\nabla$($\frac\{dy\}\{dt\}$, t)
+  y[0] = 0, e_b = 1e-10, t_adp[0] = t$_i$
+  h = sqrt(2*e_b/|f_d(y[0],t_adp[0])|)
+  while(t_adp[i] < t$_f$):
+    y[i+1] = y[i] + $\frac\{dy\}\{dt\}$(y[i],t_adp[i]) * h[i]
+    h[i+1] = sqrt(2*e_b/abs(f_d(y[i],t_adp[i])))
+    t_adp[i+1] = t_adp[i]+h[i+1]
+    i = i+1
+```
+
+In contrast to explicit approaches, implicit methods offer an
+alternative remedy. Such representations are called implicit because the
+unknown appears on both sides of the equation. An implicit form of
+Euler's method can be developed by evaluating the derivative at the
+future time. An implicit form of Euler's method would be:
+$$\begin\{aligned\}
+y_\{i+1\} = y_i + \dfrac\{dy_\{i+1\}\}\{dt\}h
+\end\{aligned\}$$
+
+This is called the *backward* or *implicit* Euler's method. For the ODE
+under consideration, the above equation is simplified to
+$$\begin\{aligned\}
+y_\{i+1\} = y_i - 1000y_\{i+1\}h
+\end\{aligned\}$$ which can be solved for as $$\begin\{aligned\}
+y_\{i+1\} = \dfrac\{y_i\}\{1+1000h\}
+\end\{aligned\}$$ For this case, regardless of the size of the step,
+$|y_i|\rightarrow 0$ as $i\rightarrow \infty$. Hence, the approach is
+called *unconditionally stable*.
+
+::: marginfigure
+![image](figures/part1b/implicit_methods/stiffeuler0.png)\{width="2.5in"\}
+:::
+
+For linear ODEs, the equations need to be rearranged to solve for the
+next ODE update in the implicit Euler's method approach. For nonlinear
+ODEs, the solution becomes even more difficult since it involves solving
+a system of nonlinear simultaneous equations. Even though stability is
+gained through implicit approaches, it is at the cost of added solution
+complexity. We will look at how to solve such a non-linear system in the
+example below.
+
+## Van der Pol Equation
+
+The van der Pol equation is a model of an electronic circuit that arose
+back in the days of vacuum tubes. It evolves in time according to the
+second-order differential equation: $$\begin\{aligned\}
+\dfrac\{d^2y\}\{dt^2\} - \mu(1-y^2)\dfrac\{dy\}\{dt\} + y = 0
+\end\{aligned\}$$
+
+The solution to this equation becomes progressively stiffer as $\mu$
+gets large. As an example, given the initial conditions, $y(0) = 0$ and
+$\dfrac\{dy\}\{dt\} = 1$ at $t=0$, we want to solve the van der Pol equation
+using explicit and implicit Euler's Method from $t=0$ to $t=10$, using a
+step-size of 0.05 and $\mu$ of 5.
+
+The first step is to convert the second-order ODE into a pair of
+first-order ODEs by defining
+
+::: marginfigure
+![image](figures/part1b/implicit_methods/explicit.png)\{width="2.5in"\}
+:::
+
+::: marginfigure
+![image](figures/part1b/implicit_methods/implicit.png)\{width="2.5in"\}
+:::
+
+$$\begin\{aligned\}
+\dfrac\{dy_1\}\{dt\} &= y_2 \\
+\dfrac\{dy_2\}\{dt\} &= \mu(1-y_1^2)y_2 + y_1
+\end\{aligned\}$$
+
+The update steps for the Explicit Euler's method are simply
+$$\begin\{aligned\}
+    y_\{1,i+1\} &=    y_\{1,i\} + \dfrac\{dy_1\}\{dt\}|_\{i\}h\\
+    y_\{2,i+1\} &=    y_\{2,i\} + \dfrac\{dy_2\}\{dt\}|_\{i\}h    
+\end\{aligned\}$$
+
+The update steps for the Implicit Euler's method are obtained by adding
+the derivative at the future step. These are given by $$\begin\{aligned\}
+y_\{1,i+1\} &=    y_\{1,i\} + \dfrac\{dy_1\}\{dt\}|_\{i+1\}h\\
+y_\{2,i+1\} &=    y_\{2,i\} + \dfrac\{dy_2\}\{dt\}|_\{i+1\}h  
+\end\{aligned\}$$
+
+The above expressions are simplified as $$\begin\{aligned\}
+y_\{1,i+1\}  &=   y_\{1,i\} + y_\{2,i+1\}h\\
+y_\{2,i+1\}  &=   y_\{2,i\} + (\mu(1-y_\{1,i+1\}^2)y_\{2,i+1\} + y_\{1,i+1\})h
+\end\{aligned\}$$
+
+From the above two equations, the updates are obtained by solving for
+$y_\{1,i+1\}$ and $y_\{2,i+1\}$. Since, these are a pair of non-linear
+equations, the solution is obtained using the `fsolve` function in
+Physika. These solutions are used as the update steps in Implicit
+Euler's method.
+
+``` \{.python language="python"\}
+def root2d(y, y1, y2, $\mu$, h):
+ y1dash = y[0], y2dash = y[1]
+ F[0] = -y1dash + y1 + (y2dash)*h
+ F[1] = -y2dash + y2 + (($\mu$*(1-y1dash$^2$)*y2dash - y1dash))*h
+ return F
+```
+
+``` \{.python language="python"\}
+def implicit_euler_method($\mu$: $\mathbb\{R\}$, t$_f$: $\mathbb\{R\}$, dt: $\mathbb\{R\}$):
+  t = 0:dt:t$_f$
+  n = len(t)
+  y1i = zeros(n,1), y2i = zeros(n,1)
+  y1i[0] = 1, y2i[0] = 1
+  for i in 1 .. n-1:
+    solution = fsolve($\lambda$ (y) root2d(y,y1i[i],y2i[i],$\mu$,dt),  [y1i[i], y2i[i]])
+    y1i[i+1] = solution[0]
+    y2i[i+1] = solution[1]     
+```
+
+Since the van der Pol equation with $\mu=5$ is a stiff system, the
+explicit method clearly fails in capturing the response of the variable.
+However, the implicit method still captures the oscillations in the
+response.

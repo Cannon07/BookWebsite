@@ -1,0 +1,49 @@
+# Covariant Derivatives and Connections \{#chap:covariant_derivative\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:manifold\]](#chap:manifold)\{reference-type="ref+label"
+reference="chap:manifold"\}\
+**Difficulty Level:** \*\*\*\
+
+------------------------------------------------------------------------
+
+The covariant derivative provides a method of defining derivatives to be
+taken along the tangent vectors of a manifold. Importantly, the
+covariant derivative is defined so as to be independent of the choice of
+local coordinate system.
+
+## Mathematical Definition
+
+Let $M$ be a manifold and let $p \in M$ be a point on the manifold. Let
+$f: M \to \mathbb\{R\}$ be a real valued function on the manifold. Let
+$$\begin\{aligned\}
+v : M \to T_p M
+\end\{aligned\}$$ be a vector field on $M$. Then we denote the covariant
+derivative $$\begin\{aligned\}
+(\nabla_v f)_p \in T_p M,
+\end\{aligned\}$$ to be the tangent vector at $p$ such that the following
+properties hold
+
+$$\begin\{aligned\}
+(\nabla_\{gx + hy\} u)_p &= (\nabla_x u)_p g + (\nabla_y u)_p h \\
+(\nabla_v (u + w))_p &= (\nabla_v u)_p + (\nabla_v w)_p \\
+(\nabla_v (fu))_p &= f(p)(\nabla_v u)_p  + (\nabla_v f)_p u_p
+\end\{aligned\}$$
+
+The goal of this definition is to make the definition of the covariant
+derivative independent of the choice of coordinate basis. For another
+definition, suppose that we have a differentiable curve
+$$\begin\{aligned\}
+\phi:[-1, 1] \to M
+\end\{aligned\}$$ such that $\phi(0) = p$ and $\phi'(0) = v$. Then we
+define the covariant derivative to be $$\begin\{aligned\}
+(\nabla_v f)_p &= (f \circ \phi)'(0) \\
+&= \lim_\{t \to 0\} \frac\{f(\phi(t)) - f(p)\}\{t\}
+\end\{aligned\}$$ We can then view the covariant derivative as a function
+mapping points in the manifold $M$ to real scalars $(nabla_v f)_p$
+$$\begin\{aligned\}
+\nabla_v f: M \to \mathbb\{R\}
+\end\{aligned\}$$

@@ -1,0 +1,279 @@
+# Phonon Gas \{#chap:phonons\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:phase_equilibrium\]](#chap:phase_equilibrium)\{reference-type="ref+label"
+reference="chap:phase_equilibrium"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+Analogous to the relationship of photons to electromagnetic or light
+energy, phonons are a definite discrete unit of quantum vibrational
+mechanical energy. Phonons and electrons transport are the main
+mechanism of energy diffusion in crystals. Thus for non-conducting
+crystals, heat transport is mostly carried by phonons transport, and so
+a proper description of the thermodynamic of phonons is necessary to
+understand the origins of the thermal properties of solids.
+
+In this chapter, we use statistical mechanics to derive the
+thermodynamic of phonon gases, which are the normal modes of low
+temperature solids. At low temperatures, atoms in a crystal remain close
+to their equilibrium position, so a simple model can be developed to
+describe the energy states of this particles. At the end of this chapter
+we will derive the heat capacity of crystals due to the contribution of
+phonons considering two different approaches: the *Einstein Model* which
+consider all phonons vibrating at the same frequency (valid for optical
+phonons); and the *Debye Model* which consider a linear dispersion of
+frequencies (valid for acoustic phonons at low temperatures).
+
+## Crystalline Solid
+
+::: marginfigure
+![image](figures/Physics/statistical_mechanics/phonon_gas/PhononGas4.png)\{width="\\linewidth"\}
+:::
+
+The atoms in a crystal are arranged in a regular array of points in
+space with a variety of possible crystalline lattices
+(Fig. [\[fig4\]](#fig4)\{reference-type="ref" reference="fig4"\}). At zero
+temperature, the atomic coordinates are uniquely locked into spatial
+positions that minimize the energy. At finite temperature, the atoms
+fluctuate about the energy-minimum positions, leading to lattice
+vibrations that govern the thermodynamic behavior
+(Fig. [1.1](#fig5)\{reference-type="ref" reference="fig5"\}).
+
+![Schematic showing the atoms in a crystal in their locked,
+energy-minimum positions at $T = 0$ and the lattice vibrations that
+occur at finite
+temperature](figures/Physics/statistical_mechanics/phonon_gas/atoms _in_crystel5.png)\{#fig5
+width="\\linewidth"\}
+
+## Thermodynamic contribution of lattice vibrations
+
+Consider N atoms with positions $$\begin\{aligned\}
+\{\vec\{r\}\} = \vec\{r\}_1, \vec\{r\}_2,\dotsc,\vec\{r\}_N
+\end\{aligned\}$$ in a crystalline lattice. Define the potential energy
+$V\left(\{\vec\{r\}\}\right)$ that describes the energy for a given system
+configuration $\{\vec\{r\}\}$. As before, we will simplify notation to
+$V(\vec\{r\})$ when the meaning is clear from context. A minimum-energy
+configuration $$\begin\{aligned\}
+\{\vec\{r\}^\{(0)\}\} &= \vec\{r\}^\{(0)\}_1, \vec\{r\}^\{(0)\}_2,\dotsc,\vec\{r\}^\{(0)\}_N
+\end\{aligned\}$$ satisfies the condition $$\begin\{aligned\}
+\nabla_\{\vec\{r\}_i\} V\left(\vec\{r\}^\{(0)\}\right) = \nabla_\{\vec\{r\}_i\} V|_0 = \vec\{0\}
+\end\{aligned\}$$ for $i = 1,2,...,N$. The atomic positions
+$\{\vec\{r\}^\{(0)\}\}$ define the regular crystalline lattice.
+
+Expand the potential energy about $\{\vec\{r\}\} = \{\vec\{r\}^\{(0)\}\}$,
+such that: $$\begin\{aligned\}
+V\left(\vec\{r\}\right) \approx \  &V\left(\vec\{r\}^\{(0)\}\right) + \sum_\{i=1\}^N \left(\nabla_\{\vec\{r\}_i\} V|_0\right)\cdot \left(\vec\{r\}_i - \vec\{r\}^\{(0)\}_i \right) + \notag\\ &\frac\{1\}\{2\} \sum_\{i=1\}^N \sum_\{j=1\}^N \left(\nabla_\{\vec\{r\}_i\} \nabla_\{\vec\{r\}_j\} V|_0\right) \left(\vec\{r\}_i - \vec\{r\}^\{(0)\}_i \right) \left(\vec\{r\}_j - \vec\{r\}^\{(0)\}_j \right) + \dotsc \notag
+\end\{aligned\}$$
+
+The linear term is zero (by definition), thus the energy is:
+$$\begin\{aligned\}
+\label\{Eq17\}
+V \approx V_0 + \frac\{1\}\{2\} \sum_\{i=1\}^N \sum_\{j=1\}^N \sum_\{\alpha,\gamma = x,y,z\} s_\{i\alpha\}s_\{j\gamma\}K_\{i\alpha j \gamma\}
+\end\{aligned\}$$ where $$\begin\{aligned\}
+s_\{i\alpha\} &= \hat\{e\}_\alpha \cdot \left(\vec\{r\}_i - \vec\{r\}^\{(0)\}_i \right) \\ 
+K_\{i\alpha j \gamma\} &= \nabla_\{\vec\{r\}_i\} \nabla_\{\vec\{r\}_j\} V|_0
+\end\{aligned\}$$
+
+The matrix $K_\{i\alpha j \gamma\}$ can be diagonalized into normal modes
+(eigenvectors) with effective elastic constants (eigenvalues). Since
+there are $3N-6\approx 3N$ degrees of freedom, there are $3N$ normal
+modes.
+
+The potential energy is written as: $$\begin\{aligned\}
+\label\{Eq18\}
+V = V_0 + \frac\{1\}\{2\}\sum_\{l=1\}^\{3N\} \tilde\{K\}_l \xi_l^2
+\end\{aligned\}$$
+
+where $\xi_l$ is the magnitude of the $l$th normal mode.
+
+The total energy of the system is then written as: $$\begin\{aligned\}
+\label\{Eq19\}
+E = \sum_\{l=1\}^\{3N\}\frac\{\tilde\{p\}_l^2\}\{2\tilde\{m\}_l\} + \frac\{1\}\{2\}\sum_\{l=1\}^\{3N\}\tilde\{K\}_l \xi_l^2 + V_0
+\end\{aligned\}$$
+
+where $\tilde\{p\}_l$ and $\tilde\{m\}_l$ are the effective momentum and
+mass of the $l$th normal mode, respectively.
+
+The total energy $E$ is decomposed into normal modes with an
+individual-mode energy in the form of a harmonic oscillator. These
+normal modes are called *phonons*. Phonons act as quasi-particles which
+means they are distinguishable and independent, *i.e.* they don't
+interact between each other.
+
+The Hamiltonian (sum of kinetic and potential energy) of the $l$th
+phonon is given by $$\begin\{aligned\}
+H_l &= \frac\{\tilde\{p\}_l^2\}\{2\tilde\{m\}_l\} + \frac\{1\}\{2\}K_l\xi^2_l
+\end\{aligned\}$$ This harmonic oscillator energy results in the quantized
+energy: $$\begin\{aligned\}
+\label\{Eq20\}
+E_l = \left(j_l + \frac\{1\}\{2\}\right)\hslash\omega_l
+\end\{aligned\}$$
+
+where $j_l = 0,1,2...$, and the phonon frequency is
+$\omega_l = \sqrt\{\frac\{\tilde\{K\}_l\}\{\tilde\{m\}_l\}\}$.
+
+The canonical partition function $Q$ is given by: $$\begin\{aligned\}
+\label\{Eq21\}
+Q(T,V,N) &= \sum_\{j_1 = 0\}^\infty \sum_\{j_2 = 0\}^\infty ... \sum_\{j_\{3N\} = 0\}^\infty e^\{\left[ -\beta V_0 - \beta \sum_\{l=1\}^\{3N\} \left(j_l + \frac\{1\}\{2\}\right)\hslash\omega_l \right]\} \notag\\
+&= e^\{ -\beta V_0 \} \prod_\{l=1\}^\{3N\} \sum_\{j_l = 0\}^\infty e^\{-\beta\left(j_l + \frac\{1\}\{2\}\right)\hslash\omega_l\} \notag\\
+&=e^\{ -\beta V_0 \} \prod_\{l=1\}^\{3N\} \frac\{e^\{-\beta\frac\{1\}\{2\}\hslash\omega_l\}\}\{1 - e^\{-\beta\hslash\omega_l\}\}
+\end\{aligned\}$$
+
+where we use the mathematical property $$\begin\{aligned\}
+\sum_\{n=0\}^\infty z^n &= \frac\{1\}\{1 - z\}
+\end\{aligned\}$$
+
+This gives the Helmholtz free energy: $$\begin\{aligned\}
+F = -k_BT\log Q = V_0 + k_BT \sum_\{l=1\}^\{3N\}\left[\log\left(1-e^\{-\beta\hslash\omega_l\}\right) + \frac\{1\}\{2\}\beta\hslash\omega_l \right] \notag
+\end\{aligned\}$$
+
+The average energy is given by: $$\begin\{aligned\}
+\label\{Eq.E_Phonons\}
+\langle E \rangle = -\frac\{\partial \log Q\}\{\partial \beta\} = V_0 + \sum_\{l=1\}^\{3N\} \left( \frac\{\hslash\omega_le^\{-\beta\hslash\omega_l\}\}\{1 - e^\{-\beta\hslash\omega_l\}\} + \frac\{1\}\{2\}\hslash\omega_l \right)
+\end\{aligned\}$$
+
+The next step is to analyze two competing models for the phonon
+frequencies $\omega_l$.
+
+## Einstein model
+
+In the Einstein model, we assume there is a single characteristic
+frequency of the crystal, defined as the Einstein frequency $\omega_E$.
+This model is a good approximation for optical phonons.
+
+The average energy for this model is given by: $$\begin\{aligned\}
+\langle E \rangle = V_0 + \frac\{3N\hslash\omega_E\}\{2\} + \frac\{3N\hslash\omega_Ee^\{-\beta\hslash\omega_l\}\}\{1-e^\{-\beta\hslash\omega_E\}\} \notag   
+\end\{aligned\}$$
+
+For this model, the heat capacity is given by: $$\begin\{aligned\}
+C_V = \left( \frac\{\partial \langle E \rangle\}\{\partial T\} \right)_\{V,N\} =  \frac\{3Nk_B \left( \frac\{\hslash\omega_E\}\{k_BT\} \right) ^2 e^\{-\frac\{\hslash\omega_E\}\{k_BT\}\}\}\{\left(1-e^\{\frac\{-\hslash\omega_E\}\{k_BT\}\}\right)^2\} = \frac\{3Nk_B \left( \frac\{\theta_E\}\{T\} \right) ^2 e^\{-\frac\{\theta_E\}\{T\}\}\}\{\left(1-e^\{\frac\{\theta_E\}\{T\}\}\right)^2\} \notag
+\end\{aligned\}$$
+
+where we define $$\begin\{aligned\}
+\theta_E = \frac\{\hslash\omega_E\}\{k_B\}
+\end\{aligned\}$$
+
+In the limit $T \rightarrow \infty$ the heat capacity $$\begin\{aligned\}
+C_V \rightarrow 3Nk_B
+\end\{aligned\}$$ This is known as the Dulong-Petit Law. As we learned
+before, the equipartition theorem states that the energy receives $k_BT$
+per thermally active degree of freedom for a harmonic oscillator
+(quantized energy is linear in the quantum index). In the limit
+$T \rightarrow 0$ the heat capacity $$\begin\{aligned\}
+C_V \rightarrow 0
+\end\{aligned\}$$ The heat capacity approaches zero exponentially in the
+small-$T$ limit (Fig. [\[fig6\]](#fig6)\{reference-type="ref"
+reference="fig6"\}).
+
+::: marginfigure
+![image](figures/Physics/statistical_mechanics/phonon_gas/Fig6.png)\{width="\\linewidth"\}
+:::
+
+## Debye model
+
+The Debye model treats the solid as an elastic material. This
+approximation is usually accurate to describe acoustic phonons at low
+temperatures.
+
+Vibrational modes in an elastic solid correspond to sound waves, thus
+the frequencies satisfy $$\begin\{aligned\}
+\omega=ck
+\end\{aligned\}$$ where $c$ is the speed of sound in the solid and
+$$\begin\{aligned\}
+k = m\pi/L
+\end\{aligned\}$$ where $m=1,2,\dotsc$.
+
+Thus, for considering a long particle chain, we convert the sum over
+normal modes into a integral over the frequencies $\omega$ using:
+$$\begin\{aligned\}
+\sum_\{l=1\}^\{3N\} \left( \frac\{1\}\{e^\{\beta\hslash\omega_l\} - 1\} + \frac\{1\}\{2\} \right)\hslash\omega_l &=\sum_\{m_1\}\sum_\{m_2\}\sum_\{m_3\} \left( \frac\{1\}\{e^\{\beta\hslash\omega_l\} - 1\} + \frac\{1\}\{2\} \right)\hslash\omega_l \notag\\
+&= \iiint \left[\left( \langle n \rangle + \frac\{1\}\{2\} \right)\hslash\omega_l\right] dm_1dm_2dm_3 \notag\\
+&=\iiint_0^\{k_c\} \left(\frac\{L\}\{\pi\}\right)^3 \left[\left( \langle n \rangle + \frac\{1\}\{2\} \right)\hslash\omega_l\right] dk_1dk_2dk_3 \notag\\
+&= \int_0^\{k_c\} 4\pi\left(\frac\{L\}\{\pi\}\right)^3 \left( \langle n \rangle + \frac\{1\}\{2\} \right)\hslash\omega_l k^2 dk \notag\\
+&= \int_0^\{\omega_D\}D(\omega) \left( \langle n \rangle + \frac\{1\}\{2\} \right) \hslash\omega_l d\omega\notag
+\end\{aligned\}$$
+
+where $$\begin\{aligned\}
+D(\omega) = \frac\{4L^3\omega^2\}\{\pi^2c^3\}
+\end\{aligned\}$$ is the density of states of acoustic phonons , and
+$$\begin\{aligned\}
+\langle n \rangle = \frac\{1\}\{e^\{\beta\hslash\omega_l\} - 1\}
+\end\{aligned\}$$ is the Bose-Einstein Distribution. In this equation
+$k_c$ is a cutoff wavemode (to be determined), and $\omega_D = Ck_c$ is
+called the Debye frequency.
+
+A complete conversion will include one longitudinal mode with $c_l$ and
+two transverse modes with $c_t$ . This gives: $$\begin\{aligned\}
+\label\{Eq22\}
+\sum_l \left( \frac\{1\}\{e^\{\beta\hslash\omega_l\} - 1\} + \frac\{1\}\{2\} \right)\hslash\omega_l &= \int_0^\{\omega_D\} \frac\{4L^3\omega^2\}\{\pi^2\}\left(\frac\{1\}\{c_l^3\} + \frac\{2\}\{c_t^3\} \right) \left( \langle n \rangle + \frac\{1\}\{2\} \right) \hslash\omega_l d\omega \notag\\
+&=\int_0^\{\omega_D\} D(\omega) \left( \langle n \rangle + \frac\{1\}\{2\} \right) \hslash\omega_l d\omega
+\end\{aligned\}$$
+
+where we defined a new form for the density of states given by
+$$\begin\{aligned\}
+D(\omega) = \frac\{4L^3\omega^2\}\{\pi^2\}\left(\frac\{1\}\{c_l^3\} + \frac\{2\}\{c_t^3\} \right)
+\end\{aligned\}$$
+
+To find $\omega_D$ we must enforce that $$\begin\{aligned\}
+\sum_l 1 &= 3N,
+\end\{aligned\}$$ Thus we have: $$\begin\{aligned\}
+\sum_l 1 &= \int_0^\{\omega_D\}D(\omega) \left( \langle n \rangle + \frac\{1\}\{2\} \right) d\omega \notag\\
+&= \left(\frac\{L\}\{\pi\}\right)^3 \left(\frac\{1\}\{c_l^3\} + \frac\{2\}\{c_t^3\} \right) \frac\{\omega_D^3\}\{3\} = 3N \notag\\&\Rightarrow \omega_D = \frac\{\pi\}\{L\}\left[\frac\{9N\}\{\left(\frac\{1\}\{c_l^3\} + \frac\{2\}\{c_t^3\} \right)\}\right]^\{1/3\} \notag
+\end\{aligned\}$$
+
+For convenience, use $\omega_D$ as a parameter, thus we can define the
+density of states as: $$\begin\{aligned\}
+\label\{Eq23\}
+D(\omega) = \frac\{9N\omega^2\}\{\omega_D\}
+\end\{aligned\}$$
+
+::: marginfigure
+![image](figures/Physics/statistical_mechanics/phonon_gas/Fig7.png)\{width="\\linewidth"\}
+:::
+
+Define the Debye temperature $$\begin\{aligned\}
+\theta_D = \frac\{\hslash\omega_D\}\{k_B\}
+\end\{aligned\}$$ which defines the temperature scale for vibrational
+fluctuations. To test this model, we find the heat capacity:
+$$\begin\{aligned\}
+C_V &= -k_B\beta^2\left(\frac\{\partial\langle E\rangle\}\{\partial\beta\}\right) \\
+&= 9Nk_B\frac\{T^3\}\{\theta_D^3\}\int_0^\{\theta_D/T\}\frac\{x^4e^\{-x\}\}\{\left(1-e^\{-x\}\right)^2\} dx 
+\end\{aligned\}$$
+
+In the limit $T \rightarrow \infty$ the heat capacity approaches:
+$$\begin\{aligned\}
+C_V \rightarrow 9Nk_B\frac\{T^3\}\{\theta_D^3\}\int_0^\{\theta_D/T\}dxx^2 = 3Nk_B \notag
+\end\{aligned\}$$
+
+which is expected (Dulong-Petit Law), since at high temperatures all
+phonon modes become activated.
+
+In the limit $T \rightarrow 0$ the heat capacity scales as:
+$$\begin\{aligned\}
+C_V \rightarrow 9Nk_B\frac\{T^3\}\{\theta_D^3\}\int_0^\{\infty\}\frac\{x^4e^\{-x\}\}\{\left(1-e^\{-x\}\right)^2\} dx \sim Nk_B\frac\{T^3\}\{\theta_D^3\}
+\end\{aligned\}$$
+
+To obtain a qualitative picture of the Debye $T^3$ law, we suppose that
+all phonon modes of wavevector less than $K_T$ have the classical
+thermal energy $k_BT$ and that modes between $K_T$ and the Debye cutoff
+$K_D$ are not excited at all. Of the $3N$ possible modes, the fraction
+excited is $$\begin\{aligned\}
+(K_T/K_D)^3 &=(T/\theta)^3
+\end\{aligned\}$$ because this is the ratio of the volume of the inner
+sphere to the outer sphere. The energy is $$\begin\{aligned\}
+U \approx k_BT \cdot 3N(T/\theta)^3
+\end\{aligned\}$$ and the heat capacity is $$\begin\{aligned\}
+C_v &=\frac\{\partial U\}\{\partial T\} = 12Nk_B(T/\theta)^3
+\end\{aligned\}$$
+
+The heat capacity predicted by the Einstein and the Debye models are
+very similar. However, the low temperature of the heat capacity of
+non-conducting solids matches the Debye model, *i.e.* $C_V \sim NT^3$
+(Fig. [\[fig7\]](#fig7)\{reference-type="ref" reference="fig7"\}). This is
+because at low temperatures only acoustic phonons are activated, which
+is better represented in the Debye model.

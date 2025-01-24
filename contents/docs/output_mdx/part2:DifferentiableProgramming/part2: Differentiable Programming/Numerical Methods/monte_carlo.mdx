@@ -1,0 +1,286 @@
+# Monte Carlo Methods \{#chap:monte_carlo\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:calculus\]](#chap:calculus)\{reference-type="ref+label"
+reference="chap:calculus"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+When analytical methods fail to model complex spaces, Monte Carlo
+methods will be needed to properly sample the phase space. Monte Carlo
+methods use probabilistic samples to explore a high dimensional space.
+These techniques prove valuable when generating samples from a complex
+distribution or approximating a high dimensional integral.
+
+The standard Monte Carlo methods use a simple, random sampling scheme in
+addition to a accept-reject formulation to provide a way for the Monte
+Carlo scheme to minimize the "energy" of the solution. Various
+implementations of Monte Carlo exist that are best suited to different
+types of parameter spaces and target distributions.
+
+Underlying distributions for interacting real systems are often unknown;
+in general we are not able to make use of the analytical machinery
+afforded by non-interacting systems and instead need to rely on brute
+force numerical computing. The most computationally taxing task tends to
+be computing the partition function, as it requires delineating the full
+space of possible states and performing a high-dimensional integral. In
+this chapter, we explore various stochastic sampling techniques for
+achieving this that are collectively known as Monte Carlo methods.
+
+## Monte Carlo
+
+Monte Carlo techniques, named for the casino town in Monaco, rely on
+random samples rather than deterministic techniques to sample the space
+of interest. The simplest random sampler to integrate draws from a
+uniform distribution in order to calculate a quantity such as the
+average energy,
+
+$$\begin\{aligned\}
+\langle E \rangle & = \int \frac\{E(\phi) \exp[-\beta E(\phi)]\}\{Q\} 
+\end\{aligned\}$$
+
+The probability distribution, $\exp[-\beta E(\phi)]$ is sharply peaked
+and states with $E <\sim \langle E \rangle$ dominantly contribute, which
+is a very small fraction of the whole phase space. Thus, standard
+uniform sampling Monte Carlo, which is homogeneous over the phase space
+fails.
+
+## Importance Sampling
+
+The limitations of uniform sampling can be partially overcome by the
+technique of *importance sampling*. The whole challenge is associated
+with generating configurations, $\phi$ such that they represent the
+distribution, $$\begin\{aligned\}
+p(\phi) = \int \frac\{\exp[-\beta E(\phi)]\}\{Q\}
+\end\{aligned\}$$ It is nearly impossible to generate these configurations
+from scratch as we do not know how to do this! (except in some limited
+simple cases where you can enumerate the possible configurations.) The
+core method, behind almost all of the modern Monte Carlo simulation
+technology, is based on a proposal by Metropolis, Rosenbluth and Teller,
+where we modify existing configurations in small steps, called Monte
+Carlo update steps. This generates a Markov chain of configurations
+wherein we sample using a non-uniform distribution (e.g. sample low
+energy configurations) and then correct for this nonuniformity in our
+calculation. Consider the case of estimating the mean of a probability
+distribution $P(x)$ $$\begin\{aligned\}
+     \mu = \int xP(x)dx\,.
+ 
+\end\{aligned\}$$ By our previous prescription, the Monte Carlo estimator
+would be: $$\begin\{aligned\}
+    \mathbf\{E\}[X] = \frac\{1\}\{N\}\sum_1^N X P(X)\,,
+\end\{aligned\}$$ where the RV $X$ is drawn uniformly from the domain of
+$P$.
+
+Note that if we multiply the integrand by $\frac\{q(x)\}\{q(x)\}=1$, we can
+rewrite the mean in terms of the expectation value under the
+distribution $q(x)$: $$\begin\{aligned\}
+\mu = \int x\frac\{P(x)q(x)\}\{q(x)\}dx=\mathbf\{E\}_q\left[\frac\{xP(x)\}\{q(x)\}\right]\,,
+\end\{aligned\}$$ which shows us exactly how to construct the importance
+sampled estimator:
+$$\mu = \frac1N\sum_1^NX\frac\{P(X)\}\{q(X)\}\text\{ where \} X\sim q\,.$$
+
+## Markov Chains
+
+A Markov chain is a stochastic model consisting of transitional
+probabilities between states that depend only on the system's current
+state. In other words, such a model can be fully specified by its
+*transition matrix* $P$, defined such that $P_\{ij\}$ is the probability
+of moving to state $j$ given that the system is currently in state $i$.
+Since row $i$ must contain probabilities for every possible transition
+from state $i$, it follows that each row of $P$ must sum to 1, a
+property known as *right stochasticity*.
+
+::: marginfigure
+![image](figures/part1b/monte_carlo/MC1_0.png)
+:::
+
+Note that by convention, Markov chain transitions are defined by the
+multiplication of a row vector state with the transition matrix:
+$$\vec s_\{i+1\} = \vec s_i P\,.$$ If $\vec s_i$ is an eigenvector of $P$,
+then $\vec s_\{i+1\}=\vec s$ and $\vec s$ represents a *stationary
+distribution* of the Markov chain represented by $P$. When using Markov
+chains in Monte Carlo sampling of the complicated,
+difficult-to-normalize distributions often of interest in parameter
+estimation problems, the goal is to construct a Markov chain whose
+stationary distribution is the target distribution. Then, by using the
+Markov process to explore the parameter space and saving points at every
+iteration, we can build up a histogram of visited points that will
+converge to that distribution.
+
+## Metropolis-Hastings Monte Carlo Simulation
+
+A commonly used Monte Carlo scheme is *Metropolis-Hastings Monte Carlo*,
+or MHMC. The basic algorithm is as follows:
+
+1.  Starting from state $\theta$, randomly create a new trial state
+    $\theta^*$ from the proposal distribution.
+
+2.  The probability $\alpha$ of choosing this new state is given by:
+    $$\alpha = \exp[\beta(E_\{\theta\} - E_\{\theta^*\})]$$
+
+3.  If $\alpha \geq 1$, set $\theta$ to $\theta^*$
+
+4.  If $\alpha < 1$, select a uniform random number $A$ between 0 and 1,
+    and only change the state from $\theta$ to $\theta^*$ if
+    $A < \alpha$
+
+We can turn this description into a Physika sketch
+
+``` \{.python language="python"\}
+def metropolis_hastings($\theta: \mathbb\{R\}$, $q: \mathbb\{R\} \to \mathbb\{R\}$, $\beta: \mathbb\{R\}$, N : $\mathbb\{N\}$):
+  $E_\theta$ = E($\theta$)
+  for i < N:
+    $\theta^*$ = $q(\theta)$
+    $E_\{\theta^*\}$ = E($\theta^*$)
+    $\alpha$ = exp($\beta(E_\theta - E_\{\theta^*\}$)
+    if $\alpha$ >= 1:
+      $\theta$ = $\theta^*$
+    else:
+      A = uniform(0, 1)
+      if A < $\alpha$:
+        $\theta$ = $\theta^*$
+```
+
+A common use case is to explore a potential energy landscape in some
+high-dimensional configurational space, where it is relatively
+straightforward to compute the energy of a given state (which can be
+related to its probability by a Boltzmann weight), but difficult to
+enumerate the full state space and hence normalize the distribution.
+
+::: marginfigure
+![image](figures/part1b/monte_carlo/theta_t_mc.png)\{width="\\linewidth"\}
+![image](figures/part1b/monte_carlo/pdf_mc.png)\{width="\\linewidth"\}
+![image](figures/part1b/monte_carlo/autocorr_mc.png)\{width="\\linewidth"\}
+:::
+
+There are many caveats to Monte Carlo simulations. Care has to be taken
+when determining whether you have fully sampled the distribution.
+Adaptive methods for randomly selecting trial states that do not result
+in too many instances of rejections or too small of moves must be
+established. Calculating certain averages can be difficult when the
+simulation needs to explore rare regions of phase space to accurately
+evaluate the average. Therefore, one must ensure the moves are able to
+get out of deep wells. Importantly, it must be ensured that the
+simulation are not biased to any region of phase space (for satisfying
+the ergodic hypothesis). Monte Carlo simulation is generally very
+adaptable to different models and is very simple to implement.
+
+### Hamiltonian Monte Carlo
+
+Hamiltonian Monte Carlo is a special case of MHMC that borrows concepts
+from physics to improve (i.e. reduce) autocorrelation between samples.
+The basic concept is that rather than randomly drawing new states from
+some proposal distribution, the proposals are generated by evolving a
+state according to dynamics as governed by Hamilton's equations.
+Remember that the Hamiltonian $H(x, p)$ is defined as the sum of the
+potential and kinetic energies: $$\begin\{aligned\}
+H(x, p) = U(x) + K(p)
+\end\{aligned\}$$ The equations of motion are given by: $$\begin\{aligned\}
+\frac\{\partial x_i\}\{\partial t\} &= \frac\{\partial H\}\{\partial p_i\} = \frac\{\partial K( p)\}\{\partial p_i\} \\
+\frac\{\partial p_i\}\{\partial t\} &= -\frac\{\partial H\}\{\partial x_i\} = - \frac\{\partial U( x)\}\{\partial x_i\}
+\end\{aligned\}$$
+
+### Time integration by the Leap Frog method
+
+The phase-space integration is analogous to the Velocity-Verlet
+algorithm utilized in molecular dynamics simulations and proceeds as
+follows:
+
+1.  Take a half step in time to update the momentum variable
+    $$\begin\{aligned\}
+        p_i(t + \delta/2) = p_i(t) - (\delta /2)\frac\{\partial U\}\{\partial x_i(t)\}
+        
+    \end\{aligned\}$$
+
+2.  Take a full step in time to update the position variable:
+    $$\begin\{aligned\}
+        x_i(t + \delta) = x_i(t) + \delta \frac\{\partial K\}\{\partial p_i(t + \delta/2)\}
+        
+    \end\{aligned\}$$
+
+3.  Take the remaining half step in time to finish updating the momentum
+    variable $$\begin\{aligned\}
+        p_i(t + \delta) = p_i(t + \delta/2) - (\delta/2) \frac\{\partial U\}\{\partial x_i(t+\delta)\}
+        
+    \end\{aligned\}$$
+
+In a canonical ensemble, any energy function $E(\theta)$ over a set of
+variables $\theta$, we can define the corresponding canonical
+distribution as: $p(\theta) = \frac\{1\}\{Q\}e^\{-E(\theta)\}$ where we simply
+take the exponential of the negative of the energy function. The
+partition function, Q will cancel out when taking ratios. The canonical
+distribution for the Hamiltonian dynamics energy function is
+$$\begin\{aligned\}
+p( x, p) & \propto e^\{-\beta H( x, p)\} \nonumber \\ & = e^\{-\beta [U( x) + K( p)]\} \nonumber = e^\{-\beta U( x)\}e^\{-\beta K( p)\} \nonumber \\ & \propto p( x)p( p)
+\end\{aligned\}$$
+
+The canonical distribution for $x$ and $p$ factorizes. This means that
+the two variables are independent (non-interacting degrees of freedom).
+Therefore, using Hamiltonian dynamics, we can sample from the joint
+canonical distribution and simply ignore the momentum contributions. For
+a given set of initial conditions, Hamiltonian dynamics will follow
+contours of constant energy in phase space. Therefore, we must randomly
+perturb the dynamics so as to explore all of phase space (e.g. all
+possible configurations in an Ising Model). We can choose any
+distribution from which to sample the momentum variables. A common
+choice is to use a standard normal distribution. The acceptance
+criterion is constructed the same way as for MHMC, but we now
+specifically stipulate that the acceptance probability goes as a
+Boltzmann weight of the Hamiltonian and not just of the energy.
+
+Combining these steps, sampling random momentum, followed by Hamiltonian
+dynamics and Metropolis acceptance criterion defines the HMC algorithm
+for drawing M samples from a target distribution:
+
+1.  set t = 0
+
+2.  generate an initial position state $x^\{(0)\}$
+
+3.  repeat until $t = M$
+
+    -   set t = t+1
+
+    -   sample a new initial momentum variable from the momentum
+        canonical distribution $p_0 \sim p( p)$
+
+    -   Set $x_0 =  x^\{(t-1)\}$
+
+    -   run Leap Frog algorithm starting at $x_0$, $p_0$ for $L$ steps
+        and step size $\delta$ to obtain proposed states $x^*$ and $p^*$
+
+    -   calculate the Metropolis acceptance probability:
+
+        $\alpha = \text\{min\}(1,\exp[-\beta(U(x^*)-U(x_0)+K(p^*)-K(p_0))])$
+
+    -   draw a uniform random number, u.
+
+    -   if $u \leq \alpha$ accept the proposed state position $x^*$ and
+        set the next state in the Markov chain $x^\{(t)\}= x^*$
+
+    -   else set $x^\{(t)\} = x^\{(t-1)\}$
+
+Note that, in the case of a 2D magnetic Isiging system, $x$ corresponds
+to a particular configuration of spins (for the entire system), while
+$p$ is a set of rules on how these spins change with time (for instance,
+magnons propagating through the material, dictating how the spins should
+change from one time step to the next). In general $x$ correspond to the
+system configuration, that is, the set of variables that uniquely
+determines the potential energy $U$, while $p$ denotes an assortment of
+rules that dictate how the variables in $x$ change in time.
+
+::: marginfigure
+![image](figures/part1b/monte_carlo/theta_t_hmc.png)\{width="\\linewidth"\}
+![image](figures/part1b/monte_carlo/pdf_hmc.png)\{width="\\linewidth"\}
+![image](figures/part1b/monte_carlo/autocorr_hmc.png)\{width="\\linewidth"\}
+:::
+
+### Improving convergence through Simulated annealing
+
+The energy sampling for a particular value of T or $\beta$ could get
+stuck in local minima. In order to avoid this, T is now ramped down from
+a large value to the desired temperature, in appropriate steps. This
+helps greatly in improving convergence.

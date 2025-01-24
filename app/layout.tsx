@@ -19,9 +19,9 @@ const codeFont = Space_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "AriaDocsLite - Template",
+  title: "Differentiable Physics",
   description:
-    "This comprehensive documentation template, crafted with Next.js and available as open-source, delivers a sleek and responsive design, tailored to meet all your project documentation requirements.",
+    "Machine Learning for Physical Systems",
 };
 
 export default function RootLayout({

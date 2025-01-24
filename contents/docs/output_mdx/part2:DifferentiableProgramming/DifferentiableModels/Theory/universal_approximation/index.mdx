@@ -1,0 +1,64 @@
+# Universal Approximation Theorem \{#chap:univ_approx\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:ml_basics\]](#chap:ml_basics)\{reference-type="ref+label"
+reference="chap:ml_basics"\},
+[\[chap:grad_descent\]](#chap:grad_descent)\{reference-type="ref+label"
+reference="chap:grad_descent"\}\
+**Difficulty Level:** \*\*\*\
+
+------------------------------------------------------------------------
+
+The universal approximation theorem is one of the most foundational
+theoretical results in deep learning. It proves that arbitrary functions
+can be approximated by fully connected deep networks. There are a number
+of extensions of the universal approximation theorem to other families
+of neural networks that are also useful.
+
+## The Universal Approximation Theorem for Fully Connected Networks
+
+Start with the one layer network. Let $C(X, Y)$ denote the set of
+continuous functions from $X$ to $Y$, where $X$ is a compact space. Then
+it has been shown that sums of the form
+
+$$\begin\{aligned\}
+\sum_\{j=1\}^N a_j\sigma(w_jx + b_j)
+\end\{aligned\}$$ can approximate any function in $C(X, Y)$ arbitrarily
+well for suitable choices of parameters. The proof of the theorem draws
+upon the fact that Fourier series offer good approximations to functions
+in $C(X, Y)$
+
+## The Universal Approximation Theorem for Convolutional Networks
+
+Convolutional networks form a subset of fully connected networks with a
+special Toeplitz matrix structure for the weight matrix. A priori, it is
+not necessarily obvious a universal approximation theorem would hold for
+such systems, but this has been proven to be the case.
+
+## The Universal Approximation Theorem for Recurrent Neural Networks
+
+Any open dynamic system can be approximated with arbitrary accuracy by a
+recurrent neural network. Here an open dynamic system is given by a set
+of update equations
+
+$$\begin\{aligned\}
+s_\{t+1\} &= g(s_t, x_t)\\
+y_t &= h(s_t)
+\end\{aligned\}$$
+
+where $x_t$ is the input at time $t$, $s_t$ is the state at time $t$ and
+$y_t$ is the output at time $t$.
+
+## The Universal Approximation Theorem for Graph Networks
+
+Function approximation on graphs requires a slightly more complicated
+framework to specify precisely. Two different graphs can be isomorphic;
+that is there can exist a map $$\begin\{aligned\}
+\phi: G \to H
+\end\{aligned\}$$ between graphs $G$ and $H$ that preserves edges and
+labels on vertices. The universal approximation theorem for graphs
+states that any function that has the same value on isomorphic graphs
+can be approximated by a suitable graph neural network.

@@ -1,0 +1,55 @@
+# Fiber Bundles \{#chap:fiber_bundles\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:manifold\]](#chap:manifold)\{reference-type="ref+label"
+reference="chap:manifold"\}\
+**Difficulty Level:** \*\*\*\
+
+------------------------------------------------------------------------
+
+A fiber bundle is a type of mathematical space that associates to each
+point on a given base space a \"fiber\" space. We have encountered a few
+simple examples of fiber bundles before, notably the tangent bundle
+$\mathcal\{T\}M$ over a manifold $M$ and the cotangent bundle
+$\mathcal\{T\}^*M$. Mathematically, a fiber bundle is defined by a
+projection map $$\begin\{aligned\}
+    \pi: E \to B
+\end\{aligned\}$$ Here, $\pi$ is a surjection, $B$ is the base space, and
+$\pi$ is defined such that in local regions of $E$, $\pi$ behaves like
+the projection map $B \times F \to B$ where $F$ is the fiber space. We
+say that $\pi^\{-1\}(x)$ is the fiber over point $x$.
+
+## Examples
+
+The formal mathematical definition of a fiber bundle is complex so we
+start with examples to build understanding.
+
+### Trivial Bundle
+
+Let $E = B \times F$ and let $\pi$ be the projection onto the first
+coordinate. In this case, $\pi: E \to B$ is called the trivial bundle.
+
+### Vector Bundle
+
+In the case that the fiber $F$ is a vector space, we say that the fiber
+bundle is a vector bundle. The tangent bundle $\mathcal\{T\}M$ and
+cotangent bundle $\mathcal\{T\}^*M$ are vector bundles.
+
+### Principle Bundle
+
+Suppose we have a fiber bundle $\pi: E \to B$. Let $G$ be a group and
+suppose we have a continuous right group action $$\begin\{aligned\}
+P \times G \to P
+\end\{aligned\}$$ such that the group action preserves the fibers. That
+is, if $y \in \pi^\{-1\}(x)$ then for all $g \in G$, we have
+$y \cdot g \in \pi^\{-1\}(x)$.
+
+## Section
+
+A section of a fiber bundle is a map $$\begin\{aligned\}
+    f: B \to E
+\end\{aligned\}$$ such that $\pi(f(x)) = x$. That is, a section maps every
+point on the base space to a point in the fiber \"above\" it.

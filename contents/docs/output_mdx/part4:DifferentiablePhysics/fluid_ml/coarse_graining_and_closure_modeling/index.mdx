@@ -1,0 +1,46 @@
+# Coarse Graining and Closure Modeling \{#chap:coarse_graining_closure\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:qft_basics\]](#chap:qft_basics)\{reference-type="ref+label"
+reference="chap:qft_basics"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+Automatic coarse-graining methods, based on adaptations of SINDy can be
+applied to automatically coarse grain equations for turbulence modeling.
+This approach is capable of automatically discovering symmetries in the
+original system [@bakarji2021data]
+
+## A Brief Introduction to SINDy
+
+Suppose that we have a dynamical system of the form $$\begin\{aligned\}
+    \frac\{d\}\{dt\} x(t) &= f(x(t))
+\end\{aligned\}$$
+
+where $x(t)$ denotes the state at time $t$ and $f(x(t))$ governs the
+update dynamics. In many practical applications $f$ may be a sparse
+function with only a few terms of $x(t)$ necessary to compute the
+interaction. We can convert this system into a sparse linear regression
+task by specifying a space of functions, typically polynomials. Let $X$
+be the data matrix and $\dot\{X\}$ its time derivative $$\begin\{aligned\}
+    \Theta(X) &= \begin\{bmatrix\}
+        x_1(t)& \dotsc & x_n(t) & x_1(t)^2 & x_1(t) x_2(t) & \dotsc 
+    \end\{bmatrix\}
+\end\{aligned\}$$ We also introduce a sparse set of $k$ coefficients
+$$\begin\{aligned\}
+    \Xi &= \begin\{bmatrix\}
+        \xi_1 & \dotsc & \xi_k
+    \end\{bmatrix\}
+\end\{aligned\}$$ We then need to solve the equation $$\begin\{aligned\}
+    \cdot\{X\} &= \Theta(X) \Xi
+\end\{aligned\}$$ Nonzero coefficients can then be converted back into a
+symbolic set of equations to gain a simple governing equation for the
+system from data. We may want to assume that noise is present in which
+case the equation becomes $$\begin\{aligned\}
+\cdot\{X\} &= \Theta(X) \Xi + \eta Z
+\end\{aligned\}$$ where $Z$ is a Gaussian noise vector. LASSO can be
+applied to solve this problem.

@@ -1,0 +1,173 @@
+# Polynomial Regression \{#chap:polynomial_regression\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:calculus\]](#chap:calculus)\{reference-type="ref+label"
+reference="chap:calculus"\},
+[\[chap:numerical_integration\]](#chap:numerical_integration)\{reference-type="ref+label"
+reference="chap:numerical_integration"\}\
+**Difficulty Level:** \*\
+
+------------------------------------------------------------------------
+
+In this chapter, we will learn how to implement polynomial regression
+through a polynomial function relationship. We will also analyze
+overfitting and learn how to perform the right degree of fitting for
+polynomials. We will use these skills ot linearize nonlinear
+relationships within data and perform regression to capture trends.
+
+Until now, we have seen the approach to deriving the equation of a
+straight line that best represents the correlations between data using
+the least-squares criterion. Some data, although exhibiting a marked
+pattern such as seen in Figure a, are poorly represented by a straight
+line. For these cases, a curve would be better suited to fit the data.
+As discussed earlier, one method to accomplish this objective is to use
+transformations. Another alternative is to fit polynomials to the data
+using *polynomial regression*.
+
+## **Polynomial Regression** \{#polynomial-regression\}
+
+::: marginfigure
+![image](figures/part1b/linear_least_squares_cont/polyregression.PNG)\{width="2.6in"\}
+:::
+
+The least-squares procedure can be readily extended to fit the data to
+higher-order polynomial. Let's see how to fit a second-order polynomial
+or quadratic to the data. The mathematical expression for a quadratic is
+given by $$\begin\{aligned\}
+y = a_0 + a_1x + a_2x^2 + e
+\end\{aligned\}$$ For this case, the sum of the squares of the residuals
+is $$\begin\{aligned\}
+S_r = \sum_\{i=1\}^\{n\}e_i^2 = \sum_\{i=1\}^\{n\}(y_i-a_0-a_1x_i-a_2x_i^2)^2
+\end\{aligned\}$$ To determine values for $a_0$.$a_1$ and $a_2$, $S_r$ is
+differentiated with respect to each unknown coefficient as
+$$\begin\{aligned\}
+\frac\{\partial S_r\}\{\partial a_0\} &= -2\sum(y_i-a_0-a_1x_i-a_2x_i^2)\\
+\frac\{\partial S_r\}\{\partial a_1\} &= -2\sum x_i(y_i-a_0-a_1x_i-a_2x_i^2)\\
+\frac\{\partial S_r\}\{\partial a_2\} &= -2\sum x_i^2(y_i-a_0-a_1x_i-a_2x_i^2)
+\end\{aligned\}$$ These equations can be set equal to zero and rearranged
+to develop the following set of normal equations: $$\begin\{aligned\}
+(n)a_0 + (\sum x_i)a_1 + (\sum x_i^2)a_2&= \sum y_i\\
+(\sum x_i)a_0 + (\sum x_i^2)a_1 + (\sum x_i^3)a_2 &=\sum x_iy_i\\
+(\sum x_i^2)a_0 + (\sum x_i^3)a_1 + (\sum x_i^4)a_2 &=\sum x_i^2y_i
+\end\{aligned\}$$
+
+For this case, we see that the problem of determining a least-squares
+second-order polynomial is equivalent to solving a system of three
+simultaneous linear equations. The two-dimensional case can be easily
+extended to an mth-order polynomial as in $$\begin\{aligned\}
+y = a_0 + a_1x + a_2x^2 + \dots + a_mx^m + e
+\end\{aligned\}$$ The above analysis can be easily extended to this more
+general case. Thus, we can recognize that determining the coefficients
+of an $m^\{th\}$-order polynomial is equivalent to solving a system of
+$m + 1$ simultaneous linear equations.
+
+### Avoiding Overfitting
+
+It is extremely important to strike a balance between the degree of fit
+between data and the corresponding model error. Increasing the degree of
+polynomial almost always leads to lower model error. However, it is
+critical to understand the optimal degree of polynomial either based on
+the nature of correlation within the data or the physics of the
+governing relationship between data variables. Note that for avoiding
+overfitting of data, plotting tools and visually observing the extent of
+overfitting is very useful in most cases.
+
+## Linearization of Non-Linear Relationships
+
+Linear regression provides a powerful technique for fitting a best line
+to data. However, it is predicated on the fact that the relationship
+between the dependent and independent variables is linear. This is not
+always the case, and the first step in any regression analysis should be
+to plot and visually inspect the data to ascertain whether a linear
+model applies. In some cases, transformations can be used to express the
+data in a form that is compatible with linear regression. Three such
+transformations are discussed here.
+
+1.  The first one is the *exponential model*:
+    $y = \alpha_1e^\{\beta_1x\}$, where $\alpha_1$ and $\beta_1$ are
+    constants. For example, population growth or radioactive decay can
+    exhibit this kind of behavior. This equation is linearized by taking
+    its natural logarithm to yield $$\begin\{aligned\}
+        \ln\{y\} =    \ln\{\alpha_1\} + \beta_1x
+        
+    \end\{aligned\}$$ Thus, a plot of $\ln\{y\}$ versus $x$ will yield a
+    straight line with a slope of $\beta_1$ and an intercept of
+    $\ln\{\alpha_1\}$.
+
+2.  The second one is the *power equation*: $y = \alpha_2x^\{\beta_2\}$,
+    where $\alpha_2$ and $\beta_2$ are constant coefficients. This model
+    is very frequently used to fit experimental data when the underlying
+    model is not known. This equation is linearized by taking its
+    base-10 logarithm to yield $$\begin\{aligned\}
+        \log\{y\} = \log\{\alpha_2\} + \beta_2\log\{x\}
+        
+    \end\{aligned\}$$ Thus, a plot of $\log\{y\}$ versus $\log\{x\}$ will
+    yield a straight line with a slope of $\beta_2$ and an intercept of
+    $\log\{\alpha_2\}$.
+
+3.  The third one is the *saturation-growth-rate equation*:
+    $y = \alpha_3\dfrac\{x\}\{\beta_3+x\}$, where $\alpha_3$ and $\beta_3$
+    are constants. This model is particularly well-suited for
+    characterizing population growth rate under limiting conditions,that
+    saturates, as x increases. This equation is linearized by inverting
+    it to give $$\begin\{aligned\}
+        \frac\{1\}\{y\} =   \frac\{1\}\{\alpha_3\} + \frac\{\beta_3\}\{\alpha_3\}\frac\{1\}\{x\}.
+        
+    \end\{aligned\}$$ Thus, a plot of $\frac\{1\}\{y\}$ versus $\frac\{1\}\{x\}$
+    will be linear, with a slope of $\frac\{\beta_3\}\{\alpha_3\}$ and an
+    intercept of $\frac\{1\}\{\alpha_3\}$.
+
+:::: example
+According to Kleiber's Law$^\{[1]\}$, vast majority of animals follow the
+principle that an animal's metabolic rate ($B$) is directly proportional
+to $\frac\{3\}\{4\}$ power of the animal's mass ($M$). This is given as
+$B \propto M^\{c\}$. Let's check this law on a real dataset of 21 animals
+and their metabolic rates, by determining the value of $c$.
+
+*Reasoning behind Klieber's law*: Kleiber's law, as many other
+biological allometric laws, is a consequence of the physics and geometry
+of animal circulatory systems, according to some authors. Small
+organisms respire more per unit of weight than large ones of the same
+species because of the overhead costs of growth, but small adults of one
+species respire more per unit of weight than large adults of another
+species because a larger fraction of their body mass consists of
+structure rather than reserve, and structural mass involves maintenance
+costs, reserve mass does not.
+
+::: marginfigure
+1\. West, G. B., Brown, J. H., and Enquist, B. J. (1997). A general
+model for the origin of allometric scaling laws in biology. *Science*,
+276, 122-126.
+:::
+
+*Solution:* Klieber's Law, which follows the *power equation* can be
+considered as a linear model between $\log\{M\}$ and $\log\{B\}$. Thus, the
+similar approach of finding the slope and intercept of a linear fit are
+used on the logarithmic of the data.
+
+![Obtained Best Fit of the Curve against the real data of Mass (in kg)
+vs Metabolic Rate (in Watts) in
+log-scale](figures/part1b/linear_least_squares_cont/Klieber.png)\{#fig:1
+width="3.5in"\}
+
+    x_new = log10(Mass); y_new = log10(Metabolism);
+    Sum_x = sum(x_new); Sum_y = sum(y_new);
+    Sum_xsq = sum(x_new.*x_new); Sum_xy = sum(x_new.*y_new);
+    n = length(Mass);
+    a1 = (n*Sum_xy - Sum_x*Sum_y)/(n*Sum_xsq - (Sum_x)^2);
+    a0 = (Sum_y/n) - a1*(Sum_x/n);
+
+The slope ($\beta$) from our curve fit is obtained to be 0.7722 and the
+intercept ($\log\{\alpha\}$) obtained is 0.5557. Thus, from the power
+equation, the best fit for the given data is given as $$\begin\{aligned\}
+B = \alpha M^\{\beta x\} = 10^\{0.5557\}M^\{0.7722x\} = 3.5953M^\{0.7722x\}
+\vspace\{-6pt\}
+\end\{aligned\}$$ Theoretical models presented by Geoffrey West et al.
+show how the $\frac\{3\}\{4\}$ observation can emerge from the constraint of
+how resources are distributed through hierarchical branching networks.
+Their understanding of an organism's metabolic/respiratory chain is
+based entirely on blood-flow considerations.
+::::

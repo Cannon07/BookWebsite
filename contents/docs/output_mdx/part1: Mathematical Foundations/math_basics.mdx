@@ -1,0 +1,142 @@
+# Mathematical Foundations \{#chap:math_basics\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:** High School Level Mathematics\
+**Difficulty Level:** \*\
+
+------------------------------------------------------------------------
+
+This chapter introduces some basic mathematical definitions used
+throughout the reminder of this book.
+
+## Sets, Groups, Rings, and Fields
+
+Pure mathematics studies mathematical objects, abstractions of patterns
+found in the real world. The simplest such object is a set. Think of a
+set as a collection of unique objects. Sets are typically denoted as
+follows
+
+$$X = \{a, b, c\}$$
+
+Curly braces are used to denote the elements of a set. Here $X$ is a set
+that contains 3 distinct elements $a, b, c$. We note the empty set which
+contains no elements by $\emptyset$ or $\{\}$. We denote membership in a
+set by the notation $$\begin\{aligned\}
+    a \in X
+\end\{aligned\}$$ read as \"a in x\". Set theory is traditionally used as
+the foundation of mathematics. It's possible to define all the usual
+mathematics we use in terms of sets. Let's introduce some basic sets
+which we will run into often. The set of natural numbers
+$$\mathbb\{N\} = \{0, 1, 2, \cdots\},$$ is the set of all whole numbers
+from $0$ upwards. The set of integers
+$$\mathbb\{Z\} = \{\cdots, -2, -1, 0, 1, 2, \cdots \},$$ is the set of all
+whole numbers positive and negative. The rational numbers contain
+fractions.
+$$\frac\{1\}\{3\}, \frac\{-23\}\{68\}, \frac\{1234234242\}\{23423423423425\}, \cdots$$
+
+The real numbers $\mathbb\{R\}$ are the set of positive and negative
+decimal numbers with infinite decimal places. For example
+$$\pi = 3.1415926535\cdots$$
+
+The set of complex numbers $\mathbb\{C\}$ contains one addition to the
+real numbers, denoted by $i$, the imaginary number. $i$ has the property
+that $$i^2 = -1$$ Elements of the complex numbers are denoted by
+$a + ib$. Complex numbers are important for formulating mathematical
+models of quantum mechanics.
+
+These different sets are included once inside the other as follows
+
+$$\begin\{aligned\}
+    \mathbb\{N\} \subset \mathbb\{Z\} \subset \mathbb\{Q\} \subset \mathbb\{R\} \subset \mathbb\{C\}
+\end\{aligned\}$$
+
+We will also often find ourselves working with tuples of these
+quantities $$\begin\{aligned\}
+    \mathbb\{R\}^2 = \mathbb\{R\} \times \mathbb\{R\}
+\end\{aligned\}$$ That is, the elements of $\mathbb\{R\}^2$ are tuples
+$(a,b)$ where $a, b \in \mathbb\{R\}$.
+
+### Set Theoretic Definitions of Numbers
+
+As a quick note, traditionally numbers themselves are defined as sets.
+Here's one way to define the natural numbers as sets $$\begin\{aligned\}
+0 &:= \{\} \\
+1 &:= \{0\} \\
+2 &:= \{0, 1\} \\
+\vdots
+\end\{aligned\}$$ The definition of the real numbers is more complex, but
+follows from similar constructions. We won't go into this more deeply
+here.
+
+### A Quick Introduction to Groups
+
+A *group* is a special kind of set that has an operation defined on it.
+This operation is typically denoted by $+$ or $\times$. We've already
+seen one simple example of a group, the set $\mathbb\{Z\}$. In this case,
+the group operation $+$ is the same as the usual addition. A group must
+satisfy a few formal *group laws*.
+
+1.  Identity: The element $0$ is an identity for $\mathbb\{Z\}$ since for
+    all $n \in \mathbb\{Z\}$, we have $n + 0 = 0 + n = 0$
+
+2.  Associativity: The operation $+$ associates. That is,
+    $n + (m + \ell) = (n + m) + \ell$
+
+3.  Inverses: For any element $n \in \mathbb\{Z\}$, the element $-n$ is
+    its inverse since $n + (-n) = (-n) + n = 0$
+
+If you haven't seen formal group laws before, don't worry too much about
+them. We'll see a number more groups in various physical applications
+later in the book which should help provide more intuition.
+
+### A Brief Introduction to Rings
+
+A *ring* is similar to a group but with the addition of a second
+operation, traditionally denoted by $\times$ as multiplication. This
+multiplication is unlike the group operation in that inverses for
+elements aren't required. For example, $\mathbb\{Z\}$ is a ring, with $+$
+the group operation and $\times$ (the usual multiplication) the ring
+operation. Here $1$ is the multiplicative identity, since for any
+$n \in \mathbb\{Z\}$, we have $n \times 1 = 1 \times n = n$. However, we
+don't have an inverse operation. Note that for $2$ for example, the
+multiplicative inverse would be $\frac\{1\}\{2\}$, which isn't an element of
+$\mathbb\{Z\}$.
+
+A field is a ring where the multiplication operation $\times$ is
+invertible for every element except $0$. This operation is denoted
+division and is given by $/$. The set of rational numbers $\mathbb\{Q\}$
+is a field, since for $\frac\{n\}\{m\} \in \mathbb\{Q\}$, the multiplicative
+inverse is simply $\frac\{m\}\{n\}$ (assuming $m \neq 0$). The real numbers
+$\mathbb\{R\}$ and the complex numbers $\mathbb\{C\}$ are fields as well.
+
+## Functions
+
+A function is a mapping from one set into another. If $A, B$ are sets,
+then we denote a function from $A$ to $B$ as $f: A \to B$ (read the
+notation as \"A to \"B\"). You can think of a function as a machine that
+given an element of $A$ that spits out an element of $B$.
+
+### Exercises
+
+1.  Consider the set $\{0, 1\}$ with addition defined as
+    $$\begin\{aligned\}
+            0 + 0 &= 0\\
+            1 + 0 &= 0 + 1 = 1\\
+            1 + 1 &= 0
+        
+    \end\{aligned\}$$ Prove that this set is a group.
+
+2.  A polynomial is a function of the form
+    $$f(x) = a_n x^n + a_\{n-1\}x^\{n-1\} + \cdots + a_1 x + a_0$$ where
+    $a_i$ is an element of some ring $R$. For example, for the ring
+    $\mathbb\{Z\}$, we have that $$g(x) = 4x^3 + 3 x^2 + 2 x + 1$$ is a
+    polynomial. Denote the set of polynomials over $R$ as
+    $\mathcal\{P\}(R)$.
+
+    1.  Prove that $\mathcal\{P\}(R)$ is a group. What is the group
+        operation? Prove that it follows the group laws.
+
+    2.  Prove that $\mathcal\{P\}(r)$ is a ring. What is the ring
+        operation? Prove that it follows the ring laws.

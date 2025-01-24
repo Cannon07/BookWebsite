@@ -1,0 +1,64 @@
+# The Bloch Sphere \{#chap:bloch_sphere\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:quantum_mechanics\]](#chap:quantum_mechanics)\{reference-type="ref+label"
+reference="chap:quantum_mechanics"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+The Bloch sphere is a representation of the state space of a two level
+quantum system. We can write such a system by the equation
+
+$$\begin\{aligned\}
+    |\psi \rangle &= \alpha | 0 \rangle + \beta | 1 \rangle \\
+\end\{aligned\}$$
+
+We know that the norm of this state has to be $1$, so
+
+$$\begin\{aligned\}
+    \langle \psi | \psi \rangle &= \alpha^2 + \beta^2 = 1
+\end\{aligned\}$$
+
+Note also that the coefficients $\alpha$ and $\beta$ are only defined up
+to a complex phase factor $e^\{i\phi\}$ if $$\begin\{aligned\}
+    \alpha' &= e^\{i\phi\} \alpha \\
+    \beta' &= e^\{i \phi\} \beta \\
+    |\psi' \rangle &= \alpha' |0 \rangle + \beta' | 1 \rangle \\
+\end\{aligned\}$$ Then both $|\psi \rangle$ and $|\psi' \rangle$ represent
+the same quantum state. We can then chose to multiply by a phase factor
+so that the coefficient of $|0 \rangle$ is real and nonnegative. This
+allows us to write
+
+$$\begin\{aligned\}
+    | \psi \rangle &= \cos \theta | 0 \rangle + e^\{i \phi\} \sin \theta | 1 \rangle 
+\end\{aligned\}$$ Here $\theta$ must range between $0$ and $\pi/2$ for
+both $\cos \theta$ and $\sin \theta$ to be nonnegative. $\phi$ ranges
+between $0$ and $2 \pi$ We can go one step further and do a change of
+variables to replace $\theta$ by $\theta/2$. Then we have the following
+expression $$\begin\{aligned\}
+  | \psi \rangle &= \cos (\theta/2) | 0 \rangle + e^\{i \phi\} \sin (\theta/2) | 1 \rangle 
+\end\{aligned\}$$ where $\theta$ ranges between $0$ and $\pi$ and $\phi$
+ranges from $0$ to $2 \pi$. These ranges allow us to interpret $\theta$
+and $\phi$ as spherical coordinates! We can use them to write a unique
+point on the unit sphere as $$\begin\{aligned\}
+    (\sin \theta \cos \phi, \sin \theta \sin \phi, \cos \theta)
+\end\{aligned\}$$ This spherical representation of $\psi$ is denoted as
+the Bloch sphere as the diagram below shows.
+
+::: marginfigure
+![image](figures/Physics/quantum_computing/bloch_sphere/bloch_sphere1.png)
+:::
+
+To gain intuition for the Bloch sphere, it is useful to plot a few
+representative states. Where do the basis states $|0 \rangle$ and
+$| 1 \rangle$ land for example? We start by rewriting both of these
+states in the canonical representation above $$\begin\{aligned\}
+    |0 \rangle &= \cos (0/2) | 0 \rangle + e^\{i \phi\} \sin(0/2) | 1 \rangle \\
+    |1 \rangle &= \cos(\pi/2) | 0 \rangle + e^\{i \phi\} \sin(\pi/2) | 1 \rangle 
+\end\{aligned\}$$ Here $\phi$ can be an arbitrary value between $0$ and
+$2\pi$. We see then that $|0 \rangle$ lands at the North pole and
+$|1 \rangle$ at the South pole of the Bloch sphere.

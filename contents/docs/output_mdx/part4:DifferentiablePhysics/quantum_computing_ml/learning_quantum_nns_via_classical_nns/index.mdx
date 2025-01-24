@@ -1,0 +1,53 @@
+# Learning Quantum Neural Networks through Classical Neural Networks \{#chap:learn_quantum_nn\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:molecular_hamiltonian\]](#chap:molecular_hamiltonian)\{reference-type="ref+label"
+reference="chap:molecular_hamiltonian"\},
+[\[chap:dft\]](#chap:dft)\{reference-type="ref+label"
+reference="chap:dft"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+Combining quantum computing with machine learning methods holds out the
+promise of powerful hybrid [@verdon2019learning]. The core idea is to
+construct a parameterized quantum circuit $$\begin\{aligned\}
+    Y = Q_\{\theta\}(X)
+\end\{aligned\}$$ Parameters $\theta$ are optimized with respect to a loss
+function $L$. Another challenge in this space is designing methods to
+initialize parameters with initial guesses $\theta_0$. The function we
+seek to optimize is the expectation value of a Hamiltonian $\hat\{H\}$
+$$\begin\{aligned\}
+    f(\theta) &= \langle H \rangle_\theta \\
+    &=\langle \psi_\theta | \hat\{H\} | \psi_\theta \rangle
+\end\{aligned\}$$ This function is referred to as the cost function or the
+expectation value of the Hamiltonian and must be estimated through many
+runs of the underlying quantum circuit. The classical optimization task
+is to identify $$\begin\{aligned\}
+    \theta^* &= \arg\min_\{\theta\} f(\theta)
+\end\{aligned\}$$
+
+In the case that the classical optimization algorithm is given by an
+RNN, we can write
+
+$$\begin\{aligned\}
+    h_\{t+1\}, \theta_\{t+1\} &= \textrm\{RNN\}_\{\varphi\}(h_t, \theta_t, y_t)
+\end\{aligned\}$$
+
+![The hybrid quantum-classical computation
+graph](figures/Differentiable Physics/Quantum Computing ML/tensorflow_quantum/quantum_classical1.png)\{#fig:hybrid_computation_graph\}
+
+## Combining with Machine Learning Framework Libraries
+
+As we have seen earlier in the book, one of the most powerful drivers
+for the growth of differentiable programming techniques has been the
+advent of powerful automatic differentiation libraries like TensorFlow
+and PyTorch. One advantage of a combined framework for quantum computing
+and machine learning is the possibility of constructing a powerful
+automatic framework for hybrid quantum-classical systems. Frameworks
+like TensorFlow Quantum [@verdon2019learning] attempt to cross this
+boundary and have found early uses for quantum control and other use
+cases.

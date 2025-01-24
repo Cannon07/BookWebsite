@@ -1,0 +1,189 @@
+# Steerable Equivariant Graph Neural Networks \{#chap:steerable\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:qft_basics\]](#chap:qft_basics)\{reference-type="ref+label"
+reference="chap:qft_basics"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+Implementing an equivariant architecture often requires formidable
+constructions involving spherical harmonics and Clebsch-Gordon products.
+The theory of steerability [@cohen2016steerable] offers a powerful tool
+to allow for simpler construction of equivariant convolutions for
+certain special cases. In this chapter, we use this theory to construct
+generable steerable equivariant graph neural networks that provide a
+powerful and general equivariant algorithmic framework.
+
+## Steerable Features
+
+![<https://arxiv.org/abs/2110.02905>](figures/Differentiable Physics/Molecular ML/Steerable GNNs/steerable_features.png)\{#fig:my_label\}
+
+Let $$\begin\{aligned\}
+\Phi: \mathcal\{F\} \to \mathcal\{F'\}
+\end\{aligned\}$$ be a convolutional network. Let $$\begin\{aligned\}
+(\mathcal\{F\}, \pi)
+\end\{aligned\}$$ be a feature space with a group representation $\pi$. We
+say that linear space $\mathcal\{F'\}$ is linearly steerable with respect
+to $G$ if for all $g \in G$, we have that features $\Phi f$,
+$\Phi \pi(g) f$ are related by a linear transformation $\pi'(g)$ which
+does not depend on $f$. That is, $$\begin\{aligned\}
+\pi'(g) \Phi f &= \Phi \pi(g) f
+\end\{aligned\}$$
+
+This means that $\pi'(g)$ allows the \"steering\" of features in
+$\mathcal\{F'\}$ without referring to $\mathcal\{F\}$. We define a steerable
+vector space to be a vector space that is steerable with respect to some
+group.
+
+Using these definitions, we have $\pi'$ must also be a group
+representation $$\begin\{aligned\}
+    \pi'(gh)\Phi f &=  \Phi \pi(gh) \\
+    &= \Phi \pi(g) \pi(h) f \\
+    &= \pi'(g) \Phi \pi(h) f \\
+    &= \pi'(g)\pi'(h) \Phi f
+\end\{aligned\}$$ The intuition here is that steerable networks allow for
+linear transformations to implement the effect of the group action.
+$SO(3)$ for example naturally allow for steerable transformations since
+any rotation matrix $R$ transforms a vector $v$ by multiplication as
+$Rv$. An arbitrary group action however may not be steerable.
+
+What is the difference between equivariance and steerability in general?
+Steerable vector spaces are constructed by spherical harmonic spaces,
+but not all equivariant methods use steerability as a guiding principle.
+
+## Equivariant Messages for Graph Networks
+
+Geometrical and physical quantities improve equivariant mesage passing
+by allowing message passing networks to gather vectorial and tensorial
+messages. Steerable equivariant graph neural networks provide a family
+of techniques for passing equivariant messages in graph neural networks
+to allow for construction of a general family of methods.
+
+How do we build steerable $E(3)$ equivariant layers? Note that for
+$g \in SO(3)$ and vector $\tilde\{h\}$ in an irreducible representation,
+we have that the group action is given by $$\begin\{aligned\}
+D^\ell(g)\tilde\{h\},\ g \in SO(3)
+\end\{aligned\}$$ Here $D^\ell$ is a Wigner $D$-matrix. As a special case,
+a Euclidean vector in $\mathbb\{R\}^3$ is consequently steerable for
+rotations $g = R \in SO(3)$ via $D^1(g) = R$.
+
+Of course, we don't only want to work with 3D vectors. By choosing
+larger values of $\ell$, we can have larger equivariant message passing
+spaces. In designing such a generalized steerability, we would like to
+meet two design goals.
+
+-   Goal 1: Generalization of notion of rotations to arbitrary large
+    vector spaces
+
+-   Goal 2: $SO(3)$-equivariance
+
+## Constructing Suitable Equivariant Message Passing Spaces
+
+We use an orthonormal basis for functions on the sphere where we
+represent any vector in a basis spanned by spherical harmonics.
+$$\begin\{aligned\}
+    h \in V_L = V_0 \oplus V_1 \oplus V_2 \oplus \dotsc
+\end\{aligned\}$$
+
+The $V_l$ are steerable subspaces since $SO(3)$ has a group
+representation via Wigner $D$-matrices $D^\{(l)\}(g)$ which act on each
+subspace $V_l$ separately. $D^\{(l)\}(g)$ are block diagonal
+representations with each block acting on a separate vector space. This
+property achieves Goal 1 of processing high dimensional vectors.
+
+![<https://arxiv.org/abs/2110.02905>](figures/Differentiable Physics/Molecular ML/Steerable GNNs/steerable_vector.png)\{#fig:my_label\}
+
+To construct more general steerable spaces, we use a spherical harmonics
+embedding. Recall the spherical harmonics are functions defined on the
+sphere $$\begin\{aligned\}
+    Y^\{(l)\}_m: S^2 \to \mathbb\{R\}
+\end\{aligned\}$$
+
+We can evaluate a spherical harmonic for an arbitrary vector $x$ in
+$\mathbb\{R\}^3$ by normalizing the vector $$\begin\{aligned\}
+Y^\{(l)\}_m\left (\frac\{x\}\{\|x\|\}\right)
+\end\{aligned\}$$ By ranging over all the possible choices of $m$, we can
+construct an embedding vector $a^\{(l)\}(x)$ $$\begin\{aligned\}
+    a^\{(l)\}(x) := (Y^\{(l)\}_\{-l\}\left (\frac\{x\}\{\|x\|\}\right),\dotsc,Y^\{(l)\}_l\left (\frac\{x\}\{\|x\|\}\right))^T
+\end\{aligned\}$$ This vector is called the spherical harmonics embedding
+of the vector $x \in \mathbb\{R\}^3$. We note that the spherical harmonics
+embedding is $SO(3)$ equivariant due to the equivariance of the
+spherical harmonics. That is, we have the property that
+$$\begin\{aligned\}
+    \forall R' \in SO(3), \forall n \in S^2, a^\{(l)\}(R'n) = D^\{(l)\}(R')a^\{(l)\}(n)
+\end\{aligned\}$$ This equivariance allows us to achieve Goal 2 formulated
+above.
+
+## Steerable Multilayer Perceptron
+
+Steerable multilayer perceptrons act like regular multilayer perceptrons
+by interleaving nonlinearities with linear equivariant transformations.
+Consequently, we want equivariant linear maps (also known as
+intertwiners) which transform between steerable vector spaces at layer
+$i-1$ and layer $i$ by a linear transformation $$\begin\{aligned\}
+    h^i = W^i_\{\tilde\{a\}\} h^\{i-1\}
+\end\{aligned\}$$ Unlike regular MLPs, the weight matrices $W^i$ must be
+constructed in a structured fashion using Clebsch-Gordon products as in
+tensor field networks or other equivariant architectures we have seen
+thus far.
+
+Recall that the Clebsch-Gordon tensor product gives the linear map
+$$\begin\{aligned\}
+    (h^\{l_1\} \otimes^w_\{cg\} h^\{(l_2)\})^\{(l)\}_m = w \sum_\{m_1=-l_1\}^\{l_1\} \sum_\{m_2 = -l_2\}^\{l_2\} C^\{(l,m)\}_\{(l_1,m_1),(l_2, m_2)\} h^\{(l_1)\}_\{m_1\}h^\{(l_2)\}_\{m_2\}
+\end\{aligned\}$$ We treat the Clebsch-Gordon product with a fixed vector
+$\tilde\{a\}$ in one of its inputs as a steerable linear layer conditioned
+on $\tilde\{a\}$ $$\begin\{aligned\}
+W_\{\tilde\{a\}\}\tilde\{h\}^\{i-1\} = \tilde\{h\}^\{i-1\} \otimes_\{cg\}^\{w\} \tilde\{a\}
+\end\{aligned\}$$
+
+If the nonlinearity is chosen to be steerable, the resulting steerable
+MLP will satisfy the property
+
+$$\begin\{aligned\}
+    \tilde\{MLP\}(D(g)\tilde\{h\}_0) = D'(g) \tilde\{MLP\}(\tilde\{h\}_0)
+\end\{aligned\}$$
+
+There are few choices of steerable nonlinearity such as gated
+nonlinearities.
+
+## Steerable Equivariant Graph Neural Networks \{#steerable-equivariant-graph-neural-networks\}
+
+As in our earlier discussion of $SE(3)$ transformers, point convolutions
+are given by the equation $$\begin\{aligned\}
+    f' = \sum_\{j \in \mathcal\{N\}(i)\} W(x_j - x_j) f_j
+\end\{aligned\}$$ Messages are given by $$\begin\{aligned\}
+    m_\{ij\} = W(x_j x_i)f_j
+\end\{aligned\}$$ The message update rule is $$\begin\{aligned\}
+    f'_i = \sum_\{j\in\mathcal\{N\}(i)\} m_\{ij\}
+\end\{aligned\}$$ The message passing rule for steerable equivariant graph
+neural networks is given by $$\begin\{aligned\}
+    m_\{ij\} &= \phi_m(f_i,f_j,\|x_j-x_i\|^2), a_\{ij\}) \\
+    f'_i &= \phi_f(f_i, \sum_\{j \in \mathcal\{N\}(i)\} m_\{ij\} a_i) \\
+    x'_i &= x_i + C \sum_\{j\neq i\} (x_i - x_j) \phi_x(m_\{ij\})
+\end\{aligned\}$$ This is a nonlinear convolution with an anisotropic
+kernel. Here the $a_\{ij\}, a_i$ are steerable features for edges and
+nodes respectively. The $\phi_m$ and $\phi_f$ are steerable MLPs. The
+edge attributes $\tilde\{a\}_\{ij\}$ could be for example relative position,
+relative force, and the node attributes $\tilde\{a\}_i$ could be velocity,
+force, spin, etc. This structure allows for directly leveraging local
+geometric or physical cues in the node update, which leads to a new
+class of steerable activation functions. $$\begin\{aligned\}
+    m_\{ij\} &= MLP(f_i, f_j, \|x_j-x_i\|^2, a_i) = \sigma(W^\{(k)\}(\dotsc(\sigma(W^\{(1)\}h_\{i-1\})))) \\
+    h_\{i-1\} &= f_i || f_j || \|x_j - x_i\|^2 || a_i
+\end\{aligned\}$$
+
+Steerable kernel methods expand the linear transformations in a
+steerable basis such as 3D spherical harmonics $$\begin\{aligned\}
+    W(x_j-x_i) = \sum_l\sum_\{m=-l\}^l W^\{(l)_m\}(\|x_j - x_i\|) Y^\{(l)\}_m(x_j - x_i)
+\end\{aligned\}$$ Equivariant steerable methods can be written in
+convolution form $$\begin\{aligned\}
+    \tilde\{f\}'_j = \sum_\{j \in \mathcal\{N\}(i)\} W_\{\tilde\{a\}_\{ij\}\}(\|x_j - x_i\|)\tilde\{f\}_j
+    \tilde\{f\}'_j = \sum_\{j \in \mathcal\{N\}(i)\} W_\{\tilde\{a\}_\{ij\}\}(\tilde\{f\}_i, \tilde\{f\}_j, \|x_j - x_i\|)\tilde\{f\}_j
+\end\{aligned\}$$ Note that this same transformation is used in tensor
+field networks, Cormorant, L1Net [@miller2020relevance] and the $SE(3)$
+transformer. We can then look at equivariant message passing as a
+nonlinear convolution.

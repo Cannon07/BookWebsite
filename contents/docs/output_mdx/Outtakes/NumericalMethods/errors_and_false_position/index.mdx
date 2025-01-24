@@ -1,0 +1,263 @@
+# Errors and False Position Method \{#chap:errors_false_position\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:calculus\]](#chap:calculus)\{reference-type="ref+label"
+reference="chap:calculus"\},
+[\[chap:bracketing\]](#chap:bracketing)\{reference-type="ref+label"
+reference="chap:bracketing"\}\
+**Difficulty Level:** \*\
+
+------------------------------------------------------------------------
+
+In this chapter, we start by explaining the distinction between accuracy
+and precision. We then learn how error estimates can be used to decide
+when to terminate an iterative calculation and how to use Taylor series
+to estimate truncation errors. We then explain how to implement the
+false position method for root finding and explore the difference
+between bisection search and false position and end by discussing why we
+need to use relative errors for convergence criteria.
+
+## False Position Method
+
+::: marginfigure
+![image](figures/part1b/errors_and_false_position/falseposition.PNG)\{width="2.4in"\}
+:::
+
+False position (also called the linear interpolation method) is another
+well-known bracketing method. It is very similar to bisection with the
+exception that it uses a different strategy to come up with its new root
+estimate. Rather than bisecting the interval, it locates the root by
+joining $f(x_l)$ and $f(x_u)$ with a straight line (Figure
+[\[fig:1\]](#fig:1)\{reference-type="ref" reference="fig:1"\}). The
+intersection of this line with the x axis represents an improved
+estimate of the root. Thus, the shape of the function influences the new
+root estimate. Using similar triangles, the intersection of the straight
+line with the x axis can be estimated as
+
+$$\begin\{aligned\}
+x_r = x_u - \dfrac\{ f(x_u)(x_l-x_u)\}\{f(x_l)-f(x_u)\}
+\end\{aligned\}$$
+
+This is the formula for calculating the false-position. The value of
+$x_r$ is computed using the above equation and then replaces whichever
+of the two initial guesses, $x_l$ or $x_u$, yields a function value with
+the same sign as $f(x_r)$. In this way the values of $x_l$ and $x_u$
+always bracket the true root. The process is repeated until the root is
+estimated adequately. The algorithm is identical to the one for
+bisection with just a minor change in determining the root within a
+bracket.
+
+Note that the rate of shrinkage of the interval width can be faster or
+slower than bisection search depending on the function at hand. In this
+method, it is also possible that only the upper (or lower alone) limit
+undergoes an update with every iteration. Therefore, relative percentage
+errors are usually used for the convergence criterion.
+
+::::: example
+Let's go back to the example $x^3 - 3.7x^2 + 4.54x - 1.848$ that was
+used to demonstrate incremental and bisection searches in
+[\[chap:bracketing\]](#chap:bracketing)\{reference-type="ref+label"
+reference="chap:bracketing"\}, and re-solve it using the false position
+method.
+
+::: margintable
+**Output:**
+
+    Root found: 1.402345184696867
+:::
+
+::: marginfigure
+![image](figures/part1b/errors_and_false_position/falseposition2.png)\{width="2in"\}
+:::
+
+``` 
+def f(x: $\mathbb\{R\}$) -> $\mathbb\{R\}$:                                      
+  return x**3 - 3.7*x**2 + 4.54*x - 1.848              
+                                                       
+# False Position method                                
+x_l = -100                                             
+x_u = 100                                              
+root_prev = 0                                          
+while True:                                            
+  x_root = x_u-f(x_u)*(x_l-x_u)/(f(x_l)-f(x_u))        
+  f_root = f(x_root)                                   
+  if f_root*f(x_l) < 0:                                
+     x_u = x_root                                      
+  elif f_root*f(x_u) < 0:                              
+     x_l = x_root                                      
+  root_present = x_root                                
+  # Convergence criterion                              
+  if abs((root_present-root_prev)/root_present) < 10**(-8):
+      break;                                           
+  root_prev = root_present                             
+  
+print('Root found:')                                   
+print(x_root)
+```
+:::::
+
+The false position method converges similarly to bisection search;
+functions that are nearly linear converge faster. Try the method with
+some nearly linear functions to see for yourself.
+
+## Accuracy and Precision
+
+The errors associated with both calculations and measurements can be
+characterized with regard to their accuracy and precision. *Accuracy*
+refers to how closely a computed or measured value agrees with the true
+value. *Precision* refers to how closely individual computed or measured
+values agree with each other. *Inaccuracy* (also called bias) is defined
+as systematic deviation from the truth. The distinction between these
+terms is distinguished using the Figure
+[\[fig:3\]](#fig:3)\{reference-type="ref" reference="fig:3"\}. The
+collective term *Error* is used to represent both the inaccuracy and
+imprecision of our predictions.
+
+For example, let's consider a scenario of measuring an object of true
+weight 15 $lbs$. If you weigh the given object ten times, and get 10
+$lbs$ each time, then your measurement is very precise. Precision is
+independent of accuracy. You can be very precise but inaccurate, as in
+the case above. You can also be accurate but imprecise. If on average,
+your measurements for the given object are close to the true value, but
+the measurements are far from each other, then you have accuracy without
+precision.
+
+::: marginfigure
+![image](figures/part1b/errors_and_false_position/accuracy.png)\{width="2.2in"\}
+:::
+
+## Error Definitions
+
+Numerical errors arise from the use of approximations to represent exact
+mathematical operations and quantities. The numerical error is defined
+as the discrepancy between the true value and the approximation.
+
+::: margintable
+**True Error:**\
+$E_t= \text\{true value - approximation\}$
+:::
+
+This true error ($E_t$) is commonly expressed as an absolute value and
+referred to as the absolute error. A shortcoming of this definition is
+that it takes no account of the order of magnitude of the value under
+examination. For example, an error of a meter is much more significant
+if we are measuring the dimensions of a house than measuring the
+distance between planets. One way to account for the magnitudes of the
+quantities being evaluated is to normalize the error to the true value,
+as in the equation given to the right. The relative error can also be
+multiplied by 100% to express it as *true percent relative
+error*($\epsilon_t$).
+
+::: margintable
+**Relative Error:**\
+$\text\{Relative \} E_t = \frac\{\text\{true value - approx.\}\}\{\text\{true value\}\}$\
+$\epsilon_t = \frac\{\text\{true value - approximation\}\}\{\text\{true value\}\} 100\%$
+:::
+
+For the above definitions, the true value is necessary to calculate the
+errors. However, in real-world applications, we do not have this
+knowledge. In such cases, an alternative is to normalize the error using
+the best available estimate of the true value that is, to the
+approximation itself, as shown.
+
+::: margintable
+**Normalized Error:**\
+$\epsilon_a=\frac\{\text\{approximation error\}\}\{\text\{approximation\}\} 100\%$
+:::
+
+::: margintable
+**Relative normalized Error:**\
+$\epsilon_a=\frac\{\text\{present approx.-prev. approx.\}\}\{\text\{present approx.\}\} 100\%$
+:::
+
+Again, to compute the numerator, true value is needed. One of the
+challenges of numerical methods is to determine error estimates in the
+absence of knowledge regarding the true value. Some numerical methods
+use *iterations* for this purpose. In iterative methods, the present
+approximation is made on the basis of a previous approximation. This
+process is performed repeatedly to successively compute better
+approximations. For such cases, the error is often estimated as the
+difference between the previous and present approximations. Thus,
+percent relative error is determined according to second equation.
+
+Often, while dealing with errors, we may not be concerned with the sign
+of the error but are interested in whether the absolute value of the
+percent relative error is lower than a pre-specified tolerance
+$\epsilon_s$. For such cases, the computation is repeated until the
+inequality, $|\epsilon_a| < \epsilon_s$, is achieved. This relationship
+is referred to as a *stopping criterion*.
+
+## Roundoff Errors
+
+Roundoff errors arise because digital computers cannot represent some
+quantities exactly. They are important to engineering and scientific
+problem solving because they can lead to erroneous results. In certain
+cases, they can actually lead to a calculation going unstable and
+yielding obviously erroneous results. Such calculations are said to be
+ill-conditioned. Worse still, they can lead to subtler discrepancies
+that are difficult to detect. There are two major facets of roundoff
+errors involved in numerical calculations:
+
+1.  Digital computers have magnitude and precision limits on their
+    ability to represent numbers.
+
+2.  Certain numerical manipulations are highly sensitive to roundoff
+    errors. This can result from both mathematical considerations as
+    well as from the way in which computers perform arithmetic
+    operations.
+
+### Computer Number Representation
+
+Numerical roundoff errors are directly related to the manner in which
+numbers are stored in a computer. The fundamental unit whereby
+information is represented is called a word. This is an entity that
+consists of a string of binary digits, or bits. Numbers are typically
+stored in one or more words. Computers generally store information in
+the binary system. A 16-bit signed integer can store integers ranging
+from -32,768 to 32,767. In general, an n-bit word can store numbers
+ranging from $-2^\{n-1\}$ to $2^\{n-1\}-1$. Thus, memory allocated for a
+word constrains its accuracy. In a similar manner, floating point
+numbers are represented in computers as $\pm s \times  b^e$, where s =
+the *significand* (or mantissa), b = the base of the number system being
+used, and e = the exponent. For example, $0.002345$ is represented as
+$2.345\times10^\{-3\}$. If a simple rational number with a finite number
+of digits like $2^\{-5\} = 0.03125$ would have to be stored with only a
+single digit *mantissa* as $3.1 \times 10^\{-2\}$ or $0.031$. Thus, a
+roundoff error is introduced For this case, it represents a relative
+error of $\frac\{0.03125-0.031\}\{0.03125\} = 0.008$. These errors are also
+extended while performing arithmetic operations due to the constraints
+on memory.
+
+## Truncation Errors
+
+Truncation errors are those that result from using an approximation in
+place of an exact mathematical procedure. Let's discuss these errors in
+the context of a Taylor series expansion of $f(x) = \sin(x)$ about
+$x=0$. If we truncated this function till the 5th order to give:
+
+$$\begin\{aligned\}
+    \sin(x) \cong x - \frac\{x^3\}\{3!\} + \frac\{x^5\}\{5!\}
+\end\{aligned\}$$
+
+The remainder $R_7$ of the Taylor series approximation is given by the
+sum of the remaining terms of Taylor series. The subscript 7 depicts
+that terms from 7th order neglected. This can be approximated by
+considering only the 7th-order term from the Taylor series as
+$\{R_7\} \cong \frac\{h^7\}\{7!\}$. The true value of
+$sin(\frac\{\pi\}\{6\}) = 0.5$, whereas the taylor series expansion until
+the 5th order is given by $$\begin\{aligned\}
+\sin(\frac\{\pi\}\{6\})  \cong \frac\{\pi\}\{6\} - \dfrac\{(\frac\{\pi\}\{6\})^3\}\{3!\}  + \dfrac\{(\frac\{\pi\}\{6\})^5\}\{5!\}  =  0.500002132588792
+\end\{aligned\}$$
+
+The error in approximation is $2.1e-06$ which can be obtained
+approximately by using the remainder term for order 7 as discussed
+above. $$\begin\{aligned\}
+R_7 =  \frac\{h^7\}\{7!\} = \frac\{(\frac\{\pi\}\{6\})^7\}\{7!\} = 2.140719e-06
+\end\{aligned\}$$
+
+## Exercises
+
+1.  TODO

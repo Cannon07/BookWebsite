@@ -1,0 +1,232 @@
+# Photosynthesis \{#chap:photosynthesis\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:photons\]](#chap:photons)\{reference-type="ref+label"
+reference="chap:photons"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+In this chapter we discuss the interactions of a radiation field with a
+photochemical system which absorbs radiation over a broad band of
+frequencies. Of primary concern are the evaluation of the chemical
+potential difference which is developed within the system, and the
+amount of work, *i.e.* free energy, which may appear as a result of
+light absorption by such a system.
+
+## Light Absorption Induced Excitations
+
+Consider a two-level photochemical system which consists of a collection
+of ground electronic states $G$ and excited electronic states $E$
+(Fig. [\[fig1\]](#fig1)\{reference-type="ref" reference="fig1"\}). In
+systems where excitations can migrate easily, these collections of
+states are often referred to as the *valence band* and the *conduction
+band*, respectively. Each electronic band usually contains a number of
+vibrational substates.
+
+::: marginfigure
+![image](figures/part2a/statistical_mechanics/photosynthesis/fig1.png)\{width="\\linewidth"\}
+:::
+
+When the rate of absorption of light quanta causing excitations from $G$
+to $E$ is rapid with respect to the thermal equilibration of populations
+between the two bands, then a transition from $E$ to $G$ gives up some
+free energy which may be stored or used for chemical synthesis. The
+amount of work which can be done as a result of the absorption of each
+photon is limited by the product of this free-energy change $\mu$, and
+the quantum yield for the de-excitation pathway which is coupled to work
+production.
+
+If the sub states within each electronic band remain in thermal
+equilibrium regardless of the incident radiation field, then the
+potential difference between any substate of $G$ and any substate of $E$
+will be independent of the identity of either substate. In other words,
+there will be a single well-defined free-energy change for any
+transition between the bands.
+
+There are two ways of viewing the excitations caused by the absorption
+of light:
+
+-   *Photoelectric view*. Excitation may be considered as producing an
+    increase in the population of electrons in a set of states of fixed
+    number, with a corresponding decrease in the population of electrons
+    in another set of states of fixed number. Adequate if the system
+    operates through electron migration.
+
+-   *Photochemical view* Excitation may be considered as producing as an
+    increase the number of an excited state molecular species and a
+    concomitant decrease in the number of a ground state molecular
+    species. Adequate if light absorption is molecular rearrangement.
+
+In this lecture we will consider a *photochemical view*, *i.e.* we
+analyze changes in the partial molar free energy of the light-absorbing
+molecules in their ground state and in their excited state. The action
+of light usually depletes the population of the ground-state molecules
+only very slightly, altering the chemical activity of these species to a
+negligible extent; in this case the potential difference arising between
+the bands is due almost entirely to the greatly increased population of
+molecules in the excited state.
+
+## Chemical Potential of Photochemical Systems
+
+In order to evaluate the band-to-band potential difference $\mu$ caused
+by a radiation field in any given situation, we first consider the
+conditions for equilibrium between the band-to-band transitions and a
+radiation field. Reversible reaction implies that there is no change in
+entropy accompanying the emission or absorption of radiation by the
+photochemical system at any frequency.
+
+The entropy change corresponding to the loss of a photon of frequency
+$\nu$ from a radiation field may be evaluated by considering an
+equilibrium at $\nu$ between the field and a blackbody. A blackbody is
+in equilibrium with a radiation field at $\nu$ when: $$\label\{Eq1\}
+I(\nu) = \frac\{8\pi n^2\nu^2\}\{c^2\}\frac\{1\}\{e^\{h\nu/k_BT_B\}-1\}$$
+
+where $T_B$ is the temperature of the blackbody, $n$ is the refractive
+index of the medium, and $I$ is the intensity of the radiation field in
+units of photons per $4\pi$ solid angle, per unit bandwidth, per unit
+area, per unit time.
+
+The entropy gained by a blackbody upon absorption of a photon at $\nu$
+is $h\nu/T$. By rearranging ([\[Eq1\]](#Eq1)\{reference-type="ref"
+reference="Eq1"\}) to find the temperature of a blackbody in equilibrium
+with a radiation field of intensity $I$, we find the entropy change upon
+loss of a photon from a radiation field of the photochemical system, to
+be: $$\label\{Eq2\}
+-\frac\{\partial S\}\{\partial N\} = k\ln\left( 1+  \frac\{8\pi n^2\nu^2\}\{c^2I\}\right)$$
+
+Assuming a canonical ensemble $T,V,N$, we can define a relation between
+the potential difference $\mu$ and the change in entropy per photon
+absorbed by the photochemical system as: $$\label\{Eq3\}
+ \frac\{\partial S\}\{\partial N\} = \frac\{h\nu - \mu\}\{T\}$$ If we assume
+that the photochemical absorber is isotropic in its interaction with a
+radiation field, we can assume that the entropy change induced by photon
+absorbed is equal to the negative of the entropy change due to emission
+of a photon. Then by integrating over solid angle, and equating the
+entropies, we find that the rate of photon absorption and emission per
+unit bandwidth and unit cross section is: $$\label\{photonEm\}
+I(\nu,\mu,T) = 8\pi\left(\frac\{n\nu\}\{c\}\right)^2\frac\{1\}\{e^\{(h\nu-\mu)/k_BT\}-1\}$$
+
+where we consider the loss due entropy of photon emitted as
+$-\frac\{\partial S\}\{\partial N\}$, due to reversibility.
+
+The number one in ([\[photonEm\]](#photonEm)\{reference-type="ref"
+reference="photonEm"\}) corresponds to stimulated emission, which may
+usually be neglected simplifying the expression to get: $$\label\{Eq4\}
+I(\nu,\mu,T) = 8\pi\left(\frac\{n\nu\}\{c\}\right)^2\exp\left(\frac\{\mu-h\nu\}\{k_BT\}\right)$$
+
+If the absorption cross section for band-to-band excitation is
+$\sigma(\nu,\mu,T)$, then the total rate of excitation and emission per
+unit bandwidth is equal to $$\label\{Eq5\}
+\sigma(\nu,\mu,T) \times I(\nu,\mu,T)$$ for a photochemical system which
+has thermal equilibrium at temperature T within its electronic bands,
+and a potential difference $\mu$ between the bands, and which is in
+equilibrium with an isotropic radiation field at all frequencies.
+
+For simplicity we assume that the absorption spectrum is independent of
+$\mu$, although this may not be true. Changes with temperature can be
+ignored since $T$ is assumed to be fixed. Then, by adding the absorption
+cross section for band-to-band excitation $\sigma(\nu)$ to the frequency
+dependent factors of ([\[Eq4\]](#Eq4)\{reference-type="ref"
+reference="Eq4"\}), we find that the emission spectrum as a function of
+$\nu$ is given by (Fig. [\[fig2\]](#fig2)\{reference-type="ref"
+reference="fig2"\}): $$\label\{Eq6\}
+\sigma(\nu)n^2(\nu)\nu^2\exp\left(-\frac\{h\nu\}\{k_BT\} \right)$$
+
+::: marginfigure
+![image](figures/part2a/statistical_mechanics/photosynthesis/fig2.png)\{width="\\linewidth"\}
+:::
+
+The Planck-law relationship between absorption and emission may be used
+to calculate the potential developed in a photochemical system whenever
+its absorption spectrum and the incident light flux are known.
+
+The rate of band-to-band excitations resulting from an arbitrary
+radiative field is equal to:
+
+$$\label\{Eq7\}
+R_\{in\} = \int \sigma(\nu)I_S(\nu)d\nu$$
+
+From ([\[Eq6\]](#Eq6)\{reference-type="ref" reference="Eq6"\}) the rate of
+radiative decay from a photochemical system having a potential
+difference $\mu$ is: $$\begin\{aligned\}
+\label\{Eq8\}
+R_\{lum\} &= \exp\left(-\frac\{h\mu\}\{k_BT\} \right) \int 8\pi\left(\frac\{n\nu\}\{c\}\right)^2\sigma(\nu)\exp\left(-\frac\{h\nu\}\{k_BT\}\right)d\nu \notag\\
+&=\exp\left(-\frac\{h\mu\}\{k_BT\} \right)L
+\end\{aligned\}$$ where we abbreviate the integral with $L$.
+
+By equating ([\[Eq7\]](#Eq7)\{reference-type="ref" reference="Eq7"\}) and
+([\[Eq8\]](#Eq8)\{reference-type="ref" reference="Eq8"\}), we can find the
+maximum possible potential of a photochemical system having an
+absorption spectrum $\sigma(\nu)$, and illuminated by a radiation field
+of intensity and distribution $I_S(\nu)$: $$\label\{Eq9\}
+\mu_\{max\}=k_BT\ln\left( \frac\{R_\{in\}\}\{L\}\right)$$
+
+Nonradiative band-to-band transitions are frequently a significant
+source of $E$-to-$G$ relaxation. We assume that the rate of induced
+$G$-to-$E$ transitions given by ([\[Eq7\]](#Eq7)\{reference-type="ref"
+reference="Eq7"\}) is large with respect to all spontaneous excitations.
+Then we specify that the total rate of decay from $E$ to $G$ is $\kappa$
+times the rate of radiative decay alone: $$\label\{Eq10\}
+R_\{out\}=\kappa(\mu)L\exp\left( \frac\{\mu\}\{k_BT\} \right)$$
+
+By equating $R_\{in\}$ and $R_\{out\}$ we determine the potential developed
+in the presence of nonradiative relaxation:: $$\label\{Eq11\}
+\mu = k_BT\ln\left( \frac\{R_\{in\}\}\{\kappa(\mu)L\} \right) = \mu_\{max\} - k_BT\ln \kappa(\mu)$$
+
+As $\kappa$ is the reciprocal of the luminescence quantum yield, it may
+frequently be determined experimentally. For the remainder of this
+section we assume that $\kappa$ is independent of $\mu$, although it
+appears that this is generally true only for noninteracting excitations
+obeying Boltzmann statistics.
+
+## Power Stored by Light Absorption
+
+Work is one of the more popular commodities which can result from the
+photochemical absorption of light, so that frequently one desires to
+maximize the amount of power stored by such a system.
+
+The amount of power stored is: $$\label\{Eq12\}
+P= (R_\{in\} - R_\{loss\})\mu$$
+
+where $R_\{loss\}$ is the rate of $E$-to-$G$ transitions which are not
+coupled to the work-storage process.
+
+We define the quantum yield for the loss processes: $$\label\{Eq14\}
+\phi_\{loss\} = \frac\{R_\{loss\}\}\{R_\{out\}\}$$
+
+From ([\[Eq11\]](#Eq11)\{reference-type="ref" reference="Eq11"\}) we know
+that: $$\begin\{aligned\}
+\label\{Eq15\}
+\mu &= \mu_\{max\} - k_BT\ln\left(\frac\{R_\{out\}\}\{R_\{lum\}\}\right) \notag\\
+&= \mu_\{max\} - k_BT\ln\left(\frac\{R_\{loss\}\}\{R_\{lum\}\}\right) + k_BT\ln\left(\frac\{R_\{loss\}\}\{R_\{out\}\}\right) \notag\\
+&= \mu_0 + k_BT\ln\phi_\{loss\}
+\end\{aligned\}$$
+
+where $\mu_0 = \mu_\{max\} - k_B\ln\left( \frac\{R_\{loss\}\}\{R_\{lum\}\}\right)$
+is the potential difference in the absence of the workstorage process.
+
+Since $R_\{in\} = R_\{out\}$, we may rewrite the amount of power stored as:
+$$\label\{Eq16\}
+P=R_\{in\}\mu(1-\phi_\{loss\})$$ This expression may be maximized by
+appropriate choice of $\mu$ and $\phi_\{loss\}$.
+
+It can be shown that in the case of $\mu_0/k_BT\gg 1$, the power storage
+is approximately maximal when $\phi_\{loss\}=k_BT/\mu_0$, so that the
+optimal potential is roughly: $$\label\{Eq17\}
+\mu=\mu_0 -k_BT\ln\left(\frac\{\mu_0\}\{k_BT\}\right)$$
+
+The Planck-law relation itself has a number of applications, some of
+which are suggested by the work which has already been done. One of the
+important applications is the use of an absorption spectrum to calculate
+a luminescence spectrum for systems in which luminescence has not been
+observed experimentally. Prediction of the luminescence spectrum may be
+useful in calculating energy-transfer probabilities, and may assist in
+locating the luminescence experimentally. Examination of differences
+between predicted and observed luminescence spectra may provide a check
+on the experimental methods used, and represents a tool for examining
+deviations from the usual assumption of complete vibrational equilibrium
+in a two-level system [@Ross1967a].

@@ -1,0 +1,37 @@
+# Combining Partial Differential Equation Solvers with Graph Neural Networks \{#chap:pde_gnn\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:qft_basics\]](#chap:qft_basics)\{reference-type="ref+label"
+reference="chap:qft_basics"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+Instead of embedding a machine learned approximation into a classical
+PDE solver, we can instead consider the inverse approach where a
+classical PDE solver is embedded into the message passing updates of a
+graph neural network [@belbute2020combining]. The graph neural network
+is run directly on a non-uniform mesh for the fluid problem, while the
+classical PDE solver operates on a coarse-grained representation of the
+underlying mesh.
+
+![Architecture for PDE-GNN
+System](figures/Differentiable Physics/fluid_ml/pde_gnn/CFD_GCN model.png)\{#fig:my_label\}
+
+## Adjoint Method
+
+An adjoint method can be used to obtain a gradient while using a
+classical numerical code to perform the PDE solution. The classical code
+is run on a downsampeld grid which must be upsampled to merge with the
+original grid $$\begin\{aligned\}
+    U^\{(i)\} &= \frac\{\sum_\{j=1\}^k w(n_j) D^\{(n_j)\}\}\{\sum_\{j=1\}^k w(n_j)\}
+\end\{aligned\}$$ where $w$ is a distance metric, $D$ is the downsampled
+value, and $U$ is the upsampled value.
+
+## Handling Mesh Degeneration
+
+A subtlety is that mesh updates have to be handled so that the mesh
+doesn't damage itself during updates.

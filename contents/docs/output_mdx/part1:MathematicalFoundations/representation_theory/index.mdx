@@ -1,0 +1,92 @@
+# Group Actions and Representations \{#chap:lorentz_group\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:** [\[chap:lie\]](#chap:lie)\{reference-type="ref+label"
+reference="chap:lie"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+Mathematical groups represent collections of mathematical
+transformations (such as rotations, translations, reflections) abstract.
+Representations provide a tool to turn abstract transformations into
+concrete matrices. In this chapter, we define the useful notions of
+group actions and group representations, which provide tools to study
+groups as concrete matrices instead of as abstract mathematical
+entities.
+
+## Group Action
+
+A group $G$ is said to act on space $A$ if there exists some function
+$$\begin\{aligned\}
+G \times A \to A
+\end\{aligned\}$$ This function is commonly indicated by $\cdot$ under the
+notation $$\begin\{aligned\}
+g \cdot a \in A
+\end\{aligned\}$$ Group representations furnish a natural group action on
+their associated vector spaces $V$.
+
+## Defining Group Representations
+
+For example, a group representation on $\mathbb\{R\}^n$ is given by a map
+$$\begin\{aligned\}
+\rho: G \to M_\{n\times n\}(\mathbb\{R\})
+\end\{aligned\}$$ We say that $\rho$ must be a group homomorphism that
+satisfies the following property $$\begin\{aligned\}
+    \rho(g_1g_2) = \rho(g_1)\rho(g_2)
+\end\{aligned\}$$ for all $g_1, g_2 \in G$.
+
+A faithful representation is one which is injective. We can generalize
+this notation of representation to the complex numbers $$\begin\{aligned\}
+\rho: G \to M_\{n \times n\}(\mathbb\{C\})
+\end\{aligned\}$$ or even further to an arbitrary vector space $V$
+$$\begin\{aligned\}
+\rho: G \to M_\{n \times n\}(V)
+\end\{aligned\}$$
+
+To provide a concrete example, consider the group of 3 elements,
+$$\begin\{aligned\}
+H &= \{1, u, u^2\}
+\end\{aligned\}$$ where $$\begin\{aligned\}
+u &= e^\{2\pi i / 3\}
+\end\{aligned\}$$ We define $\rho: H \to M_\{2 \times 2\}(\mathbb\{C\})$ by
+$$\begin\{aligned\}
+\rho(0) &= \begin\{pmatrix\}
+1 & 0 \\
+0 & 1 
+\end\{pmatrix\}\\
+\rho(u) &= \begin\{pmatrix\}
+1 & 0 \\
+0 & u 
+\end\{pmatrix\} \\
+\rho(u^2) &= \begin\{pmatrix\}
+1 & 0 \\
+0 & u^2 
+\end\{pmatrix\} 
+\end\{aligned\}$$ You will show in the exercises that $\rho$ is a group
+representation.
+
+## Irreducible Representations
+
+Suppose that $W$ is a vector subspace of $V$ which is invariant under
+the group representation $\rho$. That is, if $w \in W$, we have that for
+all group elements $g \in G$, $$\begin\{aligned\}
+\rho(g) w \in W
+\end\{aligned\}$$ That is, the matrices $\rho(g)$ map elements of $W$ back
+into $W$. We can then say that $W$ provides a subrepresentation of
+$\rho$. We say that $V$ provides an irreducible representation if there
+do not exist any subrepresentations. Irreducible representations are
+very useful since reducible representations can be decomposed into a sum
+of irreducible representations. For this reason, irreducible
+representations furnish the \"atomic\" elements of representations. In
+fact, there is a deep connection between particles and representation
+theory given by Wigner's theorem.
+
+## Exercises
+
+1.  Prove that $H$ is a group.
+
+2.  Prove that $\rho$ acting on $H$ defined above is a group
+    representation.

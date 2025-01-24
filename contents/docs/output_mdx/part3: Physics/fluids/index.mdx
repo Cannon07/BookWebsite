@@ -1,0 +1,503 @@
+# Computational Fluid Dynamics \{#chap:cfd\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:newtons_laws\]](#chap:newtons_laws)\{reference-type="ref+label"
+reference="chap:newtons_laws"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+Though simple fluid systems are well-understood from first-principles
+theories, the scale of many real-world problems make directly solving
+the underlying equations for many applications practically impossible
+with current analytical techniques. Complex dynamics, such as turbulent
+fluid flow, have proven resistant to easy theoretic analysis.
+
+Computational fluid dynamics is a class of methods used to numerically
+solve the Navier-Stokes equations, the set of non-linear, partial
+differential equations that describe fluid flow. The solution takes the
+form of a velocity vector field and scalar pressure field, used to
+calculate total force on an object through integration of pressure and
+viscous stresses. The equations for incompressible flow, given below,
+include a mass balance (Eq.
+[\[eqn:continuity\]](#eqn:continuity)\{reference-type="ref"
+reference="eqn:continuity"\}) and a momentum balance (Eq.
+[\[eqn:momentum\]](#eqn:momentum)\{reference-type="ref"
+reference="eqn:momentum"\}). $$\begin\{aligned\}
+\label\{eqn:continuity\}
+\nabla \cdot u &=0 \\
+\label\{eqn:momentum\}
+\frac\{\partial u\}\{\partial t\}+(u \cdot \nabla)u&=\frac\{\mu\}\{\rho\} \nabla^2 u-\frac\{1\}\{\rho\} \nabla P + f
+\end\{aligned\}$$
+
+The difficulty in finding a solution lies in the nature of the
+non-linear advective term in the momentum balance, $(u \cdot \nabla)u$,
+which tends to evolve large and unpredictable fluctuations from
+infinitesimal disturbances, i.e. turbulence. Since directly resolving
+turbulence is impractical with current computational power due to the
+need for an extremely fine grid, there are a number of different models
+used to predict turbulence with varying degrees of assumptions,
+complexity, and computational cost.
+
+Researchers have been developing methods to address the computational
+burden of computational fluid dynamics (CFD) for decades. Typical CFD
+simulations reduce the size of the problem by introducing a new set of
+filtered dynamical equations that are simpler to solve, such as by
+removing a dimension of the problem by averaging time-fluctuations in
+the case of RANS, or resolving only larger spatial scales as in LES. The
+tradeoff is that the filtered equations introduce a closure problem,
+whereby new equations, models, or surrogates are included to fully
+define a solution. Naturally, modeling the unresolved degrees-of-freedom
+brings some approximation error, which may be unsatisfactory for many
+large-scale applications.
+
+In this chapter, we introduce a few computational simplifications:
+Reynolds Averaged Navier Stokes (RANS), Large Eddy Simulation (LES) and
+Detached Eddy Simulation (DES).[@norrby_2014; @cfd-online; @shaughnessy]
+
+## Reynolds Averaged Navier Stokes
+
+RANS provides a relatively accurate averaged solution at a low
+computational cost. In the steady-state RANS formulation, instantaneous
+variables are rewritten in their Reynolds decomposition, which contains
+an average term (overbar) and a fluctuating term (prime):
+
+$$\begin\{aligned\}
+u_i = \overline\{u_i\} + u_i'
+\end\{aligned\}$$
+
+We can plug the definition above into the Navier-Stokes momentum
+equations (using Einstein notation to simplify equations)
+$$\begin\{aligned\}
+\rho\left[\frac\{\partial u_i\}\{\partial t\}+u_j\frac\{\partial u_i\}\{\partial x_j\}\right]&= -\frac\{\partial P\}\{\partial x_i\} +\frac\{\partial \tau_\{ij\}\}\{\partial x_j\}\\
+\rho\left[\frac\{\partial (\overline\{u_i\} + u_i')\}\{\partial t\}+(\overline\{u_j\} + u_j')\frac\{\partial (\overline\{u_i\} + u_i')\}\{\partial x_j\}\right]&= -\frac\{\partial (\overline\{P\} + P')\}\{\partial x_i\} +\frac\{\partial (\overline\{\tau_\{ij\}\} + \tau_\{ij\}')\}\{\partial x_j\}
+\end\{aligned\}$$
+
+and averaging:
+
+$$\begin\{aligned\}
+\rho\left[\frac\{\partial \overline\{u_i\}\}\{\partial t\}+\overline\{u_j\}\frac\{\partial \overline\{u_i\}\}\{\partial x_j\}\right]&= -\frac\{\partial \overline\{P\}\}\{\partial x_i\} +\frac\{\partial \overline\{\tau_\{ij\}\}\}\{\partial x_j\}-\rho\overline\{u_j'\frac\{\partial u_i'\}\{\partial x_j\}\}\\
+\rho\left[\frac\{\partial \overline\{u_i\}\}\{\partial t\}+\overline\{u_j\}\frac\{\partial \overline\{u_i\}\}\{\partial x_j\}\right]&= -\frac\{\partial \overline\{P\}\}\{\partial x_i\} +\frac\{\partial\}\{\partial x_j\}\left(\overline\{\tau_\{ij\}\}-\rho\overline\{u_i'u_j'\}\right)
+\end\{aligned\}$$
+
+The quantity $-\rho\overline\{u_i'u_j'\}$ is termed the Reynolds stress
+tensor. RANS methods close the problem using one or two more transport
+equations to model the Reynolds stress tensor. We use the realizable
+$k-\epsilon$ model, which relates the turbulent kinetic energy $k$ and
+turbulent dissipation rate $\epsilon$.
+
+## Large Eddy Simulations
+
+Large eddy simulations provide a first mathematical model of turbulence.
+Similar to RANS, the LES approaches apply a spatial smoothing filter to
+the Navier-Stokes equations to gain smoothed models.
+
+## Detached Eddy Simulation
+
+The transient DES approach functions similarly to RANS, but results in
+much higher-fidelity solutions. DES is a hybrid approach to turbulence
+modeling and borrows from both RANS and Large Eddy Simulation (LES). In
+LES, instead of time averaging the equations like RANS, the equations
+are spatially filtered to remove the highest frequency fluctuations.
+This results in directly resolving the larger scales of turbulence,
+while modeling the smallest scales. DES combines the two by applying
+RANS near the walls in the boundary layer and switching to LES further
+away, somewhat relaxing grid requirements. Boundary layer behavior can
+be estimated with RANS on a coarser grid rather than directly resolving
+the flow with LES. The computational cost is higher than RANS, but not
+quite as much as LES[@lectures].
+
+
+# Fluid Dynamics \{#chap:fluid\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:newtons_laws\]](#chap:newtons_laws)\{reference-type="ref+label"
+reference="chap:newtons_laws"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+In this chapter, we introduce additional machinery needed to understand
+fluid dynamics, the sub-discipline of fluid mechanics that deals with
+fluids (gases and liquids) in motion.
+
+### Fluid Dynamics Modeling
+
+Fluid dynamics offers a way to solve practical problems by providing a
+systematic understanding of empirical and semi-empirical laws derived
+from flow measurement. Empirical and semi-empirical laws are constituted
+based on assumptions inherent to a fluid mechanical treatment of a
+physical system, which can be expressed mathematically. Every fluid is
+assumed to obey conservation of mass, momentum, energy and satisfies the
+continuum assumption.
+
+The assumption that mass is conserved simply means that for any fixed
+control volume within the fluid, the rate of change of the mass
+contained within the control volume (CV) is equal to the difference
+between the rate of change of the mass entering the control volume,
+$m_\{\mathrm\{in\}\}$, and the rate of change of the mass leaving the
+control volume, $m_\{\mathrm\{out\}\}$, if no fluid is generated or consumed
+inside the control volume. A mathematical expression for the same would
+be:
+
+$$\begin\{aligned\}
+    \frac\{dm_\{\mathrm\{CV\}\}\}\{dt\}=\frac\{dm_\{\mathrm\{in\}\}\}\{dt\}-\frac\{dm_\{\mathrm\{out\}\}\}\{dt\}+\mathrm\{production\ rate\}- \mathrm\{consumption\ rate\}
+\end\{aligned\}$$ In a similar way, governing equations can be set up for
+the conservation of energy and momentum.
+
+The continuum assumption is an extension of continuum mechanics under
+which fluids can be treated as continuous despite the fact that they are
+composed of molecules. Under the continuum assumption, macroscopic
+properties such as density, pressure, temperature, and velocity are
+taken to be well-defined at infinitesimal volume elements and computed
+as average values of the molecular properties.
+
+Fluid dynamics has a wide range of applications such as fluid flow
+modeling for aircraft and spacecraft design, determining the mass flow
+rate of chemicals in industries, vascular stenting approaches to improve
+blood flow, etc.
+
+### Navier Stokes Equations
+
+Fluid flow is typically modeled using the Navier--Stokes equations
+(named after Claude-Louis Navier and George Gabriel Stokes), which are
+differential equations that describe the force balance at a given point
+within a fluid through changes in momentum (force) in response to
+pressure $P$ and viscosity, parameterized by the kinematic viscosity
+$\nu$. For an incompressible fluid with vector velocity field **u**, the
+Navier--Stokes equations are $$\begin\{aligned\}
+\{\displaystyle \{\frac \{\partial u \}\{\partial t\}\}+(u \cdot \nabla )u =-\{\frac \{1\}\{\rho \}\}\nabla P+\nu \nabla ^\{2\}u \}
+\end\{aligned\}$$
+
+Solutions of the Navier--Stokes equations are obtained using calculus.
+Practically, only the simplest cases of fluid flow, which generally
+involve non-turbulent, steady flow (quantified by a low Reynolds
+number), can be solved exactly. For more complex cases, especially those
+involving turbulence, solutions of the Navier--Stokes equations can
+currently only be computed through simulations, which constitutes the
+field of computational fluid dynamics (CFD). Since the Reynolds number
+is an important quantify in fluid dynamics, the following subsection
+provides a brief description:
+
+## Fluid Flow between Parallel Plates
+
+![Poiseuille flow along parallel
+plates.](figures/Physics/fluids/fluid_dynamics/Poiseuille flow.png)\{#fig:plateFlow
+width="\\linewidth"\}
+
+In this section, we solve a first simple fluid flow problem of flow
+between two parallel plates. Flow occurs along the $x$ direction, the
+$y$ direction is perpendicular to the plates, and $z$ is out of plane.
+We recognize that independent of time, $$\begin\{aligned\}
+    v_y &= 0 \\
+    v_z &=0
+\end\{aligned\}$$ Since there is no velocity in the $y$ and $z$ directions
+we know that $$\begin\{aligned\}
+\frac\{\partial P\}\{\partial y\} =\frac\{\partial P\}\{\partial z\} &= 0
+\end\{aligned\}$$
+
+The continuity equation implies that
+$\frac\{\partial v_x\}\{\partial x\}=0$, therefore $v_x=v_x(y)$.
+
+$$\begin\{aligned\}
+    -\frac\{\partial P\}\{\partial x\} + \mu \frac\{\partial^2 v_x\}\{\partial y^2\} &= 0\\
+    \frac\{\partial P\}\{\partial x\} &= \mu \frac\{\partial^2 v_x\}\{\partial y^2\} 
+\end\{aligned\}$$
+
+Therefore, since $v_x$ is not a function of $x$, we have that
+$\frac\{\partial P\}\{\partial x\}$ must equal a constant. $$\begin\{aligned\}
+    \frac\{\partial P\}\{\partial x\} &= C_1 \\
+    P &= C_1 x + C_2
+\end\{aligned\}$$
+
+Let's now apply the boundary conditions. At $x=0$, $P=P_1$, hence
+$C_2=P_1$. At $x=L$, $P=P_2$, hence $C_1=-\Delta P/L$, where
+$\Delta P=P_1-P_2$. From the Navier-Stokes equation, we now have
+$$\begin\{aligned\}
+    \mu\frac\{\partial^2 v_x\}\{\partial y^2\} &= C_1=-\Delta P/L \\
+    \frac\{\partial^2 v_x\}\{\partial y^2\} &=-\frac\{\Delta P\}\{\mu L\}
+\end\{aligned\}$$
+
+$v_x$ can be written down as
+
+$$\begin\{aligned\}
+    v_x &=-\frac\{\Delta P\}\{2 \mu L\}y^2+C_3 y+C_4 \\ 
+    \frac\{\partial v_x\}\{\partial y\} &=  \frac\{\Delta P\}\{\mu L\} y +C_3
+\end\{aligned\}$$
+
+No slip conditions means that $C_3=0$ and
+$C_4=\frac\{\Delta P d^2\}\{8 \mu L\}$ $$\begin\{aligned\}
+    v_x &= \frac\{\Delta P\}\{2 \mu L\}\left (\frac\{d^2\}\{4\}-y^2 \right )
+\end\{aligned\}$$
+
+## Flow through a pipe
+
+![Steady laminar flow in a long pipe with an applied pressure gradient
+$\frac\{\partial P\}\{\partial x\}$ that is driving the fluid through the
+pipe.
+](figures/Physics/fluids/fluid_dynamics/Flowpipe_fluid.png)\{#fig:pipeFlow
+width="100%"\}
+
+Consider steady, incompressible, laminar flow of a Newtonian fluid in an
+infinitely long round pipe of diameter $D$ or radius $R=D/2$. Let's
+ignore the effects of gravity. A constant pressure gradient
+$\frac\{\partial P\}\{\partial x\}$ is applied in the $x$ direction,
+
+The applied pressure gradient is given by $$\begin\{aligned\}
+\frac\{\partial P\}\{\partial x\}=\frac\{P_2-P_1\}\{x_2-x_2\}= \textrm\{constant\}
+\end\{aligned\}$$
+
+where $x_1$ and $x_2$ are two arbitrary locations along the $x$ axis,
+and $P_1$ and $P_2$ are the pressures at those two locations. Note that
+we adopt a modified cylindrical coordinate system with $x$ instead of
+$z$ for the axial component, names, $(r,\theta, x)$ and
+$(u_r, u_\{\theta\},u)$. Let's derive an expression for the velocity field
+inside the pipe.
+
+We make a few assumptions that are valid in this case. First we assume
+that the pipe is infinitely long in the $x$ direction. We also assume
+that the flow is steady (all partial derivatives are zero) and that the
+flow is parallel (no $r$ component of velocity, $u_r=0$).
+
+We also assume the fluid is incompressible and Newtonian and with
+constant properties, and the flow is laminar and that a
+constant-pressure gradient is applied in the $x$ direction such that
+pressure changes linearly with respect to $x$. We also assume the
+velocity field is axisymmetric with no swirl, implying that
+$u_\{\theta\}=0$ and all partial derivatives with respect to $\theta$ are
+zero. Finally, we ignore the effects of gravity.
+
+The following are the boundary conditions for this problem: First, a no
+slip condition at the wall $$\begin\{aligned\}
+\textrm\{At \}r=R, \quad \vec\{V\}=0
+\end\{aligned\}$$
+
+Second, the centerline of the pipe is an axis of symmetry
+$$\begin\{aligned\}
+\textrm\{At \}r=o, \quad \frac\{du\}\{dr\}=0
+\end\{aligned\}$$
+
+Let's write down the differential equations from the Navier-Stokes
+relations. Incompressible continuity equation in cylindrical coordinates
+can be written as $$\begin\{aligned\}
+    \frac\{1\}\{r\}\frac\{\partial(r u_r)\}\{\partial r\}+\frac\{1\}\{r\}\frac\{u_\{\theta\}\}\{\partial \theta\}+\frac\{\partial u\}\{\partial x\}=0 \implies \frac\{\partial u\}\{\partial x\}=0
+\end\{aligned\}$$ since the first two terms are zero given the
+corresponding assumptions. This equation implies that $u$ is not a
+function of $x$. Furthermore, from our assumptions, $u$ is neither a
+function of time or $\theta$, therefore, we conclude that $u$ is at most
+a function of $r$: $u=u(r)$.
+
+Let's write down the axial momentum equation and apply cancellations
+from our assumptions.
+
+$$\begin\{aligned\}
+\rho \bigg( \cancelto\{\}\{\frac\{\partial u\}\{\partial t\}\} +\cancelto\{\}\{u\frac\{\partial u\}\{\partial r\}\}+\cancelto\{\}\{\frac\{u_\{\theta\}\}\{r\}\frac\{\partial u\}\{\partial \theta\}\}+\cancelto\{\}\{u\frac\{\partial u\}\{\partial x\}\}\bigg)=-\frac\{\partial P\}\{\partial x\}+\cancelto\{\}\{\rho g\} + \mu\bigg( \frac\{1\}\{r\} \frac\{\partial\}\{\partial r\} (r\frac\{\partial u\}\{\partial r\}) + \cancelto\{\}\{\frac\{1\}\{r^2\} \frac\{\partial^2 u\}\{\partial \theta^2\}\}+ \cancelto\{\}\{\frac\{\partial^2 u\}\{\partial x^2\}\}\bigg)    
+\end\{aligned\}$$ $$\begin\{aligned\}
+\implies \frac\{1\}\{r\}\frac\{d\}\{dr\}\bigg(r\frac\{du\}\{dr\}\bigg)=\frac\{1\}\{\mu\}\frac\{\partial P\}\{\partial x\}    
+\label\{eq:pipe\}
+\end\{aligned\}$$
+
+Since $P$ is only a function of $x$ from the $r$-momentum equations in a
+very similar manner to the axial momentum equation, the partial
+derivative term can be replaced by a total derivative operator in eqn.
+[\[eq:pipe\]](#eq:pipe)\{reference-type="ref" reference="eq:pipe"\}:
+$$\begin\{aligned\}
+    r\frac\{du\}\{dr\}=\frac\{r^2\}\{2\mu\}\frac\{dP\}\{dx\}+C_1
+\end\{aligned\}$$ where $C_1$ is a constant of integration. Note that the
+pressure gradient is a constant here. Integrating again, we get
+
+$$\begin\{aligned\}
+u=\frac\{r^2\}\{4\mu\}\frac\{dP\}\{dx\}+C_1 \mathrm\{ln\}\ r+C_2
+\end\{aligned\}$$ where $C_2$ is another constant of integration.
+
+Applying boundary condition 2, we get $C_1=0$. Applying boundary
+condition 2, $$\begin\{aligned\}
+    u=\frac\{R^2\}\{4\mu\}\frac\{dP\}\{dx\}+C_2=0 \implies C_2=-\frac\{R^2\}\{4\mu\}\frac\{dP\}\{dx\}
+\end\{aligned\}$$
+
+Therefore, the axial velocity can be written down as:
+
+$$\begin\{aligned\}
+    u=\frac\{1\}\{4\mu\}\frac\{dP\}\{dx\}(r^2-R^2)
+\end\{aligned\}$$
+
+The velocity profile is thus in the shape of a paraboloid.
+
+
+# The Reynolds Number and Turbulent Flow \{#chap:reynolds\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:newtons_laws\]](#chap:newtons_laws)\{reference-type="ref+label"
+reference="chap:newtons_laws"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+Turbulent flow, governed by the Navier-Stokes equations, exhibits
+significant multi-scale behavior that critically makes direct simulation
+difficult. Direct numerical simulation (DNS) of fluid flow must resolve
+the smallest scales of the flow, which are orders of magnitude smaller
+than the characteristic dimensions of the flow. The computational cost
+of direct simulation is high, making it impractical for applications
+like vehicle aerodynamics, climate modeling, or astrophysics, and is
+thus limited to simple flow configurations which are typically
+oversimplified for general engineering or geophysical applications.
+
+## The Reynolds Number
+
+The Reynolds number (Re) is a dimensionless quantity in fluid mechanics
+used to help predict flow patterns in different fluid flow situations.
+At low Reynolds numbers, fluid flow is dominated by laminar flow, while
+at high Reynolds numbers fluid flow is turbulent, resulting from
+differences in the fluid's speed and direction, which may cross each
+other or move in a direction opposite to the overall flow direction
+leading to eddy currents.
+
+The Reynolds number is calculated as the ratio of inertial forces to
+viscous forces within a fluid which is subjected to relative internal
+movement due to different fluid velocities. Relative movement within a
+fluid generates fluid friction, which is a factor in developing
+turbulent flow, while the viscosity of the fluid counteracts the effect
+and inhibits turbulence. The Reynolds number quantifies the interplay
+between these two types of forces for given flow conditions, and
+provides a way to understand when turbulent flow will occur. A more
+precise distinction between low Reynolds number flow and high Reynolds
+number flow is that at low Reynolds numbers, viscous forces are
+dominant, and is characterized by smooth, constant fluid motion, whereas
+at high Reynolds numbers, turbulent flow occurs dominated by inertial
+forces, which tend to produce eddies, vortices and other flow
+instabilities. The Reynolds number is defined as
+
+$$\begin\{aligned\}
+\{\displaystyle \mathrm \{Re\} =\{\frac \{\rho uD\}\{\mu \}\}=\{\frac \{uD\}\{\nu \}\}\}
+\end\{aligned\}$$
+
+where $u$ is the flow speed, $D$ is the diameter of the tube, $\mu$ is
+the dynamic viscosity of the fluid, $\rho$ and $\nu$ are same quantities
+as in the Navier Stokes equations.
+
+### Turbulence Modeling
+
+The Reynolds Averaged Navier Stokes (RANS) equations, which are
+time-averaged equations of motion for fluid flow, are primarily used to
+describe turbulent flows. The core idea behind the RANS equations is the
+decomposition of an instantaneous quantity into its time-averaged and
+fluctuating quantities, which was originally proposed by Osborne
+Reynolds. For a stationary flow of an incompressible Newtonian fluid,
+these equations can be written in Cartesian coordinates as:
+$$\begin\{aligned\}
+\{\displaystyle \rho \{\bar \{u\}\}_\{j\}\{\frac \{\partial \{\bar \{u\}\}_\{i\}\}\{\partial x_\{j\}\}\}=\rho \{\bar \{f\}\}_\{i\}+\{\frac \{\partial \}\{\partial x_\{j\}\}\}\left[-\{\bar \{p\}\}\delta _\{ij\}+\mu \left(\{\frac \{\partial \{\bar \{u\}\}_\{i\}\}\{\partial x_\{j\}\}\}+\{\frac \{\partial \{\bar \{u\}\}_\{j\}\}\{\partial x_\{i\}\}\}\right)-\rho \{\overline \{u_\{i\}^\{\prime \}u_\{j\}^\{\prime \}\}\}\right].\}
+\end\{aligned\}$$
+
+where the time-average operator $\overline \{.\}$ is a Reynolds operator.
+The left hand side of the RANS equation represents the change in mean
+momentum of the fluid element due to the unsteadiness in the mean flow
+and the convection by the mean flow. The change in mean momentum is
+balanced by the mean body force, the isotropic stress owing to the mean
+pressure field, the viscous stresses, and apparent stress
+$\left(-\rho \{\overline \{u_\{i\}^\{\prime \}u_\{j\}^\{\prime \}\}\}\right)$ owing
+to the fluctuating velocity field, generally referred to as the Reynolds
+stress. The Reynolds stress is a non-linear term that requires
+additional modeling to close the RANS equation for solving, and has led
+to the creation of many different turbulence models.
+
+
+# Introduction to Plasmas \{#chap:plasma_physics\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:newtons_laws\]](#chap:newtons_laws)\{reference-type="ref+label"
+reference="chap:newtons_laws"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+In this chapter, we will study the behavior of plasmas, one of the
+fundamental states of matter. Plasmas, are gases of ions and free
+electrons. Plasmas arise in a number of physical systems of interest,
+such as stars and lightning, and are also of critical interest for
+industrial processes such as chip manufacturing and fusion.
+
+## Qualitative Properties of Plasma
+
+Plasmas are electrically conducting since they consist of a gas of
+ionized particles. As a result, the techniques of fluid mechanics
+combined with those of electromagnetism prove powerful tools for
+modeling plasma behavior.
+
+The degree of ionization $\alpha$ is given by
+
+$$\begin\{aligned\}
+\alpha = \frac\{n_i\}\{n_i + n_n\}
+\end\{aligned\}$$
+
+where $n_i$ is the number density of ions and $n_n$ is the number
+density of neutral atoms.
+
+## Magnetohydrodynamics
+
+Magnetohydrodynamics is one of the standard techniques for
+mathematically modelling plasmas. This model combines elements of the
+Navier-Stokes equations with Maxwell's equations to create a continuum
+model of the plasma as a type of electrically charged fluid.
+
+In this section, we will introduce the core equations of
+magnetohydrodynamics. Let's start with a continuity equation
+
+$$\begin\{aligned\}
+    \frac\{\partial \rho\}\{\partial t\} + \nabla \cdot (\rho v) &= 0
+\end\{aligned\}$$
+
+The Cauchy momentum equation is given by
+
+$$\begin\{aligned\}
+\rho \left ( \frac\{\partial\}\{\partial t\} + v \cdot \nabla  \right ) v &= J \times B - \nabla p 
+\end\{aligned\}$$
+
+Using the identity
+
+$$\frac\{1\}\{2\} \nabla (B \cdot B) = (B \cdot \nabla) B + B \times (\nabla \times B)$$
+
+### Magnetohydrodynamic Waves
+
+## Vlasov Equation
+
+An alternative model of plasmas is to model them as a large collection
+of individual particles moving in the presence of an electromagnetic
+field.
+
+$$\begin\{aligned\}
+    \frac\{d f(r, p, t)\}\{dt\} &= 0 \\
+    \frac\{\partial f\}\{\partial t\} + \frac\{d r\}\{d t\} \cdot \frac\{\partial f\}\{\partial r\} + \frac\{d p\}\{d t\}\cdot \frac\{\partial f\}\{\partial p\}
+\end\{aligned\}$$
+
+The Vlasov equations add a self-consistent field created by the charged
+plasma particles. The theory introduces two distribution functions
+
+$$\begin\{aligned\}
+    f_e(r, p, t) &= 0 \\
+    f_i(r, p , t) &= 0
+\end\{aligned\}$$ that model the density of electrons and positive ions
+respectively. $$\begin\{aligned\}
+    \frac\{\partial f_e\}\{\partial t\}+ v_e \cdot \nabla f_e - e \left (E + \frac\{v_e\}\{c\} \times B \right) \cdot \frac\{\partial f_e\}\{\partial p\} &= 0 \\
+    \frac\{\partial f_i\}\{\partial t\}+ v_i \cdot \nabla f_i - Z_i e \left (E + \frac\{v_i\}\{c\} \times B \right) \cdot \frac\{\partial f_i\}\{\partial p\} &= 0
+\end\{aligned\}$$ Here $E$ and $B$ are the self consistent electrical and
+magnetic fields created by the system.
+
+## Plasma Confinement
+
+Since plasmas are electrically charged, it becomes possible to confine
+them with magnetic fields. This property of plasmas is very useful for
+building prototype fusion reactors which need to confine high
+temperature plasmas to facilitate conditions for fusion.

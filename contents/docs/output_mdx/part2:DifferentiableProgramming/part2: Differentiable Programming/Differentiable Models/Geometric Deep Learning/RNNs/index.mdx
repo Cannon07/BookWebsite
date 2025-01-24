@@ -1,0 +1,143 @@
+# Recurrent Neural Networks \{#chap:rnns\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:ml_basics\]](#chap:ml_basics)\{reference-type="ref+label"
+reference="chap:ml_basics"\},
+[\[chap:grad_descent\]](#chap:grad_descent)\{reference-type="ref+label"
+reference="chap:grad_descent"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+Recurrent neural networks (RNNs) make use of sequential structure in a
+data source. RNNs learn a transformation that is repeated at each step
+to process input data. Usually, the sequential structure corresponds to
+time, but RNNs have also been applied to sequential data such as natural
+language texts or genomic sequences.
+
+![A recurrent neural network unfolds a self-connection out over time.
+](figures/Differentiable Models/rnns/Self Connection-neural network1.png)\{#fig:my_label\}
+
+## Recurrent Neural Network Equations
+
+Assume that we have a series of inputs $x_1,\dotsc,x_T$. A recurrent
+network constructs a series of hidden state vectors $h_1,\dotsc, h_T$
+for each time step in the network. These hidden states are updated based
+at each time step $t$ based on the input $x_t$ and the previous hidden
+state $h_\{t-1\}$. The update rule is parameterized by a set of weights
+$\theta$. Formally, the update equations are
+
+$$\begin\{aligned\}
+\hat\{y\}_t, h_t = f(h_\{t-1\}, x_t; \theta)
+\end\{aligned\}$$ Here $f$ is some transformation function, commonly
+implemented by a fully connected network. The total loss is the sum of
+the losses at each timestep for each output prediction.
+$$\begin\{aligned\}
+    \mathcal\{L\}_\{\textrm\{total\}\} = \sum_\{i=1\}^T \mathcal\{L\}(\hat\{y\}_t, y_t)
+\end\{aligned\}$$
+
+The gradient update for all parameters $\Theta$ is computed as usual
+with a gradient descent step. $$\begin\{aligned\}
+    \Theta = \Theta - \alpha \frac\{\partial \mathcal\{L\}_\{\textrm\{total\}\}\}\{\partial \Theta\}
+\end\{aligned\}$$
+
+Here is the code for the full model definition.
+
+``` \{.python language="python"\}
+class RNN(f: FullyConnectedNetwork, N : $\mathbb\{N\}$, d : $\mathbb\{N\}$, T : $\mathbb\{N\}$):
+  def $\lambda$(X : $\mathbb\{R\}$[N, T, d]) $\to$ $\mathbb\{R\}$[N, T]:
+    out = zeros(N, T)
+    for i in N:
+      x, y = X[i], Y[i] 
+      ht = zeros(H, 1)
+      for t in T:
+        out[i], ht = f(ht || x[t])
+    out
+```
+
+Here we use the operator `||` to denote concatenation of vectors.
+
+## Vanishing Gradients and The Challenge of Long$-$Term Dependencies
+
+Recurrent neural networks often struggle to handle very long input
+sequences. Since the loss function $\mathcal\{L\}_\{\textrm\{total\}\}$
+includes terms from all time steps, gradients will have to propagate
+backwards through long chains of updates. Each gradient update step can
+be viewed conceptually as adding a little bit of noise to a propagating
+signal, which means that gradients become less useful deeper back in
+time. For this reason, many RNN implementations truncate backwards
+updates in time past some set number of steps (say 50 or 100).
+
+The basic problem is that gradients propagated over many stages tend to
+either vanish (most of the time) or explode (rarely, but with much
+damage to the optimization). Even it is assumed that the parameters are
+such that the recurrent network is stable (can store memories, with
+gradients not exploding), the difficulty with long-term dependencies
+arises from the exponentially smaller weights given to long-term
+interactions (involving the multiplication of many Jacobians) compared
+to short-term ones. Recurrent networks involve the composition of the
+same function multiple times, once per time step. These compositions can
+result in extremely nonlinear behavior. In particular, the function
+composition employed by recurrent neural networks somewhat resembles
+matrix multiplication. Take the equation $$\begin\{aligned\}
+h^\{(t)\} &= W^Th^\{(t-1)\}
+\end\{aligned\}$$ as a very simple recurrent neural network lacking a
+nonlinear activation function, and lacking inputs x. It may be
+simplified to $$\begin\{aligned\}
+    h^\{(t)\} = (W^t)^Th^\{(0)\}
+\end\{aligned\}$$ and if W admits an eigendecompostion of the form
+$$\begin\{aligned\}
+    W=Q\Lambda Q^T
+\end\{aligned\}$$ with orthogonal Q, the recurrence may be simplified
+further to $$\begin\{aligned\}
+    h^\{(t)\}=Q^T\Lambda^tQh^\{(0)\}
+\end\{aligned\}$$ The eigenvalues are raised to the power of t causing
+eigenvalues with magnitude less than one to decay to zero and
+eigenvalues with magnitude greater than one to explode. Any component of
+$h^\{(0)\}$ that is not aligned with the largest eigenvector will
+eventually be discarded. This problem remains an active area of research
+within machine learning.
+
+## More Sophisticated Update Rules
+
+In the discussion above, we introduced the time update function $f$ as a
+fully connected network, but more complex update rules have been found
+empirically to improve performance, especially with respect to long
+timescale behavior. Here is one such update rule that uses the
+$\mathrm\{tanh\}$ function for example. $$\begin\{aligned\}
+    a_t &= b + W h_\{t-1\} + U x_\{t\} \\
+    h_t &= \tanh(a_t) \\
+    o_t &= c + V h_\{t\} \\
+    \hat\{y\}_t &= \textrm\{softmax\}(o_t)
+\end\{aligned\}$$
+
+Here are a few other structural changes which can help improve RNN
+performance
+
+1.  Use time skips so that rather than going from $t$ to $t+1$, the
+    network goes from $t$ to $t+d$. This allows the gradients to
+    diminish much more slowly.
+
+2.  Use units with linear self-connections and a weight near one on
+    these connections. Accumulate a running average, $\mu^\{(t)\}$, of
+    some value $v^\{(t)\}$ by applying the update equation
+    $$\begin\{aligned\}
+    \mu^\{(t)\} = \mu^\{(t-1)\}\alpha + (1-\alpha)v^\{(t)\}
+    \end\{aligned\}$$ where $\alpha$ is the linear self-connection and if
+    it is near one, the running average remembers information about the
+    past for a long time, and when it is near zero, information about
+    the past is rapidly discarded.
+
+3.  Leverage LSTM (Long Short$-$Term Memory) structure. Currently the
+    most effective sequence model and used in most RNNs. This model is a
+    gated RNN which allows the network to accumulate information over a
+    long duration and then decide whether or not to forget some of that
+    information once it has been used. The LSTM includes intermediate
+    steps such as \"input gates\", \"output gates\" and \"forget gates\"
+    that can help preserve internal structure.
+
+![The internal structure of an LSTM
+cell.](figures/Differentiable Models/rnns/Internal Structure of LSTM Cell.png)\{#fig:my_label\}

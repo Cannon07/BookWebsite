@@ -1,0 +1,96 @@
+# Symmetry Groups \{#chap:lorentz_group\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:** [\[chap:lie\]](#chap:lie)\{reference-type="ref+label"
+reference="chap:lie"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+In this chapter, we introduce a number of symmetry groups that arise in
+physical systems. All the groups we introduce here are examples of
+topological groups, where they inherit a topological structure from a
+larger space (typically $\mathbb\{R\}^n$ or $\mathbb\{R\}^\{n \times n\}$). In
+fact, as we will learn in a later chapter, these groups also inherit a
+differentiable structure from the larger space, making them all examples
+of \"Lie Groups\" (or differentiable groups).
+
+## The Orthogonal Groups $O(N)$
+
+The orthogonal group $O(3)$ is the collection of matrices with
+orthogonal columns in $R^3$. More general, $O(N)$ is the collection of
+$N \times N$ matrices which have orthogonal columns.
+
+$$\begin\{aligned\}
+O(N) &= \{ Q \in \mathbb\{R\}^\{N \times N\} | Q^T Q = QQ^T = I\}
+\end\{aligned\}$$
+
+## The Rotation Groups $SO(N)$
+
+The rotation group $SO(3)$ is the collection of three dimensional
+rotations, and is denoted $\textrm\{SO\}(3)$. $SO(3)$ is related to $O(3)$
+since it is the subset of $O(3)$ with determinant $1$. Mathematically,
+we say that $\det$ is a homomorphism from $O(3)$ to the real numbers
+minus $0$. $$\begin\{aligned\}
+\det : O(N) \to \mathbb\{R\} \setminus \{0 \}
+\end\{aligned\}$$ This fact holds since we have that $$\begin\{aligned\}
+\det(AB) &= \det A \det B
+\end\{aligned\}$$ $SO(3)$ is the subset of $O(3)$ that maps to $1$ under
+this transformation. An alternative way of describing $SO(3)$ is that it
+is the collection of orthogonal matrices whose columns are orthonormal
+(and not just orthogonal).
+
+All elements of $SO(3)$ are length preserving since rotations don't
+change the length of vectors. This holds true more generally for $SO(N)$
+and can be shown using the fact that column vectors are orthonormal.
+Another important fact is that rotations are linear. That is, if $R$ is
+a rotation and $u$ and $v$ are vectors, we have $$\begin\{aligned\}
+R \cdot (u + v) &= R \cdot u + R \cdot v
+\end\{aligned\}$$ For this reason, $SO(3)$ can be identified with the
+collection of real valued $3x3$ matrices with unit determinant.
+
+## The Euclidean Group $E(N)$
+
+The Euclidean group $E(n)$ denotes all the distance preserving
+transformations (isometries) on $\mathbb\{R\}^n$. This collection includes
+all translations, rotations, and reflections. The group $E(3)$ commonly
+arises when considering point clouds or collections of atoms in a
+molecule or material.
+
+## The Galilean Group
+
+The Galilean group consists of the collection of transformations between
+two reference frames which only differ by constant relative motion with
+respect to one another. Consider $(x, t)$ where $x \in \mathbb\{R\}^3$ is
+a coordinate and $t \in \mathbb\{R\}$ is time. Then uniform motion is
+represented by the transformation $$\begin\{aligned\}
+(x, t) \mapsto (x + tv, t)
+\end\{aligned\}$$ Rotation is represented by the transformation
+$$\begin\{aligned\}
+(x, t) \mapsto (R x, t)
+\end\{aligned\}$$ where $R$ is a rotation matrix. Translations are
+represented by $$\begin\{aligned\}
+(x, t) \mapsto (x + v, t + s)
+\end\{aligned\}$$ The group of Galilean transformations consists of all
+the compositions of these three types of transformations.
+
+## The Lorentz Group $O(1, 3)$
+
+The Lorentz group is the group of all Lorentz transformations defined on
+Minkowski space. Many fundamental equations in physics are invariant
+under Lorentz transformations. Mathematically, we write the Lorentz
+group as $O(1, 3)$ the set of orthogonal transformations on
+$\mathbb\{R\}^4$ that preserve the quadratic form $$\begin\{aligned\}
+    (t, x, y, z) \mapsto t^2 - x^2 - y^2 - z^2 
+\end\{aligned\}$$ The Lorentz group is often studied through its Lie group
+$\mathfrak\{so\}(1, 3)$ $$\begin\{aligned\}
+    \mathfrak\{so\}(1, 3) &= \{ X \in \mathbb\{R\}^\{4 \times 4\} | e^\{tX\} \in SO(1, 3), t \in \mathbb\{R\} \}
+\end\{aligned\}$$
+
+## Exercises
+
+1.  Prove that the Galilean group has dimension 10.
+
+2.  Prove that $SO(N)$ preserves the norm of vectors in $\mathbb\{R\}^N$

@@ -1,0 +1,270 @@
+# Linear Systems: Analytical Methods \{#chap:linear_analytical\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:linear_systems\]](#chap:linear_systems)\{reference-type="ref+label"
+reference="chap:linear_systems"\},
+[\[chap:optimization\]](#chap:optimization)\{reference-type="ref+label"
+reference="chap:optimization"\}\
+**Difficulty Level:** \*\
+
+------------------------------------------------------------------------
+
+In this chapter we will learn how to solve small sets of linear
+equations with graphical methods. We will then explain how to evaluate
+the determinant of a matrix and solve linear equations with Cramer's
+rule. Finally we will explain how to eliminate unknowns in equations by
+combining equations.
+
+## Graphical Methods
+
+For a system of two variables, graphical method obtains solutions by
+plotting them on Cartesian coordinates with one axis corresponding to
+$x_1$ and the other to $x_2$. The values of $x_1$ and $x_2$ at the
+intersection of two lines represent the solution. Consider the example:
+$$\begin\{aligned\}
+3x_1 + 2x_2 &= 18\\
+-x_1 + 2x_2 &= 2
+\end\{aligned\}$$ Solving for $x_2$ in terms of $x_1$, we get
+$$\begin\{aligned\}
+x_2 = \dfrac\{1\}\{2\}x_1 + 1
+\end\{aligned\}$$
+
+::: marginfigure
+![image](figures/part1b/linear_analytical/graphical.PNG)\{width="2.4in"\}
+:::
+
+As shown in Figure [\[fig:1\]](#fig:1)\{reference-type="ref"
+reference="fig:1"\}, two lines intersect at $x_1$ = 4 and $x_2$ = 3 which
+therefore is the solution for the example considered.
+
+For three simultaneous equations, each equation would be represented by
+a plane in a three-dimensional coordinate system. The point where the
+three planes intersect would represent the solution. For systems with
+more than three equations, graphical methods cannot be applied. Some
+other cases that can pose problems when solving sets of linear equations
+are as follows.
+
+-   *Singular systems*
+
+    1.  When two equations represent parallel lines, there is no
+        solution as they never intersect.
+
+    2.  When two lines are coincident, there is an infinite number of
+        solutions.
+
+-   *Ill-conditioned systems*: When the slopes are so close that it is
+    difficult to detect the point of intersection. This system is very
+    close to being singular. Also this system is extremely sensitive to
+    round-off error.
+
+## Determinants and Cramer's Rule
+
+Consider a system of three equations defined as $[A]$ $\left\{x\right\}$
+= $\left\{b\right\}$ where $[A]$ is the coefficient matrix. The
+determinant of square matrix \[A\] is formed from its elements and is
+represented by D. $$\begin\{aligned\}
+[A] &=
+\begin\{bmatrix\}
+    a_\{11\} & a_\{12\} & a_\{13\} \\ 
+    a_\{21\} & a_\{22\} & a_\{23\} \\ 
+    a_\{31\} & a_\{32\} & a_\{33\}
+\end\{bmatrix\}\\
+D &= 
+\begin\{vmatrix\}
+a_\{11\} & a_\{12\} & a_\{13\} \\ 
+a_\{21\} & a_\{22\} & a_\{23\} \\ 
+a_\{31\} & a_\{32\} & a_\{33\}
+\end\{vmatrix\}
+\vspace\{-6pt\}
+\end\{aligned\}$$ Determinant is a single number as compared to a matrix.
+For a system of two simultaneous equations, determinant is computed as
+$$\begin\{aligned\}
+D =
+\begin\{vmatrix\}
+a_\{11\} & a_\{12\} \\ 
+a_\{21\} & a_\{22\}  
+\end\{vmatrix\}
+= a_\{11\} a_\{22\} - a_\{12\} a_\{21\}
+\vspace\{-8pt\}
+\end\{aligned\}$$ For the above matrix \[A\], determinant D is calculated
+as: $$\begin\{aligned\}
+D = a_\{11\}
+\begin\{vmatrix\}
+a_\{22\} & a_\{23\} \\ 
+a_\{32\} & a_\{33\} 
+\end\{vmatrix\}
+- a_\{12\}
+\begin\{vmatrix\}
+a_\{21\} & a_\{23\} \\ 
+a_\{31\} & a_\{33\}  
+\end\{vmatrix\} 
++ a_\{13\}
+\begin\{vmatrix\}
+a_\{21\} & a_\{22\} \\ 
+a_\{31\} & a_\{32\}  
+\end\{vmatrix\} 
+\end\{aligned\}$$ where the $2\times2$ determinants are called *minors*.
+
+::: marginfigure
+![image](figures/part1b/linear_analytical/KCL.png)\{width="2.4in"\}
+:::
+
+::: example
+Consider a three loop current network with five resistors and two
+voltage sources as shown in Figure
+[\[fig:2\]](#fig:2)\{reference-type="ref" reference="fig:2"\}.The
+electrical network consists of 5 resistors (R), two voltage sources (v)
+and three unknown currents in each loop (i). Given that $R_1$ = 3
+$\Omega$, $R_2$ = 5 $\Omega$, $R_3$ = 2 $\Omega$, $R_4$ = 3 $\Omega$,
+$R_5$ = 8 $\Omega$, $v_1$ = 5 V and $v_2$ = 3 V. Set up a system of
+linear equations for this problem which will be solved for the three
+unknowns $i_1$, $i_2$ and $i_3$ using Cramer's rule. First evaluate
+determinant of the coefficient matrix for this system by hand and using
+MATLAB. *Solution*: Applying Kirchoff's current law and Ohm's law for
+the three current loops we get the following. $$\begin\{aligned\}
+-3 + 3i_1 + 5(i_1 - i_2) &= 0\\
+5(i_2 - i_1) + 2i_2 + 3(i_2 - i_3)&= 0\\
+3(i_3 - i_2) + 8i_3 + 3 &= 0
+\end\{aligned\}$$ These equations can be simplified to obtain the
+following system of linear equations. $$\begin\{aligned\}
+8i_1 - 5i_2  &= 5\\
+-5i_1  + 10i_2 - 3i_3 &= 0\\
+-3i_2 + 11i_3 &= -3
+\end\{aligned\}$$
+
+1.  Manually $$D = 8
+    \begin\{vmatrix\}
+    10 & -3 \\ 
+     -3 & 11  
+    \end\{vmatrix\}
+    - (-5)
+    \begin\{vmatrix\}
+    -5 & -3 \\ 
+    0 & 11 
+    \end\{vmatrix\} 
+    + 0
+    \begin\{vmatrix\}
+    -5 & 10 \\ 
+    0 & -3 
+    \end\{vmatrix\} 
+    \vspace\{-2pt\}$$ $$\begin\{aligned\}
+    D = 8[(10)11 - (-3)(-3)]+5[(-5)11 - 0(-3)]+0[-5(-3) - 0(10)] = 533
+    \end\{aligned\}$$
+
+2.  MATLAB: Determinant can be computed directly in MATLAB with the
+    `det` function.
+
+        >> A=[8 -5 0;-5 10 -3;0 -3 11];
+        >> D=det(A)
+        D = 533
+
+Note that the determinant of a singular system is zero and a
+ill-conditioned system is almost close to zero. **Cramer's Rule**: Using
+this rule for a system of three linear equations, $x_1$, $x_2$ and $x_3$
+would be computed as $$x_1 =\dfrac\{
+\begin\{vmatrix\}
+b_1 & a_\{12\} & a_\{13\} \\ 
+b_2 & a_\{22\} & a_\{23\} \\ 
+b_3 & a_\{32\} & a_\{33\}
+\end\{vmatrix\}
+\}\{D\},
+x_2 =\dfrac\{
+\begin\{vmatrix\}
+a_\{11\} & b_1 & a_\{13\} \\ 
+a_\{21\} & b_2 & a_\{23\} \\ 
+a_\{31\} & b_3 & a_\{33\}
+\end\{vmatrix\}
+\}\{D\},
+x_3 =\dfrac\{
+\begin\{vmatrix\}
+a_\{11\} & a_\{12\} & b_1 \\ 
+a_\{21\} & a_\{22\} & b_2 \\ 
+a_\{31\} & a_\{32\} & b_3
+\end\{vmatrix\}
+\}\{D\}$$
+:::
+
+::::: example
+Use Cramer's rule to solve for the three unknowns $i_1$, $i_2$ and $i_3$
+in the above example by hand and using MATLAB.\
+
+1.  Manually\
+    As already evaluated, determinant D = 533. Therefore $$i_1 =\dfrac\{
+        \begin\{vmatrix\}
+        5 & -5 & 0 \\ 
+        0 & 10 & -3 \\ 
+        -3 & -3 & 11
+        \end\{vmatrix\}
+    \}\{533\}, i_2 =\dfrac\{
+        \begin\{vmatrix\}
+        8 & 5 & 0 \\ 
+        -5 & 0 & -3 \\ 
+        0 & -3 & 11
+        \end\{vmatrix\}
+    \}\{533\}, i_3 =\dfrac\{
+        \begin\{vmatrix\}
+        8 & -5 & 5 \\ 
+        -5 & 10 & 0 \\ 
+        0 & -3 & -3
+        \end\{vmatrix\}
+    \}\{533\} 
+    \vspace\{-6pt\}$$ Which when simplified we get $i_1$ = 0.863 A $i_2$ =
+    0.3809 A and $i_3$ = -0.1689 A.
+
+2.  MATLAB:
+
+        D=det(A);
+        A1 = A; A1(:,1) = b;
+        A2 = A; A2(:,2) = b;
+        A3 = A; A3(:,3) = b;
+        x1 = det(A1)/D;
+        x2 = det(A2)/D;
+        x3 = det(A3)/D;
+
+::: marginfigure
+    A=[8 -5 0;-5 10 -3;0 -3 11];
+    b=[5;0;-3];
+:::
+
+::: marginfigure
+*Output:*
+
+    x1 = 0.8630
+    x2 = 0.3809
+    x3 = -0.1689
+:::
+
+Note: For more than three equations, Cramer's rule becomes impractical
+because, as the number of equations increases, the determinants are time
+consuming to evaluate by hand (or by MATLAB).
+:::::
+
+## Elimination of Unknowns
+
+Consider the system of two equations from graphical method as shown
+below $$\begin\{aligned\}
+3x_1 + 2x_2 &= 18\\
+-x_1 + 2x_2 = 2
+\end\{aligned\}$$ The idea behind this method is to multiply the equations
+by constants so that one of the unknowns will be eliminated when the two
+equations are combined. We will be left with one equation from which one
+of the unknowns is evaluated and then that is substituted back into the
+original equation to solve for the other unknown. Multiplying first
+equation with -1 and second equation with 3 we get $$\begin\{aligned\}
+-3x_1 - 2x_2 = -18\\
+-3x_1 + 6x_2 = 6
+\end\{aligned\}$$ Subtracting, $-8x_2 = -24$ and therefore $x_2 = 3$.
+Substituting this in the first equation we get, $$\begin\{aligned\}
+-3x_1 - 2(3) &= -18\\
+x_1 &= 4
+\end\{aligned\}$$ Note: The elimination of unknowns can be extended to
+systems with more than two or three equations. However, the numerous
+calculations that are required for larger systems make the method
+extremely tedious to implement by hand.
+
+## Exercises
+
+1.  TODO

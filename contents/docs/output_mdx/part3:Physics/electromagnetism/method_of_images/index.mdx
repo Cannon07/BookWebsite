@@ -1,0 +1,49 @@
+# Method of Images \{#chap:method_of_images\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:electrostatics\]](#chap:electrostatics)\{reference-type="ref+label"
+reference="chap:electrostatics"\},\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+The method of images is a technique for solving differential equations
+by extending the domain of the sought function to a larger domain with
+simpler boundary conditions. This technique is applied most often in
+physics to problems in electrostatics.
+
+## Point Charge Above Infinite Plane
+
+Consider a point above an infinite conducting plane as in
+Figure [1.1](#fig:point_charge_plane)\{reference-type="ref"
+reference="fig:point_charge_plane"\}. A challenge with solving for the
+electric field in this scenario is that the point charge induces changes
+in the charge distribution on the conducting plane.
+
+The method of images provides a powerful trick for solving such systems.
+We leverage the fact that solutions to Laplace's equations are unique to
+construct a \"mirror\" system that satisfies the same boundary
+conditions at the plane as our original system. We claim that the system
+in Figure [1.2](#fig:point_charge_mirrored)\{reference-type="ref"
+reference="fig:point_charge_mirrored"\} satisfies the same conditions.
+
+![A point charge above an infinite conducting ground.
+](figures/Physics/electromagnetism/method_of_images/point_above_sheet.png)\{#fig:point_charge_plane\}
+
+![A point charge mirrored by an opposite charge below the plane.
+](figures/Physics/electromagnetism/method_of_images/point_mirrored.png)\{#fig:point_charge_mirrored\}
+
+## Point Charge Near a Conducting Sphere
+
+As a next example, we consider a system with a charge near a grounded
+conducting sphere as in
+Figure [1.3](#fig:point_sphere)\{reference-type="ref"
+reference="fig:point_sphere"\}. Unlike the flat plane, the mirror charge
+placed inside the sphere will not be directly symmetrically positioned
+to the exterior charge, but the same organizing principle holds.
+
+![A point charge near a conducting sphere.
+](figures/Physics/electromagnetism/method_of_images/point_sphere.png)\{#fig:point_sphere\}

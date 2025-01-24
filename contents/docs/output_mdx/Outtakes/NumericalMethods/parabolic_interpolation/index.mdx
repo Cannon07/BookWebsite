@@ -1,0 +1,177 @@
+# Parabolic Interpolation \{#chap:parabolic\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:newton_raphson\]](#chap:newton_raphson)\{reference-type="ref+label"
+reference="chap:newton_raphson"\}\
+**Difficulty Level:** \*\
+
+------------------------------------------------------------------------
+
+In this chapter, we will learn how to use root-finding techniques to
+find local optima. We will understand how Newton's method for
+on-dimensional optimization is an extension from the Newton-Raphson
+method for root finding. We will also study how the parabolic
+interpolation method can be used for one-dimensional optimization. We
+then discuss how to implement the parabolic interpolation method to
+location the optima of a single-variable function.
+
+## Parabolic Interpolation \{#parabolic-interpolation\}
+
+Parabolic interpolation method is another way of optimizing a
+single-variable function. It takes advantage of the fact that a
+second-order polynomial often provides a good approximation to the shape
+of $f(x)$ near an optimum. This can be visualized from the Figure
+[\[fig:1\]](#fig:1)\{reference-type="ref" reference="fig:1"\}.
+
+Just as there is only one straight line connecting two points, there is
+only one parabola connecting three points. Thus, if we have three points
+that jointly bracket an optimum, we can fit a parabola to the points.
+Then we can differentiate it, set the result equal to zero, and solve
+for an estimate of the optimal *x*. It can be shown through some
+algebraic manipulations that the result is
+
+$$\begin\{aligned\}
+ x_4 = x_2 - \frac\{1\}\{2\}\dfrac\{(x_2 - x_1)^2[f(x_2)-f(x_3)] - (x_2 - x_3)^2[f(x_2)-f(x_1)]\}\{(x_2 - x_1)[f(x_2)-f(x_3)] - (x_2 - x_3)[f(x_2)-f(x_1)]\}
+\end\{aligned\}$$
+
+::: marginfigure
+![image](figures/part1b/parabolic_interpolation/Parabolic.PNG)\{width="2.7in"\}
+:::
+
+where $x_1$, $x_2$, and $x_3$ are the initial guesses, and $x_4$ is the
+value of x that corresponds to the optimum value of the parabolic fit to
+the guesses. Let's use this method to find the extremum of the same
+function as in Module 3.1.\
+
+:::: example
+Find the minima of the unimodal function $f(x) = e^x-2x$ using parabolic
+interpolation method with initial guesses of $x_1 = 0$, $x_2 = 1$ and
+$x_3 = 2$\
+**Solution:**
+
+::: fullwidth
+    clear all;
+    f = @(x) exp(x)-2*x;
+    x1 = 0; x2 = 1; x3 = 2; eps = 1e-6; x_old = 100;
+    fx1 = f(x1); fx2 = f(x2); fx3 = f(x3);
+    while(1)
+        num = (x2-x1)^2*(fx2-fx3)-(x2-x3)^2*(fx2-fx1);
+        den = 2*((x2-x1)*(fx2-fx3)-(x2-x3)*(fx2-fx1));
+        x4 = x2 - num/den;
+        fx4 = f(x4);
+        if fx4 < fx2
+            if x4 > x2;
+                x1 = x2;
+                fx1 = fx2;
+            else
+                x3 = x2;
+                fx3 = fx2;
+            end
+            x2 = x4;
+            fx2 = fx4;
+        else
+            if x4 > x2;
+                x3 = x4;
+                fx3 = fx4;
+            else
+                x1 = x3;
+                fx1 = fx3;
+            end
+        end
+        if (abs((x4-x_old)/x_old) < eps)
+            break
+        end
+        x_old = x4;
+    end
+    disp('Extremum Value')
+    disp(x4)
+:::
+::::
+
+The parabolic interpolation method converges to the optimum within nine
+iterations to the true value of 0.6137 at x = 0.6931. The values of the
+guesses and their function evaluations are given below.
+
+::: fullwidth
+    i       x1       fx1       x2       fx2        x3        fx3       x4        fx4
+    1  0.000000  1.000000  1.000000  0.718282  2.000000  3.389056  0.595417  0.622953
+    2  0.000000  1.000000  0.595417  0.622953  1.000000  0.718282  0.662117  0.614659
+    3  0.595417  0.622953  0.662117  0.614659  1.000000  0.718282  0.687128  0.613742
+    4  0.662117  0.614659  0.687128  0.613742  1.000000  0.718282  0.691325  0.613709
+    5  0.687128  0.613742  0.691325  0.613709  1.000000  0.718282  0.692758  0.613706
+    6  0.691325  0.613709  0.692758  0.613706  1.000000  0.718282  0.693037  0.613706
+    7  0.692758  0.613706  0.693037  0.613706  1.000000  0.718282  0.693122  0.613706
+    8  0.693037  0.613706  0.693122  0.613706  1.000000  0.718282  0.693140  0.613706
+    9  0.693122  0.613706  0.693140  0.613706  1.000000  0.718282  0.693146  0.613706
+:::
+
+## Newton's Method
+
+The same techniques learnt in root-finding can be extended to
+optimization by changing the function under consideration to $f'(x)$
+from $f(x)$ i.e. the values of x where $f'(x) = 0$ are local optima (or)
+inflection-points.
+
+Considering Newton-Raphson method, the update rule for root-finding is:
+
+$$\begin\{aligned\}
+ x_\{i+1\} = x_i - \dfrac\{f(x_i)\}\{f'(x_i)\}
+\end\{aligned\}$$
+
+Using the same Newton-Raphson method, the update rule for optimization
+is:
+
+$$\begin\{aligned\}
+x_\{i+1\} = x_i - \dfrac\{f'(x_i)\}\{f''(x_i)\}
+\end\{aligned\}$$
+
+This approach to optimization is called the **Newton's Method** in one
+dimension. It is worth highlighting that this is an open method for
+optimization.
+
+::::: example
+Determine a local optima of the function $f(x) = exp(x)-2x$ using the
+Newton-Raphson method
+
+::: fullwidth
+```
+%% Newton Raphson
+clear all;
+close all;
+x_start=100;
+f = @(x) exp(x)-2*x;
+f_dash = @(x) exp(x)-2;
+f_ddash = @(x) exp(x);
+tol=1e-8;
+tic;
+x_old=x_start;
+while (1) 
+x_new = x_old-f_dash(x_old)/f_ddash(x_old); %From similar triangles 
+%Convergence criterion
+if(abs((x_new-x_old)/x_new)<tol)
+    break;
+end
+x_old = x_new;
+end
+disp('Minima found:') 
+disp(x_new)
+toc;
+```
+
+::: margintable
+**Output:**
+
+        Minima found: 0.6931
+        Elapsed time is 0.006971 seconds.
+:::
+:::::
+
+In a similar manner, other root finding techniques can also be used for
+optimization to converge to local optima where the derivate is zero.
+
+### Exercises
+
+1.  TODO

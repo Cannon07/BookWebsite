@@ -1,0 +1,216 @@
+# Linear Least Squares Regression \{#chap:linear_regression\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:vectors\]](#chap:vectors)\{reference-type="ref+label"
+reference="chap:vectors"\},
+[\[chap:linear_systems\]](#chap:linear_systems)\{reference-type="ref+label"
+reference="chap:linear_systems"\}\
+**Difficulty Level:** \*\
+
+------------------------------------------------------------------------
+
+In this chapter we will learn various criteria for identifying the best
+fit of a straight line to data. We will learn how to compute the slope
+and intercept of a best-fit line with linear regression.
+
+## Introduction to Data Analysis
+
+Data analysis is a process of inspecting and modeling data with the goal
+of discovering useful information, suggesting conclusions, and
+supporting decision-making. In engineering, we often try to generalize
+data from experience and make meaningful inferences. Typically our
+hypothesis space will span models varying greatly in complexity: some
+models will have many more free parameters or degrees of freedom than
+others. Under traditional approaches to data analysis, we adjust each
+model's parameters until it best represents the data. We assess models
+with a natural eye for complexity, balancing fit to the data with model
+complexity in subtle ways that will not inevitably prefer the most
+complex model. Instead we often seem to judge models using the *Occam's
+razor*, which says that when faced with two opposing explanations for
+the same set of evidence, our mind naturally prefers the explanation
+that makes the fewest assumptions. In the context of analyzing trends in
+data, we choose the least complex hypothesis that fits the data well. In
+doing so, we avoid *over-fitting* our data in order to support
+successful generalizations and predictions.
+
+Two types of applications are generally encountered in Data Analysis:
+
+1.  *Trend analysis* represents the process of using the pattern of the
+    data to make predictions. This can involve extrapolation beyond the
+    limits of the observed data or interpolation within the range of the
+    data.
+
+2.  In *hypothesis testing*, an existing mathematical model is compared
+    with measured data. If the model coefficients are unknown, it may be
+    necessary to determine values that best fit the observed data.
+
+There are two general approaches for recognizing patterns in data that
+are distinguished from each other on the basis of the amount of error
+associated with the data.
+
+1.  When the data exhibit a significant degree of error, the strategy is
+    to derive a single curve that represents the general trend of the
+    data. Because any individual data point may be incorrect, we make no
+    effort to intersect every point. Rather, the curve is designed to
+    follow the pattern of the points taken as a group. One approach of
+    this nature is called *least-squares regression*. This avoids
+    over-fitting the data and captures the general trend.
+
+2.  Second, where the data are known to be very precise, the basic
+    approach is to fit a curve or a series of curves that pass directly
+    through each of the points. This curve can now be used to estimate
+    values between well-known discrete points and is termed as
+    *interpolation*.
+
+## Linear Least Squares Regression \{#linear-least-squares-regression\}
+
+Where substantial error is associated with data, the best curve-fitting
+strategy is to derive an approximating function that fits the shape or
+general trend of the data without necessarily matching the individual
+points. For a data which is approximately linear, a *line* would be the
+curve that fits these data points. One approach to do this is to
+visually inspect the plotted data and then sketch a "best" line through
+the points. However, unless the points define a perfect straight line,
+different analysts would draw different lines.
+
+To remove this subjectivity, some criterion must be devised to establish
+a basis for the fit. One way to do this is to derive a curve that
+minimizes the discrepancy between the data points and the curve. To do
+this, we must first quantify the discrepancy. The simplest example is
+fitting a straight line to a set of paired observations:
+($x_1$,$y_1$),($x_2$,$y_2$),($x_3$,$y_3$)\...($x_n$,$y_n$). The
+mathematical expression for the straight line is given by
+$$\begin\{aligned\}
+y = a_0 + a_1x + e
+\end\{aligned\}$$
+
+::: marginfigure
+![image](figures/part1b/linear_least_squares/inadequatebestfit.PNG)\{width="2.4in"\}
+:::
+
+Here $a_0$ and $a_1$ are the coefficients representing the intercept and
+the slope, respectively, and $e$ is the error, or *residual*, between
+the model and the observations, which can be represented by rearranging
+the above equation as $$\begin\{aligned\}
+e = y - a_0 - a_1x
+\end\{aligned\}$$ Thus, the residual is the discrepancy between the true
+value of $y$ and the approximate value, $a_0$ + $a_1x$, predicted by the
+linear equation.
+
+### Criteria for the "Best" Fit
+
+One strategy for fitting a best line through the data would be to
+minimize the sum of the residual errors for all the available data.
+However, this is an inadequate criterion, as illustrated by Figure
+[\[fig:1\]](#fig:1)\{reference-type="ref" reference="fig:1"\}(a), which
+depicts the fit of a straight line to two points. Obviously, the best
+fit is the line connecting the points. However, any straight line
+passing through the midpoint of the connecting line (except a perfectly
+vertical line) results in a minimum value of equal to zero because
+positive and negative errors cancel. $$\begin\{aligned\}
+\sum_\{i=1\}^\{n\}e_i = \sum_\{i=1\}^\{n\}(y_i - a_0 - a_1x_i)
+\end\{aligned\}$$ One way to remove the effect of the signs might be to
+minimize the sum of the absolute values of the discrepancies. Figure
+[\[fig:1\]](#fig:1)\{reference-type="ref" reference="fig:1"\}(b)
+demonstrates why this criterion is also inadequate. For the four points
+shown, any straight line falling within the dashed lines will minimize
+the sum of the absolute values of the residuals. Thus, this criterion
+also does not yield a unique best fit. $$\begin\{aligned\}
+\sum_\{i=1\}^\{n\}|e_i| = \sum_\{i=1\}^\{n\}|y_i - a_0 - a_1x_i|
+\end\{aligned\}$$ A third strategy for fitting a best line is the
+*minimax* criterion. In this technique, the line is chosen that
+minimizes the maximum distance that an individual point falls from the
+line. As depicted in Figure [\[fig:1\]](#fig:1)\{reference-type="ref"
+reference="fig:1"\}(c), this strategy is ill-suited for regression
+because it gives undue influence to an *outlier* i.e., a single point
+with a large error.
+
+### Least-Squares Fit of a Straight Line
+
+A strategy that overcomes the shortcomings of the aforementioned
+approaches is to minimize the sum of the squares of the residuals.
+$$\begin\{aligned\}
+S_r = \sum_\{i=1\}^\{n\}e_i^2 = \sum_\{i=1\}^\{n\}(y_i-a_0-a_1x_i)^2
+\end\{aligned\}$$ This criterion, which is called *least squares*, has a
+number of advantages, including that it yields a unique line for a given
+set of data. Determining the slope and intercept for the best fit is
+calculated as follows.
+
+To determine values for $a_0$ and $a_1$, $S_r$ is differentiated with
+respect to each unknown coefficient: $$\begin\{aligned\}
+\frac\{\partial S_r\}\{\partial a_0\}& = -2\sum(y_i-a_0-a_1x_i)\\
+\frac\{\partial S_r\}\{\partial a_1\}&= -2\sum(y_i-a_0-a_1x_i)x_i
+\end\{aligned\}$$ Setting these derivatives equal to zero will result in a
+minimum $S_r$. If this is done, the equations can be expressed as
+$$\begin\{aligned\}
+0 &= \sum y_i-\sum a_0- \sum a_1x_i\\
+0 &= \sum x_iy_i-\sum a_0x_i- \sum a_1x_i^2
+\end\{aligned\}$$
+
+Now, realizing that $\sum a_0$ = $na_0$, we can express the equations as
+a set of two simultaneous linear equations with two unknowns ($a_0$ and
+$a_1$): $$\begin\{aligned\}
+na_0 + \sum x_i(a_1) &= \sum y_i\\
+\sum x_i(a_0) + \sum x_i^2(a_1) &=\sum x_iy_i
+\end\{aligned\}$$ These are called the *normal equations*. They can be
+solved simultaneously for $$\begin\{aligned\}
+a_1 &= \dfrac\{n\sum x_iy_i - \sum x_i\sum y_i\}\{n\sum x_i^2-(\sum x_i)^2\}
+\end\{aligned\}$$ $$\begin\{aligned\}
+a_0 &= \bar\{y\} - a_1\bar\{x\}
+\end\{aligned\}$$ where $\bar\{y\}$ and $\bar\{x\}$ are the means of $y$ and
+$x$, respectively.
+
+:::: example
+The housing prices with their area in square feet at Seattle, WA are
+given in a dataset. Determine the average price of the one square feet
+using Linear Least Squares Regression. Use the trend to make a bid at a
+house of 4000 square feet. *Matlab Code:*
+
+    load('Housing_Prices.mat')
+
+    Sum_x = sum(Area);
+    Sum_y = sum(Price);
+    Sum_xsq = sum(Area.*Area);
+    Sum_xy = sum(Area.*Price);
+
+    n = length(Area);
+    A = [0 (n*Sum_xsq - (Sum_x)^2);1 (Sum_x/n)];
+    B = [(n*Sum_xy - Sum_x*Sum_y) ;Sum_y/n];
+    a = A\B;
+
+::: marginfigure
+![image](figures/part1b/linear_least_squares/bestfit.png)\{width="2.7in"\}
+:::
+
+The slope obtained is $a_1$ = 280.6236 dollars (which is the average
+cost of one square feet) and the intercept is $a_0$ = -4.3581e+04.
+
+Using the linear trend, the bid to buy a house of 4000 square feet would
+be placed at
+
+$a_0$ + $a_1\times4000$ $=$ $1.079$ million dollars
+
+The line along with the data can be observed from the Figure
+[\[fig:2\]](#fig:2)\{reference-type="ref" reference="fig:2"\}.
+::::
+
+## Comments on Linear Regression
+
+It should be noted that the following statistical assumptions are
+inherent in linear least-squares procedures:
+
+1.  Each $x$ has a fixed value; it is not random and is known without
+    error.
+
+2.  The $y$ values are independent random variables and all have the
+    same variance.
+
+3.  The $y$ values for a given $x$ must be normally distributed.
+
+Such assumptions are relevant to the proper derivation and use of
+regression. For example, the first assumption means that (1) the $x$
+values must be error-free and (2) the regression of $y$ versus $x$ is
+not the same as $x$ versus $y$.

@@ -1,0 +1,103 @@
+# Special Relativity \{#chap:special_relativity\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:lorentz_group\]](#chap:lorentz_group)\{reference-type="ref+label"
+reference="chap:lorentz_group"\}
+[\[chap:newtons_laws\]](#chap:newtons_laws)\{reference-type="ref+label"
+reference="chap:newtons_laws"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+Previously in physical theories we consiered, we limited the range of
+speeds addressable by a physical theory, blaming relativistic effects.
+What precisely is a relativistic effect? Broadly, relativity addresses
+the problem of changing reference frames correctly in physics.
+
+Here, a reference frame is a point in spacetime (typically modeled as
+$\mathbb\{R\}^4$) and denoted by $$\begin\{aligned\}
+(t, x, y, z) \in \mathbb\{R\}^4
+\end\{aligned\}$$ By convention, the first parameter denotes the time, and
+the remaining parameters the spatial coordinates. Each reference frame
+is also attached to a basis for $\mathbb\{R\}^4$ called a coordinate
+system.
+
+You can think of the reference frame and coordinate system as hidden
+parameters in all the models we've dealt with so far. Often, it is
+useful to switch between two reference frames. Let's consider an example
+of a change of reference frame in Figure
+[1.1](#fig:standard_conf)\{reference-type="ref"
+reference="fig:standard_conf"\}.
+
+![Changing the reference
+frame.](figures/Physics/mechanics/special_relativity/Changing ref frame.png)\{#fig:standard_conf
+width="80%"\}
+
+This figure corresponds to the transformation $$\begin\{aligned\}
+    x' &= x - vt \\
+    y' &= y \\
+    z' &= z \\
+    t' &= t
+\end\{aligned\}$$ This type of transformation is typically called a
+uniform motion. In this case, the uniform motion is purely in the $x$
+coordinate direction. There are in general 3 types of transformations
+allowed in classical physics.
+
+-   Uniform Motion: A uniform motion with velocity
+    $\vec\{v\} \in \mathbb\{R\}^3$ performs the the transformation.
+    $$(\vec\{x\}, t) \to (\vec\{x\}+t\vec\{v\}, t)$$
+
+-   Translation: A translation is given by position shift
+    $\vec\{a\} \in \mathbb\{R\}^3$ and time shift $s \in \mathbb\{R\}$ and
+    performs the transformation
+    $$(\vec\{x\}, t) \to (\vec\{x\} + \vec\{a\}, t + s)$$
+
+-   Rotation: A rotation is given by an orthogonal matrix
+    $G: \mathbb\{R\}^3 \to \mathbb\{R\}^3$ and performs the transformation
+    $$(\vec\{x\}, t) \to (G\vec\{x\}, t)$$
+
+## Galilean Transformations
+
+Galilean transformations are the set of transformations which can be
+written as the compositions of uniform motions, translations, and
+rotations.
+
+The collection of Galilean transformations forms a mathematical group.
+You will show that this group is a Lie group of dimension 10 in the
+exercises.
+
+## Lorentzian Transformations
+
+One of the great discoveries in physics was Einstein's realization that
+Galilean transformations were not sufficient to describe physical
+phenomena at high speeds. It turned out that a more general class of
+transformations, called Lorentz transformations were needed for this.
+
+The Lorentz group $\mathcal\{L\}$ is the set of transformations $O(3, 1)$
+that leave the Minkowski metric of a 4-vector unchanged. A Lorentz boost
+is one such transformation
+
+$$\begin\{aligned\}
+    x' &= \gamma(x - vt) \\
+    y' &= y \\
+    z' &= z \\
+    t' &= \gamma \left ( t - \frac\{vx\}\{c^2\} \right )
+\end\{aligned\}$$ where $$\begin\{aligned\}
+\gamma &= \frac\{1\}\{\sqrt\{1 - \frac\{v^2\}\{c^2\}\}\}
+\end\{aligned\}$$
+
+Note that in the case that $v \ll c$, we have that $\gamma \approx 1$,
+in which case the Lorentzian transformation reduces to a Galilean
+transformation. Similar transformations can be defined in the $y$ and
+$z$ directions as well. In general, it is possible to define a
+Lorentzian boost in an arbitrary direction $n$ $$\begin\{aligned\}
+    t' &= \gamma \left ( t - \frac\{v n \cdot r\}\{c^2\} \right ) \\
+    r' &= r + (\gamma - 1)(r \cdot n)n - \gamma t v n
+\end\{aligned\}$$
+
+### Exercises
+
+1.  Prove that the set of Galilean transformations forms a Lie Group.

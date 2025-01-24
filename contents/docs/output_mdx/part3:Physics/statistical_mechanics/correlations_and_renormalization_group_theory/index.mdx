@@ -1,0 +1,323 @@
+# Correlations and Renormalization Group Theory \{#chap:renorm_group\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:ising_model\]](#chap:ising_model)\{reference-type="ref+label"
+reference="chap:ising_model"\},
+[\[chap:ising_critical\]](#chap:ising_critical)\{reference-type="ref+label"
+reference="chap:ising_critical"\}\
+**Difficulty Level:** \*\*\*\
+
+------------------------------------------------------------------------
+
+In this chapter we discuss the effect of range of correlations on phase
+transitions. This correlations can be experimentally measured by
+scattering experiments, as we will review in subsequent chapters. We
+also introduce the renormalization group theory. This method has the
+particularity that it accounts for large length scale fluctuations and
+is essential for the study of phase transitions. We start with the
+one-dimensional Ising model, as several of the concepts of the
+Renormalization Group theory can be illustrated for this case. Then we
+end with the study of two-dimensional systems.
+
+## Correlations in a system
+
+We showed earlier that the critical point is associated with a
+divergence in the fluctuations in the magnetization, energy, or number
+of particles. We call these variables, *order parameters*, *i.e*
+fluctuating variables whose average values provide the information about
+the order or broken symmetry of the system. From Monte Carlo
+simulations, we observe that these fluctuations are highly correlated as
+we approach the critical point.
+
+It is useful to introduce the concept of *range of correlations*, which
+consider the distance over which fluctuations in one region
+$(s_i - \langle s_i \rangle)$ of space, are correlated or affected by
+those in another region $(s_j - \langle s_j \rangle)$. Mathematically:
+
+$$\begin\{aligned\}
+\label\{Eq1\}
+c_\{ij\} &= \langle (s_i - \langle s_i \rangle)(s_j - \langle s_j \rangle)\rangle \\
+&=\langle s_i s_j \rangle -2 \langle s_i \rangle \langle s_j \rangle + \langle s_i \rangle \langle s_j \rangle \\
+&= \langle s_i s_j \rangle - \langle s_i\rangle\langle s_j\rangle 
+\end\{aligned\}$$
+
+where $c_\{ij\}$ is called the *correlation function*.
+
+If two sites are separated over a larger distance than the range
+predicted by $c_\{ij\}$, these two points are uncorrelated of each other.
+In terms of the magnetic model, two correlated spins are likely to be
+aligned in the same direction. Thus, we can anticipate that the
+spontaneous magnetization phenomena is associated with *long range
+correlations*.
+
+In fact, there is a direct relationship between the correlation function
+and the fluctuations in magnetization, as we explain bellow:
+
+$$\begin\{aligned\}
+\left(\frac\{\partial \langle M\rangle\}\{\partial \beta h\}\right)_\{\beta,N\} &= \langle (\delta M)^2\rangle \\
+&= \langle (M - \langle M \rangle)(M - \langle M \rangle)\rangle \\
+&= \Bigg\langle \left(\sum_\{i=1\}^N \left[ s_i - \langle s_i\rangle \right] \right)\left(\sum_\{j=1\}^N \left[ s_j - \langle s_j\rangle \right]\right)\Bigg\rangle \\
+&=\sum_\{i=1\}^N\sum_\{j=1\}^N \left[\langle s_i s_j \rangle - \langle s_i\rangle\langle s_j\rangle\right] \\
+&=N\sum_\{j=1\}^N c_\{1,j\} 
+\end\{aligned\}$$
+
+where in the last part, we consider the fact that the lattice sites are
+equivalent.
+
+Thus, the divergence of fluctuations at the critical point is directly
+related with long range of correlations between neighboring spins. When
+this occurs, the distance of these correlations becomes macroscopic, so
+even very distant spins will tend to align, forming the big blobs
+observed in the Monte Carlo simulation.
+
+In the mean-field approximation, we assumed an average magnetization for
+the neighboring spins, $\langle s_i \rangle = m$ ($c_\{i j\} = 0$ for
+$i \neq j$), thus neglecting spatial correlations. This explains the
+discrepancies of our approximation with respect to the exact solution.
+Quantifying the effective interaction between distal spins is a powerful
+way to think about the physical effect of correlations.
+
+## Renormalization Group Theory
+
+In order to conceptualize the correlations in the Ising model, it is
+extremely useful to understand how the correlations lead to effective
+long-range interactions. *Renormalization Group Theory* is an analytical
+method of coarse graining an interacting system to address how physical
+interactions are impacted by spatial correlations correlations.
+
+The basic procedure of Renormalization Group Theory is:
+
+-   Begin with the original theory with all of relevant degrees of
+    freedom (e.g. the spins $s_i$ in the Ising model).
+
+-   Separate degrees of freedom into one set that will be summed over
+    first and one that will summed over second.
+
+-   Perform the summation over the set of degrees of freedom.
+
+-   Define a new theory based on the remaining degrees of freedom that
+    has coarse-grained (or renormalized) parameters.
+
+-   Identify the renormalization group equations that pass the theory to
+    the next level, successively solve these equations
+
+## Renormalization Group Theory of the 1D Ising model
+
+Consider the 1D Ising model with $h = 0$, defined according to the
+system energy: $$\begin\{aligned\}
+\beta E=-J\sum_\{i=1\}^N s_i s_\{i+1\}
+\end\{aligned\}$$ The partition function is defined by: $$\begin\{aligned\}
+Q(J,N) = \sum_\{s_1,s_2,...,s_N=-1,1\}\exp[J(...+s_1s_2+s_2s_3+s_3s_4++s_4s_5+...)]
+\end\{aligned\}$$ Although this has an exact solution, we will employ
+Renormalization Group Theory to address the physics of this model
+(Fig. [\[fig1\]](#fig1)\{reference-type="ref" reference="fig1"\}).
+
+::: marginfigure
+![image](figures/Physics/statistical_mechanics/correlations_and_renormalization_group_theory/renormalized_ising_1d.png)\{width="\\linewidth"\}
+:::
+
+Arrange the partition into terms that isolate the even spins, *i.e.*:
+$$\begin\{aligned\}
+Q(J,N) = \sum_\{s_1,s_2,...,s_N=-1,1\}\exp[J(s_1s_2+s_2s_3)]\exp[J(s_3s_4+s_4s_5)]...
+\end\{aligned\}$$ Perform the sum over all even spins, arriving at the
+expression: $$\begin\{aligned\}
+Q(J,N) = \sum_\{s_1,s_3,...,s_N=-1,1\}\left[e^\{J(s_1+s_3)\} + e^\{-J(s_1+s_3)\}\right]\cdot \\ 
+\left[e^\{J(s_3+s_5)\}+e^\{-J(s_3+s_5)\}\right]...
+\end\{aligned\}$$
+
+Now, recast the partial-summed theory to look the same as the original
+theory with $N/2$ spins and (perhaps) a new coupling constant $J'$. This
+is accomplished if we can find a function $f (J)$ and coupling constant
+$J'$ that satisfies $$\begin\{aligned\}
+e^\{J(s+s')\}+e^\{-J(s+s')\} = f(J)e^\{J'ss'\}
+\end\{aligned\}$$ for any values of $s, s' = -1,1$. If this transformation
+is possible, the partition function becomes:
+
+$$\begin\{aligned\}
+\label\{Eq2\}
+Q(J,N) &= \sum_\{s_1,s_2,...,s_N=-1,1\} f(J) e^\{J's_1s_3\}f(J) e^\{J's_3s_5\}... \\
+&= [f(J)]^\{N/2\}Q(J',N/2)]
+\end\{aligned\}$$
+
+where $Q(J',N/2)$ has the same form as the original theory.
+
+To find $f(J)$ and $J'$, consider two scenarios:
+
+-   If $s = s' = \pm 1$, the coarse-graining criterion is:
+
+    $$\begin\{aligned\}
+    \label\{Eq3\}
+    e^\{2J\}+e^\{-2J\}=f(J)e^\{J'\}
+    \end\{aligned\}$$
+
+-   If $s = -s' = \pm 1$, the coarse-graining criterion is:
+    $$\begin\{aligned\}
+    \label\{Eq4\}
+    2=f(J)e^\{-J'\}
+    \end\{aligned\}$$
+
+These two criteria are easily solved to get: $$\begin\{aligned\}
+J' &= \frac\{1\}\{2\} \log [\cosh(2J)]\\
+f(J) &= 2\cosh^\{1/2\}(2J) 
+\end\{aligned\}$$
+
+and we define $g(J) = N^\{-1\} \log Q$, resulting in the expression:
+$$\begin\{aligned\}
+g(J')=2g(J)-\log\left[ 2\sqrt\{\cosh(2J)\} \right] 
+\end\{aligned\}$$
+
+These are the *renormalization group equations*. The inverses of these
+equations are:
+
+$$\begin\{aligned\}
+J&=\frac\{1\}\{2\}\cosh^\{-1\}\left( e^\{2J'\} \right) \hspace\{0.2cm\} \\
+g(J) &= \frac\{1\}\{2\} g(J') + \frac\{1\}\{2\} \log 2 + \frac\{J'\}\{2\} 
+\end\{aligned\}$$
+
+Successive application of the RG equations always decreases the coupling
+constant $J$, except for the initial value $J \rightarrow \infty$
+(Fig. [\[fig2\]](#fig2)\{reference-type="ref" reference="fig2"\}). The
+loss of coupling implies the lack of long-range order associated with a
+phase transition. Conditions where $J' = J$ is called a fixed point of
+the theory, which identifies a state whose physical behavior is
+length-scale invariant (*self-similar*). The 1D Ising model has a stable
+fixed point at $J = 0$ and an unstable fixed point at
+$J \rightarrow \infty$.
+
+::: marginfigure
+![image](figures/Physics/statistical_mechanics/correlations_and_renormalization_group_theory/rg_equation_coupling.png)\{width="\\linewidth"\}
+:::
+
+## Renormalization Group Theory of the 2D Ising model
+
+The 2D Ising model can also be addressed using Renormalization Group
+theory. We follow a similar procedure as in the 1D case, though several
+approximations need to be made.
+
+The partition function organized into terms such that:
+
+$$\begin\{aligned\}
+Q = \sum_\{s_1,s_2,...,s_N=-1,1\} \dotsc \exp[Js_5(s_1+s_2+s_3+s_4)]  \\ 
+\times \exp[Js_6(s_2+s_3+s_7+s_8)] \dotsc
+\end\{aligned\}$$
+
+where $s_5$ and $s_6$ are among the spins that we will first sum over
+(Fig [\[fig3\]](#fig3)\{reference-type="ref" reference="fig3"\}).
+
+::: marginfigure
+![image](figures/Physics/statistical_mechanics/correlations_and_renormalization_group_theory/renormalization_2d_coupling.png)\{width="\\linewidth"\}
+:::
+
+Sum over half the spins to get: $$\begin\{aligned\}
+Q = \sum_\{\text\{remaining \}s_i\} \dotsc \left[ e^\{J(s_1+s_2+s_3+s_4)\} + e^\{-J(s_1+s_2+s_3+s_4)\} \right] \\
+\times \left[ e^\{J(s_2+s_3+s_7+s_8)\} + e^\{-J(s_2+s_3+s_7+s_8)\} \right] \dotsc
+\end\{aligned\}$$
+
+It would be desirable to find a set of renormalization group equations
+based on: $$\begin\{aligned\}
+\label\{Eq5\}
+e^\{J(s_1+s_2+s_3+s_4)\} + e^\{-J(s_1+s_2+s_3+s_4)\} = f(J) e^\{J'(s_1s_2+s_1s_4+s_2s_3+s_3s_4)\}
+\end\{aligned\}$$
+
+however this will prove to be impossible.
+
+Since there exist unique scenarios for $s_1$, $s_2$, $s_3$, $s_4$, such
+that: $$\begin\{aligned\}
+s_1 &=s_2=s_3=s_4 = \pm 1 \\
+s_1 &=s_2=s_3=-s_4 = \pm 1 \\
+s_1 &=s_2=-s_3=-s_4 = \pm 1 \\
+s_1 &=-s_2=-s_3=-s_4 = \pm 1 
+\end\{aligned\}$$
+
+the model is overspecified (4 equations, 2 unknowns), and the
+coarse-grained theory cannot have the same form as the original.
+
+The simplest possibility is: $$\begin\{aligned\}
+&e^\{J(s_1+s_2+s_3+s_4)\} + e^\{-J(s_1+s_2+s_3+s_4)\} = \\
+ &f(J)\exp \left[ \frac\{1\}\{2\}J_1(s_1s_2+s_2s_3+s_3s_4+s_4s_1) + J_2(s_1s_3+s_2s_4) + J_3s_1s_2s_3s_4 \right] 
+\end\{aligned\}$$
+
+Since there are 4 equations and 4 unknowns, these can be solved to find:
+
+$$\begin\{aligned\}
+\label\{Eq6\}
+J_1 &= \frac\{1\}\{4\}\log[\cosh(4J)] \\
+J_2 &= \frac\{1\}\{8\}\log[\cosh(4J)] \\
+J_3 &= \frac\{1\}\{8\}\log[\cosh(4J)] - \frac\{1\}\{2\}\log[\cosh(4J)] \\
+f(J) &= 2[\cosh(2J)]^\{1/2\}[\cosh(4J)]^\{1/8\}
+\end\{aligned\}$$
+
+Inserting this into the partition function, we have:
+
+$$\begin\{aligned\}
+\label\{Eq7\}
+Q(J,N) = [f(J)]^\{N/2\} \sum_\{N/2 spins\}\exp\left[ J_1\sum_\{ij\}\{'\}s_i s_j + \right. \\
+ \left. J_2\sum_\{lm\}\{''\}s_l s_m + J_3\sum_\{pqrt\}\{'''\}s_p s_q s_r s_t \right] 
+\end\{aligned\}$$
+
+where $\sum\{'\}$ is over nearest neighbors, $\sum\{''\}$ is over
+next-nearest neighbors, and $\sum\{'''\}$ is over four spins in a square.
+
+This demonstrates that coarse-graining introduces new interactions into
+the theory that did not exist in the original theory. However, we cannot
+use this structure, since the next renormalization step will introduce
+even more complex interactions. Therefore, we make the approximation:
+
+$$\begin\{aligned\}
+\label\{Eq8\}
+J_1\sum_\{ij\}\{'\}s_is_j+J_2\sum_\{lm\}\{''\}s_ls_m \approx J'(J_1,J_2)\sum_\{ij\}\{'\}s_is_j
+\end\{aligned\}$$
+
+and neglect the 4-spin interaction ($J_3 \approx 0$).
+
+This approximation gives:
+
+$$\begin\{aligned\}
+\label\{Eq9\}
+Q(J,N) = [f(J)]^\{N/2\} Q[J'(J_1,J_2),N/2]
+\end\{aligned\}$$
+
+and the free energy is found from
+$g(J)=\frac\{1\}\{2\}\log f(J)+\frac\{1\}\{2\}g(J')$.
+
+To estimate $J'$, consider the case where all the spins are aligned.
+Since we have $N/2$, there are $N$ near neighbors and $N$ next-near
+neighbors, thus $J_1\sum_\{i j\}\{'\}s_is_j = NJ_1$ and
+$J_2\sum_\{lm\}\{''\}s_ls_m = NJ_2$. Therefore, we estimate that
+$J'\approx J_1+J_2$.
+
+Using our RG equations for $J_1$ and $J_2$, we have: $$\begin\{aligned\}
+J'=\frac\{3\}\{8\}\log[\cosh(4J)] 
+\end\{aligned\}$$
+
+Unlike the 1D Ising model, the RG equation for the 2D system has a
+non-trivial fixed point $J_c = 0.50698$ that satisfies
+$J_c = \frac\{3\}\{8\}\log[\cosh(4J_c)]$. The critical point $J_c$ dictates
+conditions where the correlations diverge at all length scales (i.e. the
+system is self-similar) and marks the onset of a phase transition
+(Fig. [\[fig4\]](#fig4)\{reference-type="ref" reference="fig4"\}).
+
+::: marginfigure
+![image](figures/Physics/statistical_mechanics/correlations_and_renormalization_group_theory/coupling_constant_values.png)\{width="\\linewidth"\}
+:::
+
+## Coarse-Grained Physical Models
+
+Renormalization Group theory gives a systematic method for coarse
+graining a physical model. In many instances, the insights that can be
+gained by coarsegraining can provide fundamental insight into the
+dominant physics. For example, coarse-graining concepts have been
+pivotal in polymer physics (Fig. [\[fig5\]](#fig5)\{reference-type="ref"
+reference="fig5"\}, [\[fig6\]](#fig6)\{reference-type="ref"
+reference="fig6"\}).
+
+::: marginfigure
+![image](figures/Physics/statistical_mechanics/correlations_and_renormalization_group_theory/Fig5.png)\{width="\\linewidth"\}
+:::
+
+::: marginfigure
+![image](figures/Physics/statistical_mechanics/correlations_and_renormalization_group_theory/Fig6.png)\{width="\\linewidth"\}
+:::

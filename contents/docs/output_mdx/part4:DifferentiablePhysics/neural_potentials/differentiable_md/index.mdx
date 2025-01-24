@@ -1,0 +1,52 @@
+# Differentiable Molecular Dynamics \{#chap:differentiable_md\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:molecular_hamiltonian\]](#chap:molecular_hamiltonian)\{reference-type="ref+label"
+reference="chap:molecular_hamiltonian"\},\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+Molecular dynamics is traditionally performed by sophisticated simulator
+frameworks that combine methods for simulating systems of molecules. It
+has recently become possible to make such frameworks fully
+differentiable [@schoenholz2020jax], [@merchant2021learn2hop],
+[@goodrich2021designing]. Since the simulations are fully
+differentiable, optimization can be performed over whole trajectories
+allowing for sophisticated optimizations. We discuss a few
+considerations of such systems in this chapter.
+
+## Spatial Partitioning
+
+Spatial partitioning methods break a given system into a collection of
+local neighboring cells. This methodology follows standard assumptions
+that only atoms within a certain local neighborhood of one another have
+physical influence on each other (outside systems undergoing phase
+transition). The core primitive performs a transformation that
+transforms a vector of positions into a list of lists of neighboring
+elements within distance $\sigma$ of each other.
+
+``` \{.python language="python"\}
+neighbor_list: $\mathbb\{R\}[3, N] \to [\mathbb\{R\}[3]]$
+```
+
+## Coarse Graining
+
+The parameters of a full coarse grained force field can be learned
+entirely from scratch using a differentiable molecular dynamics engine.
+The potential for automatic learnable coarse graining could help extend
+molecular dynamics simulations to much larger systems.
+
+## Memory Usage
+
+Learning is done by differentiating backwards through the full
+simulation, which causes memory growth. Some potential ideas to reduce
+memory consumption are to use gradient checkpointing or invertible
+simulations.
+
+There are also issues with exploding gradients with systems becoming
+chaotic at times. Using methods like Langevin integrators seem to
+improve the stability of gradients, but more research is still needed.

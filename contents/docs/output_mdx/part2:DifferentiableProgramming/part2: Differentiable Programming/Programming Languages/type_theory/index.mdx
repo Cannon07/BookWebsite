@@ -1,0 +1,103 @@
+# Introduction to Type Theory \{#chap:type_theory\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:math_basics\]](#chap:math_basics)\{reference-type="ref+label"
+reference="chap:math_basics"\},\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+Type theory is an increasingly important part of modern mathematics and
+computer science that provides technology to describe the behavior of
+computer programs.. In the rest of this book, we will use types to help
+us more accurate characterize physical systems.
+
+## Types, Terms, and Values
+
+The parts of a program are called terms, types and values. Terms are
+program statements and expressions such as
+
+    3+4, x, 234
+
+A term is usually denoted with the symbol $e$. Each term is associated
+with a type that provides extra semantic meaning to the type. Types are
+typically denoted by $\sigma$, $\tau$. To say that term $e$ has type
+$\tau$ we use the following notation $$\begin\{aligned\}
+    e : \tau
+\end\{aligned\}$$ Read this expression as \"e has type tau\". Function
+types are represented by the following notation $$\begin\{aligned\}
+    e: \sigma \to \tau
+\end\{aligned\}$$ Functions with multiple arguments by chaining arrows.
+For example, here's the type of a function with 3 arguments.
+$$\begin\{aligned\}
+    e: \tau_1 \to \tau_2 \to \tau_3 \to \tau_4
+\end\{aligned\}$$
+
+The type of a list is denoted by $$\begin\{aligned\}
+    e: [\tau]
+\end\{aligned\}$$
+
+When evaluating types for a program, we make use of what is called a
+type environment, typically denoted by $\Gamma$. Under the hood, a type
+environment is simply a list of pairs $e: \tau$ $$\begin\{aligned\}
+    \Gamma := [e_1: \tau_1,\dotsc,e_n: \tau_n]
+\end\{aligned\}$$ Judgments are the process by a type environment is used
+to derive a new term-type assignment. A judgment is written as
+$$\begin\{aligned\}
+    \Gamma \vdash e: \tau
+\end\{aligned\}$$ Read the above statement as \"type environment Gamma
+implies that term e is of type tau\".
+
+## Typing Rules
+
+Typing rules are rules for logical inference that describe how a given
+type system assigns a type to every term. A program is said to be well
+typed if every term has an associated type. An inference rule is given
+by the following general form.
+
+$$\begin\{aligned\}
+    \inference[]
+    \{
+     \textrm\{premises\}
+    \}
+    \{
+     \textrm\{conclusion\}
+    \}
+\end\{aligned\}$$
+
+If all the premises above the line are fulfilled, the conclusions below
+the line follows by the typing rule. Let's look at a more concrete
+example.
+
+$$\begin\{aligned\}
+    \inference[]
+    \{
+    \Gamma \vdash e_1 : \mathbb\{R\}, \quad \Gamma \vdash e_2 : \mathbb\{R\}
+    \}
+    \{
+    \Gamma \vdash e_1 + e_2 : \mathbb\{R\}
+    \}
+\end\{aligned\}$$
+
+The trick to reading typing rules is to convert them into English. The
+typing rule above corresponds to the following English statement:\
+\
+\"If expression $e_1$ has type $\mathbb\{R\}$ in type environment
+$\Gamma$, and if expression $e_2$ has type $\mathbb\{R\}$ in type
+environment $\Gamma$, then expression $e_1 + e_2$ has type $\mathbb\{R\}$
+in type environment $\Gamma$.\"\
+\
+Using common sense, this typing rule is encoding the statement that the
+sum of two real numbers is a real number. A type system for a
+programming language is specified by a series of typing rules like the
+one displayed above. We shall see multiple examples of type systems in
+the following chapters.
+
+## Exercises
+
+1.  We gave an example above of a typing rule for addition of real
+    numbers. Construct typing rules for subtraction, multiplication, and
+    division of real numbers.

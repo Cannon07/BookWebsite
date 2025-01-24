@@ -1,0 +1,119 @@
+# Lagrangian Neural Networks \{#chap:lagrangian_nn\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:lagrangian_mechanics\]](#chap:lagrangian_mechanics)\{reference-type="ref+label"
+reference="chap:lagrangian_mechanics"\},
+[\[chap:hamiltonian_nn\]](#chap:hamiltonian_nn)\{reference-type="ref+label"
+reference="chap:hamiltonian_nn"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+One of the major limitations of Hamiltonian neural networks is that we
+need to know the canonical coordinates of the system. For many complex
+systems, this assumption is unrealistic. The Lagrangian neural network
+framework provides a method to learn a Lagrangian for a system directly
+from data. This method has the powerful advantage that it can be applied
+to systems with unknown conservation laws.
+
+## Mathematical Framework
+
+Suppose that we have a physical system that evolves from
+$x_0 = (q_0, \dot\{q_0\})$ to $x_1=(q_1, \dot\{q_1\})$. The system can take
+many different paths from $x_0$ to $x_1$. The Lagrangian formalism
+assigns to each such path a score by using the action functional
+$$\begin\{aligned\}
+    S = \int_\{t_0\}^\{t_1\} (T(q_t, \dot\{q_t\}) - V(q_t)) dt
+\end\{aligned\}$$ where $T$ is the kinetic energy and $V$ is the potential
+energy. The quantity $T - V$ is defined to be the Lagrangian.
+$$\begin\{aligned\}
+    \mathcal\{L\} = T - V
+\end\{aligned\}$$ The Lagrangian formalism tells us that the path which is
+chosen will have minimal energy and have the functional derivative equal
+0. $$\begin\{aligned\}
+    \partial S = 0
+\end\{aligned\}$$ As we saw earlier, the path which satisfies this
+constraint satisfies the Euler-Lagrange equations $$\begin\{aligned\}
+    \frac\{d\}\{dt\}\frac\{\partial \mathcal\{L\}\}\{\partial \dot\{q_j\}\} &= \frac\{\partial \mathcal\{L\}\}\{\partial q_j\}
+\end\{aligned\}$$ Classically, physicists write down an analytical
+expression for $\mathcal\{L\}$ (as we have done in previous chapters) and
+use mathematical techniques to solve for the resulting differential
+equations. However, for complex systems, we may not know the form of
+$\mathcal\{L\}$ but may instead have just raw data readouts from the
+system. The learning task we face here is to learn $\mathcal\{L\}$ from
+data.
+
+## Parameteric Lagrangians
+
+We start by writing down the Euler-Lagrange equations in vectorized form
+
+$$\begin\{aligned\}
+    \frac\{d\}\{dt\} \nabla_\{\dot\{q\}\} \mathcal\{L\} &= \nabla_q \mathcal\{L\}
+\end\{aligned\}$$ Here we define $$\begin\{aligned\}
+    (\nabla_\{\dot\{q\}\} \mathcal\{L\})_i &= \frac\{\partial \mathcal\{L\}\}\{\partial \dot\{q\}_i\}
+\end\{aligned\}$$ We can apply the chain rule to expand out the derivative
+$$\begin\{aligned\}
+\frac\{d\}\{dt\} \left ( \nabla_\{\dot q\} \mathcal\{L\}(q, \dot q, t) \right ) &= \nabla_q \mathcal\{L\} \\
+\nabla_\{\dot q\} \left (\frac\{d\}\{dt\} \mathcal\{L\}(q, \dot q, t) \right ) &= \nabla_q \mathcal\{L\} \\
+\nabla_\{\dot q\} \left ( \frac\{\partial\}\{\partial q\} \mathcal\{L\}(q, \dot q, t) \dot q + \frac\{\partial\}\{\partial \dot q\} \mathcal\{L\}(q, \dot q, t) \Ddot\{q\}  \right ) &= \nabla_q \mathcal\{L\} \\
+(\nabla_\{\dot\{q\}\} \nabla_\{\dot\{q\}\}^T \mathcal\{L\}) \ddot\{q\} + (\nabla_q \nabla_\{\dot\{q\}\}^T \mathcal\{L\}) \dot\{q\}  &= \nabla_q \mathcal\{L\}
+\end\{aligned\}$$ We can apply a matrix inversion to recover the
+acceleration $\ddot\{q\}$ $$\begin\{aligned\}
+    \ddot\{q\} &= (\nabla_\{\dot\{q\}\} \nabla_\{\dot\{q\}\}^T \mathcal\{L\})) ^\{-1\} [\nabla_q \mathcal\{L\} - (\nabla_q \nabla_\{\dot\{q\}\}^T \mathcal\{L\})\dot\{q\}  ]
+\end\{aligned\}$$
+
+Assume that we model the Lagrangian $L$ by a neural network
+$$\begin\{aligned\}
+L &= f_\theta
+\end\{aligned\}$$ The gradient operations can be implemented by autograd,
+so we can directly implement the formula above to compute $\ddot\{q\}$. To
+recover $q$ from $\ddot\{q\}$, we can integrate $$\begin\{aligned\}
+\hat\{q\} &= \mathrm\{Integrate\}(\mathrm\{Integrate\}(\ddot\{q\}))
+\end\{aligned\}$$ The loss function then directly penalizes the difference
+between the original observations $q$ and the predictions $\hat\{q\}$.
+$$\begin\{aligned\}
+\mathcal\{L\} &= \sum_i \|q_i - \hat\{q\}_i\|^2
+\end\{aligned\}$$
+
+## A Particle Falling Under Gravity
+
+We start with a simple example of a particle falling in gravity
+$$\begin\{aligned\}
+    L &= \frac\{1\}\{2\} m(\dot\{q_1\}^2 + \dot\{q_2\}^2 ) - m ggq_1
+\end\{aligned\}$$
+
+We then note that $$\begin\{aligned\}
+\nabla_q L &= \begin\{pmatrix\}
+    -mg \\
+    0 
+    \end\{pmatrix\} \\
+\nabla_\{\dot\{q\}\} L &= \begin\{pmatrix\}
+    m \dot\{q_1\} \\
+    m \dot\{q_2\}
+    \end\{pmatrix\}
+\end\{aligned\}$$ Applying these identities, we can compute
+$$\begin\{aligned\}
+\nabla_\{\dot\{q\}\} \nabla_\{\dot\{q\}\}^T L &= \begin\{pmatrix\}
+    m & 0 \\
+    0 & m 
+    \end\{pmatrix\} \\
+\nabla_q \nabla_\{\dot\{q\}\}^T &= 0 \\
+\nabla_q L &= \begin\{pmatrix\}
+-mg \\
+0
+\end\{pmatrix\}
+\end\{aligned\}$$
+
+Plugging in values, we then find that $$\begin\{aligned\}
+\begin\{pmatrix\}
+\ddot\{q_1\} \\
+\ddot\{q_2\}
+\end\{pmatrix\}
+&= \begin\{pmatrix\}
+-g \\
+0 
+\end\{pmatrix\}
+\end\{aligned\}$$

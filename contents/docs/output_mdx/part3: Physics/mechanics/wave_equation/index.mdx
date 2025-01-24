@@ -1,0 +1,43 @@
+# The Wave Equation \{#chap:wave_equation\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:** [\[chap:pde\]](#chap:pde)\{reference-type="ref+label"
+reference="chap:pde"\},
+[\[chap:simple_physics\]](#chap:simple_physics)\{reference-type="ref+label"
+reference="chap:simple_physics"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+The wave equation is the fundamental mathematical model for travelling
+waves. The equation can be used to model physical waves on a rope,
+electromagnetic waves, and even solutions to quantum field theories.
+
+$$\begin\{aligned\}
+    \frac\{\partial^2 u\}\{\partial t^2\} &= c^2 \left ( \frac\{\partial^2 u\}\{\partial x_1^2\} + \frac\{\partial^2 u\}\{\partial x_2^2\} + \dotsc + \frac\{\partial^2 u\}\{\partial x_n^2\}  \right )
+\end\{aligned\}$$ We can simplify this expression to $$\begin\{aligned\}
+\frac\{\partial^2 u\}\{\partial t^2\} &= c^2 \nabla^2 u
+\end\{aligned\}$$ The wave equation is our first example of a hyperbolic
+differential equation. Hyperbolic equations have a propagation speed
+(here $c$) that their solutions must obey.
+
+## Solving the Wave Equation
+
+We perform a change of variable to $$\begin\{aligned\}
+\xi &= x - ct \\
+\eta &= x + ct
+\end\{aligned\}$$
+
+Under this change of variable, the wave equation transforms to
+$$\begin\{aligned\}
+\frac\{\partial^2 u\}\{\partial \xi \partial \eta\}
+\end\{aligned\}$$ This equation follows the separated form we studied
+earlier, so we can write the general solution as $$\begin\{aligned\}
+u(\xi, \eta) &= F(\xi) + G(\eta)
+\end\{aligned\}$$ where $F$ and $G$ are arbitrary functions. Changing
+variables back we can write $$\begin\{aligned\}
+u(x, t) &= F(x-ct) + G(y+ct)
+\end\{aligned\}$$ $F$ can be viewed as a right-traveling wave and $G$ as a
+left-traveling wave.

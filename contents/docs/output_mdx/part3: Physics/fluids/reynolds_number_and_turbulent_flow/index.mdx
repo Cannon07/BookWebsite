@@ -1,0 +1,79 @@
+# The Reynolds Number and Turbulent Flow \{#chap:reynolds\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:newtons_laws\]](#chap:newtons_laws)\{reference-type="ref+label"
+reference="chap:newtons_laws"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+Turbulent flow, governed by the Navier-Stokes equations, exhibits
+significant multi-scale behavior that critically makes direct simulation
+difficult. Direct numerical simulation (DNS) of fluid flow must resolve
+the smallest scales of the flow, which are orders of magnitude smaller
+than the characteristic dimensions of the flow. The computational cost
+of direct simulation is high, making it impractical for applications
+like vehicle aerodynamics, climate modeling, or astrophysics, and is
+thus limited to simple flow configurations which are typically
+oversimplified for general engineering or geophysical applications.
+
+## The Reynolds Number
+
+The Reynolds number (Re) is a dimensionless quantity in fluid mechanics
+used to help predict flow patterns in different fluid flow situations.
+At low Reynolds numbers, fluid flow is dominated by laminar flow, while
+at high Reynolds numbers fluid flow is turbulent, resulting from
+differences in the fluid's speed and direction, which may cross each
+other or move in a direction opposite to the overall flow direction
+leading to eddy currents.
+
+The Reynolds number is calculated as the ratio of inertial forces to
+viscous forces within a fluid which is subjected to relative internal
+movement due to different fluid velocities. Relative movement within a
+fluid generates fluid friction, which is a factor in developing
+turbulent flow, while the viscosity of the fluid counteracts the effect
+and inhibits turbulence. The Reynolds number quantifies the interplay
+between these two types of forces for given flow conditions, and
+provides a way to understand when turbulent flow will occur. A more
+precise distinction between low Reynolds number flow and high Reynolds
+number flow is that at low Reynolds numbers, viscous forces are
+dominant, and is characterized by smooth, constant fluid motion, whereas
+at high Reynolds numbers, turbulent flow occurs dominated by inertial
+forces, which tend to produce eddies, vortices and other flow
+instabilities. The Reynolds number is defined as
+
+$$\begin\{aligned\}
+\{\displaystyle \mathrm \{Re\} =\{\frac \{\rho uD\}\{\mu \}\}=\{\frac \{uD\}\{\nu \}\}\}
+\end\{aligned\}$$
+
+where $u$ is the flow speed, $D$ is the diameter of the tube, $\mu$ is
+the dynamic viscosity of the fluid, $\rho$ and $\nu$ are same quantities
+as in the Navier Stokes equations.
+
+### Turbulence Modeling
+
+The Reynolds Averaged Navier Stokes (RANS) equations, which are
+time-averaged equations of motion for fluid flow, are primarily used to
+describe turbulent flows. The core idea behind the RANS equations is the
+decomposition of an instantaneous quantity into its time-averaged and
+fluctuating quantities, which was originally proposed by Osborne
+Reynolds. For a stationary flow of an incompressible Newtonian fluid,
+these equations can be written in Cartesian coordinates as:
+$$\begin\{aligned\}
+\{\displaystyle \rho \{\bar \{u\}\}_\{j\}\{\frac \{\partial \{\bar \{u\}\}_\{i\}\}\{\partial x_\{j\}\}\}=\rho \{\bar \{f\}\}_\{i\}+\{\frac \{\partial \}\{\partial x_\{j\}\}\}\left[-\{\bar \{p\}\}\delta _\{ij\}+\mu \left(\{\frac \{\partial \{\bar \{u\}\}_\{i\}\}\{\partial x_\{j\}\}\}+\{\frac \{\partial \{\bar \{u\}\}_\{j\}\}\{\partial x_\{i\}\}\}\right)-\rho \{\overline \{u_\{i\}^\{\prime \}u_\{j\}^\{\prime \}\}\}\right].\}
+\end\{aligned\}$$
+
+where the time-average operator $\overline \{.\}$ is a Reynolds operator.
+The left hand side of the RANS equation represents the change in mean
+momentum of the fluid element due to the unsteadiness in the mean flow
+and the convection by the mean flow. The change in mean momentum is
+balanced by the mean body force, the isotropic stress owing to the mean
+pressure field, the viscous stresses, and apparent stress
+$\left(-\rho \{\overline \{u_\{i\}^\{\prime \}u_\{j\}^\{\prime \}\}\}\right)$ owing
+to the fluctuating velocity field, generally referred to as the Reynolds
+stress. The Reynolds stress is a non-linear term that requires
+additional modeling to close the RANS equation for solving, and has led
+to the creation of many different turbulence models.

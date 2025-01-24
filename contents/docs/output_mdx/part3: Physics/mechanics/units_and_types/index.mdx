@@ -1,0 +1,107 @@
+# Units, Types and Dimensional Analysis \{#chap:units_and_types\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:simple_physics\]](#chap:simple_physics)\{reference-type="ref+label"
+reference="chap:simple_physics"\},
+[\[chap:type_theory\]](#chap:type_theory)\{reference-type="ref+label"
+reference="chap:type_theory"\}\
+**Difficulty Level:** \*\
+
+------------------------------------------------------------------------
+
+One of the most useful applications of type theory is to track units and
+dimensional analysis for physical systems. In this chapter, we will
+explain how to use a type system to track units and perform dimensional
+analysis with Physika.
+
+We start by considering mass. We say that mass $m$ is in kilograms by
+assigning it the type
+
+    m: kg
+
+Here `kg` is a modified version of type $\mathbb\{R\}^+$ with a modified
+unit (the unit corresponds to one kilogram). Let's next consider length.
+We say length `l` is denoted in meters by assigning type
+
+    l: meter
+
+Here `m` is a modified version of $\mathbb\{R\}^+$ with a modified unit
+(the unit corresponds to one meter). Similarly, we say `t` is a time
+interval measured in seconds by saying
+
+    t: seconds
+
+Units form a mathematical algebra. That is, the following quantities are
+all units
+
+    m * s, m / s, m / s^2, kg * m / s^2
+
+Physika's type system allows us to track the units of expressions.
+
+An alternative method for facilitating dimensional analysis is to have
+units have more basic types
+
+    l: [L]
+    t: [T]
+    m: [M]
+
+Here we use `[L],[T], [M]` to denote the most basic types for distance,
+time and mass rather than a specific instantiation such as meters,
+seconds, or kilograms. This more abstract level of analysis can prove
+useful when doing abstract analyses of systems.
+
+An important concept that arises is that units can cancel. We can model
+this by stating that for example
+
+    a : meter / meter $\sim a$ : $\mathbb\{R\}$
+
+That is, a quantity that is of type `meter/meter` is just a scalar
+quantity. We can then proceed to write down types for common physical
+quantities
+
+    Area: [L]$^2$
+    Speed: [L][T]$^\{-1\}$
+    Acceleration: [L][T]$^\{-2\}$
+    Force: [M][L][T]$^\{-2\}$
+    Energy: [M][L]$^2$[T]$^\{-2\}$
+
+This type of decomposition can be very useful when studying the behavior
+of physical systems. For example, we can derive the types of physical
+constants from this analysis. Consider Newton's gravitational equation
+$$\begin\{aligned\}
+    F &= - \frac\{G m_1 m_2\}\{r^2\}
+\end\{aligned\}$$ We can consider the types on both sides to obtain the
+equation
+
+    [M][L][T]$^\{-2\}$ = [G][M]$^2$[L]$^\{-2\}$
+
+Solving, we obtain
+
+    [G] = [M]$^\{-1\}$[L]$^3$[T]$^\{-2\}$
+
+We can solve similarly for the types of other physical constants.
+
+## Buckingham $\pi$ Theorem
+
+Suppose that we have a physical equation given by
+
+$$\begin\{aligned\}
+    f(q_1,\dotsc,q_n) &= 0
+\end\{aligned\}$$
+
+Assume that the $q_i$ are physically independent variables and assume
+there are $k$ units (mass, time, etc) in this equation. Then the
+Buckingham-$\pi$ theorem states that there are $p = n - k$ dimensionless
+terms $$\begin\{aligned\}
+    \pi_i &= q_1^\{a_1\}\dotsc q_n^\{a_n\}
+\end\{aligned\}$$ where the $a_i$ are rational terms such that the
+original equation can be restated as
+
+$$\begin\{aligned\}
+    F(\pi_1,\dotsc,\pi_p) &= 0
+\end\{aligned\}$$ Philosophically, the Buckingham-$\pi$ theorem
+demonstrates that the laws of physics are independent of particular
+choices of units.

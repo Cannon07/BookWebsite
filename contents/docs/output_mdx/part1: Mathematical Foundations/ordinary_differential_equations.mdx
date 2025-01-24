@@ -1,0 +1,227 @@
+# Ordinary Differential Equations \{#chap:ode\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:calculus\]](#chap:calculus)\{reference-type="ref+label"
+reference="chap:calculus"\}\
+**Difficulty Level:** \*\
+
+------------------------------------------------------------------------
+
+In this chapter we introduce techniques for solving ordinary
+differential equations (ODEs). Such equations come up often in physical
+systems and are simply equations that involve derivatives of a function
+in their definition. We start with the simplest possible example of such
+an equation.
+
+$$\begin\{aligned\}
+    \frac\{df\}\{dx\} = 0
+\end\{aligned\}$$
+
+That is, we want to find a function $f$ whose derivative is 0. In this
+case, we can directly integrate both sides $$\begin\{aligned\}
+    \int \frac\{df\}\{dx\} dx &= \int 0 dx \\
+    f &= C
+\end\{aligned\}$$ Let's take a look at a more complicated equation.
+
+$$\begin\{aligned\}
+    \frac\{df\}\{dx\} = f 
+\end\{aligned\}$$
+
+We want a function which is its own derivative. It turns out that
+$f = e^x$ in this case. The easiest way to prove this fact is to
+consider the Taylor series expansion and differentiate each term in the
+expansion
+
+$$\begin\{aligned\}
+    \frac\{d\}\{dx\}\left (e^x \right ) &= \frac\{d\}\{dx\} \left (1 + x + \frac\{x^2\}\{2!\} + \frac\{x^3\}\{3!\} + \dotsc \right ) \\
+    &= \frac\{d\}\{dx\} \left ( 1 \right ) + \frac\{d\}\{dx\} \left ( x\right ) + \frac\{d\}\{dx\} \left ( \frac\{x^2\}\{2!\} \right ) + \frac\{d\}\{dx\} \left ( \frac\{x^3\}\{3!\} \right )+ \dotsc \\
+    &= 0 + 1 + x +  \frac\{x^2\}\{2!\} + \frac\{x^3\}\{3!\} + \dotsc \\
+    &= e^x
+\end\{aligned\}$$ Let's now get a little more complicated again.
+
+$$\begin\{aligned\}
+    \frac\{df\}\{dx\} &= c f \\
+\end\{aligned\}$$
+
+In this case, we can use the chain rule to see that $f(x) = e^\{cx\}$.
+Let's try one more example.
+
+$$\begin\{aligned\}
+    \frac\{df\}\{dx\} &= f(x) + c
+\end\{aligned\}$$
+
+This is a little trickier. Let's try doing a substitution. Let
+$g(x) = f(x) + c$. Then note that
+
+$$\begin\{aligned\}
+    \frac\{df\}\{dx\} = \frac\{dg\}\{dx\}
+\end\{aligned\}$$
+
+Then the original equation turns into
+
+$$\begin\{aligned\}
+    \frac\{dg\}\{dx\} &= g 
+\end\{aligned\}$$ Which suggests of course that $g(x) = e^x$. It then
+follows that $f(x) = e^\{x\} - c$. Not too bad. You might notice that all
+of the equations we've looked at so far have only involved the first
+derivative of $f$. What happens if we have second derivatives? Let's
+look at this equation
+
+$$\begin\{aligned\}
+    \frac\{d^2 f\}\{dx^2\} &= 0
+\end\{aligned\}$$
+
+Well, let's let $g(x) = \frac\{df\}\{dx\}$. Then the equation above reduces
+to
+
+$$\begin\{aligned\}
+    \frac\{dg\}\{dx\} & = 0
+\end\{aligned\}$$
+
+We know from above then that $$\begin\{aligned\}
+    g(x) = \frac\{df\}\{dx\} =  c
+\end\{aligned\}$$ By integrating both sides we get $$\begin\{aligned\}
+    \int \frac\{df\}\{dx\} dx &= \int c dx \\
+    f(x) &= cx + d
+\end\{aligned\}$$ It follows that $f$ is any linear function. Now consider
+a more complex differential equation $$\begin\{aligned\}
+    \frac\{d^2 f\}\{dx^2\} & = f \\\
+\end\{aligned\}$$ We claim that it follows that $f(x) = e^x$. Why? Taking
+the first derivative of $f$ returns $f$, so it repeating the operation
+also provides the first derivative. Let's consider a more complicated
+equation
+
+$$\begin\{aligned\}
+    \frac\{d^2 f\}\{dx^2\} &= \frac\{df\}\{dx\} \\
+\end\{aligned\}$$ Let's try integrating both sides $$\begin\{aligned\}
+    \int \frac\{d^2 f\}\{dx^2\} &= \int \frac\{df\}\{dx\} dx \\
+    \frac\{df\}\{dx\} + c &= f + d \\
+    \frac\{df\}\{dx\} &= f + C 
+\end\{aligned\}$$ In the last step we have combined the constants and set
+$C = d - c$. Now we've already solved this last equation so we know that
+$$\begin\{aligned\}
+    f(x) &= e^\{x\} - C
+\end\{aligned\}$$ Ok, let's go one step more complex again.
+$$\begin\{aligned\}
+    \frac\{d^2 f\}\{dx^2\} &= \frac\{d f\}\{dx\} + f
+\end\{aligned\}$$ Let's hypothesize for this equation that $f(x)$ takes
+the form $e^\{cx\}$ for some constant $c$. This is a guess for now, but
+primarily guided by our good luck with exponential functions so far.
+Let's plug it in and see what happens
+
+$$\begin\{aligned\}
+    \frac\{d^2 f\}\{dx^2\} &= \frac\{df\}\{dx\} + f \\
+    \frac\{d^2\}\{dx^2\} \left (e^\{cx\} \right ) &= \frac\{d\}\{dx\} \left (e^\{cx\} \right ) + e^\{cx\} \\
+    c^2 e^\{cx\} &= c e^\{cx\} + e^\{cx\} \\
+    (c^2 - c - 1)e^\{cx\} &= 0
+\end\{aligned\}$$ We can solve this last equation by using the quadratic
+formula $$\begin\{aligned\}
+    c &= \frac\{1 \pm \sqrt\{5\}\}\{2\}
+\end\{aligned\}$$ Ok so we know have at least two solutions for $f$
+$$\begin\{aligned\}
+    f(x) &= e^\{\frac\{1 + \sqrt\{5\}\}\{2\} x\}
+\end\{aligned\}$$ Are there more solutions we can find? To answer this
+question, let's start by rearranging our original equation
+$$\begin\{aligned\}
+    \frac\{d^2 f\}\{dx^2\} &= \frac\{df\}\{dx\} + f \\
+    \frac\{d^2 f\}\{dx^2\} - \frac\{df\}\{dx\} - f &= 0 \\
+    \left ( \frac\{d^2\}\{dx^2\} - \frac\{d\}\{dx\} - I\right ) f &= 0 
+\end\{aligned\}$$ Here we, use $I$ to denote the identity transformation.
+We can now define an abstract operator $$\begin\{aligned\}
+    L &= \frac\{d^2\}\{dx^2\} - \frac\{d\}\{dx\} - I
+\end\{aligned\}$$ By saying that $L$ is an operator, we mean that $L$ is a
+function that transforms other functions. Note that a solution of the
+equation $$\begin\{aligned\}
+    Lf &= 0
+\end\{aligned\}$$  is also a solution of our original differential
+equation. One of the properties of $L$ (that you'll prove formally in
+the exercises is that $L$ is linear). This means we can linearly combine
+solutions of $L$. In particular, for any $a$, $b$, we have that
+$$\begin\{aligned\}
+    f &= ae^\{\frac\{1 + \sqrt\{5\}\}\{2\}\} + b e^\{\frac\{1 - \sqrt\{5\}\}\{2\}\}
+\end\{aligned\}$$ is a solution.
+
+## Taylor Series Solutions
+
+So far, we've demonstrated intuitive methods for solving ordinary
+differential equations. These methosd are powerful for a broad range of
+differential equations, but more structured techniques can be necessary
+to solve more complex equations. The series method starts by expressing
+a potential solution as a series
+
+$$\begin\{aligned\}
+    f(x) &= c_0 + c_1 x + c_2 x^2 + \dotsc \\
+    &= \sum_\{i=0\}^\infty c_i x^i
+\end\{aligned\}$$
+
+The goal of a series based solution is to solve the equation by
+constructing a formula for the $c_i$. Let's consider the following
+differential equation
+
+$$\begin\{aligned\}
+    \frac\{\d^2 f\}\{d x^2\} + x \frac\{df\}\{dx\} + f &= 0 \\
+    \left ( \frac\{d^2\}\{dx^2\} + x \frac\{d\}\{dx\} + I \right ) f  &= 0
+\end\{aligned\}$$
+
+This equation is just a bit more complex than the previous second order
+equation we considered. Let's substitute the series expansion for $f$
+into the equation.
+
+$$\begin\{aligned\}
+    \left ( \frac\{d^2\}\{dx^2\} + x \frac\{d\}\{dx\} + I \right ) \left ( \sum_\{i=0\}^\infty  c_i x^i \right) &= 0 \\ 
+    \left ( \sum_\{i=2\}^\infty c_i i (i-1) x^\{i-2\}  \right ) + \left ( \sum_\{i=0\}^\infty c_i i x^\{i\} \right) + \left ( \sum_\{i=0\}^\infty c_i x^i \right) &= 0 \\
+    \left ( \sum_\{j=0\}^\infty c_\{j+2\} (j+2)(j+1) x^\{j\}  \right ) + \left ( \sum_\{j=0\}^\infty c_\{j\} j x^\{j\} \right) + \left ( \sum_\{j=0\}^\infty c_j x^j \right) &= 0  \\
+    \sum_\{j=0\}^\{\infty\} (c_j(j+1) + c_\{j+2\}(j+2)(j+1)) x^j &= 0
+\end\{aligned\}$$
+
+Since the total equation equals $0$, each term in the power series must
+equal $0$). Taking the general term in the expansion above we obtain
+
+$$\begin\{aligned\}
+    c_j(j+1) + c_\{j+2\}(j+2)(j+1) &= 0 \\
+    c_j + c_\{j+2\}(j+2) &= 0 \\
+    c_\{j+2\} &= -\frac\{c_j\}\{j+2\}
+\end\{aligned\}$$
+
+Note that this expansion doesn't constrain the values of $c_0$ and
+$c_1$. But given arbitrary $c_0$ and $c_1$ we have a corresponding
+solution
+
+$$\begin\{aligned\}
+    f(x) &= \sum_\{j=0\}^\infty c_i x^i
+\end\{aligned\}$$
+
+where the $c_i$ are set by the recurrence relation.
+
+## Fourier Series Solutions
+
+The series solution in the previous section started by assuming that the
+desired solution could be represented by a Taylor series. We can choose
+to make a different assumption by assuming that our desired solution can
+be written as a Taylor series
+
+$$\begin\{aligned\}
+    y &= \sum_\{n=1\}^\infty b_n \sin (n \pi x)
+\end\{aligned\}$$
+
+To solve a differential equation through this assumption, we plug in
+this equation into our desired differential equation. Let's worth
+through an example to see how this works.
+
+$$\begin\{aligned\}
+    \frac\{d^2 y\}\{d x^2\} &= 2y + 3x \\
+    \frac\{d^2\}\{dx^2\} \left ( \right ) &= 2 \left ( \right ) + 3 x
+\end\{aligned\}$$
+
+## Exercises
+
+1.  Prove that $L = \frac\{d^2\}\{dx^2\} - \frac\{d\}\{dx\} - I$ is a linear
+    operator.
+
+2.  Prove that for any $a, b$,
+    $$f = ae^\{\frac\{1 + \sqrt\{5\}\}\{2\}\} + b e^\{\frac\{1 - \sqrt\{5\}\}\{2\}\}$$
+    is a solution of the equation $L f = 0$ (where
+    $L = \frac\{d^2\}\{dx^2\} - \frac\{d\}\{dx\} - I$).

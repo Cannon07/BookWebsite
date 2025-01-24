@@ -1,0 +1,209 @@
+# Featurizing Crystals and Learning Crystal Structures from Diffraction Data \{#chap:spectroscopy\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:graphconvs\]](#chap:graphconvs)\{reference-type="ref+label"
+reference="chap:graphconvs"\},
+[\[chap:molecular_ml\]](#chap:molecular_ml)\{reference-type="ref+label"
+reference="chap:molecular_ml"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+Materials characterization allows us to probe the distribution and state
+of atoms in a material of interest. The associated time and resources
+for materials characterization techniques are significantly high. In
+addition, resources such as beam lines are operated with high demand,
+typically in a way that only allows a short window of access time for a
+user. Therefore, there is enormous value to predicting materials
+characterization spectra, fields, structures and/or data. Machine
+learning provides a promising avenue to be able to learn the spectra of
+materials. In this chapter, we will cover a number of approaches that
+provide methods to learn the structural features of crystals derived
+from X-Ray diffraction data and similar experiments.
+
+## Featurizing Crystal Structures
+
+The crystal structure of a material plays a fundamental role in
+determining its properties. Describe crystal structure features becomes
+of crucial importance when attempting to understand structure--property
+relationships especially in the solid state. One approach to processing
+crystal structures is to extract descriptors of the crystal structure. A
+number of different methods for performing such as extraction exist.
+Extracted features can include
+
+-   The local coordination and polyhedral type
+
+-   Polyhedral connectivity
+
+-   Octahedral tilt angles
+
+-   Component-dimensionality
+
+-   Molecule-within-crystal
+
+-   Fuzzy prototype identification
+
+Some methods choose to operate directly on these vector representations,
+while other approaches convert these descriptors into human readable
+text descriptions for downstream use.
+
+![A crystal structure is composed of the local environment (e.g., site
+coordination number and geometry), the semi-local environment detailing
+how the sites connect throughout space (e.g., polyhedral connectivity
+and tilt angles), and the global environment (e.g., mineral type and
+symmetry information). Robocrystallographer is an open source tool that
+analyzes each of these components and compiles the information into
+machine-readable (JSON), human-readable (text), and machine learning
+formats.](figures/Differentiable Physics/Materials ML/deep_reasoning/robocrytallizer.png)\{#fig:robocrystalSchematic
+width="90%"\}
+
+### Handling Oxidation
+
+The first step in the conversion from crystal structure to descriptive
+JSON is to assign oxidation states to all sites in the structure. These
+are used for descriptive purposes and to increase accuracy when
+determining the structural bonding. The oxidation states are assigned
+based on
+
+-   Achieving charge balance
+
+-   Using oxidation states most consistent with statistics of oxidation
+    states found in the International Crystal Structure Database (ICSD)
+
+### Global structure description
+
+Global structure properties are evaluated including the symmetry
+information (e.g., space group using the spglib library) and whether the
+structure matches any known mineral prototypes.\
+*Mineral matching* is first attempted using the AFLOW structure library
+prototype matcher available in pymatgen. This algorithm relies on
+StructureMatcher, an affine mapping technique with tunable tolerances.
+Matches are determined by first aligning the crystal lattices
+(considering different settings and unit cells) and then computing
+atomic distances. Robocrystallographer has the option to simplify
+zerodimensional (0D) clusters of sites to a single site, allowing for
+the correct identification of prototypes containing organic molecules
+such as the mixed organic--inorganic hybrid perovskites. If no match is
+found, "fuzzy" matching will be performed using the geometric structure
+fingerprint calculated using matminer.
+
+*The structure fingerprint* (SiteStatsFingerprint in matminer) encodes
+information about the different types of local environments (e.g.,
+"tetrahedral") present in a crystal structure. Structures that do not
+directly match a prototype but possess a small Euclidean fingerprint
+distance to that prototype, are described as being similar to or "like"
+that structure (e.g., "perovskite-like"). Furthermore, if a structure
+matches a known prototype but contains a different number of atomic
+elements, the structure is described as "derived" from that structure
+(e.g., "perovskitederived").
+
+*Structural bonding* is determined using one of the nearest-neighbor
+routines provided by pymatgen. It is essential that bonding is assigned
+correctly due to its importance throughout all subsequent analysis
+steps. Robocrystallographer defaults to using the CrystalNN bonding
+algorithm, which, in our testing, produced the most reasonable bonding
+interpretation for a wide array of systems. In essence, CrystalNN uses
+Voronoi decomposition and solid angle weights to determine the
+probability of various coordination environments and selects the one
+with highest probability.
+
+*Bonded components* (all sets of sites that are connected by bonds) that
+comprise the structure are described using the StructureGraph module in
+pymatgen. For each structure component, its dimensionality can be
+identified using a modified breadth-first search approach.
+
+## Crystal Structure Phase Mapping
+
+DRNets[@chen2019deep] can be used to map phases of materials from X-ray
+diffraction data under thermodynamic rules
+(Crystal-Structure-Phase-Mapping). In this problem, each X-ray
+diffraction measurement may involve many crystal structures for
+different phases of the material.
+
+DRNets are an end-to-end framework that combine deep learning with
+reasoning for solving complex tasks, typically in unsupervised or
+weakly-supervised setting. DRNets exploit problem structure and prior
+knowledge by tightly combining logic and constraint reasoning with
+stochastic-gradient-based neural network optimization. The power of
+DRNets has been demonstrated on inferring crystal structures of
+materials from X-ray diffraction data.
+
+### Fast and Slow Processing
+
+Human thought consists of two different types of processes (Kahneman,
+2011):
+
+-   System 1: A fast, implicit (automatic), unconscious process
+
+-   System 2: A slow, explicit (controlled), conscious process.
+
+Humans use System 1 most of the time. System 1 is fast, effortless, and
+provides a type of near-automatic pattern recognition. In contrast,
+System 2 is slow, rational, requiring more careful thinking, and is used
+to solve more complex reasoning problems.
+
+Deep learning methods have been compared to System 1, i.e., performing
+pattern recognition or heuristic evaluation. Therefore, when it comes to
+complex problems that involve reasoning (System 2), pure machine
+learning approaches have to be complemented with reasoning algorithms,
+such as Monte Carlo tree search, or mixed-integer programming. Such
+reasoning approaches are in general outsourced using external modules,
+which is not always possible and may result in inferior performance due
+to the coordination barrier between neural networks (System 1) and the
+outsourced reasoning module (System 2), which is often
+non-differentiable. Therefore, an efficient scheme is needed to
+integrate the two systems in a general and seamless way.
+
+DRNets encode a structured latent space of the input data, which is
+constrained to adhere to prior knowledge by a reasoning module. The
+structured latent encoding is used by a generative decoder to generate
+the targeted output. Finally, an overall objective combines responses
+from the generative decoder (thinking fast) and the reasoning module
+(thinking slow), which is optimized using constraint-aware stochastic
+gradient descent. DRNets have been shown to be useful for
+Crystal-Structure-Phase-Mapping, recovering precise and physically
+meaningful crystal structures. DRNets have been demonstrated to tackle
+logical puzzles outside a pure scientific domain.
+
+### Brief Algorithmic Description
+
+DRNets formulate unsupervised learning as constrained optimization,
+incorporating abstractions and reasoning about structure and prior
+knowledge. The objective function for these models is given by
+
+$$\begin\{aligned\}
+    \min_\theta \frac\{1\}\{N\}\sum_\{i=1\}^N \mathcal\{L\}(G(\phi_\theta(x_i)), x_i)
+\end\{aligned\}$$ Here $x_i$ is the $i$-th datapoint, $\phi_\theta$ is an
+encoder and $G$ is a generative decoder. $\mathcal\{L\}$ here is a loss
+function to minimize the distance between decoded samples and the
+original datapoints. To this basic loss, we add two constraints
+$$\begin\{aligned\}
+    \phi_\theta(x_i) \in \Omega^\{\mathrm\{local\}\} \\
+    \phi_\theta(x_1),\dotsc,\phi_\theta(x_N) \in \Omega^\{\mathrm\{global\}\}
+\end\{aligned\}$$ Here $\Omega^\{\mathrm\{local\}\}$ and
+$\Omega^\{\mathrm\{global\}\}$ are constrained spaces that samples must lie
+within. This constrained objective is extremely difficult to solve
+directly, so we consider a relaxed approximation. $$\begin\{aligned\}
+    \min_\theta \frac\{1\}\{N\} \frac\{1\}\{N\}\sum_\{i=1\}^N \mathcal\{L\}(G(\phi_\theta(x_i)), x_i) + \lambda^l \psi^l(\phi_\theta(x_i)) + \sum_\{j=1\}^\{N_g\} \lambda^g_j \psi^g_j(\{\phi_\theta(x_k) | k \in S_j\})
+\end\{aligned\}$$ Here $\psi^l$ is a penalty function for the local
+constraint, $\psi^g_j$ is the penalty function for the $j$-th global
+constraint. We assume there are $N_g$ global constraints in total. The
+$\lambda$ terms are the Lagrangian relaxation terms. $S_j$ is the set of
+datapoints involved in the $j$-th global constraints.
+
+![](figures/Differentiable Physics/Materials ML/deep_reasoning/Gomes.png)\{#fig:my_label
+width="\\textwidth"\}
+
+For the case of crystal structure structure extraction, a Gaussian
+mixture model can be used to sample diffraction patterns. Constraints
+include a $k$-sparsity constraint which limits the total number of pure
+phases in the system. The set of constraints applied are termed "Phase
+Field Connectivity\", "Gibbs Phase Rule\", and the "Gibbs Alloying
+Rule.\"
+
+To train the models, a constraint-aware variant of stochastic gradient
+descent must be used, in which a subset of datapoints involved in a
+subset of the global constraints is sampled at each time step.

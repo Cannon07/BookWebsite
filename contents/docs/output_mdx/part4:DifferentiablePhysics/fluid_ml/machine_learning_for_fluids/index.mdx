@@ -1,0 +1,392 @@
+# Convolutional Neural Ordinary Differential Equations for Fluid Modeling \{#chap:ml_fluid\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:qft_basics\]](#chap:qft_basics)\{reference-type="ref+label"
+reference="chap:qft_basics"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+In this chapter, we will motivate the use of machine learning methods in
+the context of fluid dynamics. We will specifically discuss a machine
+learning architecture that have shown promise in terms of predicting
+fluid flow fields close to the solutions of the Navier-Stokes equations.
+
+Turbulence modeling has traditionally taken a data-driven approach --
+closure models are developed, refined, and fit with empirical
+experimental or direct numerical simulation data via a-posteriori or
+a-priori tests. As machine learning methods mature, a multitude of new
+avenues are open to incorporating data into fluid flow prediction. While
+traditional computational fluid dynamics (CFD) techniques rely on known
+physics, empirical fitting, and mathematical derivations, machine
+learning techniques offer an alternative approach with enhanced
+flexibility and richer model representations. Despite being a nascent
+area of research, machine learning in CFD has seen broad interest in the
+community. Many data-driven models have shown significant promise with
+their ability to improve or efficiently replace CFD methods. The
+potential for ML methods to achieve accurate, spatio-temporal fluid
+field surrogate prediction is compelling.
+
+Convolutional Neural ODEs can be used to approximate predict fluid flow
+fields [@shankar2020learning]. This work outlines a novel data-driven
+model for forecasting the velocity field of a turbulent flow and aims to
+make connections between the model and the physical intuitions of the
+system.
+
+### Governing Equations of the System
+
+As an example, we consider an idealized case of turbulent flow --
+homogeneous isotropic turbulence. The convolutional neural ODE design
+stems from the fact that we wish to model the temporal dynamics of the
+system. For an incompressible fluid, there are two governing equations,
+a momentum balance and a mass balance, shown here in their
+non-dimensional form: $$\begin\{aligned\}
+\frac\{\partial u\}\{\partial t\}+(u\cdot\nabla)u&=\frac\{1\}\{Re\}\nabla^2u-\nabla p+f \\
+\nabla\cdot u &=0
+\label\{eq:ns\}
+\end\{aligned\}$$ where $u$ is the velocity vector, defined $\{ u,v,w\}$,
+$p$ is the pressure and $Re$ is a Reynolds number, a non-dimensional
+flow parameter which broadly describes the intensity of inertial forces
+over viscous ones. We can see from the momentum balance that the
+dynamics of the velocity field are both autonomous and a function of
+local spatial gradient information of the field. Given a spatially
+discrete field, then, we can construct an ODE system to describe the
+dynamics using a neural network.
+
+### Convolution Operations Can Encode Spatial Derivatives
+
+In order to incorporate the spatial information (derivatives) necessary
+to accurately approximate the true function, we use a convolutional
+neural network to produce the dynamics. This provides two benefits: (1)
+the memory costs of the network are drastically reduced as the number of
+parameters is much smaller than a fully-connected network. This is due
+to (2) the network uses a shared local filter in each layer that limits
+the message passing to a constrained receptive field around each output
+point. When we examine the true dynamics, we again see that they are
+only a function of local information and derivatives. Here, we provide
+the intuition behind this model structure by showing how fixed filter
+convolutions are functionally equivalent to derivative computation using
+finite differnce (FD) or finite volume (FV) techniques. Consider the 1D
+second order finite difference approximation for the second derivative
+of field variable $\phi$ at discrete location $i$:
+
+$$\begin\{aligned\}
+\frac\{\partial^2 \phi_i\}\{\partial x^2\} = \frac\{\phi_\{i+1\} -2 \phi_\{i\} + \phi_\{i-1\}\}\{\Delta x^2\} + O(\Delta x^2)
+\end\{aligned\}$$
+
+This operation is exactly analogous to applying the convolutional kernel
+
+$$\begin\{aligned\}
+\frac\{\partial^2 \phi\}\{\partial x^2\} \approx \frac\{1\}\{\Delta x^2\} [1,-2,1] \quad ,
+\end\{aligned\}$$
+
+and this equivalency extends to 2D:
+
+$$\begin\{aligned\}
+\frac\{\partial \phi\}\{\partial x\} &\approx \frac\{1\}\{\Delta x\} \begin\{bmatrix\}
+0 & 0 & 0\\
+-1 & 0 & 1\\
+0 & 0 & 0
+\end\{bmatrix\} \\
+\frac\{\partial \phi\}\{\partial y\} &\approx \frac\{1\}\{\Delta x\} \begin\{bmatrix\}
+0 & 1 & 0\\
+0 & 0 & 0\\
+0 & -1 & 0
+\end\{bmatrix\}
+\quad ,
+\end\{aligned\}$$
+
+and 3D as well. Higher order difference schemes will naturally result in
+larger and larger kernel sizes. Although the convolution weights are not
+fixed, as they would be with a defined numerical discretization, we can
+treat the convolutional layers as a learned differencing scheme to
+account for higher-order behavior.
+
+## Machine Learning Approach
+
+In this approach, we construct the problem such that the model is
+provided with an initial snapshot of the flow. The continuous dynamics
+are forecasted with the model, and a series of temporal snapshots within
+a specified time window are saved and analyzed with regards to the
+ground truth data. We show here results using a series of four turbulent
+statistics -- energy spectra, velocity probability density functions
+(PDFs), velocity autocorrelation, and turbulent kinetic energy (TKE)
+over time. The turbulent kinetic energy is defined as one half of the
+sum of the mean-square fluctuations of the velocity components:
+$$\begin\{aligned\}
+e=\frac\{1\}\{2\}(\langle u^2\rangle+\langle v^2\rangle+\langle w^2\rangle) \quad 
+\label\{eq:tke\}
+\end\{aligned\}$$
+
+### Convolutional AutoEncoder with NeuralODEs
+
+Due to the combined multi-scale and non-linear behaviour of the
+Navier-Stokes equations, discretized numerical solutions to
+([\[eq:ns\]](#eq:ns)\{reference-type="ref" reference="eq:ns"\}) are
+subject to unfavorable scaling of computational complexity with respect
+to the Reynolds number. To improve computation tractability, reduced
+order modeling lowers the dimensionality of dynamical systems. Proper
+orthogonal decomposition, often used with fluid flows, takes a
+statistical approach, projecting the data onto a linear subspace
+comprised of dominant modes. The idea of a latent space representation
+is common in many fields, including computer vision. Convolutional
+autoencoders have been used for tasks like image compression or feature
+extraction, both of which closely parallel the goal of a rich reduced
+representation of the turbulent flow field. We take advantage of this
+technique to reduce the snapshots into a much smaller latent space. The
+dynamics of the system can then be performed on the latent
+representation, easing computation. Using a latent space in conjunction
+with Neural ODEs is not new and has been used successfully for modeling
+many other dynamical systems.
+
+The encoder, denoted by $\mathcal\{E\}$, is a trainable network that
+transforms the input velocity field $u_0$. $$\begin\{aligned\}
+\mathcal\{E\}(u_0) = z_0
+\end\{aligned\}$$ Compression is achieved with the use of strided
+convolutional layers in the encoder to reduce the spatial resolution in
+the latent space. This is balanced by an increase in the number of
+latent channels, up from the original 3 velocity channels. The
+compression ratio is defined as the size of the original data relative
+to the latent space. The initial condition in the latent space $z_0$ is
+used to solve the ODE parameterized by the network weights.
+$$\begin\{aligned\}
+\frac\{d z\}\{d t\}=g_\theta(z), \quad z(0) = z_0
+\end\{aligned\}$$ Although this is a continuous function, and evaluated as
+such, the solution is saved at discrete time points corresponding to the
+training and test set. The decoder, $\mathcal\{D\}$, is another trainable
+network with mirrored architecture to that of the encoder, which decodes
+the latent sequence back to the original velocity space.
+$$\begin\{aligned\}
+\mathcal\{D\}(\{z_0,z_1,\dotsc,z_n\}) = \{\hat\{u\}_0,\hat\{u\}_1,\dotsc,\hat\{u\}_n\}
+\end\{aligned\}$$ This output sequence is used to train the networks using
+a normalized mean squared error (MSE) loss function. For this problem,
+we normalize the loss with the average energy in the flow.
+
+The design of the Convolutional autoencoder + Neural ODE system is
+sketched in fig. [1.1](#fig:arch)\{reference-type="ref"
+reference="fig:arch"\}. Here, the latent space dynamics $\frac\{d z\}\{d t\}$
+are approximated using a 3 layer convolutional network with kernel sizes
+of 7. The encoder is a 2 layer convolutional network, with 1 layer of
+stride 2 to downsample the output. The decoder shares this architecture
+with convolutional transpose layers. We employ a compression ratio of 6,
+from halving the spatial resolution in each dimension and increasing the
+latent features to 4 ($2^3*3/4=6$).
+
+![Schematic of the overall model architecture. Initial conditions are
+given and encoded into a latent space. Augmented channels are
+concatenated and the dynamics are forecasted through the neural ODE
+approximator. The sequence is decoded and the divergence-free condition
+is enforced through the last layer.
+](figures/Differentiable Physics/fluid_ml/conv_node/neuralODE approximator.png)\{#fig:arch\}
+
+### Dataset and Additional Elements
+
+The dynamic model is trained with high-fidelity solutions to the
+three-dimensional Navier-Stokes equations, defined by
+[\[eq:ns\]](#eq:ns)\{reference-type="ref" reference="eq:ns"\}. Solutions
+for a triply-periodic domain are obtained by a Fourier pseudo-spectral
+method. The system is forced at low-wavenumbers to keep the total energy
+in the system constant. The resulting data are statistically stationary
+with approximately stationary energy spectra. The training, validation
+and test datasets span 100 integral time scales $\tau$, with a temporal
+sampling rate of approximately $\tau/100$. The turbulent Reynolds
+number, $Re_T \equiv e^2/(\nu \epsilon)$ with $\epsilon$ the turbulent
+kinetic energy dissipation rate, is approximately 380. The solutions are
+discretized with 64 collocation points in each direction.
+
+In this approach, we incorporate a few additional architectural elements
+to improve prediction and enforce physical constraints. As the dataset
+includes periodic boundary conditions, we impose this constraint by
+padding inputs to all convolutions circularly, as shown in Fig.
+[1.2](#fig:BC)\{reference-type="ref" reference="fig:BC"\}.
+
+![Inputs to convolutional operations are padded in a periodic fashion,
+preserving the boundary conditions specified in the problem dataset.
+Shown here is an example of padding a small 2D tensor. Analogously, this
+can be applied in 3D and with the appropriate amount of padding for the
+kernel size and valid outputs.
+](figures/Differentiable Physics/fluid_ml/conv_node/PBC_Nodes.png)\{#fig:BC
+width="60%"\}
+
+Within this approach, we also employ the augmented neural ODE approach
+to the latent dynamics to increase flexibility and ease computation of
+ODE. This is accomplished by concatenating channels of zeros to the
+output of the encoder, with the predicted results projected back into
+the original latent space. Lastly, we apply a spectral projection layer
+to the final model output to enforce the divergence-free field condition
+required for a constant density fluid.
+
+### Spectral Projection for Divergence-Free Constraint
+
+In this layer formulation, the input $u'$ is transformed into Fourier
+space:
+
+$$\begin\{aligned\}
+    U'=\mathcal\{F\}(u') \quad ,
+\end\{aligned\}$$
+
+where the divergence operator can be applied linearly. With this linear
+constraint, we can construct a quadratic optimization problem to
+minimize the squared difference between the input and output in Fourier
+space:
+
+$$\begin\{aligned\}
+    \min_\{\hat\{U\}\} \quad & \frac\{1\}\{2\}(U'-\hat\{U\})^T(U'-\hat\{U\}) = \\
+    \min_\{\hat\{U\}\} \quad & \frac\{1\}\{2\}\hat\{U\}^T I\hat\{U\} -
+    (U')^T\hat\{U\}\\
+    \textrm\{s.t.\} \quad & A\hat\{U\} = 0 \quad ,
+\end\{aligned\}$$
+
+where $A$ is the linear divergence operator. The solution can be
+obtained directly:
+
+$$\begin\{aligned\}
+    \hat\{U\} = U'-\frac\{k\cdot U'\}\{k\cdot k\}k \quad ,
+\end\{aligned\}$$
+
+where $k$ are the wavenumbers from the Fourier analysis. The final
+output comes from taking the inverse Fourier transform of the optimum.
+
+$$\begin\{aligned\}
+    \hat\{u\}=\mathcal\{F\}^\{-1\}(\hat\{U\})
+\end\{aligned\}$$
+
+Each operation in the layer is fully differentiable and thus
+backpropagation through the layer with Automatic Differentiation
+software is trivial.
+
+### Evaluation Criteria
+
+We can analyze the predictive capabilities of the model by examining a
+series of turbulent statistical metrics and comparing them to those of
+the DNS dataset. While standard statistical measures like RMSE are often
+employed in machine learning applications to judge performance of
+models, these values are limited in their physical insight and
+ultimately only offer a holistic qualitative measure of accuracy
+compared to the true data. Rigorous scientific analysis of machine
+learning models in this space requires a physical understanding of the
+results. Hence, we look at five flow statistics that have been well
+documented analytically and quantitatively which provide different
+perspectives on the flow and can afford insight into how the model
+behaves in accordance with the physical knowledge of the system.
+
+We look at
+
+1.  Energy spectra: the energy spectrum decomposes the turbulent kinetic
+    energy in the flow as a function of wavenumber, where large and
+    small eddies correspond to low and high wavenumbers respectively. It
+    is well-known that 3D turbulent flow exhibits a power law behavior
+    in the inertial range of the energy spectrum in accordance with
+    Kolmogorov's 4/5-law. The spectra can tell us information about how
+    the model performs at different scales in the flow.
+
+2.  Q-R plots: real turbulent flows exhibit certain universal
+    small-scale structures, such as a preference for vorticity alignment
+    with the intermediate strain-rate eigenvalue. The flow topology can
+    be described using the Q-R plane, which represent the second and
+    third velocity gradient tensor invariants respectively. It has been
+    found that turbulent flows show a characteristic asymmetrical
+    teardrop shape in the joint Q-R pdf, which is not apparent in a
+    random field. We additionally perform coarse Q-R tests, which
+    provide a description of this flow topology at varying length
+    scales.
+
+We also look at two temporally varying statistics.
+
+4.  Velocity autocorrelation: the autocorrelation function describes the
+    similarity of a dynamical system's state to itself over time. In
+    turbulent flows, the function decays rapidly over time and the
+    integral converges to a value defined as the integral timescale of
+    the process. Given the stationarity imposed by the dataset, we
+    expect to see additional power law behavior in the correlation
+    function within this integral timescale window.
+
+5.  Lastly, we show the turbulent kinetic energy in the flow over time,
+    defined in eq. [\[eq:tke\]](#eq:tke)\{reference-type="ref"
+    reference="eq:tke"\} and also given by the integral of the energy
+    spectra. For this stationary process, we expect to see constant
+    energy in the system.
+
+Fig. [1.3](#fig:qual)\{reference-type="ref" reference="fig:qual"\}
+provides a qualitative visual comparison of the output of the network
+with the DNS ground truth midway through the prediction window at
+$\tau=0.5$. Generally, large-scale structures appear to be preserved,
+while smaller scale fluctuations are filtered out by the model. This
+behavior is justified in looking at the energy spectra in fig.
+[\[fig:spec\]](#fig:spec)\{reference-type="ref" reference="fig:spec"\}. In
+the low-wavenumber region, the energy in the flow is well-preserved,
+even over the integral timescale prediction horizon. At around $k=10$,
+we begin to see some deviation from the DNS data, where the model
+underpredicts the energy at those scales. This indicates that the
+encoder-neural-ODE architecture is able to capture the large-scale
+behavior but loses fidelity in approximating the small-scale energy. The
+intermittency plots in fig. [\[fig:pdf\]](#fig:pdf)\{reference-type="ref"
+reference="fig:pdf"\} support this as well, with good agreement in the
+center and discrepancies at the tails of the pdf, which correspond to
+the small scales. We note that for many engineering applications,
+resolving these largest scales is often sufficient to realize dynamics
+of interest for engineering or geophysical problems.
+
+![Qualitative comparison between the stochastic fluid flow fields
+generated from DNS and the neural network approach presented in this
+chapter.](figures/Differentiable Physics/fluid_ml/conv_node/qual__fluids_NODEs.png)\{#fig:qual
+width="\\linewidth"\}
+
+::: marginfigure
+![image](figures/Differentiable Physics/fluid_ml/conv_node/energy_spectrum_fluids_NODEs.pdf)\{width="\\linewidth"\}
+:::
+
+The statistical tests we have demonstrated so far have examined the flow
+either at singular temporal snapshots or in a time-averaged fashion. It
+is also important to consider how the predictions vary in time, as part
+of the value proposition of the neural ODE framework is its ability to
+model the continuous field dynamics. To this end, we present the
+velocity autocorrelation, the turbulent kinetic energy, and the
+normalized MSE over the prediction horizon in fig.
+[1.4](#fig:temporal)\{reference-type="ref" reference="fig:temporal"\}. We
+again note the good agreement and power-law behavior in the
+autocorrelation that matches the DNS dynamics. Importantly, we find that
+the network is adept at maintaining constant energy in the system over
+time. Though the model consistently underpredicts the true energy, this
+is in line with findings from the energy spectra, and we point out that
+the small-scale energy losses only amount to less than 7% of the total
+TKE.
+
+Additionally, fig. [1.4](#fig:temporal)\{reference-type="ref"
+reference="fig:temporal"\} shows the magnitude of divergence in the
+velocity field over one integral timescale for two models. The impact of
+the spectral projection step is significant in reducing the output
+divergence to magnitudes comparable to the true field. The formulation
+of the layer means inputs and outputs do not vary wildly, so training
+dynamics are not affected by using the layer, and MSE and other
+evaluation metrics are comparable between the models.
+
+::: marginfigure
+![image](figures/Differentiable Physics/fluid_ml/conv_node/intermittency_fluids_NODEs.pdf)\{width="\\linewidth"\}
+:::
+
+![The model uses a divergence-constraining layer to induce physical
+solution fields. The magnitude of the divergence is plotted as a
+function of time for three cases: the true divergence, the prediction
+from the model without any constraint layer, and the prediction from the
+same model with the divergence constraint. The difference between the
+predictions is significant, and it is clear the constrained model
+performs close to the expected
+output.](figures/Differentiable Physics/fluid_ml/conv_node/temporal_fluids_NODEs.pdf)\{#fig:temporal
+width="\\linewidth"\}
+
+## Summary
+
+In this chapter, we have looked at a recently proposed methodology for
+forecasting complex nonlinear spatiotemporal dynamics through purely
+data-driven methods. This methodology uses a trainable encoder-decoder
+pair to transform the field data into a latent space that retains the
+spatial nature of the data and solve the transient problem on this space
+using standard ODE methods. The governing dynamics of the latent space
+are approximated using a convolutional neural net. We find that this
+approach is able to capture important details of the flow, namely the
+large-scale dynamics, and produces stationary sequences in line with the
+physics of the problem (Navier-Stokes Equations).

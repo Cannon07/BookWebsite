@@ -1,0 +1,63 @@
+# Kernel Methods \{#chap:kernel_methods\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:ml_basics\]](#chap:ml_basics)\{reference-type="ref+label"
+reference="chap:ml_basics"\},
+[\[chap:hilbert\]](#chap:hilbert)\{reference-type="ref+label"
+reference="chap:hilbert"\},\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+Kernel methods offer a structured method of adding nonlinear features to
+linear regression. The basic intuition behind a kernel method is to
+compare a given query point $x$ against known datapoints $x_i$ to
+determine prediction $y$. For example, suppose that we have the training
+dataset
+
+$$\begin\{aligned\}
+\mathcal\{D\} &= \{(x_i, y_i) \}
+\end\{aligned\}$$
+
+Then to make a prediction at query point $x$, we predict
+$$\begin\{aligned\}
+    y &= \sum_i K(x, x_i) y_i
+\end\{aligned\}$$ here $K$ is some distance function capturing the notion
+of distance between $x$ and $x_i$. Points closer to $x_i$ will make
+predictions closer to $y_i$. Many possible families of kernel functions
+$K$ exist. Note that in the case $K$ only depends on $x$ and not $x_i$,
+kernel methods are exactly the same as linear regression.
+
+## Radial Basis Function Kernels
+
+The radial basis function (RBF) kernels are a broadly used family of
+nonlinear kernels
+
+$$\begin\{aligned\}
+K(x, x') &= \exp \left ( - \frac\{\|x - x'\|^2\}\{2 \sigma^2\} \right )
+\end\{aligned\}$$ Here $\sigma$ is a hyperparameter for the kernel. RBF
+kernels are closely related to Gaussians, and arise in many physical
+systems.
+
+    def rbf($X: \mathbb\{R\}^\{M \times N\}$, $\sigma$) $\to$ $\mathbb\{R\}^\{M \times M\}$:
+      K: $\mathbb\{R\}^\{M \times M\}$
+      for i j
+        K[i,j] = exp(-$\|X[i]-X[j]\|^2$/($2\sigma^2$))
+      return K
+
+## Efficiency Considerations
+
+Kernel methods require the computation of $K$ for every datapoint in the
+training dataset. For large datasets, the expense can become
+prohibitive. For this reason, a vast literature of approximate kernel
+methods have emerged. These methods typically attempt to factor the
+matrix $K(x_i, x_j)$ into smaller matrices and use these matrix
+factorizations to allow for faster query answers.
+
+## Exercises
+
+1.  Prove that linear regression is a special case of kernel regression
+    for a suitable kernel $K$.

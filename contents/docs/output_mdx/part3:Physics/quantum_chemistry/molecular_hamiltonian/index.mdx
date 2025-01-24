@@ -1,0 +1,69 @@
+# The Molecular Hamiltonian \{#chap:molecular_hamiltonian\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:schrodinger\]](#chap:schrodinger)\{reference-type="ref+label"
+reference="chap:schrodinger"\},
+[\[chap:schrodinger_3D\]](#chap:schrodinger_3D)\{reference-type="ref+label"
+reference="chap:schrodinger_3D"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+In this chapter, we generalize the discussion about the three
+dimensional Schrodinger's equation to a discussion about Hamiltonians
+for molecules. The molecular Hamiltonian models the quantum mechanical
+energy of the electrons and nuclei for a molecule. As we learned in
+[\[chap:position_and_momentum\]](#chap:position_and_momentum)\{reference-type="ref+label"
+reference="chap:position_and_momentum"\}, quantum mechanical models of a
+system typically proceed by starting from a classical model and then
+quantizing it.
+
+Let's suppose that we have a system with $M$ electrons and $N$ nuclei.
+We can write the classical energy as
+
+$$\begin\{aligned\}
+    E = \frac\{1\}\{2\} m_e \sum_\{i=1\}^M \|v_i\|^2 + \frac\{1\}\{2\} \sum_\{j=1\}^N m_\{j\} \|V_j\|^2 + \sum_\{i=1\}^M \sum_\{j=1\}^N \frac\{Z_i e^2\}\{4 \pi \epsilon \|r_i - R_j\|\} + \frac\{1\}\{2\}\sum_\{i=1\}^M \sum_\{j\neq i\}^M \frac\{e^2\}\{4 \pi \epsilon \|r_i - r_j\|\}  + \frac\{1\}\{2\} \sum_\{i=1\}^N \sum_\{j\neq i\}^N \frac\{e^2\}\{4 \pi \epsilon \|R_i - R_j\|\}  
+\end\{aligned\}$$
+
+Here $m_e$ is the mass of an electron, and $m_j$ is the mass of the
+$j$-th nucleus. $r_i$ is the position of the $i$-th electron and $R_j$
+the position of the $j$-the nucleus. Note here we use the convention
+that capital variables are used for nuclei position and momentum
+modelling and lower case variables for electron position and momentum
+modelling. $Z_i$ denotes a nuclear charge.
+
+We apply our usual quantization rules to this formula to derive the
+molecular hamiltonian
+
+$$\begin\{aligned\}
+    H &= - \frac\{\hbar\}\{2m_e\}\sum_\{i=1\}^M \nabla^2_\{r_i\} - \sum_\{j=1\}^N \frac\{\hbar\}\{2m_j\} \nabla^2_\{R_j\} 
+    + \sum_\{i=1\}^M\sum_\{j=1\}^N \frac\{Z_i e^2\}\{4 \pi \epsilon \|r_i-R_j\|\} + \frac\{1\}\{2\} \sum_\{i=1\}^M \sum_\{j\neq i\}^M \frac\{e^2\}\{4 \pi \epsilon \|r_i - r_j\|\} + \frac\{1\}\{2\} \sum_\{i=1\}^N \sum_\{j\neq i\}^N \frac\{e^2\}\{4 \pi \epsilon \|R_i - R_j\|\} 
+\end\{aligned\}$$
+
+The quantization of the kinetic energy terms should be familiar from our
+earlier discussion of quantization rules, but you may be confused about
+why the pairwise interaction terms appear the same between the classical
+energy and the quantum hamiltonian. This notation is in fact a common
+shorthand defining an operator. The Coulomb operator is defined as
+follows $$\begin\{aligned\}
+\frac\{1\}\{|r|\} &: L^2(\mathbb\{R\}) \mapsto L^2(\mathbb\{R\}) \\
+\frac\{1\}\{|r|\}(\psi) &= \frac\{1\}\{|r|\}\psi
+\end\{aligned\}$$ That is, the Columb operator multiplies the wave
+function by $\frac\{1\}\{|r|\}$. The Coulomb interaction terms above should
+be interpreted in this same light.
+
+## Born-Oppenheimer Approximation
+
+The Born-Oppenheimer approximation is a widely used approximation to the
+full Molecular Hamiltonian that separates the accepts the convention
+that the electronic effects have limited effect on the nuclear parts of
+the Hamiltonian. In this approximation, we simplify the Hamiltonian to
+remove the nuclear terms
+
+$$\begin\{aligned\}
+    H &= - \frac\{\hbar\}\{2m_e\}\sum_\{i=1\}^M \nabla^2_\{r_i\} 
+    + \sum_\{i=1\}^M\sum_\{j=1\}^N \frac\{Z_i e^2\}\{4 \pi \epsilon \|r_i-R_j\|\} + \frac\{1\}\{2\} \sum_\{i=1\}^M \sum_\{j\neq i\}^M \frac\{e^2\}\{4 \pi \epsilon \|r_i - r_j\|\} + \frac\{1\}\{2\} \sum_\{i=1\}^N \sum_\{j\neq i\}^N \frac\{e^2\}\{4 \pi \epsilon \|R_i - R_j\|\} 
+\end\{aligned\}$$

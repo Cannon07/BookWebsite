@@ -1,0 +1,31 @@
+# Euclidean Networks as an Equivariant Framework \{#ch:dft_e3nn\}
+
+[]\{#chap:e3nn label="chap:e3nn"\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:** [\[chap:dft\]](#chap:dft)\{reference-type="ref+label"
+reference="chap:dft"\},
+[\[chap:equivariant_networks\]](#chap:equivariant_networks)\{reference-type="ref+label"
+reference="chap:equivariant_networks"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+Euclidean networks bridge the several different types of equivariant
+convolutions we have seen (tensor field networks, $SE(3)$ transformers,
+steerable convolutional networks) into one common framework.
+
+## Mathematical Framework
+
+Suppose that atomic positions are given by $$\begin\{aligned\}
+r \in \mathbb\{R\}^\{3N\}
+\end\{aligned\}$$ where $N$ is the number of atoms. In order to define
+more complex equivariant architectures, we need the ability to
+manipulate a few basic ingredients. First, we need efficient
+implementations of the spherical harmonics and irreducible
+representations of common groups. We also need precomputed
+implementations of the Clebsch-Gordon coefficients. Given these core
+building blocks, it becomes possible to build a large range of
+equivariant networks.

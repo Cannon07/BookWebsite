@@ -1,0 +1,111 @@
+# Computational Fluid Dynamics \{#chap:cfd\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:newtons_laws\]](#chap:newtons_laws)\{reference-type="ref+label"
+reference="chap:newtons_laws"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+Though simple fluid systems are well-understood from first-principles
+theories, the scale of many real-world problems make directly solving
+the underlying equations for many applications practically impossible
+with current analytical techniques. Complex dynamics, such as turbulent
+fluid flow, have proven resistant to easy theoretic analysis.
+
+Computational fluid dynamics is a class of methods used to numerically
+solve the Navier-Stokes equations, the set of non-linear, partial
+differential equations that describe fluid flow. The solution takes the
+form of a velocity vector field and scalar pressure field, used to
+calculate total force on an object through integration of pressure and
+viscous stresses. The equations for incompressible flow, given below,
+include a mass balance (Eq.
+[\[eqn:continuity\]](#eqn:continuity)\{reference-type="ref"
+reference="eqn:continuity"\}) and a momentum balance (Eq.
+[\[eqn:momentum\]](#eqn:momentum)\{reference-type="ref"
+reference="eqn:momentum"\}). $$\begin\{aligned\}
+\label\{eqn:continuity\}
+\nabla \cdot u &=0 \\
+\label\{eqn:momentum\}
+\frac\{\partial u\}\{\partial t\}+(u \cdot \nabla)u&=\frac\{\mu\}\{\rho\} \nabla^2 u-\frac\{1\}\{\rho\} \nabla P + f
+\end\{aligned\}$$
+
+The difficulty in finding a solution lies in the nature of the
+non-linear advective term in the momentum balance, $(u \cdot \nabla)u$,
+which tends to evolve large and unpredictable fluctuations from
+infinitesimal disturbances, i.e. turbulence. Since directly resolving
+turbulence is impractical with current computational power due to the
+need for an extremely fine grid, there are a number of different models
+used to predict turbulence with varying degrees of assumptions,
+complexity, and computational cost.
+
+Researchers have been developing methods to address the computational
+burden of computational fluid dynamics (CFD) for decades. Typical CFD
+simulations reduce the size of the problem by introducing a new set of
+filtered dynamical equations that are simpler to solve, such as by
+removing a dimension of the problem by averaging time-fluctuations in
+the case of RANS, or resolving only larger spatial scales as in LES. The
+tradeoff is that the filtered equations introduce a closure problem,
+whereby new equations, models, or surrogates are included to fully
+define a solution. Naturally, modeling the unresolved degrees-of-freedom
+brings some approximation error, which may be unsatisfactory for many
+large-scale applications.
+
+In this chapter, we introduce a few computational simplifications:
+Reynolds Averaged Navier Stokes (RANS), Large Eddy Simulation (LES) and
+Detached Eddy Simulation (DES).[@norrby_2014; @cfd-online; @shaughnessy]
+
+## Reynolds Averaged Navier Stokes
+
+RANS provides a relatively accurate averaged solution at a low
+computational cost. In the steady-state RANS formulation, instantaneous
+variables are rewritten in their Reynolds decomposition, which contains
+an average term (overbar) and a fluctuating term (prime):
+
+$$\begin\{aligned\}
+u_i = \overline\{u_i\} + u_i'
+\end\{aligned\}$$
+
+We can plug the definition above into the Navier-Stokes momentum
+equations (using Einstein notation to simplify equations)
+$$\begin\{aligned\}
+\rho\left[\frac\{\partial u_i\}\{\partial t\}+u_j\frac\{\partial u_i\}\{\partial x_j\}\right]&= -\frac\{\partial P\}\{\partial x_i\} +\frac\{\partial \tau_\{ij\}\}\{\partial x_j\}\\
+\rho\left[\frac\{\partial (\overline\{u_i\} + u_i')\}\{\partial t\}+(\overline\{u_j\} + u_j')\frac\{\partial (\overline\{u_i\} + u_i')\}\{\partial x_j\}\right]&= -\frac\{\partial (\overline\{P\} + P')\}\{\partial x_i\} +\frac\{\partial (\overline\{\tau_\{ij\}\} + \tau_\{ij\}')\}\{\partial x_j\}
+\end\{aligned\}$$
+
+and averaging:
+
+$$\begin\{aligned\}
+\rho\left[\frac\{\partial \overline\{u_i\}\}\{\partial t\}+\overline\{u_j\}\frac\{\partial \overline\{u_i\}\}\{\partial x_j\}\right]&= -\frac\{\partial \overline\{P\}\}\{\partial x_i\} +\frac\{\partial \overline\{\tau_\{ij\}\}\}\{\partial x_j\}-\rho\overline\{u_j'\frac\{\partial u_i'\}\{\partial x_j\}\}\\
+\rho\left[\frac\{\partial \overline\{u_i\}\}\{\partial t\}+\overline\{u_j\}\frac\{\partial \overline\{u_i\}\}\{\partial x_j\}\right]&= -\frac\{\partial \overline\{P\}\}\{\partial x_i\} +\frac\{\partial\}\{\partial x_j\}\left(\overline\{\tau_\{ij\}\}-\rho\overline\{u_i'u_j'\}\right)
+\end\{aligned\}$$
+
+The quantity $-\rho\overline\{u_i'u_j'\}$ is termed the Reynolds stress
+tensor. RANS methods close the problem using one or two more transport
+equations to model the Reynolds stress tensor. We use the realizable
+$k-\epsilon$ model, which relates the turbulent kinetic energy $k$ and
+turbulent dissipation rate $\epsilon$.
+
+## Large Eddy Simulations
+
+Large eddy simulations provide a first mathematical model of turbulence.
+Similar to RANS, the LES approaches apply a spatial smoothing filter to
+the Navier-Stokes equations to gain smoothed models.
+
+## Detached Eddy Simulation
+
+The transient DES approach functions similarly to RANS, but results in
+much higher-fidelity solutions. DES is a hybrid approach to turbulence
+modeling and borrows from both RANS and Large Eddy Simulation (LES). In
+LES, instead of time averaging the equations like RANS, the equations
+are spatially filtered to remove the highest frequency fluctuations.
+This results in directly resolving the larger scales of turbulence,
+while modeling the smallest scales. DES combines the two by applying
+RANS near the walls in the boundary layer and switching to LES further
+away, somewhat relaxing grid requirements. Boundary layer behavior can
+be estimated with RANS on a coarser grid rather than directly resolving
+the flow with LES. The computational cost is higher than RANS, but not
+quite as much as LES[@lectures].

@@ -1,0 +1,198 @@
+# Nonequilibrium Statistical Mechanics and Differentiable Phonon Simulations \{#chap:lattice_graphconvs\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:graphconvs\]](#chap:graphconvs)\{reference-type="ref+label"
+reference="chap:graphconvs"\},
+[\[chap:molecular_ml\]](#chap:molecular_ml)\{reference-type="ref+label"
+reference="chap:molecular_ml"\}\
+**Difficulty Level:** \*\*\*\
+
+------------------------------------------------------------------------
+
+Nonequilibrium statistical mechanical systems require new mathematical
+tools to model and simulate. In this chapter, we will learn the basics
+of modeling nonequilibrium systems with differentiable systems, in
+particular by studying the test problem of modeling nanoscale heat
+transport.
+
+## Macroscale Heat Conduction
+
+Fourier's law of heat conduction dictates that the rate of heat transfer
+at a point is proportional to the negative gradient in the temperature
+at the point. Mathematically we can describe this law as
+
+$$\begin\{aligned\}
+    q &= -\kappa \nabla T
+\end\{aligned\}$$
+
+where $\kappa$ is a quantity known as the material's conductivity.
+$\kappa$ is usually a scalar but can be a tensor for non-uniform
+methods.
+
+Fourier's law for heat transport is valid across a broad range of
+systems but breaks down at the nanoscale. The major challenge is that
+Fourier's law doesn't take phonons, the main heat carrier at the
+nanoscale into account. The phonon Boltzmann transport equation more
+accurately describes the physics of the system.
+
+Modeling heat conduction using the phonon Boltzmann transport equation
+is very computationally challenging. Differentiable physics techniques
+can be used to construct a fully differentiable model of the phonon
+Boltzmann transport equation by constructing a differentiable
+representation of the density [@romano2022differentiable]
+[@romano2021openbte].
+
+## Boltzmann Transport Equation
+
+Suppose we have a distribution over space
+
+$$\begin\{aligned\}
+f(\vec\{r\}, \vec\{v\}, t)
+\end\{aligned\}$$ where
+$\vec\{r\} \in \mathbb\{R\}^3, \vec\{v\} \in \mathbb\{R\}^3, t \in \mathbb\{R\}$
+
+At equilibrium, this distribution is given by the Boltzmann equation
+$$\begin\{aligned\}
+    f(E) &= \frac\{1\}\{\exp\{\frac\{E-E_F\}\{k_B T\}\} + 1\}
+\end\{aligned\}$$ The Boltzmann equation allows for modeling the direct
+form of the density in non-equilibrium situations as $$\begin\{aligned\}
+    \frac\{df\}\{dt\} &= \left ( \frac\{df\}\{dt\} \right )_\{\mathrm\{force\}\} + \left ( \frac\{df\}\{dt\} \right )_\{\mathrm\{diff\}\} + \left ( \frac\{df\}\{dt\} \right )_\{\mathrm\{coll\}\}
+\end\{aligned\}$$ where the three terms on the right correspond to
+evolution due to external forces, diffusion, and particle collisions
+respectively. The form this commonly takes is $$\begin\{aligned\}
+    \frac\{df\}\{dt\} + \frac\{p\}\{m\} \cdot \nabla f + F \cdot \frac\{df\}\{dp\} &= \left ( \frac\{df\}\{dt\} \right )_\{\mathrm\{coll\}\}
+\end\{aligned\}$$
+
+The phonon Boltzmann transport equation applies the general theory of
+Boltzmann transport equations to phonons. We suppose we have a
+distribution $$\begin\{aligned\}
+    f_\{qp\}(r, t)
+\end\{aligned\}$$ for the phonon state $(q, p)$ where $q$ is the wave
+number and $p$ is the polarization.
+
+The temperature gradient $\nabla T$ induces a heat current $J$ in the
+system. $J$ can then be obtained by the equation $$\begin\{aligned\}
+    J &= \frac\{1\}\{(2\pi)^3\}\sum_p \int f_\{qp\} h \omega_\{qp\} v_\{qp\} dq
+\end\{aligned\}$$ Here $\omega$ is the angular frequency. At a system
+steady state, we have the stability condition $$\begin\{aligned\}
+    \frac\{df_\{qp\}\}\{dt\} &= 0
+\end\{aligned\}$$ This term is commonly broken down into two terms
+$$\begin\{aligned\}
+    \frac\{df_\{qp\}\}\{dt\} &=  \frac\{df_\{qp\}\}\{dt\} \vert_\{\mathrm\{diffusion\}\} + \frac\{df_\{qp\}\}\{dt\} \vert_\{\mathrm\{scattering\}\}
+\end\{aligned\}$$ The diffusion term is given by the equation
+$$\begin\{aligned\}
+    -v_p(q) \cdot \nabla T \frac\{\partial f_\{qp\}\}\{\partial T\}
+\end\{aligned\}$$ The scattering term is harder to understand and is
+formulated in terms of perturbation theory.
+
+## The Basics of Nanoscale Heat Transport
+
+The phonon Boltzmann transport equation is often used to model heat
+transport at the nanoscale. Boltzmann transport equations more generally
+are used to model the behavior of systems not in equilibrium.
+
+$$\begin\{aligned\}
+    -C_p  v_p \cdot \nabla \Delta T_p(r) &= \sum_q W_\{pq\} \Delta T_q(r)
+\end\{aligned\}$$
+
+Here, $p$ and $q$ are the phonon branch and wave vector. $\Delta T_q$ is
+the phonon pseudo-temperature. $C_p$ is the mode specific heat capacity
+and $v_p$ is the group velocity. $W_\{p q\}$ is a representation of the
+scattering operator. This equation can be solved by a finite element
+style method.
+
+We start by assuming that a bulk material is characterized by its
+thermal conductivity tensor $\kappa$ and its phonon mean free path
+distribution $\Lambda$. The mean free path for phonons is a measure of
+the material's feature size.
+
+Fourier's law for non-uniform conductivity systems is given by
+$$\begin\{aligned\}
+    \nabla \kappa(x, y) \nabla \Delta T(x, y) &= 0
+\end\{aligned\}$$ Here $\Delta T$ is the local temperature deviation from
+the equilibrium of the system. At the nanoscale we need Boltzmann's
+equation. $$\begin\{aligned\}
+    \Lambda \tilde\{s\} \cdot \nabla \Delta T(\phi) + \Delta T(\phi) &= \frac\{1\}\{2\pi\} \int_0^\{2\pi\} \Delta T(\phi') d\phi'
+\end\{aligned\}$$ Phonon directions are parameterized by polar angle
+$\phi$ and $\Delta T(x, y, \phi)$ is a quantity commonly referred to as
+the phonon temperature. The main difference here is that we need to take
+into account the phonon mean free path $\Lambda \tilde\{s\}$.
+
+## The Three Field Approach
+
+The three-field approach is a standard method in the field. Using a
+finite grid can create checkerboard patterns. The base field $\rho$ is
+filtered into field $\tilde\{\rho\}$. This filtered field is then
+typically thresholded into field $\bar\{\rho\}$.
+
+## Transmission Interpolation Method
+
+Solving the Boltzmann transport equation becomes especially challenging
+in settings with boundaries. The transmission interpolation model (TIM)
+is one approach to handle such systems. This approach relies on the
+introduction of an ficitious density $\rho(r)$ used to track some
+property of interest such as thermal conductivity. We have
+$$\begin\{aligned\}
+    \rho \in [0, 1]^N
+\end\{aligned\}$$ where $N$ is the discretized size of the grid we
+consider. To model a boundary, we introduce a quantity known as the
+transmission coefficient $t$, defined as $$\begin\{aligned\}
+    t &= \frac\{2 \rho(r^-) \rho(r^+)\}\{\rho(r-) + \rho(r+)\}
+\end\{aligned\}$$ We then create an imaginary interface. If
+$\rho(r^-) = \rho(r^+)$ then $t=1$ or $t=0$. Here $r^+$ and $r^-$ are
+the two sides of the boundary.
+
+### Boundary Conditions
+
+We apply a temperature gradient on the direction we are interested in.
+We need to make our boundary condition translation invariant. We create
+a forward solver
+
+$$\begin\{aligned\}
+\Lambda \tilde\{s\} \cdot \nabla \Delta T(x,y, \phi) + \Delta T(x, y,\phi) &= \frac\{1\}\{2\pi\} \int_0^\{2\pi\} \Delta T(x, y, \phi') d\phi'
+\end\{aligned\}$$ We transform this into a matrix linear system.
+$$\begin\{aligned\}
+    \sum_\{p'q'\} G^\{p'q'\}_\{p q\} \Delta T_\{p' q'\} &= P_\{pq\}
+\end\{aligned\}$$ $P$ is the externally applied temperature gradient. We
+can write $$\begin\{aligned\}
+    G^\{p' q'\}_\{[p] q\} &= \delta_\{q q'\} \delta_\{p p'\} (1 + D_\{p' q'\} ) + \delta_\{p p'\} A_\{p q q'\} + \delta_\{q q'\} (B_\{qp p'\} - \frac\{1\}\{M\})
+\end\{aligned\}$$ where $A$ is the scattering operator and $B$ is
+auxiliary tensor. We create a linear operator $$\begin\{aligned\}
+    L(X)_\{p q\} &= X_\{p q\}D_\{p q\} + \Sigma_\{q'\} A_\{p q q'\}X_\{p q' \} + \sum (B_\{q p p'\}-\frac\{1\}\{M\})X_\{p'q\}
+\end\{aligned\}$$
+
+This turns into a system of linear equations which can be solved with
+standard techniques.
+
+### Compute Gradients with Adjoint Method
+
+We use the adjoint method to compute the gradient of this system
+$$\begin\{aligned\}
+    \frac\{d \bar\{\kappa\}\}\{d \rho_p\} &= \sum_\{\mu c p\} \left ( \frac\{\partial \bar\{\kappa\}\}\{\partial \Delta \bar\{T\}_\{\mu c\}\} \frac\{\partial \Delta \bar\{T\}_\{\mu c\}\}\{\partial \bar\{\rho\}\} \right) \frac\{\partial \rho_\{p'\}\}\{\partial \rho_p\} + \sum_\{p'\} \frac\{\partial \bar\{\kappa\}^s\}\{\partial \bar\{\rho\}_\{p'\}\} \frac\{\partial \rho_\{p'\}\}\{\partial \rho_p\}
+\end\{aligned\}$$ The solver is implemented with a combination of
+automatic differentiation and adjoint method gradient computation.
+
+## Optimizing Thermal Transport
+
+Assume that $\rho(x, y)$ is the material density. Assuming Fourier's
+law, we can do the optimization $$\begin\{aligned\}
+    &\min_\rho g(\rho)\\
+    &\textrm\{s.t.\}\quad \nabla \cdot \kappa(x, y) \nabla \Delta T(x, y) = 0
+\end\{aligned\}$$ Gradients can be computed using the adjoint approach,
+which allows for constrained optimization.
+
+### Optimizing for Heat Management
+
+The task here is to design a material with the desired effective thermal
+constraint. $$\begin\{aligned\}
+    &\min_\rho |\bar\{\kappa\}(\rho) - \tilde\{\kappa\} |_\{Fro\} \\
+    &\textrm\{s.t \} 0 \leq \rho \leq 1 \\
+    &\textrm\{s.t \} \sum_n \bar\{\rho\}_n N \geq \varphi  
+\end\{aligned\}$$ The BTE solver gives us $\bar\{\kappa\}(\bar\{\rho\})$. This
+joint system can be used to optimize heat flows in nanostructures.
+
+The phonon mean free path is much more spread out than the electron free
+path. This means the BTE paradigm is very useful for thermoelectrics

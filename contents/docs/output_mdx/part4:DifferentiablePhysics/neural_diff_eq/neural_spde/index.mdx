@@ -1,0 +1,34 @@
+# Neural Stochastic Partial Differential Equations \{#chap:neural_spde\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:** [\[chap:pde\]](#chap:pde)\{reference-type="ref+label"
+reference="chap:pde"\},
+[\[chap:numerical_pde\]](#chap:numerical_pde)\{reference-type="ref+label"
+reference="chap:numerical_pde"\},
+[\[chap:neural_pde\]](#chap:neural_pde)\{reference-type="ref+label"
+reference="chap:neural_pde"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+Stochastic partial differential equations add a driving noise force to a
+partial differential equation and allow for modeling processes such as
+surface growth. By using a deep network to model the driving noise
+behind the SPDE, we can approximately solve the SPDE [@beck2020deep].
+
+## Mathematical Setup
+
+Let $T \in \mathbb\{R\}^+$, $d \in \mathbb\{N\}$. Let
+$\varphi: \mathbb\{R\}^d \to \mathbb\{R\}$ be a continuous function. Let
+$(\Omega, \mathcal\{F\}, \mathbb\{P\})$ be a probability space where
+$\mathcal\{F\}$ is a normal filtration.
+
+$$\begin\{aligned\}
+    X_t(x) &= \varphi(x) + \int_0^t f(x, X_s(x),(\nabla X_s)(x)) ds + \int_0^t b(x, X_s(x), (\nabla X_s)(x)) dZ_s(x) + \\ & \int_0^t \left [ \frac\{1\}\{2\} \mathrm\{Trace\}(\sigma(x)\sigma^*(x)(\mathrm\{Hess\} X_s)(x)) + \langle \mu(x), (\nabla X_s)(x) \rangle_\{\mathbb\{R\}^d\} \right] ds
+\end\{aligned\}$$
+
+We can model $\varphi$ by a suitable fully connected network and train
+the system empirically with numerical integration and sampled
+randomness.

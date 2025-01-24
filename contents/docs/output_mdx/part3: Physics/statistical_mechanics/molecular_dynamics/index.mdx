@@ -1,0 +1,98 @@
+# Molecular Dynamics \{#chap:molecular_dynamics\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:newtons_laws\]](#chap:newtons_laws)\{reference-type="ref+label"
+reference="chap:newtons_laws"\},
+[\[chap:electrostatics\]](#chap:electrostatics)\{reference-type="ref+label"
+reference="chap:electrostatics"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+Molecular dynamics methods numerically solve Newton's equations for a
+system of interacting particles. Molecular dynamics methods offer the
+powerful advantage of efficiency compared with quantum mechanical
+simulation methods, but at the cost of modeling accuracy.
+
+## The Basics of Molecular Dynamics
+
+At its core, molecular dynamics is roughly a variant of Euler's method
+for solving systems of ODEs. The gradient of the energy (the force) is
+used to update the positions of all atoms in the system repeatedly. This
+basic formula is modified to enforce boundary conditions, and
+temperature and pressure controls.
+
+![Conceptual pseudocode of molecular dynamics simulation
+algorithm](figures/part2b/molecular_dynamics/MD_algorithm.png)\{#fig:my_label\}
+
+We can define the basic molecular dynamics algorithm in Physika as
+follows
+
+``` \{.python language="python"\}
+class MolecularDynamics($r: \mathbb\{R\}^\{3N\}$, $v: \mathbb\{R\}^\{3N\}$, $\Delta t: \mathbb\{R\}$):
+
+  def $\lambda$(N : $\mathbb\{N\}$): $(\mathbb\{R\}^\{3N\}, \mathbb\{R\}^\{3N\})$:
+    for _ in range(N):
+      $r$ = $r$ + $v \Delta t$ + $\frac\{1\}\{2\} \alpha \Delta t^2$
+      $F$ = $-\nabla$ ForceField($r$)
+      $r$ = $r$ + ForceUpdate(F, $\Delta t$)
+      $v$ = $v$ + VelocityUpdate(F, $\Delta t$)
+    return (r, v)
+```
+
+## Cleanup
+
+One of the most important practical steps in molecular dynamics is
+cleaning up input protein structure files. Common cleanup steps include
+fixing protonation, creating disulfide bonds, and placing side-chains
+correctly.
+
+## Force Fields
+
+Force fields are the technical term for the classical potential
+functions that are used in molecular dynamics systems to model
+interesting physics. Force fields typically correspond to classical
+energies are are made up of constituent energy terms. A common such term
+is the Lennard-Jones potential
+
+$$\begin\{aligned\}
+    U(r) &= 4 \epsilon \left [ \left ( \frac\{\sigma\}\{r\} \right )^\{12\} + \left( \frac\{\sigma\}\{r\} \right )^6 \right ]
+\end\{aligned\}$$
+
+The Lennard-Jones potential provides an approximate model for Van der
+Waals interactions
+
+Force fields are typically parameterized by a collection of tunable
+parameters. Traditionally, force field parameters were manually tuned
+but as we will learn in later chapters, force fields are increasingly
+learned using the techniques of machine learning and differentiable
+programming.
+
+## Neighbor Lists
+
+One of the most important steps in a molecular dynamics update operation
+is computing the neighbors of a given atom which contribute to force
+estimates. The set of current neighbors of an atom is maintained by a
+data structure known as a neighbor list. Any molecular dynamics code
+must implement a neighbor list.
+
+## Ewald Summation
+
+The most inefficient step in the computation of a force field is
+computing pairwise interaction terms which requires $O(n^2)$
+computations. Ewald summation provides a method for reducing the
+computational cost of the force computation to $O(n \log n)$.
+
+## Stability of Integration
+
+One of the challenges of molecular dynamics, especially with learned
+force fields, is stability of integration. Integration can cause a
+system to become unstable and \"blow apart\" in simulation if the force
+field isn't well calibrated. Heuristically designed force fields are
+known to be well calibrated in practice, but learned force fields are
+still unstable. There are some signs that this instability may be due to
+the numerical instability of using gradient information across very long
+timescales.

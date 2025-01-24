@@ -1,0 +1,2796 @@
+# new
+
+Advances in both scientific computing and machine learning have led to
+techniques to improve, replace, or speed up methods to solve problems in
+the physical sciences. For many nonlinear systems, traditional methods
+of calculation often carry a heavy computational burden due to complex
+dynamics, physical constraints, or multi-scale behavior. We introduce a
+machine learning approach to vastly decrease computational complexity of
+modeling spatiotemporal systems, leveraging prior physical knowledge of
+the system with flexible reduced representations of the underlying
+dynamics. We demonstrate this technique on three-dimensional turbulent
+fluid flow, wherein the modeling of such systems continues to be a
+formidable problem for engineers and physicists. We merge convolutional
+layers with a Neural ODE approach to form a differentiable ML
+architecture to build a system model. Here, we test the applicability of
+this method to model homogeneous isotropic turbulence, as well as the
+effect of different architectural elements on turbulence statistics. We
+find that the largest scales of the flow, which are relevant to
+engineering applications, are well-approximated and some dynamic
+characteristics of interest are maintained. Acknowledge Varun's work for
+this chapter; Neurips paper
+
+# Aerodynamics and its importance
+
+When we think about electric vehicles, one of the first things we do is
+to try to understand some of the energy and power requirements for the
+vehicle. because when we talking about the battery, this energy and
+power consumption is critical. Knowing the energy requirements, we can
+say given a battery chemistry, with the battery of a given size or
+weight, what's the range of the battery, how does the battery degrade
+over time, what does it mean for the vehicle's lifetime, can we create a
+BMS that makes sure that during this power cycles that the battery is
+operating in a safe state. We can also break down this energy
+consumption into its various components , and see if we can gain some
+insights there. We can run some vehicle simulations that simulate
+driving in certain conditions and we can gather some statistics on where
+that power draw is ultimately coming from. For a typical electric sedan
+driving on the highway, by far the energy consumption is coming from the
+aerodynamic drag. Therefore, the aerodynamic term is of interest to
+anyone who works with cars, and certainly to us when we think about
+quantifying these components and values of energy.
+
+# How do we evaluate drag today
+
+Wind Tunnels -- experimental data can be obtained by constructing models
+of the objects we are interested in and place them in a wind tunnel, and
+record the forces, but this is naturally expensive in terms of the cost
+and time and overheads, which makes it impractical if you want to
+evaluate many different designs. Therefore, majority of aerodynamics and
+fluid dynamic analysis done today is done with computer simulations. The
+reason we are able to do this well today is because we have a very good
+idea of the physics behind the aerodynamics. We can very accurately
+describe the system with equations and it's just a matter of solving the
+equations. Of course, the physics is very complex and coupled, which
+makes obtaining solutions very difficult. We use this domain knowledge,
+we construct numerical methods, to solve these problems, of course we
+have some parameters that are unique to the specific case we are looking
+at. Maybe the parameters are the geometry of the vehicles, speed its
+traveling at, and with that we can compute the solution. This really all
+falls under computational fluid dynamics, which is a very mature field
+in simulation with many decades of research that have gone into creating
+these methods. There's a lot of choice in terms of the models we can use
+with associated trade-offs between computational cost and accuracy. If
+you want to obtain a high-fidelity solution, it's going to take
+ultimately a lot of time. It's sort of up to the engineer to make these
+choices based on what's appropriate for the specific problem. Questions
+emerge such as is it okay to have a less accurate solution because you
+want to evaluate lots of designs? Do we want to have the most accurate
+solution and wait a few days for the simulation to run? Regardless, what
+we end up computing is the flow field in our domain of interest, and
+from this flow information we can calculate quantities that we really
+care about such as drag forces.
+
+# Usefulness of Scientific ML in the context of fluid flow fields
+
+As we aim to improve these methods, one thing that researchers are
+looking at is including AI directly into the mix to see if we can
+improve the process. This is part of the rapidly developing field of
+scientific machine learning wherein researchers are using these ML tools
+and applying them to scientific problems. The nice part about solving
+scientific problems with AI is that we have a lot of the domain
+knowledge in terms of how these systems operate, and so when we think
+about designing AI, we definitely want to take that into account so that
+we can incorporate all the physical behaviour we know and understand
+into our ML architectures. ML is often been treated as a black box and
+there are ways within SciML to remove some of that opaqueness.
+
+AI needs a source of data, and with CFD a natural thing to do is train
+with high-fidelity data and this goes back to the fact that we can very
+accurately describe a system through high-fidelity results which is a
+matter of having enough compute to do so. Therefore, there's some
+initial cost to creating this training data but the hope is that AI is
+able to take that and fill in the gaps to produce an overall streamlined
+process, which in our case ultimately speeds up our simulations.
+
+# Background on CFD and Turbulence
+
+Everyone is familiar with turbulence in the common sense of the word. If
+you are on an airplane, turbulence is characterized by seemingly random
+fluctuations in the fluid. These are called eddies and they can be
+small, large, and can happen in any direction, and this unpredictability
+that creates the complex behavior that's very difficult to simulate.
+Despite the randomness, there actually is some structure to these
+fluctuations, and the sketch below shows the relationship between the
+energy of the eddies and the length scale. The largest scale eddies gain
+the most energies, and when we think about the relative importance of
+the scales, the large scales will be deriving the majority of the
+overall behavior we are interested in such as the drag.
+
+![Typical relationship between the length scale of eddies and the
+associated energy](figures/eddies.png)\{#fig:eddies_energy\}
+
+![Fluid Velocity](figures/fluidVelocityField.png)\{#fig:velocityField\}
+
+The small scale eddies are relatively less important. The tricky part
+though is that they are interacting with the large scales. The large
+eddies are producing small eddies and sometimes even the reverse can
+happen. In order to resolve the flow, we actually need to resolve the
+smallest features. When we are discretizing the data so that we can
+perform computer simulations, if we are are only interested in large
+eddies, we can go with course grid with fewer points but since we need
+to resolve these small-scale eddies we need a grid that is small and
+dense-enough to capture the small eddies. So, what we end up with is
+lots of data and because turbulence is local in space that means that we
+can do parallelization. So, CFD is very well suited to HPC applications.
+Yet, even with current HPC capabilities, we still cannot resolve the
+smallest features of engineering flows. An example is the if we were
+looking at a vehicle driving on the highway, the largest scales would be
+about the size of the vehicle, and the smallest scales would be less
+than a mm. So, when we think about a grid that would be required for
+that we are talkign about billion of points, which is not feasible with
+out current computational capabilities. Hence, turbulence models that
+make some approximations to ultimately reduce the complexity of these
+equations are useful in this context to bring down the computational
+complexity. Within these turbulence models, since we really only care
+about the large scale eddies, we make some approximations about the
+small-scales enabling us to use a coarse grid since we are only
+calculating the large scales. This makes things a lot more tractable,
+but yet even with all of this work, to get to a problem that we can
+finally solve with engineering flow with these models, it takes days a
+couple of days to solve even on a HPC cluster. In order to evaluate
+multiple designs, perhaps thousands, it really is a time consuming
+process and may not be feasible even with HPC.
+
+# Physics Description of the Problem
+
+To evaluate this approach with regards to fluid dynamics, an idealized
+case of turbulent flow is considered -- homogeneous isotropic
+turbulence. The convolutional neural ODE method stems from the fact that
+we wish to model the temporal dynamics of the system. For an
+incompressible fluid, there are two governing equations, a momentum
+balance and a mass balance, shown here in their non-dimensional form:
+
+$$\frac\{\partial \mathbf\{u\}\}\{\partial t\} + (\mathbf\{u\}\cdot \nabla)\mathbf\{u\}=\frac\{1\}\{Re\}\nabla^2\mathbf\{u\}-\nabla p + \mathbf\{f\}$$
+
+$$\nabla\cdot\mathbf\{u\}=0$$
+
+where $\mathbf\{u\}$ is the velocity vector, defined $\{u, v, w\}$, $p$ is
+the pressure, $\mathbf\{f\}$ is a forcing function, and $Re$ is a Reynolds
+number, a non-dimensional flow parameter which broadly describes the
+intensity of inertial forces over viscous ones. We can see from the
+momentum balance that the dynamics of the velocity field are both
+autonomous and a function of local spatial gradient information of the
+field. Given a spatially discrete field, then, we can construct an ODE
+system to describe the dynamics using a neural network. We note that
+making this neural network a convolutional neural network will
+incorporate the spatial information (derivatives) necessary to
+accurately approximate the true function. The problem is constructed
+such that the model is provided with an initial snapshot of the flow.
+The continuous dynamics are forecasted with the model, and a series of
+temporal snapshots within a specified time window are saved and analyzed
+with regards to the ground truth data. The results can be compared using
+a series of three important turbulent statistics -- energy spectra,
+velocity probability density functions (PDFs), and turbulent kinetic
+energy (TKE). The turbulent kinetic energy is defined as one half of the
+sum of the mean-square fluctuations of the velocity components:
+
+$$e=\frac\{1\}\{2\}(\langle u^2\rangle+\langle v^2\rangle+\langle w^2\rangle)$$
+
+# Convolutional Neural ODEs: An Approach to Build a ML Surrogate to Forecast Turbulence Dynamics
+
+The goal of the recent work was to build an ML surrogate to forecast
+turbulence dynamics. The data-driven model can ultimately a lot faster
+but still retain important features especially at large-scales. The
+scientific machine learning approach can be described as a serial
+combination of **Convolutional AutoEncoders and Neural ODEs**.
+
+![Schematic of the overall model architecture. Initial conditions are
+given and encoded into a latent space. Augmented channels are
+concatenated and the dynamics are forecasted through the neural ODE
+approximator. The sequence is decoded and the divergence-free condition
+is enforced through the last
+layer.](figures/architecture_Fluids_NODEs.png)\{#fig:architecture_convNODEs\}
+
+The model is provided with an initial velocity field, which is the
+solution to these equations, and then the model forecasts that velocity
+field evolution over a certain time window. The model has been tested on
+a canonical fluid dynamics problem of three-dimensional homogeneous
+isotropic turbulence. This is a well studied problem in fluids in
+physics, so there's a lot that's already known about the problem and we
+can make a lot of physical insights into the model based on the
+predictions. It's a bit of a simpler idealistic version of turbulence
+but even so we are looking at a contained problem that's based on the
+physics, and so there's a lot that we can learn from the problem. Also,
+since this is simpler in nature, we can actually use direct numerical
+simulation data (no approximations), which is the highest fidelity data
+and the closest to the physics as possible. Of course, this is hugely
+beneficial when we are creating AI-based models.
+
+# Analyzing the Performance of the Model
+
+The design of our ConvAE + Neural ODE system is sketched in the
+schematic diagram above. Here, the latent space dynamics
+$\frac\{d\mathbf\{z\}\}\{dt\}$ are approximated using a 4 layer convolutional
+network with dropout prior to the last layer.
+
+![convNet for fluids](figures/convNet_fluids.png)\{#fig:convNet_fluids\}
+
+## Divergence-Free Constraint Through Spectral Projection
+
+# Results: Fluid Flow Field Statistics
+
+![The two plots show the energy of the flow as a function of wavenumber.
+Left: Two snapshots corresponding to the initial and ending time steps
+are shown. The vertical line represents the compression ratio of 6
+defined by the latent space size. Right: The energy spectra averaged
+over the entire time window is shown. Low wavenumbers show better
+agreement with DNS, which are sufficient for many practical
+flows.](figures/predictionsNODEs.png)\{#fig:convNet_predictions2\}
+
+![Distributions of the velocity gradients in the flow at initial and end
+temporal snapshots. Predictions exhibit tighter distributions, but they
+are consistent over
+time.](figures/predictionsNODEs2.png)\{#fig:convNet_predictions2\}
+
+
+# Introduction to Scientific Machine Learning \{#ch:intro-molecular-ml\}
+
+While applying machine learning algorithms to physical systems, there
+typically are additional constraints in the form of respecting any given
+laws of physics often described by general nonlinear partial
+differential equations. In this chapter, we will introduce approaches to
+incorporate such additional constraints into machine learning
+algorithms. We will also discuss approaches to discover and learn the
+underlying partial differential equations for systems where the
+underlying physics can emerge from collected data.
+
+This chapter will cover the three broad ways in which one can impose the
+known physics and symmetries in the physical systems. Often, a
+combination of the three broad verticals are employed.
+
+-   Chapter Part-1: Hard-code the known governing equations and boundary
+    conditions in the **loss function** while training the
+    physics-driven model, which comprises of approaches that fall under
+    the category of **physics-informed models**
+
+-   Chapter Part-2: Build in the physics-based equations and constraints
+    **within the model architecture** so that intermediate variables are
+    physically motivated
+
+-   Chapter Part-3: Impose known symmetries of the system that need to
+    be obeyed **within the featurizer(s)** before feeding into the model
+
+## Physics-informed Machine Learning
+
+Let's begin with discussing physics-informed machine learning using
+neural networks. The approach by Raissi et al.[@raissi2019physics]
+employs deep neural networks to leverage their well known capability as
+universal function approximators. This facilitatest the ability to
+directly tackle nonlinear problems without the need for committing to
+any prior assumptions, linearization, or local time-stepping. In
+addition we can exploit recent developments in automatic differentiation
+-- one of the most useful but perhaps under-utilized techniques in
+scientific computing -- to differentiate neural networks with respect to
+their input coordinates and model parameters to obtain physics-informed
+neural networks. Such neural networks are constrained to respect any
+symmetries, invariances, or conservation principles originating from the
+physical laws that govern the observed data, as modeled by general
+time-dependent and nonlinear partial differential equations. This simple
+yet powerful construction allows us to tackle a wide range of problems
+in computational science and introduces a potentially transformative
+technology leading to the development of new data-efficient and
+physics-informed learning machines, new classes of numerical solvers for
+partial differential equations, as well as new data-driven approaches
+for model inversion and systems identification. The approach sets the
+foundations for a new paradigm in modeling and computation that enriches
+deep learning with the longstanding developments in mathematical
+physics.
+
+### Problem Formulation
+
+A parametrized and nonlinear partial differential equations of the
+following general form are considered
+$$u_t + \mathcal\{N\}[u;\lambda]=0, x \in \Omega, t\in [0,T],$$ where
+$u(t, x)$ denotes the hidden solution, $\mathcal\{N[\cdot;\lambda]\}$ is a
+nonlinear operator parametrized by $\lambda$, and $\Omega$ is a subset
+of $\mathbb\{R\}^D$. This formulation applies to a wide range of problems
+in physical systems including conservation laws, diffusion processes,
+kinetic equations and physical systems.
+
+### Data-driven solutions of partial differential equations
+
+Let's begin with solutions to formulations of the general form
+$$u_t + \mathcal\{N\}[u]=0, x \in \Omega, t\in [0,T],
+    \label\{eq_generalform\}$$ where $u(t, x)$ denotes the hidden
+solution, $\mathcal\{N[\cdot]\}$ is a nonlinear operator, and $\Omega$ is
+a subset of $\mathbb\{R\}^D$.
+
+The approach discussed below pertains to an algorithm that can be used
+on **continuous time models**.
+
+Let's define $f(t, x)$ to be given by the equation on the left hand
+side,
+
+$$f:=u_t + \mathcal\{N\}[u]
+    \label\{eq_contTime\}$$
+
+and the approach is to approximate $u(t,x)$ by a deep neural network.
+This assumption along with equation
+[\[eq_contTime\]](#eq_contTime)\{reference-type="ref"
+reference="eq_contTime"\} gives rise to the physics-informed neural
+network $f(t,x)$. The network can be derived by applying the chain rule
+for differentiating compositions of functions using automatic
+differentiation, and has the same parameters as the network representing
+$u(t, x)$, albeit with different activation functions due to the action
+of the differential operator $\mathcal\{N\}$. The shared parameters
+between the neural networks $u(t, x)$ and $f(t, x)$ can be learned by
+minimizing the mean-squared error loss
+
+$$MSE=MSE_u + MSE_f$$
+
+where $$MSE_u=\frac\{1\}\{N_u\} \sum_\{i=1\}^\{N_u\}|u(t_u^i,x_u^i)-u^i|^2$$
+
+and $$MSE_f=\frac\{1\}\{N_f\} \sum_\{i=1\}^\{N_f\}|f(t_f^i,x_f^i)|^2$$
+
+In the problem formulation, the initial and boundary training data on
+$u(t, x)$ are denoted by $\{\{t^i_u, x^i_u, u^i\}\}^\{N_u\}_\{i=1\}$, and
+$\{\{t^i_f, x^i_f\}\}^\{N_f\}_\{i=1\}$ specify the collocation points for
+$f(t, x)$. The loss function $MSE_u$ corresponds to the initial and
+boundary data while $MSE_f$ enforces the structure imposed by the
+general equation (equation
+[\[eq_generalform\]](#eq_generalform)\{reference-type="ref"
+reference="eq_generalform"\}) at a finite set of collocation points.
+
+::: example
+This example aims to highlight the ability of The method to handle
+periodic boundary conditions, complex-valued solutions, as well as
+different types of nonlinearities in the governing partial differential
+equations. The nonlinear Schr$\mathrm\{\ddot\{o\}\}$dinger equation along
+with periodic boundary conditions is given by
+
+$$\begin\{aligned\}
+\begin\{split\}
+i h_t + 0.5 h_\{xx\} + |h|^2 h = 0,\ \ \ x \in [-5, 5],\ \ \ t \in [0, \pi/2],\\
+h(0,x) = 2\ \mathrm\{sech\}(x),\\
+h(t,-5) = h(t, 5),\\
+h_x(t,-5) = h_x(t, 5),
+\end\{split\}
+\end\{aligned\}$$
+
+where $h(t,x)$ is the complex-valued solution. Let us define $f(t,x)$ to
+be given by
+
+$$f := i h_t + 0.5 h_\{xx\} + |h|^2 h,$$
+
+and proceed by placing a complex-valued neural network prior on
+$h(t,x)$. In fact, if $u$ denotes the real part of $h$ and $v$ is the
+imaginary part, we are placing a multi-out neural network prior on
+$h(t,x) = \begin\{bmatrix\}
+u(t,x) & v(t,x)
+\end\{bmatrix\}$. This will result in the complex-valued (multi-output)
+physics informed neural network $f(t,x)$. The shared parameters of the
+neural networks $h(t,x)$ and $f(t,x)$ can be learned by minimizing the
+mean squared error loss
+
+$$MSE = MSE_0 + MSE_b + MSE_f$$
+
+where
+
+$$MSE_0 = \frac\{1\}\{N_0\}\sum_\{i=1\}^\{N_0\} |h(0,x_0^i) - h^i_0|^2$$
+
+$$MSE_b = \frac\{1\}\{N_b\}\sum_\{i=1\}^\{N_b\} \left(|h^i(t^i_b,-5) - h^i(t^i_b,5)|^2 + |h^i_x(t^i_b,-5) - h^i_x(t^i_b,5)|^2\right)$$
+
+and
+
+$$MSE_f = \frac\{1\}\{N_f\}\sum_\{i=1\}^\{N_f\}|f(t_f^i,x_f^i)|^2.$$
+
+Here, $\{x_0^i, h^i_0\}_\{i=1\}^\{N_0\}$ denotes the initial data,
+$\{t^i_b\}_\{i=1\}^\{N_b\}$ corresponds to the collocation points on the
+boundary, and $\{t_f^i,x_f^i\}_\{i=1\}^\{N_f\}$ represents the collocation
+points on $f(t,x)$. Consequently, $MSE_0$ corresponds to the loss on the
+initial data, $MSE_b$ enforces the periodic boundary conditions, and
+$MSE_f$ penalizes the Schr$\mathrm\{\ddot\{o\}\}$dinger equation not being
+satisfied on the collocation points.
+:::
+
+One potential limitation of the continuous time neural network models
+considered so far stems from the need to use a large number of
+collocation points $N_f$ in order to enforce physics informed
+constraints in the entire spatio-temporal domain. Although this poses no
+significant issues for problems in one or two spatial dimensions, it may
+introduce a severe bottleneck in higher dimensional problems, as the
+total number of collocation points needed to globally enforce a physics
+informed constrain (i.e., in this case a partial differential equation)
+will increase exponentially. In the next section, we put forth a
+different approach that circumvents the need for collocation points by
+introducing a more structured neural network representation leveraging
+the classical
+[Runge-Kutta](https://en.wikipedia.org/wiki/Runge–Kutta_methods)
+time-stepping schemes.
+
+The approach discussed below pertains to a methodology that can be used
+on **discrete-time models**. Let's first revist the classical
+Runge-Kutta method (4 steps) before discussing the general case of $q$
+steps.
+
+##### The Classical Runge-Kutta Method
+
+Let an initial value problem be specified as follows:
+
+$\frac\{dy\}\{dt\}=f(t,y)$,$\quad y(t_\{0\})=y_\{0\}$
+
+Now pick a step-size h \> 0 and define
+
+$\begin\{aligned\}y_\{n+1\}&=y_\{n\}+\{\frac \{1\}\{6\}\}h\left(k_\{1\}+2k_\{2\}+2k_\{3\}+k_\{4\}\right),\\t_\{n+1\}&=t_\{n\}+h\\\end\{aligned\}$
+
+$\begin\{aligned\}k_\{1\}&=\ f(t_\{n\},y_\{n\}),\\k_\{2\}&=\ f\left(t_\{n\}+\{\frac \{h\}\{2\}\},y_\{n\}+h\{\frac \{k_\{1\}\}\{2\}\}\right),\\k_\{3\}&=\ f\left(t_\{n\}+\{\frac \{h\}\{2\}\},y_\{n\}+h\{\frac \{k_\{2\}\}\{2\}\}\right),\\k_\{4\}&=\ f\left(t_\{n\}+h,y_\{n\}+hk_\{3\}\right).\end\{aligned\}$
+
+##### The General Form of the Runge-Kutta Method \{#the-general-runge-kutta-method\}
+
+The general form of Runge-Kutta methods with $q$ stages is applied to
+the governing equation to arrive at the following:
+
+$$\begin\{aligned\}
+    \begin\{split\}
+        u^\{n+c_i\}=u^n-\Delta t\sum_\{i=1\}^\{q\}a_\{ij\}\mathcal\{N\}[u^\{n+c_j\}], i=1,\cdot\cdot\cdot,q,\\
+        u^\{n+1\}=u^n-\Delta t\sum_\{i=1\}^\{q\}b_\{j\}\mathcal\{N\}[u^\{n+c_j\}].
+    \end\{split\}
+\end\{aligned\}$$
+
+In the formulation, $u^\{n+c_j\}(x)=u(t^n+c_j\Delta t,x)$ for
+$j=1,\cdot\cdot\cdot,q$. Depending on the choice of the parameters
+$\{a_\{ij\},b_j,c_j\}$.
+
+The above equations can also be expressed as
+
+$$\begin\{aligned\}
+    \begin\{split\}
+        u^n=u^n_i, i=1,\cdot\cdot\cdot,q,\\
+        u^n=u^n_\{q+1\}
+    \end\{split\}
+\end\{aligned\}$$
+
+where $$\begin\{aligned\}
+    \begin\{split\}
+        u_i^n:=u^\{n+c_i\}+\Delta t\sum_\{j=1\}^\{q\}a_\{ij\}\mathcal\{N\}[u^\{n+c_j\}], i=1,\cdot\cdot\cdot,q,\\
+          u^\{n\}_\{q+1\}=u^\{n+1\}+\Delta t\sum_\{i=1\}^\{q\}b_\{j\}\mathcal\{N\}[u^\{n+c_j\}].
+    \end\{split\}
+\end\{aligned\}$$
+
+We can place a multi-output neural network prior on
+$$\label\{eq_discrete\}
+    [u^\{n+c_1\}(x),\cdot\cdot\cdot,u^\{n+c_q\}(x),u^\{n+1\}(x)]$$ The
+assumption along with equations
+[\[eq_discrete\]](#eq_discrete)\{reference-type="ref"
+reference="eq_discrete"\} result in a physics-informed neural network
+that takes $x$ as an input and gives as the output
+$$[u^\{n\}_1(x),\cdot\cdot\cdot,u^\{n\}_q(x),u_\{q+1\}^\{n+1\}(x)]$$
+
+Below we show an example for the Allen-Cahn equation that appears in
+systems with phase separations, e.g., battery electrode-electrolyte
+interfaces.\
+
+::: example
+The example is used to demonstrate the ability of the proposed discrete
+time models to handle different types of nonlinearity in the governing
+partial differential equation. Let's consider the Allen--Cahn equation
+along with periodic boundary conditions
+
+$$\begin\{aligned\}
+     u_t-0.0001u_\{xx\}+5u^3-5u^3-5u &= 0, x\in[-1,1], t \in [0,1]\\
+     u(0,x) &=x^2 cos(\pi x)\\
+     u(t,-1) &=u(t,1)\\
+     u_x(t,-1) &=u_x(t,1)\\
+ 
+\end\{aligned\}$$
+
+For the Allen-Cahn equation, the non-linear operator is given by
+
+$$\mathcal\{N\}[u^\{n+c_j\}]=-0.0001u^\{n+c_j\}_\{xx\}+5(u^\{n+c_j\})^3-5u^\{n+c_j\}$$
+
+and the shared parameters of the neural networks can be learnt by
+minimizing the loss function as discussed earlier,
+
+$$SSE=SSE_n+SSE_b$$
+
+where
+$$SSE_n=\sum_\{j=1\}^\{q+1\}\sum_\{i=1\}^\{N_n\}|u^n_j(x^\{n,i\})=u^\{n,i\}|^2$$
+
+and $$\begin\{aligned\}
+ \begin\{split\}
+     SSE_b=\sum_\{i=1\}^q|u^\{n+c_i\}(-1)-u^\{n+c_i\}(1)|^2+|u^\{n+1\}(-1)-u^\{n+1\}(1)|^2\\
+     +\sum_\{i=1\}^q|u_x^\{n+c_i\}(-1)-u_x^\{n+c_i\}(1)|^2+|u_x^\{n+1\}(-1)-u_x^\{n+1\}(1)|^2
+ \end\{split\}
+ 
+\end\{aligned\}$$
+
+![Allen-Cahn Equation: Discrete Time
+Domain](figures/allenCahn_PINN.png)\{#fig:allencahn\}
+:::
+
+## Data-Driven Discovery of Nonlinear Partial Differential Equations
+
+We shift our attention to the problem of data-driven discovery of
+partial differential equations. To this end, let us consider
+parametrized and nonlinear partial differential equations of the general
+form $$u_t + \mathcal\{N\}[u;\lambda] = 0,\ x \in \Omega, \ t\in[0,T],$$
+
+where $u(t,x)$ denotes the latent (hidden) solution,
+$\mathcal\{N\}[\cdot;\lambda]$ is a nonlinear operator parametrized by
+$\lambda$, and $\Omega$ is a subset of $\mathbb\{R\}^D$. Now, the problem
+of data-driven discovery of partial differential equations poses the
+following question: given a small set of scattered and potentially noisy
+observations of the hidden state $u(t,x)$ of a system, what are the
+parameters $\lambda$ that best describe the observed data?
+
+In what follows, we will provide an overview of the two main approaches
+to tackle this problem, namely continuous time and discrete time models,
+as well as a series of results and systematic studies for a diverse
+collection of benchmarks. In the first approach, we will assume
+availability of scattered and potential noisy measurements across the
+entire spatio-temporal domain. In the latter, we will try to infer the
+unknown parameters $\lambda$ from only two data snapshots taken at
+distinct time instants
+
+### Continuous Time Models
+
+We define $f(t,x)$ to be given by
+
+$$f := u_t + \mathcal\{N\}[u;\lambda],\label\{eq:PDE_RHS\}$$
+
+and proceed by approximating $u(t,x)$ by a deep neural network. This
+assumption results in a [physics informed neural
+network](https://arxiv.org/abs/1711.10566) $f(t,x)$. This network can be
+derived by the calculus on computational graphs:
+[Backpropagation](http://colah.github.io/posts/2015-08-Backprop/). It is
+worth highlighting that the parameters of the differential operator
+$\lambda$ turn into parameters of the physics informed neural network
+$f(t,x)$.
+
+### Navier-Stokes Equation
+
+The next example involves a realistic scenario of incompressible fluid
+flow as described by the Navier-Stokes equations. Navier-Stokes
+equations describe the physics of many phenomena of scientific and
+engineering interest. They may be used to model the weather, ocean
+currents, water flow in a pipe and air flow around a wing. The
+Navier-Stokes equations in their full and simplified forms help with the
+design of aircraft and cars, the study of blood flow, the design of
+power stations, the analysis of the dispersion of pollutants, and many
+other applications. Let us consider the Navier-Stokes equations in two
+dimensions (2D) given explicitly by
+
+$$\begin\{aligned\}
+\begin\{split\}
+u_t + \lambda_1 (u u_x + v u_y) = -p_x + \lambda_2(u_\{xx\} + u_\{yy\}),\\
+v_t + \lambda_1 (u v_x + v v_y) = -p_y + \lambda_2(v_\{xx\} + v_\{yy\}),    
+\end\{split\}
+\end\{aligned\}$$
+
+where $u(t, x, y)$ denotes the $x$-component of the velocity field,
+$v(t, x, y)$ the $y$-component, and $p(t, x, y)$ the pressure. Here,
+$\lambda = (\lambda_1, \lambda_2)$ are the unknown parameters. Solutions
+to the Navier-Stokes equations are searched in the set of
+divergence-free functions; i.e.,
+
+$$u_x + v_y = 0.$$
+
+This extra equation is the continuity equation for incompressible fluids
+that describes the conservation of mass of the fluid. We make the
+assumption that
+
+$$u = \psi_y,\ \ \ v = -\psi_x,$$
+
+for some latent function $\psi(t,x,y)$. Under this assumption, the
+continuity equation will be automatically satisfied. Given noisy
+measurements
+
+$$\{t^i, x^i, y^i, u^i, v^i\}_\{i=1\}^\{N\}$$
+
+of the velocity field, we are interested in learning the parameters
+$\lambda$ as well as the pressure $p(t,x,y)$. We define $f(t,x,y)$ and
+$g(t,x,y)$ to be given by
+
+$$\begin\{aligned\}
+f &:= u_t + \lambda_1 (u u_x + v u_y) + p_x - \lambda_2(u_\{xx\} + u_\{yy\})\\
+g &:= v_t + \lambda_1 (u v_x + v v_y) + p_y - \lambda_2(v_\{xx\} + v_\{yy\})        
+\end\{aligned\}$$
+
+and proceed by jointly approximating $$\begin\{bmatrix\}
+\psi(t,x,y) & p(t,x,y)
+\end\{bmatrix\}$$ using a single neural network with two outputs. This
+prior assumption results into a physics informed neural network
+$$\begin\{bmatrix\}
+f(t,x,y) & g(t,x,y)
+\end\{bmatrix\}$$ The parameters $\lambda$ of the Navier-Stokes operator
+as well as the parameters of the neural networks $\begin\{bmatrix\}
+\psi(t,x,y) & p(t,x,y)
+\end\{bmatrix\}$ and $\begin\{bmatrix\}
+f(t,x,y) & g(t,x,y)
+\end\{bmatrix\}$ can be trained by minimizing the mean squared error loss
+
+$$\begin\{aligned\}
+    \begin\{split\}
+    MSE :=& \frac\{1\}\{N\}\sum_\{i=1\}^\{N\} \left(|u(t^i,x^i,y^i) - u^i|^2 + |v(t^i,x^i,y^i) - v^i|^2\right) \\
+    +& \frac\{1\}\{N\}\sum_\{i=1\}^\{N\} \left(|f(t^i,x^i,y^i)|^2 + |g(t^i,x^i,y^i)|^2\right)
+    \end\{split\}
+\end\{aligned\}$$
+
+The approach so far assumes availability of scattered data throughout
+the entire spatio-temporal domain. However, in many cases of practical
+interest, one may only be able to observe the system at distinct time
+instants. In the next section, we introduce a different approach that
+tackles the data-driven discovery problem using only two data snapshots.
+We will see how, by leveraging the classical Runge-Kutta time-stepping
+schemes, one can construct discrete time physics informed neural
+networks that can retain high predictive accuracy even when the temporal
+gap between the data snapshots is very large.
+
+### Discrete Time Models
+
+We begin by employing the general form of Runge-Kutta methods with $q$
+stages and obtain
+
+$$\begin\{aligned\}
+u^\{n+c_i\} &= u^n - \Delta t \sum_\{j=1\}^q a_\{ij\} \mathcal\{N\}[u^\{n+c_j\};\lambda], \ \ i=1,\ldots,q\\
+u^\{n+1\} &= u^\{n\} - \Delta t \sum_\{j=1\}^q b_j \mathcal\{N\}[u^\{n+c_j\};\lambda].        
+\end\{aligned\}$$
+
+Here, $u^\{n+c_j\}(x) = u(t^n + c_j \Delta t, x)$ for $j=1, \ldots, q$.
+This general form encapsulates both implicit and explicit time-stepping
+schemes, depending on the choice of the parameters $\{a_\{ij\},b_j,c_j\}$.
+The above equations can be equivalently expressed as
+
+$$\begin\{aligned\}
+u^\{n\} &= u^n_i, \ \ i=1,\ldots,q\\
+u^\{n+1\} &= u^\{n+1\}_\{i\}, \ \ i=1,\ldots,q
+\end\{aligned\}$$
+
+where
+
+$$\begin\{aligned\}
+u^n_i &:= u^\{n+c_i\} + \Delta t \sum_\{j=1\}^q a_\{ij\} \mathcal\{N\}[u^\{n+c_j\};\lambda], \ \ i=1,\ldots,q,\\
+u^\{n+1\}_\{i\} &:= u^\{n+c_i\} + \Delta t \sum_\{j=1\}^q (a_\{ij\} - b_j) \mathcal\{N\}[u^\{n+c_j\};\lambda], \ \ i=1,\ldots,q.
+\end\{aligned\}$$
+
+We proceed by placing a multi-output neural network prior on
+
+$$u^\{n+c_1\}(x), \ldots, u^\{n+c_q\}(x)$$
+
+This prior assumption result in two physics informed neural networks
+
+$$u^\{n\}_1(x), \ldots, u^\{n\}_q(x), u^\{n\}_\{q+1\}(x)$$
+
+and
+
+$$u^\{n+1\}_1(x), \ldots, u^\{n+1\}_q(x), u^\{n+1\}_\{q+1\}(x)$$
+
+Given noisy measurements at two distinct temporal snapshots
+$\{\mathbf\{x\}^\{n\}, \mathbf\{u\}^\{n\}\}$ and
+$\{\mathbf\{x\}^\{n+1\}, \mathbf\{u\}^\{n+1\}\}$ of the system at times $t^\{n\}$
+and $t^\{n+1\}$, respectively, the shared parameters of the neural
+networks along with the parameters $\lambda$ of the differential
+operator can be trained by minimizing the sum of squared errors
+
+$$SSE = SSE_n + SSE_\{n+1\},$$
+
+where
+
+$$SSE_n := \sum_\{j=1\}^q \sum_\{i=1\}^\{N_n\} |u^n_j(x^\{n,i\}) - u^\{n,i\}|^2,$$
+
+and
+
+$$SSE_\{n+1\} := \sum_\{j=1\}^q \sum_\{i=1\}^\{N_\{n+1\}\} |u^\{n+1\}_j(x^\{n+1,i\}) - u^\{n+1,i\}|^2.$$
+
+Here, $\mathbf\{x\}^n = \left\{x^\{n,i\}\right\}_\{i=1\}^\{N_n\}$,
+$\mathbf\{u\}^n = \left\{u^\{n,i\}\right\}_\{i=1\}^\{N_n\}$,
+$\mathbf\{x\}^\{n+1\} = \left\{x^\{n+1,i\}\right\}_\{i=1\}^\{N_\{n+1\}\}$, and
+$\mathbf\{u\}^\{n+1\} = \left\{u^\{n+1,i\}\right\}_\{i=1\}^\{N_\{n+1\}\}$.
+
+### Korteweg--de Vries Equation
+
+The final example aims to highlight the ability of the proposed
+framework to handle governing partial differential equations involving
+higher order derivatives. Here, we consider a mathematical model of
+waves on shallow water surfaces, the Korteweg-de Vries (KdV) equation.
+The KdV equation reads as
+
+$$u_t + \lambda_1 u u_x + \lambda_2 u_\{xxx\} = 0,$$
+
+with $(\lambda_1, \lambda_2)$ being the unknown parameters. For the KdV
+equation, the nonlinear operator is given by
+
+$$\mathcal\{N\}[u^\{n+c_j\}] = \lambda_1 u^\{n+c_j\} u^\{n+c_j\}_x - \lambda_2 u^\{n+c_j\}_\{xxx\}$$
+
+and the shared parameters of the neural networks along with the
+parameters $\lambda = (\lambda_1, \lambda_2)$ of the KdV equation can be
+learned by minimizing the sum of squared errors given above.
+
+## Universal Differential Equations
+
+Universal differential equations (UDEs) are an approach can be utilized
+to discover previously unknown governing equations, accurately
+extrapolate beyond the original data, and accelerate model simulation,
+all in a time and data-efficient manner.
+
+## PINNs
+
+##### Broad Goal:
+
+-   Physical and biological systems: there exists a vast amount of prior
+    knowledge that is currently not being utilized in modern machine
+    learning practice (general non-linear PDEs)
+
+-   Approach:
+
+    -   Leverage NNs and their well known capability as universal
+        function approximators
+
+    -   PINNS: Regularization agent method
+
+-   Example: Compressible fluid dynamics problems by discarding any non
+    realistic flow solutions that violate the conservation of mass
+    principle
+
+-   Learn the physics (PDEs coefficients)
+
+##### Two Distinct Algorithms:
+
+-   Continuous-time and Discrete-time model
+
+## Data-driven Solutions of Partial Differential Equations \{#data-driven-solutions-of-partial-differential-equations\}
+
+Partial differential equations of the general form
+
+$$u_t + \mathcal\{N\}[u;\lambda] = 0,\ x \in \Omega, \ t\in[0,T],$$
+
+where,
+
+$u(t,x)$ denotes the latent (hidden) solution
+
+$\mathcal\{N\}[\cdot]$ is a nonlinear differential operator parametrized
+by $\lambda$
+
+$\Omega$ is a subset of $\mathbb\{R\}^D$.
+
+##### Specifically:
+
+-   **Given fixed model parameters $\lambda$, what can be said about the
+    unknown hidden state u(t, x) of the system**
+
+-   **Data driven discovery of partial differential equations: what are
+    the parameters $\lambda$ that best describe the observed data?**
+
+## Continuous Time Models: General Formalism
+
+We define $f(t,x)$ to be given by
+
+$$f := u_t + \mathcal\{N\}[u],$$
+
+Approximate $u(t,x)$ by a deep neural network. This assumption results
+in a **physics informed neural network**, $f(t,x)$.
+
+Key characteristics:
+
+-   Chain rule for differentiating compositions of functions using
+    automatic differentiation
+
+-   Has the same parameters as the network representing $u(t, x)$
+
+-   Different activation functions due to the action of the differential
+    operator $\mathcal\{N\}$
+
+-   The shared parameters between the neural networks $u(t, x)$ and
+    $f(t, x)$ can be learned by minimizing the mean squared error loss
+
+### Learning the Neural Network Parameters
+
+Loss function is chosen to be $MSE=MSE_u + MSE_f$
+
+where
+
+$MSE\_u=\frac\{1\}\{N_u\}
+\sum\emph\{\{i=1\}\textsuperscript\{\{N\_u\}\textbar\{\}u(t\_u\}i,x\}u\textsuperscript\{i)-u\}i$
+and $MSE_f=\frac\{1\}\{N_f\} \sum_\{i=1\}^\{N_f\}|f(t_f^i,x_f^i)|^2$
+
+Initial and boundary training data on $u(t, x)$:
+$\{\{t^i_u, x^i_u, u^i\}\}^\{N_u\}_\{i=1\}$
+
+$\{\{t^i_f, x^i_f\}\}^\{N_f\}_\{i=1\}$ specify the collocation points for
+$f(t, x)$.
+
+### Example: Burgers' Equation
+
+Consider the **Burgers' equation**. In one space dimension, the Burger's
+equation along with Dirichlet boundary conditions reads as
+
+$$\begin\{array\}\{l\}
+u_t + u u_x - (0.01/\pi) u_\{xx\} = 0,\ \ \ x \in [-1,1],\ \ \ t \in [0,1],\\
+u(0,x) = -\sin(\pi x),\\
+u(t,-1) = u(t,1) = 0.
+\end\{array\}$$
+
+Let us define $f(t,x)$ to be given by
+
+$$f := u_t + u u_x - (0.01/\pi) u_\{xx\},$$
+
+and proceed by approximating $u(t,x)$ by a deep neural network.
+
+### Example: Burgers' Equation (contd.)
+
+Correspondingly, the physics informed neural network $f(t,x)$ takes the
+form
+
+Loss function: $MSE = MSE_u + MSE_f,$
+
+where
+
+$MSE\_u = \frac\{1\}\{N_u\}\sum\emph\{\{i=1\}\^\{\}\{N\}u\}
+\textbar\{\}u(t\textsuperscript\{i\_u,x\_u\}i) -
+u\textsuperscript\{i\textbar\{\}\}2$ and
+$MSE_f = \frac\{1\}\{N_f\}\sum_\{i=1\}^\{N_f\}|f(t_f^i,x_f^i)|^2$
+
+### Example: Burgers' Equation (contd.)
+
+The following figure summarizes the results for the data-driven solution
+of the Burgers' equation.
+
+![image](figures/Burgers_CT_inference_book.png) \> *Burgers' equation:*
+*Top:* Predicted solution along with the initial and boundary training
+data. In addition we are using 10,000 collocation points generated using
+a Latin Hypercube Sampling strategy. *Bottom:* Comparison of the
+predicted and exact solutions corresponding to the three temporal
+snapshots depicted by the white vertical lines in the top panel. Model
+training took approximately 60 seconds on a single NVIDIA Titan X GPU
+card.
+
+### Example: (Schrödinger Equation) \{#example-shruxf6dinger-equation\}
+
+-   handle periodic boundary conditions
+
+-   complex-valued solutions
+
+-   different types of nonlinearities in the governing partial
+    differential equations.
+
+Nonlinear Schrödinger equation:
+
+$$\begin\{array\}\{l\}
+i h_t + 0.5 h_\{xx\} + |h|^2 h = 0,\ \ \ x \in [-5, 5],\ \ \ t \in [0, \pi/2],\\
+h(0,x) = 2\ \text\{sech\}(x),\\
+h(t,-5) = h(t, 5),\\
+h_x(t,-5) = h_x(t, 5),
+\end\{array\}$$
+
+where $h(t,x)$ is the complex-valued solution. Let us define $f(t,x)$ to
+be given by
+
+$$f := i h_t + 0.5 h_\{xx\} + |h|^2 h,$$
+
+Complex-valued neural network prior on $h(t,x)$.
+
+$u$ denotes the real part of $h$ and $v$ is the imaginary part multi-out
+neural network prior on
+
+$$h(t,x) = \begin\{bmatrix\}
+u(t,x) & v(t,x)
+\end\{bmatrix\}$$.
+
+### Example: (Schrödinger Equation) (contd.) \{#example-shruxf6dinger-equation-contd.\}
+
+Results in the complex-valued (multi-output) physic informed neural
+network $f(t,x)$. The shared parameters of the neural networks $h(t,x)$
+and $f(t,x)$ can be learned by minimizing the mean squared error loss
+
+$MSE = MSE_0 + MSE_b + MSE_f,$
+
+where,
+
+$MSE_0 = \frac\{1\}\{N_0\}\sum_\{i=1\}^\{N_0\} |h(0,x_0^i) - h^i_0|^2,$
+
+$MSE_b = \frac\{1\}\{N_b\}\sum_\{i=1\}^\{N_b\} \left(|h^i(t^i_b,-5) - h^i(t^i_b,5)|^2 + |h^i_x(t^i_b,-5) - h^i_x(t^i_b,5)|^2\right),$
+
+and
+
+$MSE_f = \frac\{1\}\{N_f\}\sum_\{i=1\}^\{N_f\}|f(t_f^i,x_f^i)|^2.$
+
+Initial Data: $\{x_0^i, h^i_0\}_\{i=1\}^\{N_0\}$
+
+Collocation points on the boundary: $\{t^i_b\}_\{i=1\}^\{N_b\}$
+
+Collocation points on $f(t,x)$:$\{t_f^i,x_f^i\}_\{i=1\}^\{N_f\}$
+
+$MSE_0$: loss on the initial data, $MSE_b$: enforces the periodic
+boundary conditions, and $MSE_f$ penalizes the Schrödinger equation.
+
+### Example: (Schrödinger Equation) \{#example-shruxf6dinger-equation-1\}
+
+The following figure summarizes the results of the experiment.
+
+![image](figures/NLS_bookl.png) \> *Schrödinger equation:* **Top:**
+Predicted solution along with the initial and boundary training data. In
+addition we are using 20,000 collocation points generated using a Latin
+Hypercube Sampling strategy. **Bottom:** Comparison of the predicted and
+exact solutions corresponding to the three temporal snapshots depicted
+by the dashed vertical lines in the top panel.
+
+One potential limitation of the continuous time neural network models
+considered so far, stems from the need to use a large number of
+collocation points $N_f$ in order to enforce physics informed
+constraints in the entire spatio-temporal domain. Although this poses no
+significant issues for problems in one or two spatial dimensions, it may
+introduce a severe bottleneck in higher dimensional problems, as the
+total number of collocation points needed to globally enforce a physics
+informed constrain (i.e., in our case a partial differential equation)
+will increase exponentially. In the next section, we put forth a
+different approach that circumvents the need for collocation points by
+introducing a more structured neural network representation leveraging
+the classical
+[Runge-Kutta](https://en.wikipedia.org/wiki/Runge--Kutta_methods)
+time-stepping schemes.
+
+##### Discrete Time Models \{#discrete-time-models\}
+
+General form of Runge-Kutta methods with $q$ stages and obtain
+
+$$\begin\{array\}\{ll\}
+u^\{n+c_i\} = u^n - \Delta t \sum_\{j=1\}^q a_\{ij\} \mathcal\{N\}[u^\{n+c_j\}], \ \ i=1,\ldots,q,\\
+u^\{n+1\} = u^\{n\} - \Delta t \sum_\{j=1\}^q b_j \mathcal\{N\}[u^\{n+c_j\}].
+\end\{array\}$$
+
+Here, $u^\{n+c_j\}(x) = u(t^n + c_j \Delta t, x)$ for $j=1, \ldots, q$.
+This general form encapsulates both implicit and explicit time-stepping
+schemes, depending on the choice of the parameters $\{a_\{ij\},b_j,c_j\}$.
+The above equations can be equivalently expressed as
+
+$$\begin\{array\}\{ll\}
+u^\{n\} = u^n_i, \ \ i=1,\ldots,q,\\
+u^n = u^n_\{q+1\},
+\end\{array\}$$
+
+where
+
+$$\begin\{array\}\{ll\}
+u^n_i := u^\{n+c_i\} + \Delta t \sum_\{j=1\}^q a_\{ij\} \mathcal\{N\}[u^\{n+c_j\}], \ \ i=1,\ldots,q,\\
+u^n_\{q+1\} := u^\{n+1\} + \Delta t \sum_\{j=1\}^q b_j \mathcal\{N\}[u^\{n+c_j\}].
+\end\{array\}$$
+
+##### The Classical Runge-Kutta Method \{#the-classical-runge-kutta-method\}
+
+Let an initial value problem be specified as follows:
+
+$\frac\{dy\}\{dt\}=f(t,y)$,$\quad y(t_\{0\})=y_\{0\}$
+
+Now pick a step-size h \> 0 and define
+
+$\begin\{aligned\}y_\{n+1\}&=y_\{n\}+\{\frac \{1\}\{6\}\}h\left(k_\{1\}+2k_\{2\}+2k_\{3\}+k_\{4\}\right),\\t_\{n+1\}&=t_\{n\}+h\\\end\{aligned\}$
+
+$\begin\{aligned\}k_\{1\}&=\ f(t_\{n\},y_\{n\}),\\k_\{2\}&=\ f\left(t_\{n\}+\{\frac \{h\}\{2\}\},y_\{n\}+h\{\frac \{k_\{1\}\}\{2\}\}\right),\\k_\{3\}&=\ f\left(t_\{n\}+\{\frac \{h\}\{2\}\},y_\{n\}+h\{\frac \{k_\{2\}\}\{2\}\}\right),\\k_\{4\}&=\ f\left(t_\{n\}+h,y_\{n\}+hk_\{3\}\right).\end\{aligned\}$
+
+##### The Classical Runge-Kutta Method (Schematic)
+
+![Slopes at different step locations used by the classical Runge-Kutta
+method. Source: Wiki](figures/RK_book.png)
+
+##### Discrete Time Models (contd.)
+
+We proceed by placing a multi-output neural network prior on
+
+$$\begin\{bmatrix\}
+u^\{n+c_1\}(x), \ldots, u^\{n+c_q\}(x), u^\{n+1\}(x)
+\end\{bmatrix\}.$$
+
+This prior assumption along with the above equations result in a physics
+informed neural network that takes $x$ as an input and outputs
+
+$$\begin\{bmatrix\}
+u^n_1(x), \ldots, u^n_q(x), u^n_\{q+1\}(x)
+\end\{bmatrix\}.$$
+
+##### Example: Allen-Cahn Equation
+
+Allen-Cahn equation along with periodic boundary conditions
+
+$$\begin\{array\}\{l\}
+u_t - 0.0001 u_\{xx\} + 5 u^3 - 5 u = 0, \ \ \ x \in [-1,1], \ \ \ t \in [0,1],\\
+u(0, x) = x^2 \cos(\pi x),\\
+u(t,-1) = u(t,1),\\
+u_x(t,-1) = u_x(t,1).
+\end\{array\}$$
+
+The Allen-Cahn equation is a well-known equation from the area of
+reaction-diffusion systems. It describes the process of phase separation
+in multi-component alloy systems, including order-disorder transitions.
+For the Allen-Cahn equation, the nonlinear operator is given by
+
+$$\mathcal\{N\}[u^\{n+c_j\}] = -0.0001 u^\{n+c_j\}_\{xx\} + 5 \left(u^\{n+c_j\}\right)^3 - 5 u^\{n+c_j\},$$
+
+and the shared parameters of the neural networks can be learned by
+minimizing the sum of squared errors
+
+$SSE = SSE_n + SSE_b,$
+
+##### Example: Allen-Cahn Equation (contd.)
+
+$$SSE_n = \sum_\{j=1\}^\{q+1\} \sum_\{i=1\}^\{N_n\} |u^n_j(x^\{n,i\}) - u^\{n,i\}|^2,$$
+and
+
+$$\begin\{array\}\{rl\}
+SSE_b =& \sum_\{i=1\}^q |u^\{n+c_i\}(-1) - u^\{n+c_i\}(1)|^2 + |u^\{n+1\}(-1) - u^\{n+1\}(1)|^2 \\
+      +& \sum_\{i=1\}^q |u_x^\{n+c_i\}(-1) - u_x^\{n+c_i\}(1)|^2 + |u_x^\{n+1\}(-1) - u_x^\{n+1\}(1)|^2.
+\end\{array\}$$
+
+Here, $\{x^\{n,i\}, u^\{n,i\}\}_\{i=1\}^\{N_n\}$ corresponds to the data at time
+$t^n$.
+
+##### Example: Allen-Cahn Equation
+
+![Allen-Cahn equation: **Top:** Solution along with the location of the
+initial training snapshot at t=0.1 and the final prediction snapshot at
+t=0.9. **Bottom:** Initial training data and final prediction at the
+snapshots depicted by the white vertical lines in the top
+panel.](figures/AC_book.png)
+
+### Data-driven Discovery of Nonlinear Partial Differential Equations \{#data-driven-discovery-of-nonlinear-partial-differential-equations\}
+
+Parametrized and nonlinear partial differential equations of the general
+form
+
+$$u_t + \mathcal\{N\}[u;\lambda] = 0,\ x \in \Omega, \ t\in[0,T],$$
+
+where $u(t,x)$ denotes the latent (hidden) solution,
+$\mathcal\{N\}[\cdot;\lambda]$ is a nonlinear operator parametrized by
+$\lambda$, and $\Omega$ is a subset of $\mathbb\{R\}^D$.
+
+##### Continuous Time Models \{#continuous-time-models\}
+
+We define $$f(t,x)$$ to be given by
+
+$$f := u_t + \mathcal\{N\}[u;\lambda],\label\{eq:PDE_RHS\}$$
+
+and proceed by approximating $$u(t,x)$$ by a deep neural network. This
+assumption results in a physics informed neural network $f(t,x)$.
+
+##### Example: Navier-Stokes Equation
+
+Incompressible fluid flow as described by the ubiquitous Navier-Stokes
+equations. The Navier-Stokes equations in two dimensions (2D) given
+explicitly by
+
+$$\begin\{array\}\{c\}
+u_t + \lambda_1 (u u_x + v u_y) = -p_x + \lambda_2(u_\{xx\} + u_\{yy\}),\\
+v_t + \lambda_1 (u v_x + v v_y) = -p_y + \lambda_2(v_\{xx\} + v_\{yy\}),
+\end\{array\}$$
+
+where $u(t, x, y)$ denotes the $x$-component of the velocity field,
+$v(t, x, y)$ the $y$-component, and $p(t, x, y)$ the pressure. Here,
+$\lambda = (\lambda_1, \lambda_2)$ are the unknown parameters. Solutions
+to the Navier-Stokes equations are searched in the set of
+divergence-free functions; i.e.,
+
+$$u_x + v_y = 0.$$
+
+This extra equation is the continuity equation for incompressible fluids
+that describes the conservation of mass of the fluid. We make the
+assumption that
+
+$$u = \psi_y,\ \ \ v = -\psi_x,$$
+
+for some latent function $\psi(t,x,y)$. Under this assumption, the
+continuity equation will be automatically satisfied. Given noisy
+measurements
+
+$$\{t^i, x^i, y^i, u^i, v^i\}_\{i=1\}^\{N\}$$
+
+##### Example: Navier-Stokes Equation (contd.)
+
+We are interested in learning the parameters $\lambda$ as well as the
+pressure $p(t,x,y)$. We define $f(t,x,y)$ and $g(t,x,y)$ to be given by
+
+$$\begin\{array\}\{c\}
+f := u_t + \lambda_1 (u u_x + v u_y) + p_x - \lambda_2(u_\{xx\} + u_\{yy\}),\\
+g := v_t + \lambda_1 (u v_x + v v_y) + p_y - \lambda_2(v_\{xx\} + v_\{yy\}),
+\end\{array\}$$
+
+and proceed by jointly approximating $$\begin\{bmatrix\}
+\psi(t,x,y) & p(t,x,y)
+\end\{bmatrix\}$$ using a single neural network with two outputs. This
+prior assumption results into a physics informed neural network
+$$\begin\{bmatrix\}
+f(t,x,y) & g(t,x,y)
+\end\{bmatrix\}$$.
+
+The parameters $\lambda$ of the Navier-Stokes operator as well as the
+parameters of the neural networks
+$\begin\{bmatrix\} \psi(t,x,y) & p(t,x,y) \end\{bmatrix\}$ and
+$\begin\{bmatrix\} f(t,x,y) & g(t,x,y) \end\{bmatrix\}$ can be trained by
+minimizing the mean squared error loss
+
+$$\begin\{array\}\{rl\}
+MSE :=& \frac\{1\}\{N\}\sum_\{i=1\}^\{N\} \left(|u(t^i,x^i,y^i) - u^i|^2 + |v(t^i,x^i,y^i) - v^i|^2\right) \\
+    +& \frac\{1\}\{N\}\sum_\{i=1\}^\{N\} \left(|f(t^i,x^i,y^i)|^2 + |g(t^i,x^i,y^i)|^2\right).
+\end\{array\}$$
+
+##### Example: Navier-Stokes Equation (Results)
+
+![Navier-Stokes equation: **Top:** Incompressible flow and dynamic
+vortex shedding past a circular cylinder at Re$=100$. The
+spatio-temporal training data correspond to the depicted rectangular
+region in the cylinder wake. **Bottom:** Locations of training
+data-points for the the stream-wise and transverse velocity components.
+](figures/NavierStokes_data_book.png)
+
+##### Example: Navier-Stokes Equation (Results)
+
+![Navier-Stokes equation: **Top:** Predicted versus exact instantaneous
+pressure field at a representative time instant. By definition, the
+pressure can be recovered up to a constant, hence justifying the
+different magnitude between the two plots. This remarkable qualitative
+agreement highlights the ability of physics-informed neural networks to
+identify the entire pressure field, despite the fact that no data on the
+pressure are used during model training. **Bottom:** Correct partial
+differential equation along with the identified
+one.](figures/NavierStokes_prediction_book.png)
+
+Next: High predictive accuracy even when the temporal gap between the
+data snapshots is very large.
+
+##### Discrete Time Models \{#discrete-time-models-1\}
+
+We begin by employing the general form of
+[Runge-Kutta](https://en.wikipedia.org/wiki/Runge--Kutta_methods)
+methods with $$q$$ stages and obtain
+
+$$\begin\{array\}\{ll\}
+u^\{n+c_i\} = u^n - \Delta t \sum_\{j=1\}^q a_\{ij\} \mathcal\{N\}[u^\{n+c_j\};\lambda], \ \ i=1,\ldots,q,\\
+u^\{n+1\} = u^\{n\} - \Delta t \sum_\{j=1\}^q b_j \mathcal\{N\}[u^\{n+c_j\};\lambda].
+\end\{array\}$$
+
+Here, $u^\{n+c_j\}(x) = u(t^n + c_j \Delta t, x)$ for $j=1, \ldots, q$.
+This general form encapsulates both implicit and explicit time-stepping
+schemes, depending on the choice of the parameters $\{a_\{ij\},b_j,c_j\}$.
+The above equations can be equivalently expressed as
+
+$$\begin\{array\}\{ll\}
+u^\{n\} = u^n_i, \ \ i=1,\ldots,q,\\
+u^\{n+1\} = u^\{n+1\}_\{i\}, \ \ i=1,\ldots,q.
+\end\{array\}$$
+
+where
+
+$$\begin\{array\}\{ll\}
+u^n_i := u^\{n+c_i\} + \Delta t \sum_\{j=1\}^q a_\{ij\} \mathcal\{N\}[u^\{n+c_j\};\lambda], \ \ i=1,\ldots,q,\\
+u^\{n+1\}_\{i\} := u^\{n+c_i\} + \Delta t \sum_\{j=1\}^q (a_\{ij\} - b_j) \mathcal\{N\}[u^\{n+c_j\};\lambda], \ \ i=1,\ldots,q.
+\end\{array\}$$
+
+##### Discrete Time Models (contd.)
+
+We proceed by placing a multi-output neural network prior on
+
+$$\begin\{bmatrix\}
+u^\{n+c_1\}(x), \ldots, u^\{n+c_q\}(x)
+\end\{bmatrix\}.$$
+
+This prior assumption result in two physics informed neural networks
+
+$$\begin\{bmatrix\}
+u^\{n\}_1(x), \ldots, u^\{n\}_q(x), u^\{n\}_\{q+1\}(x)
+\end\{bmatrix\},$$
+
+and
+
+$$\begin\{bmatrix\}
+u^\{n+1\}_1(x), \ldots, u^\{n+1\}_q(x), u^\{n+1\}_\{q+1\}(x)
+\end\{bmatrix\}.$$
+
+##### Discrete Time Models (contd.)
+
+Given noisy measurements at two distinct temporal snapshots
+$\{\mathbf\{x\}^\{n\}, \mathbf\{u\}^\{n\}\}$ and
+$\{\mathbf\{x\}^\{n+1\}, \mathbf\{u\}^\{n+1\}\}$ of the system at times $t^\{n\}$
+and $t^\{n+1\}$, respectively, the shared parameters of the neural
+networks along with the parameters $\lambda$ of the differential
+operator can be trained by minimizing the sum of squared errors
+
+$$SSE = SSE_n + SSE_\{n+1\},$$
+
+where
+
+$$SSE_n := \sum_\{j=1\}^q \sum_\{i=1\}^\{N_n\} |u^n_j(x^\{n,i\}) - u^\{n,i\}|^2,$$
+
+and
+
+$$SSE_\{n+1\} := \sum_\{j=1\}^q \sum_\{i=1\}^\{N_\{n+1\}\} |u^\{n+1\}_j(x^\{n+1,i\}) - u^\{n+1,i\}|^2.$$
+
+Here, $\mathbf\{x\}^n = \left\{x^\{n,i\}\right\}_\{i=1\}^\{N_n\}$,
+$\mathbf\{u\}^n = \left\{u^\{n,i\}\right\}_\{i=1\}^\{N_n\}$,
+$\mathbf\{x\}^\{n+1\} = \left\{x^\{n+1,i\}\right\}_\{i=1\}^\{N_\{n+1\}\}$, and
+$\mathbf\{u\}^\{n+1\} = \left\{u^\{n+1,i\}\right\}_\{i=1\}^\{N_\{n+1\}\}$.
+
+##### Example: Korteweg--de Vries Equation
+
+The final example aims to highlight the ability of the proposed
+framework to handle governing partial differential equations involving
+higher order derivatives. Here, we consider a mathematical model of
+waves on shallow water surfaces; the Korteweg-de Vries (KdV) equation.
+The KdV equation reads as
+
+$$u_t + \lambda_1 u u_x + \lambda_2 u_\{xxx\} = 0,$$
+
+with $(\lambda_1, \lambda_2)$ being the unknown parameters. For the KdV
+equation, the nonlinear operator is given by
+
+$$\mathcal\{N\}[u^\{n+c_j\}] = \lambda_1 u^\{n+c_j\} u^\{n+c_j\}_x - \lambda_2 u^\{n+c_j\}_\{xxx\}$$
+
+and the shared parameters of the neural networks along with the
+parameters $$\lambda = (\lambda_1, \lambda_2)$$ of the KdV equation can
+be learned by minimizing the sum of squared errors given above.
+
+##### Example: Korteweg--de Vries Equation (contd.)
+
+![KdV equation: **Top:** Solution along with the temporal locations of
+the two training snapshots. Middle: Training data and exact solution
+corresponding to the two temporal snapshots depicted by the dashed
+vertical lines in the top panel. **Bottom:** Correct partial
+differential equation along with the identified
+one.](figures/KdV_book.png)\{#fig:my_label\}
+
+### Summary
+
+-   PINNs provide a reqularization framework based on the (partially)
+    known physics.
+
+-   Spartially Low-Data Regime: Continuous-Time Models
+
+-   Temporally Low-Data Regime: Discrete-Time Models (RK Method)
+
+### Open Questions
+
+How deep/wide should the neural network be? How much data is really
+needed?
+
+Why does the algorithm converge to unique values for the parameters of
+the differential operators?
+
+Does the network suffer from vanishing gradients for deeper
+architectures and higher order differential operators?
+
+Could this be mitigated by using different activation functions?
+
+Can we improve on initializing the network weights or normalizing the
+data?
+
+Are the mean square error and the sum of squared errors the appropriate
+loss functions?
+
+Why are these methods seemingly so robust to noise in the data?
+
+How can we quantify the uncertainty associated with our predictions?
+
+
+# Introduction to Scientific Machine Learning \{#ch:intro-molecular-ml\}
+
+While applying machine learning algorithms to physical systems, there
+typically are additional constraints in the form of respecting any given
+laws of physics often described by general nonlinear partial
+differential equations. In this chapter, we will introduce approaches to
+incorporate such additional constraints into machine learning
+algorithms. We will also discuss approaches to discover and learn the
+underlying partial differential equations for systems where the
+underlying physics can emerge from collected data.
+
+## Equivariance in Neural Networks
+
+Understanding symmetry's role in the physical sciences is critical for
+choosing an appropriate machine learning method. While invariant models
+are the most prevalent symmetry-aware models, equivariant models can
+more faithfully represent physical interactions. Until recently,
+equivariant models had been absent in the literature due to their
+technical complexity. Now, after two years of active development,
+fully-equivariant Euclidean neural networks are ready to take on
+challenges across the physical sciences.
+
+### Symmetry enables free choice of coordinate system
+
+There is no inherent way to orient physical systems; yet, we still need
+to choose a coordinate system to articulate their geometry and physical
+properties. Unless coded otherwise, machine learned models make no
+assumption of symmetry and will be sensitive to an arbitrary choice of
+coordinate system. In order to be able to recognize a 3D pattern in any
+orientation, such a model will need to be shown roughly 500 rotated
+versions of the same example, a process called data augmentation. One of
+the motivations of explicitly treating symmetry in machine learning
+models is to eliminate the need for data augmentation, so the model can
+instead focus on e.g. learning quantum mechanics. In 3D space, we can
+transform between coordinate systems using elements of Euclidean
+symmetry (3D rotations, 3D translations, and inversion
+$(x, y, z) \rightarrow (-x, -y, -z)$ which includes mirror symmetry);
+hence we say that 3D space has Euclidean symmetry. One useful way of
+categorizing machine learning models applied in the physical sciences is
+by whether they employ symmetry and if so where they use invariant vs.
+equivariant operations. Between the two types of symmetry-aware models,
+invariant models get rid of coordinate systems by only dealing with
+quantities that are invariant to the choice of coordinate system
+(scalars), while equivariant models preserve how quantities predictably
+change under coordinate transformations.
+
+### Invariance vs. Equivariance
+
+There is good reason for the popularity of invariant scalar features for
+machine learning; you can give scalars to any machine learning algorithm
+without violating symmetry. More practically, scalars are easier to
+handle than geometric tensors and invariant models are high (if not top)
+performers on many existing benchmarks. It is common practice to employ
+equivariant operations to generate invariant features for machine
+learning models. For example, SOAP descriptors are equivariant functions
+that operate on the geometry and atom types of local atomic environments
+to produce invariant scalars. Geometry in invariant models is reduced to
+pairwise distances; Figure below describes the invariant vs. equivariant
+properties of 3D vectors. Invariant models can yield equivariant
+quantities, but only through gradients of the equivariant operations
+used in featurization; this may not be practical or possible depending
+on the quantity of interest.
+
+### When is Equiavariance Critical
+
+Physical systems and their interactions are inherently equivariant. With
+an invariant model, you have to invent a means of representing your
+naturally equivariant physical system in terms of invariant features.
+With an equivariant model, you represent your system in the same way you
+might articulate it to a physical simulation: with geometric coordinates
+and any relevant quantities you need to describe the system, e.g.
+external fields or atom-wise properties such as velocities. Even if you
+want to predict a scalar, not all physical interactions can be
+represented as scalars; e.g. the only way to interact a moving charged
+particle with an external magnetic field is to use the equivariant
+cross-product,$\vec\{F\}=q\vec\{v\}\times \vec\{B\}$, or the difference
+between momentum and the charge weighted vector potential
+$H=|\vec\{p\}-q\vec\{A\}|^2/2m$. To predict quantities that are
+fundamentally generated from equivariant interactions you must either
+
+1.  Include these equivariant interactions in the scalar featurization
+    used for an invariant model (which requires knowing to include those
+    interactions)
+
+2.  use an equivariant model, which may make more accurate or effcient
+    predictions because it has more expressive operations. The more
+    exotic or complex a property, the more likely there are non-trivial
+    geometric tensor interactions at play (multipole interactions,
+    antisymmetric exchange, etc).
+
+### Euclidean Neural Networks Are Equivariant Models
+
+Neural networks are one of the most exible machine learning methods
+since the only requirement is that the network be differentiable. A
+neural network is a function $f$ that takes in inputs x and trainable
+parameters $W$ to produce outputs y, $f(x;W) = y$. Given pairs of inputs
+$x$ and target output $y_\{true\}$, you train a neural network by
+computing derivatives of the loss, e.g. $\mathcal\{L\}$ with respect to
+trainable parameters W and update according to a learning rate $\eta$,
+$$W = W + \eta\frac\{\partial \mathcal\{L\}\}\{\partial W\}$$
+
+First proposed in 2018, Euclidean neural networks (tensor field
+networks, Clebsch-Gordan nets, 3d steerable CNNs, and their descendants)
+are a exible, general framework for learning 3D Euclidean symmetry
+equivariant functions that can be trained on the context of a given
+dataset. To achieve equivariance in Euclidean Neural Networks, scalar
+multiplication is replaced by the more general tensor product and
+convolutional kernels are restricted to be composed of spherical
+harmonics and learnable radial functions,
+$$W(\vec\{r\})=R(|r|)Y_\{lm\}(\hat\{r\})$$ Scalar nonlinearities must also be
+replaced with equivariant equivalents.
+
+Due to these mathematical complexities, Euclidean neural networks can be
+challenging to implement; however, there are open-source implementations
+e.g. e3nn is an open-source PyTorch library that combines the
+implementations of There are implementations of a variety of additional
+equivariant layers and utility functions for converting and visualizing
+geometric tensors. Equivariance has also been employed in other machine
+learning approaches such as kernel methods by using equivariant kernels
+and an equivariant definition of covariance. Euclidean neural networks
+can be used to learn equivariant functions that generate scalar
+invariants or equivariant kernels for use with traditional machine
+learning methods. With Euclidean neural networks, you can build
+end-to-end models for predicting physical properties (e.g. molecular
+dynamics forces) from atomic geometries and initial atomic features
+(e.g. atom types). You can use them to manipulate atomic geometries and
+hierarchical features. The only difference is how you choose to compose
+equivariant operations and learnable equivari- ant modules.
+
+Euclidean Neural Networks provides a mathematically rigorous framework
+for articulating scientific questions in terms of geometric tensors and
+their tensor interactions. Inputs, outputs, and intermediate data are
+completely specified by their transformation properties. Geometric
+tensors take many forms and can represent many different quantities:
+numerical geometric tensors, atomic orbitals, or projections of
+geometry; Another particularly useful aspect of handling Euclidean
+symmetry in full generality is that you get all subgroup symmetries
+(e.g. point groups and space groups) for free. Illustration below shows
+an example of how the output of even randomly initialized Euclidean
+Neural Networks will have equal or higher symmetry than the input. Since
+these networks intrinsically uphold any and all selection rules that
+occur in physical systems, they act as \"symmetry compilers\" that check
+your thinking about the data types of your physical system. Using these
+models requires more forethought than a traditional neural network; in
+exchange, they cannot learn to do something that doesn't symmetrically
+make sense.
+
+### Sperical Harmonics
+
+### Cormorant
+
+Risi Kondor
+
+Cormorant is a rotationally covariant neural network architecture for
+learning the behavior and properties of complex many-body physical
+systems. These networks have been applied to molecular systems with two
+goals: learning atomic potential energy surfaces for use in Molecular
+Dynamics simulations, and learning ground state properties of molecules
+calculated by Density Functional Theory. Some of the key features of our
+network are that (a) each neuron explicitly corresponds to a subset of
+atoms; (b) the activation of each neuron is covariant to rotations,
+ensuring that overall the network is fully rotationally invariant.
+Furthermore, the non-linearity in our network is based upon tensor
+products and the ClebschGordan decomposition, allowing the network to
+operate entirely in Fourier space. Cormorant significantly outperforms
+competing algorithms in learning molecular Potential Energy Surfaces
+from conformational geometries in the MD-17 dataset, and is competitive
+with other methods at learning geometric, energetic,
+
+### 3D Steerable CNNs
+
+Taco Cohen, Max Welling.
+
+3D Steerable CNNs are convolutional networks that are equivariant to
+rigid body motions. The model uses scalar-, vector-, and tensor fields
+over 3D Euclidean space to represent data, and equivariant convolutions
+to map between such representations. These SE(3)-equivariant
+convolutions utilize kernels which are parameterized as a linear
+combination of a complete steerable kernel basis, which have been
+derived analytically. It can be proven that equivariant convolutions are
+the most general equivariant linear maps between fields over R3.
+Experimental results confirm the effectiveness of 3D Steerable CNNs for
+the problem of amino acid propensity prediction and protein structure
+classification, both of which have inherent SE(3) symmetry.
+
+### Tensor field networks
+
+Li Li, Tess and Pfr
+
+Tensor field neural networks are locally equivariant to 3D rotations,
+translations, and permutations of points at every layer. 3D rotation
+equivariance removes the need for data augmentation to identify features
+in arbitrary orientations. Tensor field neural networks use filters
+built from spherical harmonics; due to the mathematical consequences of
+this filter choice, each layer accepts as input (and guarantees as
+output) scalars, vectors, and higher-order tensors, in the geometric
+sense of these terms.
+
+### Pseudocode: E3NN
+
+    def R(r: $\mathbb\{R\}$, rmax: $\mathbb\{R\}$, params: $\mathbb\{R\}^3$) -> $\mathbb\{R\}$
+      if r > rmax:
+        return 0
+
+      c, pow = params[1:2]
+      res = r ≈ 0 ? 0 : c / r^pow
+
+      c = params[3]
+      res += r ≈ 0 ? c : 0
+      return res
+
+
+
+    REPS = (scalar = (0, 1), vector = (1, -1), pseudovector = (1, 1))
+
+    function Ylm(u, l)
+        x, y, z = u
+        r2 = norm(u)^2
+        if l == 0
+            return [1]
+        elseif l == 1
+            return [u[1], u[3], u[2]]
+        elseif l == 2
+            return [x * y / r2, y * z / r2, (x^2 - y^2 + 2z^2) / (2 * sqrt(3) * r2), z * x / r2, (x^2 - y^2) / (2r2)]
+        end
+
+        # TODO higher orders
+
+        return zeros(2l + 1)
+    end
+
+    function product(u, Y, dimout)
+        dim1 = length(u)
+        dim2 = length(Y)
+
+        v = Y
+        if dim2 == 3
+            v = [Y[1], Y[3], Y[2]]
+        end
+
+        if dim1 == 1
+            return u[1] * v
+        elseif dim2 == 1
+            return u * v[1]
+        elseif dim1 == dim2 && dimout == 1
+            return [dot(u, v)]
+        elseif dim1 == dim2 == dimout == 3
+            return cross(u, v)
+        end
+
+        # clebsch-gordan for higher orders
+        return zeros(dimout)
+    end
+
+
+
+    function EquivConv(intypes, outtypes, rmax; paramdensity = 8, σ = tanh)
+        # numout=lmax=0
+        # ignore() do
+        intypes = [typeof(x) == Symbol ? REPS[x] : x for x in intypes]
+        outtypes = [typeof(x) == Symbol ? REPS[x] : x for x in outtypes]
+        l_i = [x[1] for x in intypes]
+        l_o = [x[1] for x in outtypes]
+        nin = length(intypes)
+        nout = length(outtypes)
+
+        paths_l = Dict([(li, sort(unique(vcat([abs(lo - li):lo+li for lo in unique(l_o)]...)))) for li in unique(l_i)])
+
+        start_i = cumsum([1, [2l_i[i] + 1 for i = 1:nin-1]...])
+        start_o = cumsum([1, [2l_o[i] + 1 for i = 1:nout-1]...])
+        numout = start_o[end] + 2l_o[end]
+
+        lfmax = maximum(l_i) + maximum(l_o)
+        lfrange_io = [abs(l_i[i] - l_o[o]):(l_i[i]+l_o[o]) for i = 1:nin, o = 1:nout]
+        nlf_io = length.(lfrange_io)
+
+        radparamspos_io = zeros(nin, nout)
+        pos = 0
+        for i = 1:nin
+            for o = 1:nout
+                radparamspos_io[i, o] = pos
+                pos += nlf_io[i, o]
+            end
+        end
+        radparams = rand((pos) * paramdensity)
+        nlparams = rand(2nout)
+
+        lolist = 0
+        Zygote.ignore() do
+            lolist = unique(l_o)
+        end
+
+
+        function getradparams(i, o, lf)
+            start = 1 + Int(paramdensity * (radparamspos_io[i, o] + lf - abs(l_i[i] - l_o[o])))
+            return radparams[start:start+paramdensity-1]
+        end
+
+        function conv(X, points)
+            npoints = size(points, 1)
+            Xout = zeros(npoints, numout)
+
+
+            Y_l_ab = rvec_ab = r_ab = rhat_ab = 0
+            Zygote.ignore() do
+                # rvec_ab = [[points[b, i] - points[a, i] for a = 1:npoints] for b = 1:npoints, i = 1:3]
+                # r_ab = [norm(rvec_ab[a, b, :]) for a = 1:npoints, b = 1:npoints]
+                # rhat_ab = [a == b ? 0 : rvec_ab[a, b, i] / r_ab[a, b] for a = 1:npoints, b = 1:npoints, i = 1:3]
+                rvec_ab = [points[b, i] - points[a, i] for a = 1:npoints, b = 1:npoints, i = 1:3]
+                r_ab = [norm(rvec_ab[a, b, :]) for a = 1:npoints, b = 1:npoints]
+                rhat_ab = [a == b ? 0 : rvec_ab[a, b, i] / r_ab[a, b] for a = 1:npoints, b = 1:npoints, i = 1:3]
+
+                Y_l_ab = Dict()
+                for l = 0:lfmax
+                    Y_l_ab[l] = [Ylm(rhat_ab[a, b, :], l) for a = 1:npoints, b = 1:npoints]
+                    # Y_l_ab[l] = [Ylm(rhat_ab[a, b, :], l) for a = 1:npoints, b = 1:npoints]
+                end
+            end
+
+            product_i_lf_lo_ab = Dict()
+            for i = 1:nin
+                product_i_lf_lo_ab[i] = Dict()
+                li = l_i[i]
+                for lf in paths_l[li]
+                    product_i_lf_lo_ab[i][lf] = Dict()
+                    for lo = abs(li - lf):li+lf
+                        if lo in lolist
+                            product_i_lf_lo_ab[i][lf][lo] = [[product(X[b, start_i[i]:start_i[i]+2li], Y_l_ab[lf][a, b], 2lo + 1) for b = 1:npoints] for a = 1:npoints]
+                            # product_i_lf_lo_ab[i][lf][lo] = [product(X[b, start_i[i]:start_i[i]+2li], Y_l_ab[lf][a, b], 2lo + 1) for a = 1:npoints, b = 1:npoints]
+                        end
+                    end
+                end
+            end
+
+            result = Dict()
+            for o = 1:nout
+                result[o] = [sum([sum([sum([product_i_lf_lo_ab[i][lf][l_o[o]][a][b] * R(r_ab[a, b], rmax, getradparams(i, o, lf)) for lf in paths_l[l_i[i]]]) for i = 1:nin]) for b = 1:npoints]) for a = 1:npoints]
+                # result[o] = [sum([sum([sum([product_i_lf_lo_ab[i][lf][l_o[o]][a, b] * R(r_ab[a, b], rmax, getradparams(i, o, lf)) for lf in paths_l[l_i[i]]]) for i = 1:nin]) for b = 1:npoints]) for a = 1:npoints]
+            end
+            o_p = m_p = 0
+            Zygote.ignore() do
+                o_p = [searchsortedfirst(start_o, p + 1) - 1 for p = 1:numout]
+                m_p = [p - start_o[o_p[p]] for p = 1:numout]
+            end
+        
+            result = [[result[o_p[p]][a][o_p[p]+m_p[p]] for a = 1:npoints] for p = 1:numout]
+            result = hcat(result...)
+            radparams
+            nlparams
+            return result
+        end
+        return conv
+    end
+
+
+# Introduction to Scientific Machine Learning \{#ch:intro-molecular-ml\}
+
+While applying machine learning algorithms to physical systems, there
+typically are additional constraints in the form of respecting any given
+laws of physics often described by general nonlinear partial
+differential equations. In this chapter, we will introduce approaches to
+incorporate such additional constraints into machine learning
+algorithms. We will also discuss approaches to discover and learn the
+underlying partial differential equations for systems where the
+underlying physics can emerge from collected data.
+
+## Physics-Guided Machine Learning
+
+Physics-based models of dynamical systems are often used to study
+engineering and environmental systems. Despite their extensive use,
+these models have several well-known limitations due to simplified
+representations of the physical processes being modeled or challenges in
+selecting appropriate parameters. While-state-of-the-art machine
+learning models can sometimes outperform physics-based models given
+ample amount of training data, they can produce results that are
+physically inconsistent.
+
+### Physics Guided Recurrent Neural Network (PGRNN)
+
+$$h_t= \tanh(W_hh_\{t-1\}+W_x x_t)$$
+
+In this section, we discuss a physics-guided recurrent neural network
+model (PGRNN) that combines RNNs and physics-based models to leverage
+their complementary strengths and improves the modeling of physical
+processes. Specifically, we show that a PGRNN can improve prediction
+accuracy over that of physics-based models, while generating outputs
+consistent with physical laws. An important aspect of the PGRNN approach
+lies in its ability to incorporate the knowledge encoded in
+physics-based models. This allows training the PGRNN model using very
+few true observed data while also ensuring high prediction accuracy.
+Although we present and evaluate this methodology in the context of
+modeling the dynamics of temperature in lakes, it is applicable more
+widely to a range of scientific and engineering disciplines where
+physics-based (also known as mechanistic) models are used, e.g., climate
+science, materials science, computational chemistry and biomedicine.
+
+Physics-based models are often used to study engineering and
+environmental systems. The ability to model these systems is the key to
+achieving our future environmental sustainability and improving the
+quality of human life. This chapter focuses on simulating lake water
+temperature, which is critical for understanding the impact of changing
+climate on aquatic ecosystems and assisting in aquatic resource
+management decisions. General Lake Model (GLM) is a state-of-the-art
+physics-based model used for addressing such problems. However, like
+other physics-based models used for studying scientific and engineering
+systems, it has several well-known limitations due to simplified
+representations of the physical processes being modeled or challenges in
+selecting appropriate parameters. While-state-of-the-art machine
+learning models can sometimes outperform physics-based models given
+ample amount of training data, they can produce results that are
+physically inconsistent. This chapter proposes a physics-guided
+recurrent neural network model (PGRNN) that combines RNNs and
+physics-based models to leverage their complementary strengths and
+improves the modeling of physical processes. Specifically, we show that
+a PGRNN can improve prediction accuracy over that of physics-based
+models (by over 20% even with very few training data), while generating
+outputs consistent with physical laws. An important aspect of the PGRNN
+approach lies in its ability to incorporate the knowledge encoded in
+physics-based models. This allows training the PGRNN model using very
+few true observed data while also ensuring high prediction accuracy.
+Although we present and evaluate this methodology in the context of
+modeling the dynamics of temperature in lakes, it is applicable more
+widely to a range of scientific and engineering disciplines where
+physics-based (also known as mechanistic) models are used.
+
+**Intro**
+
+Physics-based models have been widely used to study engineering and
+environmental systems in domains such as hydrology, climate science,
+materials science, agriculture, and computational chemistry. Despite
+their extensive use, these models have several well-known limitations
+due to simplified representations of the physical processes being
+modeled or challenges in selecting appropriate parameters. Thre is a
+tremendous opportunity to systematically advance modeling in these
+domains by using machine learning (ML) methods. However, capturing this
+opportunity is contingent on a paradigm shift in data-intensive
+scientific discovery since the "black box" use of ML often leads to
+serious false discoveries in scientific applications ([Karpatne et al.
+2017a](#page23); [Lazer et al. 2014](#page23)). In this chapter, we
+present a novel methodology for combining physics-based models with
+state-of-the-art deep learning methods to leverage their complementary
+strengths.
+
+Even though physics-based models are based on known physical laws that
+govern relationships between input and output variables, the majority of
+physics-based models are necessarily approximations of reality due to
+incomplete knowledge of certain processes, which introduces bias. In
+addition, they often contain a large number of parameters whose values
+must be estimated with the help of limited observed data. A standard
+approach for calibrating these parameters is to exhaustively search the
+space of parameter combinations and choose parameter combinations that
+result in the best performance on training data. Besides its
+computational cost, this approach is also prone to over-fitting due to
+heterogeneity in the underlying processes in both space and time. The
+limitations of physics-based models cut across discipline boundaries and
+are well known in the scientific community; e.g., see a series of debate
+papers in hydrology ([Gupta et al. 2014](#page23); [Lall 2014](#page23);
+[McDonnell and Beven 2014](#page23)).
+
+ML models, given their tremendous success in several commercial
+applications (e.g., computer vision, and natural language processing)
+are increasingly being considered as promising alternatives to
+physics-based models by the scientific community. State of the art (SOA)
+ML models (e.g., Long-Short Term Memory (LSTM), Convolutional Neural
+Networks (CNN)), and the attention mechanism) given enough data, can
+often perform better than traditional empirical models (e.g.,
+regression-based models) used by science communities as an alternative
+to physics-based models ([Goh](#page23) [et al. 2017](#page23);
+[Graham-Rowe et al. 2008](#page23)). However, direct application of
+black-box ML models to a scientific problem encounters several major
+challenges:
+
+1.  Effective modeling of physical processes (that may be unfolding and
+    interacting at multiple scales in space and time) is dependent on
+    the capacity of ML models in extracting complex patterns from data.
+
+2.  Training ML models requires a lot of labeled data, which is scarce
+    in most practical settings given the substantial human effort and
+    material cost required to deploy and maintain sensors.
+
+3.  Empirical models (including the SOA ML models) simply identify
+    statistical relations between inputs and the system variables of
+    interest (e.g., the temperature profile of the lake) without taking
+    into account any physical laws (e.g., conservation of energy or
+    mass) and thus can produce results that are inconsistent with
+    physical laws. Hence, even if they produce accurate predictions,
+    such models cannot be used in practice by domain experts and other
+    stakeholders.
+
+4.  Relationships produced by empirical models can at best be valid only
+    for the set of variable combinations present in the training data
+    and are unable to generalize to scenarios unseen in the training
+    data. For example, a ML model trained for today's climate may not be
+    accurate for future warmer climate scenarios.
+
+The goal of this work is to improve the modeling of engineering and
+environmental systems. Effective representation of physical processes in
+such systems will require development of novel abstractions and
+architectures. In addition, the optimization process to produce an ML
+model will have to consider not just accuracy (i.e., how well the output
+matches the observations) but also its ability to provide physically
+consistent results. The most common approach for directly addressing the
+imperfection of physics-based models in the scientific community is
+residual modeling, where an ML model learns to predict the errors, or
+residuals, made by a physics-based model ([Kani and Elsheikh
+2017](#page23); [San and](#page24) [Maulik 2018](#page24); [Wan et al.
+2018](#page24)). One of the key limitations of these approaches is their
+inability to provide predictions that are consistent with known physical
+laws. Karpatne et al. ([Karpatne et al. 2017b](#page23)) further extends
+residual modeling by using simulated data as additional input to the ML
+model. 3. This new framework permits incorporation of physical
+constraints that can be defined purely on the output of the model
+([Beucler et al. 2019](#page22); [Karpatne et al. 2017b](#page23);
+[Muralidhar](#page24) [et al. 2018](#page24)). However, these methods
+cannot incorporate more general constraints that are based on internal
+states of the physical system (e.g., energy conservation). In addition,
+all of these approaches still require a lot of training data, and thus
+cannot address the data scarcity challenge.
+
+In this chapter, we present Physics-Guided Recurrent Neural Network
+models (PGRNN) as a general framework for modeling physical phenomena
+with potential applications for many disciplines. The PGRNN model has a
+number of novel aspects:
+
+1.  Many temporal processes in environmental/engineering systems involve
+    complex long-term temporal dependencies that cannot be captured by a
+    plain neural network or a simple temporal model such as a standard
+    RNN. In contrast, in PGRNN we use advanced ML models such as LSTM,
+    which use the internal memory structure to preserve long-term
+    temporal dependencies and thus has the potential to capture complex
+    physical patterns that last over several months or years.
+
+2.  The proposed PGRNN can incorporate explicit physical laws such as
+    energy conservation or mass conserva-tion. This is done by
+    introducing additional variables in the recurrent structure to keep
+    track of physical states that can be used to check for consistency
+    with physical laws. In addition, we generalize the loss function to
+    include a physics-based penalty ([Karpatne et al. 2017a](#page23)).
+    Thus, the overall training loss is
+
+    $$L = \textrm\{Supervised loss\} (Y_\{pred\},Y_\{true\}) +
+      \textrm\{Physics-based Penalty\},$$ where the first term on the
+    right hand side represents the supervised training loss between the
+    predicted outputs Y~pr\ ed~ and the observed outputs Y~t\ r\ ue~
+    (e.g., RMSE in regression or cross-entropy in classification), and
+    the second term represents the physical consistency-based penalty.
+    In addition, to favoring physically consistent solutions, another
+    major side benefit of including physics-based penalty in the loss
+    function is that it can be applied even to instances for which
+    output (observed) data is not available since the physics-based
+    penalty can be computed as long as input (driver) data is available.
+    Note that in absence of physics based penalty, training loss can be
+    computed only on those time steps where observed output is
+    available. Inclusion of physics based loss term allows a much more
+    robust training, especially in situations, where observed output is
+    available on only a small number of time steps.
+
+3.  Physics based/mechanistic models contain a lot of domain knowledge
+    that goes well beyond what can be captured as constraints such
+    conservation laws. To leverage this knowledge, we generate a large
+    amount of "synthetic" observation data by executing physics based
+    models for a variety input drivers (that are easily available) and
+    use the synthetic observation to pre-train the ML model. The idea
+    here is that training from synthetic data generated by imperfect
+    physical models may allow the ML model to get close enough to the
+    target solution, so only a small amount of observed data (ground
+    truth labels) is needed to further refine the model. In addition,
+    the synthetic data is guaranteed to be physically consistent due to
+    the nature of the process model being founded on physical
+    principles.
+
+The proposed Physics-Guided Recurrent Neural Networks model (PGRNN) is
+developed for the purpose of predicting lake water temperatures at
+various depths at the daily scale. The temperature of water in a lake is
+known to be an ecological "master factor" ([Magnuson et al.
+1979](#page23)) that controls the growth, survival, and reproduction of
+fish ([Roberts](#page24) [et al. 2013](#page24)). Warming water
+temperatures can increase the occurrence of aquatic invasive species
+([Rahel and Olden](#page24)[2008](#page24); [Roberts et al.
+2017](#page24)), which may displace fish and native aquatic organisms,
+result in more harmful algal blooms (HABs) ([Harris and Graham
+2017](#page23); [Paerl and Huisman 2008](#page24)). Understanding
+temperature change and the resulting biotic "winners and losers" is
+timely science that can also be directly applied to inform priority
+action for natural resources. Given the importance of this problem, the
+aquatic science community has developed numerous models for the
+simulation of temperature, including the General Lake Model (GLM)
+([Hipsey et al. 2019](#page23)), which simulates the physical processes
+(e.g., vertical mixing, and the warming or cooling of water via energy
+lost or gained from fuxes such as solar radiation and evaporation,
+etc.). As is typical for any such model, GLM is only an approximation of
+the physical reality, and has a number of parameters (e.g., water
+clarity, mixing efficiency, and wind sheltering) that often need to be
+calibrated using observations.
+
+We evaluate the proposed PGRNN method in a real-world system, Lake
+Mendota (Wisconsin), which is one of the most extensively studied lake
+systems in the world. We chose this lake because it has plenty of
+observed data that can be used to evaluate the performance of any new
+approach. In particular, we can measure the performance of different
+algorithms by varying the the amount of observations used for training.
+This helps test the effectiveness of the proposed methods in data-scarce
+scenarios, which is important since most real-world lakes have very few
+observations or are not observed at all (they usually have less than 1%
+of observations that are available for Mendota). In addition, Lake
+Mendota is large and deep enough such that it shows a variety of
+temperature patterns (e.g., stratified temperature patterns in warmer
+seasons and well-mixed patterns in colder seasons). This allows us to
+test the capacity of ML models in capturing such complex temperature
+patterns.
+
+This work's main contributions are as follows. We show that it is
+possible to effectively model the temporal dynamics of temperature in
+lakes using LSTMs provided that enough observed data is available for
+training. We show that traditional LSTMs can be augmented to take energy
+conservation into account and track the balance of energy loss and gain
+relative to temperature change (a physical law of thermodynamics).
+Including such components in models to make the output consistent with
+physical laws can make them more acceptable for use by scientists and
+also may improve the prediction performance. We also studied the benefit
+of pre-training this model using synthetic data (i.e., the output of a
+generic physics-based model) and then refining it using only a small
+amount of observation data. The results show that such pre-trained
+models can easily outperform the state-of-the art physics-based model by
+using a small amount of observed data. Moreover, we show that such
+pre-training is useful even if it uses simulated data from lakes that
+are very different in geometry, clarity or climate than the lake being
+studied. These results confirm that the PGRNN can leverage the strengths
+of physics-based models while also filling in knowledge gaps by
+overlaying features learned from data.
+
+The proposed method has general applicability to many scientific
+applications. In fact its effectiveness has already been shown in two
+different applications in aquatic science ([Hanson et al.
+2020](#page23); [Read et al. 2019](#page24)). As discussed in
+([Willard](#page24) [et al. 2020](#page24)), the overall approach is
+applicable to a wide range of domains such as hydrology, Computational
+fuid dynamics (CFD), and crop modeling.
+
+The organization of the chapter is as follows: In Section 2, we describe
+the preliminary knowledge and the setting of the problem. Section 3
+presents the discussions related to the proposed PGRNN model. In Section
+4, we extensively evaluate the proposed method in a real-world dataset.
+We then recapitulate related existing work in Section 5 before we
+conclude the work in Section 6. A preliminary version of this work
+appeared in ([Jia et al. 2019](#page23)).
+
+## Problem Formulation
+
+The goal is to simulate the temperature of water in the lake at each
+depth d, and on each date t, given physical variables governing the
+dynamics of lake temperature. This problem is referred to as 1D-modeling
+of temperature (depth being the single dimension). Specifically, x~t~
+represents input physical variables at on a specific date t, which
+include meteorological recordings at the surface of water such as the
+amount of solar radiation (in W/m^2^, for short-wave and long-wave),
+wind speed (in m/s), air temperature (in C), relative humidity (0-100%),
+rain (in cm), snow indicator (True or False), as well as the value of
+depth (in m) and day of year (1-366). These chosen features are known to
+be the primary drivers of lake thermodynamics ([Hipsey et al.
+2019](#page23)). Given these input drivers x~t~ and a depth level d, we
+aim to predict water temperature fy~d;t~ g^T^~t=1~ at this depth over
+the entire study period. For simplicity, we use x~t~ and y ~t~ to
+represent fx~t~ ; dg and y~d;t~ in the chapter when it causes no
+ambiguity. During the training process, we are given the sparse
+ground-truth observed temperature profiles on certain dates and at
+certain depths captured by in-water sensors (more dataset description is
+provided in Section [4.1](#page10)).
+
+### General Lake Model (GLM)
+
+The physics-based GLM captures a variety of physical processes governing
+the dynamics of water temperature in a lake, including the heating of
+the water surface due to incoming short-wave radiation, the attenuation
+of radiation beneath the water surface, the mixing of layers with
+varying thermal energy at different depths, and the loss of heat from
+the surface of the lake via evaporation or outgoing long-wave radiation
+(shown in Fig. [1](#page5)). We use GLM as the preferred physics-based
+model for lake temperature modeling due to its model performance and
+wide use among the lake modeling community.
+
+The GLM has a number of parameters (e.g., parameters related to vertical
+mixing, wind sheltering, and water clarity) that are often calibrated
+specifically to individual lakes if training data are available. The
+basic calibration method (common to a wide range of scientific and
+engineering problems) is to run the model for combinations of parameter
+values and select the parameter set that minimizes model error. This
+calibration process can be both labor-and computationally-intensive.
+Furthermore, the calibration process, applied even in the presence of
+ample training data, is still limited by simplifications and rigid
+formulations in these physics-based models.
+
+### Machine learning model for sequential data
+
+There is a class of ML models that aims to learn a black-box
+transformation from the input series $\{x_1, x_2, ..., x_T\}$ to target
+variables $\{y_1, y_2, ..., y_T\}$. In this problem, the observation
+data can be sparse for certain depths so it is infeasible to train
+individual models for each depth separately. Instead, we will train a
+global model that uses depth as an input feature. This makes it possible
+to use observation data from any depth at any time step for training
+this model. Later in Section 4 we will show that such a global model can
+still very well capture temporal dynamics at each depth separately.
+
+We also use area-depth profile as additional information to compute
+energy constraints (see Section [3.2](#page7)). Since we train machine
+learning models that are specific to a target lake, the area-depth
+profile remains the same on different days and thus we do not include it
+in the input features.
+
+In this section, we will discuss the proposed PGRNN model in detail.
+First, we describe how to train an LSTM to model temperature dynamics
+using sparse observed data. Second, we describe how to combine the
+energy conservation law and the standard recurrent neural networks
+model. Then, we further utilize a pre-training method to improve the
+learning performance even with limited training data.
+
+### Recurrent Neural Networks and Long-Short Term Memory Networks
+
+Recent advances in deep learning models enable automatic extraction of
+representative patterns from multivariate input temporal data to better
+predict the target variable. As one of the most popular temporal deep
+learning models, RNN models have shown success in a broad range of
+applications. The power of the RNN model lies in its ability to combine
+the input data at the current and previous time steps to extract an
+informative hidden representation h~t~ . In an RNN, the hidden
+representation h~t~ is generated using the following equation:
+
+where W~h~ and W~x~ represent the weight matrices that connect h~t~ 1
+and x~t~ , respectively. Here the bias terms are omitted as they can be
+absorbed into the weight matrix.
+
+While RNN models can model transitions across time, they gradually lose
+the connections to long histories as time progresses ([Bengio et al.
+1994](#page22)). Therefore, the RNN-based method may fail to grasp
+long-term patterns that are common in scientific applications. For
+example, the seasonal patterns and yearly patterns that commonly exist
+in environmental systems can last for many time steps if we use data at
+a daily scale. The standard RNN fails to memorize long-term temporal
+patterns because it does not explicitly generate a long-term memory to
+store previous information but only captures the transition patterns
+between consecutive time steps. It is well-known ([Chen and Billings
+1992](#page23); [Pan and](#page24) [Duraisamy 2018](#page24)) that such
+issue of memory is a major di•culty in the study of dynamical system.
+
+As an extended version of the RNN, LSTM is better in modeling long-term
+dependencies where each time step needs more contextual information from
+the past. The difference between LSTM and RNN lies in the generation of
+the hidden representation h~t~ . In essence, the LSTM model defines a
+transition relationship for the hidden representation h~t~ through an
+LSTM cell. Each LSTM cell contains a cell state c~t~ , which serves as a
+memory and forces the hidden
+
+LSTM generates a forget gate f$_t$ , an input gate g$_t$ , and an output
+gate o$_t$ via sigmoid function $\sigma$(.), as:
+
+$$\begin\{aligned\}
+\begin\{split\}
+  f_t = \sigma(W_h^f h_\{t-1\} + W_x^f x_t)\\
+  g_t = \sigma(W_h^g h_\{t-1\} + W_x^g x_t)\\
+  o_t = \sigma(W_h^o h_\{t-1\} + W_x^o x_t)\\
+\end\{split\}
+\end\{aligned\}$$
+
+The forget gate is used to filter the information inherited from
+c$^\{t-1\}$, and the input gate is used to filter the candidate cell state
+at t. Then we compute the new cell state and the hidden representation
+as: $$\begin\{aligned\}
+    \begin\{split\}
+        c_t=f_t \otimes c_\{t-1\}+g_t\otimes \tilde\{c_t\}\\
+        h_t=o_t \otimes tanh(c_t)
+    \end\{split\}
+\end\{aligned\}$$
+
+where denotes the entry-wise product.
+
+As we wish to conduct regression for continuous values, we generate the
+predicted temperature yˆ~t~ at each time step via a linear combination
+of hidden units, as:
+
+$$\hat\{y_t\}=W_y h_t$$
+
+We also apply the LSTM model for each depth separately to generate
+predictions yˆ~d;t~ for every depth d 2 »1; N~d~ ... and for every date
+t 2 »1;T .... Then given the true observation y ~d;t~ for the dates and
+depths where the sparse observed data is available, i.e., S = f„d; t" :
+y~d;t~ exists, the training loss is defined as:
+
+$$L_\{RNN\}=\sqrt\{\frac\{1\}\{|S|\}\sum_\{(d,t)\in S\}(y_\{d,t\}-\hat\{y_\{d,t\}\})^2\}$$
+
+It is noteworthy that even if the training loss is only defined on the
+time steps where the observed data is available, the transition modeling
+(Eqs. [2](#page7)-[5](#page7)) can be applied to all the time steps.
+Hence, the time steps without observed data can still contribute to
+learning temporal patterns by using their input drivers.
+
+### Energy conservation over time
+
+The law of energy conservation states that the change of thermal energy
+U~t~ of a lake system over time is equivalent to the net gain of heat
+energy fuxes, which is the difference between incoming energy fuxes and
+any energy losses from the lake (see Fig. [3](#page9)). The explicit
+modeling of energy conservation is critical for capturing temperature
+dynamics since a mismatch in losses and gains results in a temperature
+change. Specifically, more incoming heat fuxes than outgoing heat fuxes
+will warm the lake, and more outgoing heat fuxes than incoming heat
+fuxes will cool the lake.
+
+The total thermal energy of the lake at time t can be computed as
+follows: $$U_t = c_w \sum_d a_d y_\{d,t\}\rho_\{d,t\}\partial z_d$$
+
+where y~d;t~ is the temperature at depth d at time t, c~w~ the specific
+heat of water (4186 J kg ^1^°C ^1^), a~d~ the cross-sectional area of
+the water column (m^2^) at depth d, $\rho$~d;t~ the water density
+(kg/m^3^) at depth d at time t, and \@z~d~ the thickness of the layer at
+depth $d$. In this work, we simulate water temperature for every 0.5m
+and thus we set \@z~d~ =0.5. The computation of U~t~ requires the output
+of temperature y~d;t~ through a feed-forward process for all the depths,
+as well as the cross-sectional area a~d~ , which is available as input.
+
+The balance between incoming heat fuxes (F~in~ ) and outgoing heat fuxes
+(F~out~ ) results in a change in the thermal energy (U~t~ ) of the lake.
+The consistency between lake energy U~t~ and energy fuxes can be
+expressed as:
+
+$$\Delta U_t = F_\{in\} - F_\{out\}$$
+
+where U~t~ = U~t~ ~+~1 U~t~ . More details about computing heat fuxes
+are described in the appendix. All the involved energy components are in
+Wm ^2^.
+
+In Fig. [2](#page8), we show the fow of the proposed PGRNN model, which
+integrates energy conservation fow into the recurrent process. While the
+recurrent fow in the standard RNN can capture data dependencies across
+time, the modeling of energy fow ensures that the change of lake
+environment and predicted temperature conforms to the law of energy
+conservation. Traditional LSTM models utilize the LSTM cell to
+implicitly encode useful information at each time step and pass it to
+the next time step. In contrast, the energy fow in PGRNN explicitly
+captures the key factor that leads to temperature change in dynamical
+systems - the heat energy fuxes that are transferred from one time to
+the next. Standard LSTM model trained from certain years or seasons may
+not generalize to other years or seasons given that the distributions of
+input features and temperature profiles are different in different time
+periods. However, Eq. [8](#page8) should always hold for data from any
+time period due to conservation of energy. Therefore, by complying with
+the universal law of energy conservation, PGRNN has a better chance at
+learning patterns that are generalizable to unseen scenarios ([Read et
+al. 2019](#page24)).
+
+We define the loss function term for energy conservation and combine
+this with the training objective of standard LSTM model in the following
+equation:
+
+$$\begin\{aligned\}
+L &= L_\{RNN\} + \lambda_\{EC\}L_\{EC\}\\
+L_\{EC\} &= \frac\{1\}\{T_\{ice-free\}\}\sum_\{t=ice-free\}ReLU(|\Delta U_t -(F_\{in\}-F_\{out\})|-\tau_\{EC\})
+\end\{aligned\}$$
+
+where T~ice-free~ represents the length of the ice-free period. Here we
+consider the energy conservation only for ice-free periods since the
+lake exhibits drastically different refectance and energy loss dynamics
+when covered in ice and snow, and the modeling of ice and snow was
+considered out of scope for this study. We provide more details about
+
+how to compute the energy fuxes F~in~ and F~out~ from input data in the
+appendix. The value $\tau_\{EC\}$ is a threshold for the loss of energy
+conservation. This threshold is introduced because physical processes
+can be affected by unknown less important factors which are not included
+in the model, or by observation errors in the metereological data. The
+function ReLU is adopted such that only the difference larger than the
+threshold is counted towards the penalty. In the implementation, the
+threshold is set as the largest value of
+$|\Delta U_t - (F_\{in\}-F_\{out\})|$ in the GLM model for daily averages.
+The hyper-parameter $\lambda_\{EC\}$ controls the balance between the loss
+of the standard RNN and the energy conservation loss. The model is
+updated using the back-propagation with the ADAM optimizer ([Kingma and
+Ba 2014](#page23)).
+
+Note that the modeling of energy fow using the procedure described above
+does not require any input of true labels/observations. According to
+Eqs. [11](#page25)-[13](#page26), the heat fuxes and lake energy are
+computed using only input drivers and predicted temperature. In light of
+these observations, we can apply this model for semi-supervised training
+for lake systems which have only a few labeled data points.
+
+### Pre-training using physical simulations
+
+In real-world environmental systems, observed data is limited. For
+example, amongst the lakes being studied by USGS, less than 1% of lakes
+have 100 or more days of temperature observations and less than 5% of
+lakes have 10 or more days of temperature observations ([Read et al.
+2017](#page24)). Given their complexity, the RNN-based models trained
+with limited observed data can lead to poor performance. In addition, ML
+models often require an initial choice of model parameters before
+training. Poor initialization can cause models to anchor in local
+minimum, which is especially true for deep neural networks. If physical
+knowledge can be used to help inform the initialization of the weights,
+model training can accelerated (i.e., require fewer epochs for training)
+and also need fewer training samples to achieve good performance.
+
+To address these issues, we propose to pre-train the PGRNN model using
+the simulated data produced by a generic GLM (also referred to as
+uncalibrated GLM) that uses default values for parameters. In
+particular, given the input drivers, we run the generic GLM to predict
+temperature at every depth and at every day. These simulated temperature
+data from the generic GLM are imperfect but they provide a synthetic
+realization of physical responses of a lake to a given set of
+meteorological drivers. Hence, pre-training a neural network using
+simulations from the generic GLM allows the network to emulate a
+synthetic but physically realistic phenomena. This process results in a
+more accurate and physically consistent initialized status for the
+learning model. When applying the pre-trained model to a real system, we
+fine-tune the model using true observations. Here the hypothesis is that
+the pre-trained model is much closer to the optimal solution and thus
+requires less observed data to train a good quality model. In the
+experiments, we show that such pre-trained models can achieve high
+accuracy given only a few observed data points.
+
+
+# Introduction to Scientific Machine Learning \{#ch:intro-molecular-ml\}
+
+While applying machine learning algorithms to physical systems, there
+typically are additional constraints in the form of respecting any given
+laws of physics often described by general nonlinear partial
+differential equations. In this chapter, we will introduce approaches to
+incorporate such additional constraints into machine learning
+algorithms. We will also discuss approaches to discover and learn the
+underlying partial differential equations for systems where the
+underlying physics can emerge from collected data.
+
+This chapter will cover the three broad ways in which one can impose the
+known physics and symmetries in the physical systems. Often, a
+combination of the three broad verticals are employed.
+
+-   Chapter Part-1: Hard-code the known governing equations and boundary
+    conditions in the **loss function** while training the
+    physics-driven model, which comprises of approaches that fall under
+    the category of **physics-informed models**
+
+-   Chapter Part-2: Build in the physics-based equations and constraints
+    **within the model architecture** so that intermediate variables are
+    physically motivated
+
+-   Chapter Part-3: Impose known symmetries of the system that need to
+    be obeyed **within the featurizer(s)** before feeding into the model
+
+## Physics-informed Machine Learning
+
+Let's begin with discussing physics-informed machine learning using
+neural networks. The approach by Raissi et al.[@raissi2019physics]
+employs deep neural networks to leverage their well known capability as
+universal function approximators. This facilitatest the ability to
+directly tackle nonlinear problems without the need for committing to
+any prior assumptions, linearization, or local time-stepping. In
+addition we can exploit recent developments in automatic differentiation
+-- one of the most useful but perhaps under-utilized techniques in
+scientific computing -- to differentiate neural networks with respect to
+their input coordinates and model parameters to obtain physics-informed
+neural networks. Such neural networks are constrained to respect any
+symmetries, invariances, or conservation principles originating from the
+physical laws that govern the observed data, as modeled by general
+time-dependent and nonlinear partial differential equations. This simple
+yet powerful construction allows us to tackle a wide range of problems
+in computational science and introduces a potentially transformative
+technology leading to the development of new data-efficient and
+physics-informed learning machines, new classes of numerical solvers for
+partial differential equations, as well as new data-driven approaches
+for model inversion and systems identification. The approach sets the
+foundations for a new paradigm in modeling and computation that enriches
+deep learning with the longstanding developments in mathematical
+physics.
+
+### Problem Formulation
+
+A parametrized and nonlinear partial differential equations of the
+following general form are considered
+$$u_t + \mathcal\{N\}[u;\lambda]=0, x \in \Omega, t\in [0,T],$$ where
+$u(t, x)$ denotes the hidden solution, $\mathcal\{N[\cdot;\lambda]\}$ is a
+nonlinear operator parametrized by $\lambda$, and $\Omega$ is a subset
+of $\mathbb\{R\}^D$. This formulation applies to a wide range of problems
+in physical systems including conservation laws, diffusion processes,
+kinetic equations and physical systems.
+
+### Data-driven solutions of partial differential equations
+
+Let's begin with solutions to formulations of the general form
+$$u_t + \mathcal\{N\}[u]=0, x \in \Omega, t\in [0,T],
+    \label\{eq_generalform\}$$ where $u(t, x)$ denotes the hidden
+solution, $\mathcal\{N[\cdot]\}$ is a nonlinear operator, and $\Omega$ is
+a subset of $\mathbb\{R\}^D$.
+
+The approach discussed below pertains to an algorithm that can be used
+on **continuous time models**.
+
+Let's define $f(t, x)$ to be given by the equation on the left hand
+side,
+
+$$f:=u_t + \mathcal\{N\}[u]
+    \label\{eq_contTime\}$$
+
+and the approach is to approximate $u(t,x)$ by a deep neural network.
+This assumption along with equation
+[\[eq_contTime\]](#eq_contTime)\{reference-type="ref"
+reference="eq_contTime"\} gives rise to the physics-informed neural
+network $f(t,x)$. The network can be derived by applying the chain rule
+for differentiating compositions of functions using automatic
+differentiation, and has the same parameters as the network representing
+$u(t, x)$, albeit with different activation functions due to the action
+of the differential operator $\mathcal\{N\}$. The shared parameters
+between the neural networks $u(t, x)$ and $f(t, x)$ can be learned by
+minimizing the mean-squared error loss
+
+$$MSE=MSE_u + MSE_f$$
+
+where $$MSE_u=\frac\{1\}\{N_u\} \sum_\{i=1\}^\{N_u\}|u(t_u^i,x_u^i)-u^i|^2$$
+
+and $$MSE_f=\frac\{1\}\{N_f\} \sum_\{i=1\}^\{N_f\}|f(t_f^i,x_f^i)|^2$$
+
+In the problem formulation, the initial and boundary training data on
+$u(t, x)$ are denoted by $\{\{t^i_u, x^i_u, u^i\}\}^\{N_u\}_\{i=1\}$, and
+$\{\{t^i_f, x^i_f\}\}^\{N_f\}_\{i=1\}$ specify the collocation points for
+$f(t, x)$. The loss function $MSE_u$ corresponds to the initial and
+boundary data while $MSE_f$ enforces the structure imposed by the
+general equation (equation
+[\[eq_generalform\]](#eq_generalform)\{reference-type="ref"
+reference="eq_generalform"\}) at a finite set of collocation points.
+
+::: example
+This example aims to highlight the ability of The method to handle
+periodic boundary conditions, complex-valued solutions, as well as
+different types of nonlinearities in the governing partial differential
+equations. The nonlinear Schr$\mathrm\{\ddot\{o\}\}$dinger equation along
+with periodic boundary conditions is given by
+
+$$\begin\{aligned\}
+\begin\{split\}
+i h_t + 0.5 h_\{xx\} + |h|^2 h = 0,\ \ \ x \in [-5, 5],\ \ \ t \in [0, \pi/2],\\
+h(0,x) = 2\ \mathrm\{sech\}(x),\\
+h(t,-5) = h(t, 5),\\
+h_x(t,-5) = h_x(t, 5),
+\end\{split\}
+\end\{aligned\}$$
+
+where $h(t,x)$ is the complex-valued solution. Let us define $f(t,x)$ to
+be given by
+
+$$f := i h_t + 0.5 h_\{xx\} + |h|^2 h,$$
+
+and proceed by placing a complex-valued neural network prior on
+$h(t,x)$. In fact, if $u$ denotes the real part of $h$ and $v$ is the
+imaginary part, we are placing a multi-out neural network prior on
+$h(t,x) = \begin\{bmatrix\}
+u(t,x) & v(t,x)
+\end\{bmatrix\}$. This will result in the complex-valued (multi-output)
+physics informed neural network $f(t,x)$. The shared parameters of the
+neural networks $h(t,x)$ and $f(t,x)$ can be learned by minimizing the
+mean squared error loss
+
+$$MSE = MSE_0 + MSE_b + MSE_f$$
+
+where
+
+$$MSE_0 = \frac\{1\}\{N_0\}\sum_\{i=1\}^\{N_0\} |h(0,x_0^i) - h^i_0|^2$$
+
+$$MSE_b = \frac\{1\}\{N_b\}\sum_\{i=1\}^\{N_b\} \left(|h^i(t^i_b,-5) - h^i(t^i_b,5)|^2 + |h^i_x(t^i_b,-5) - h^i_x(t^i_b,5)|^2\right)$$
+
+and
+
+$$MSE_f = \frac\{1\}\{N_f\}\sum_\{i=1\}^\{N_f\}|f(t_f^i,x_f^i)|^2.$$
+
+Here, $\{x_0^i, h^i_0\}_\{i=1\}^\{N_0\}$ denotes the initial data,
+$\{t^i_b\}_\{i=1\}^\{N_b\}$ corresponds to the collocation points on the
+boundary, and $\{t_f^i,x_f^i\}_\{i=1\}^\{N_f\}$ represents the collocation
+points on $f(t,x)$. Consequently, $MSE_0$ corresponds to the loss on the
+initial data, $MSE_b$ enforces the periodic boundary conditions, and
+$MSE_f$ penalizes the Schr$\mathrm\{\ddot\{o\}\}$dinger equation not being
+satisfied on the collocation points.
+
+![Schrödinger equation: **Top:** Predicted solution along with the
+initial and boundary training data. In addition we are using 20,000
+collocation points generated using a Latin Hypercube Sampling strategy.
+**Bottom:** Comparison of the predicted and exact solutions
+corresponding to the three temporal snapshots depicted by the dashed
+vertical lines in the top panel.](figures/NLS_bookl.png)
+:::
+
+One potential limitation of the continuous time neural network models
+considered so far stems from the need to use a large number of
+collocation points $N_f$ in order to enforce physics informed
+constraints in the entire spatio-temporal domain. Although this poses no
+significant issues for problems in one or two spatial dimensions, it may
+introduce a severe bottleneck in higher dimensional problems, as the
+total number of collocation points needed to globally enforce a physics
+informed constrain (i.e., in this case a partial differential equation)
+will increase exponentially. In the next section, we put forth a
+different approach that circumvents the need for collocation points by
+introducing a more structured neural network representation leveraging
+the classical
+[Runge-Kutta](https://en.wikipedia.org/wiki/Runge–Kutta_methods)
+time-stepping schemes.
+
+The approach discussed below pertains to a methodology that can be used
+on **discrete-time models**. Let's first revist the classical
+Runge-Kutta method (4 steps) before discussing the general case of $q$
+steps.
+
+##### The Classical Runge-Kutta Method
+
+Let an initial value problem be specified as follows:
+
+$\frac\{dy\}\{dt\}=f(t,y)$,$\quad y(t_\{0\})=y_\{0\}$
+
+Now pick a step-size h \> 0 and define
+
+$\begin\{aligned\}y_\{n+1\}&=y_\{n\}+\{\frac \{1\}\{6\}\}h\left(k_\{1\}+2k_\{2\}+2k_\{3\}+k_\{4\}\right),\\t_\{n+1\}&=t_\{n\}+h\\\end\{aligned\}$
+
+$\begin\{aligned\}k_\{1\}&=\ f(t_\{n\},y_\{n\}),\\k_\{2\}&=\ f\left(t_\{n\}+\{\frac \{h\}\{2\}\},y_\{n\}+h\{\frac \{k_\{1\}\}\{2\}\}\right),\\k_\{3\}&=\ f\left(t_\{n\}+\{\frac \{h\}\{2\}\},y_\{n\}+h\{\frac \{k_\{2\}\}\{2\}\}\right),\\k_\{4\}&=\ f\left(t_\{n\}+h,y_\{n\}+hk_\{3\}\right).\end\{aligned\}$
+
+##### The General Form of the Runge-Kutta Method \{#the-general-runge-kutta-method\}
+
+The general form of Runge-Kutta methods with $q$ stages is applied to
+the governing equation to arrive at the following:
+
+$$\begin\{aligned\}
+    \begin\{split\}
+        u^\{n+c_i\}=u^n-\Delta t\sum_\{i=1\}^\{q\}a_\{ij\}\mathcal\{N\}[u^\{n+c_j\}], i=1,\cdot\cdot\cdot,q,\\
+        u^\{n+1\}=u^n-\Delta t\sum_\{i=1\}^\{q\}b_\{j\}\mathcal\{N\}[u^\{n+c_j\}].
+    \end\{split\}
+\end\{aligned\}$$
+
+In the formulation, $u^\{n+c_j\}(x)=u(t^n+c_j\Delta t,x)$ for
+$j=1,\cdot\cdot\cdot,q$. Depending on the choice of the parameters
+$\{a_\{ij\},b_j,c_j\}$.
+
+The above equations can also be expressed as
+
+$$\begin\{aligned\}
+    \begin\{split\}
+        u^n=u^n_i, i=1,\cdot\cdot\cdot,q,\\
+        u^n=u^n_\{q+1\}
+    \end\{split\}
+\end\{aligned\}$$
+
+where $$\begin\{aligned\}
+    \begin\{split\}
+        u_i^n:=u^\{n+c_i\}+\Delta t\sum_\{j=1\}^\{q\}a_\{ij\}\mathcal\{N\}[u^\{n+c_j\}], i=1,\cdot\cdot\cdot,q,\\
+          u^\{n\}_\{q+1\}=u^\{n+1\}+\Delta t\sum_\{i=1\}^\{q\}b_\{j\}\mathcal\{N\}[u^\{n+c_j\}].
+    \end\{split\}
+\end\{aligned\}$$
+
+We can place a multi-output neural network prior on
+$$\label\{eq_discrete\}
+    [u^\{n+c_1\}(x),\cdot\cdot\cdot,u^\{n+c_q\}(x),u^\{n+1\}(x)]$$ The
+assumption along with equations
+[\[eq_discrete\]](#eq_discrete)\{reference-type="ref"
+reference="eq_discrete"\} result in a physics-informed neural network
+that takes $x$ as an input and gives as the output
+$$[u^\{n\}_1(x),\cdot\cdot\cdot,u^\{n\}_q(x),u_\{q+1\}^\{n+1\}(x)]$$
+
+::: example
+Burgers' Equation\
+The Burgers' equation in one space dimension along with Dirichlet
+boundary conditions reads as follow:
+
+$$\begin\{array\}\{l\}
+u_t + u u_x - (0.01/\pi) u_\{xx\} = 0,\ \ \ x \in [-1,1],\ \ \ t \in [0,1],\\
+u(0,x) = -\sin(\pi x),\\
+u(t,-1) = u(t,1) = 0.
+\end\{array\}$$
+
+Let us define $f(t,x)$ to be given by
+
+$$f := u_t + u u_x - (0.01/\pi) u_\{xx\},$$
+
+and proceed by approximating $u(t,x)$ by a deep neural network.
+
+Correspondingly, the physics informed neural network $f(t,x)$ takes the
+form
+
+Loss function: $MSE = MSE_u + MSE_f,$
+
+where
+
+$MSE\_u = \frac\{1\}\{N_u\}\sum\emph\{\{i=1\}\^\{\}\{N\}u\}
+\textbar\{\}u(t\textsuperscript\{i\_u,x\_u\}i) -
+u\textsuperscript\{i\textbar\{\}\}2$ and
+$MSE_f = \frac\{1\}\{N_f\}\sum_\{i=1\}^\{N_f\}|f(t_f^i,x_f^i)|^2$
+
+The following figure summarizes the results for the data-driven solution
+of the Burgers' equation.
+
+![*Top:* Predicted solution along with the initial and boundary training
+data. In addition we are using 10,000 collocation points generated using
+a Latin Hypercube Sampling strategy. *Bottom:* Comparison of the
+predicted and exact solutions corresponding to the three temporal
+snapshots depicted by the white vertical lines in the top panel. Model
+training took approximately 60 seconds on a single NVIDIA Titan X GPU
+card.](figures/Burgers_CT_inference_book.png)\{#fig:Burgers's\}
+:::
+
+::: example
+Below we show an example for the Allen-Cahn equation that appears in
+systems with phase separations, e.g., battery electrode-electrolyte
+interfaces. The example is used to demonstrate the ability of the
+proposed discrete time models to handle different types of nonlinearity
+in the governing partial differential equation. Let's consider the
+Allen--Cahn equation along with periodic boundary conditions
+
+$$\begin\{aligned\}
+     u_t-0.0001u_\{xx\}+5u^3-5u^3-5u &= 0, x\in[-1,1], t \in [0,1]\\
+     u(0,x) &=x^2 cos(\pi x)\\
+     u(t,-1) &=u(t,1)\\
+     u_x(t,-1) &=u_x(t,1)\\
+ 
+\end\{aligned\}$$
+
+For the Allen-Cahn equation, the non-linear operator is given by
+
+$$\mathcal\{N\}[u^\{n+c_j\}]=-0.0001u^\{n+c_j\}_\{xx\}+5(u^\{n+c_j\})^3-5u^\{n+c_j\}$$
+
+and the shared parameters of the neural networks can be learnt by
+minimizing the loss function as discussed earlier,
+
+$$SSE=SSE_n+SSE_b$$
+
+where
+$$SSE_n=\sum_\{j=1\}^\{q+1\}\sum_\{i=1\}^\{N_n\}|u^n_j(x^\{n,i\})=u^\{n,i\}|^2$$
+
+and $$\begin\{aligned\}
+ \begin\{split\}
+     SSE_b=\sum_\{i=1\}^q|u^\{n+c_i\}(-1)-u^\{n+c_i\}(1)|^2+|u^\{n+1\}(-1)-u^\{n+1\}(1)|^2\\
+     +\sum_\{i=1\}^q|u_x^\{n+c_i\}(-1)-u_x^\{n+c_i\}(1)|^2+|u_x^\{n+1\}(-1)-u_x^\{n+1\}(1)|^2
+ \end\{split\}
+ 
+\end\{aligned\}$$
+
+![Allen-Cahn Equation: Discrete Time
+Domain](figures/allenCahn_PINN.png)\{#fig:allencahn\}
+:::
+
+## Data-Driven Discovery of Nonlinear Partial Differential Equations
+
+We shift our attention to the problem of data-driven discovery of
+partial differential equations. To this end, let us consider
+parametrized and nonlinear partial differential equations of the general
+form $$u_t + \mathcal\{N\}[u;\lambda] = 0,\ x \in \Omega, \ t\in[0,T],$$
+
+where $u(t,x)$ denotes the latent (hidden) solution,
+$\mathcal\{N\}[\cdot;\lambda]$ is a nonlinear operator parametrized by
+$\lambda$, and $\Omega$ is a subset of $\mathbb\{R\}^D$. Now, the problem
+of data-driven discovery of partial differential equations poses the
+following question: given a small set of scattered and potentially noisy
+observations of the hidden state $u(t,x)$ of a system, what are the
+parameters $\lambda$ that best describe the observed data?
+
+In what follows, we will provide an overview of the two main approaches
+to tackle this problem, namely continuous time and discrete time models,
+as well as a series of results and systematic studies for a diverse
+collection of benchmarks. In the first approach, we will assume
+availability of scattered and potential noisy measurements across the
+entire spatio-temporal domain. In the latter, we will try to infer the
+unknown parameters $\lambda$ from only two data snapshots taken at
+distinct time instants
+
+### Continuous Time Models
+
+We define $f(t,x)$ to be given by
+
+$$f := u_t + \mathcal\{N\}[u;\lambda],\label\{eq:PDE_RHS\}$$
+
+and proceed by approximating $u(t,x)$ by a deep neural network. This
+assumption results in a [physics informed neural
+network](https://arxiv.org/abs/1711.10566) $f(t,x)$. This network can be
+derived by the calculus on computational graphs:
+[Backpropagation](http://colah.github.io/posts/2015-08-Backprop/). It is
+worth highlighting that the parameters of the differential operator
+$\lambda$ turn into parameters of the physics informed neural network
+$f(t,x)$.
+
+::: example
+Navier-Stokes Equation
+
+The next example involves a realistic scenario of incompressible fluid
+flow as described by the Navier-Stokes equations. Navier-Stokes
+equations describe the physics of many phenomena of scientific and
+engineering interest. They may be used to model the weather, ocean
+currents, water flow in a pipe and air flow around a wing. The
+Navier-Stokes equations in their full and simplified forms help with the
+design of aircraft and cars, the study of blood flow, the design of
+power stations, the analysis of the dispersion of pollutants, and many
+other applications. Let us consider the Navier-Stokes equations in two
+dimensions (2D) given explicitly by
+
+$$\begin\{aligned\}
+\begin\{split\}
+u_t + \lambda_1 (u u_x + v u_y) = -p_x + \lambda_2(u_\{xx\} + u_\{yy\}),\\
+v_t + \lambda_1 (u v_x + v v_y) = -p_y + \lambda_2(v_\{xx\} + v_\{yy\}),    
+\end\{split\}
+\end\{aligned\}$$
+
+where $u(t, x, y)$ denotes the $x$-component of the velocity field,
+$v(t, x, y)$ the $y$-component, and $p(t, x, y)$ the pressure. Here,
+$\lambda = (\lambda_1, \lambda_2)$ are the unknown parameters. Solutions
+to the Navier-Stokes equations are searched in the set of
+divergence-free functions; i.e.,
+
+$$u_x + v_y = 0.$$
+
+This extra equation is the continuity equation for incompressible fluids
+that describes the conservation of mass of the fluid. We make the
+assumption that
+
+$$u = \psi_y,\ \ \ v = -\psi_x,$$
+
+for some latent function $\psi(t,x,y)$. Under this assumption, the
+continuity equation will be automatically satisfied. Given noisy
+measurements
+
+$$\{t^i, x^i, y^i, u^i, v^i\}_\{i=1\}^\{N\}$$
+
+of the velocity field, we are interested in learning the parameters
+$\lambda$ as well as the pressure $p(t,x,y)$. We define $f(t,x,y)$ and
+$g(t,x,y)$ to be given by
+
+$$\begin\{aligned\}
+f &:= u_t + \lambda_1 (u u_x + v u_y) + p_x - \lambda_2(u_\{xx\} + u_\{yy\})\\
+g &:= v_t + \lambda_1 (u v_x + v v_y) + p_y - \lambda_2(v_\{xx\} + v_\{yy\})        
+\end\{aligned\}$$
+
+and proceed by jointly approximating $$\begin\{bmatrix\}
+\psi(t,x,y) & p(t,x,y)
+\end\{bmatrix\}$$ using a single neural network with two outputs. This
+prior assumption results into a physics informed neural network
+$$\begin\{bmatrix\}
+f(t,x,y) & g(t,x,y)
+\end\{bmatrix\}$$ The parameters $\lambda$ of the Navier-Stokes operator
+as well as the parameters of the neural networks $\begin\{bmatrix\}
+\psi(t,x,y) & p(t,x,y)
+\end\{bmatrix\}$ and $\begin\{bmatrix\}
+f(t,x,y) & g(t,x,y)
+\end\{bmatrix\}$ can be trained by minimizing the mean squared error loss
+
+$$\begin\{aligned\}
+    \begin\{split\}
+    MSE :=& \frac\{1\}\{N\}\sum_\{i=1\}^\{N\} \left(|u(t^i,x^i,y^i) - u^i|^2 + |v(t^i,x^i,y^i) - v^i|^2\right) \\
+    +& \frac\{1\}\{N\}\sum_\{i=1\}^\{N\} \left(|f(t^i,x^i,y^i)|^2 + |g(t^i,x^i,y^i)|^2\right)
+    \end\{split\}
+\end\{aligned\}$$
+
+![Navier-Stokes equation: **Top:** Incompressible flow and dynamic
+vortex shedding past a circular cylinder at Re$=100$. The
+spatio-temporal training data correspond to the depicted rectangular
+region in the cylinder wake. **Bottom:** Locations of training
+data-points for the the stream-wise and transverse velocity components.
+](figures/NavierStokes_data_book.png)
+
+![Navier-Stokes equation: **Top:** Predicted versus exact instantaneous
+pressure field at a representative time instant. By definition, the
+pressure can be recovered up to a constant, hence justifying the
+different magnitude between the two plots. This remarkable qualitative
+agreement highlights the ability of physics-informed neural networks to
+identify the entire pressure field, despite the fact that no data on the
+pressure are used during model training. **Bottom:** Correct partial
+differential equation along with the identified
+one.](figures/NavierStokes_prediction_book.png)
+:::
+
+The approach so far assumes availability of scattered data throughout
+the entire spatio-temporal domain. However, in many cases of practical
+interest, one may only be able to observe the system at distinct time
+instants. In the next section, we introduce a different approach that
+tackles the data-driven discovery problem using only two data snapshots.
+We will see how, by leveraging the classical Runge-Kutta time-stepping
+schemes, one can construct discrete time physics informed neural
+networks that can retain high predictive accuracy even when the temporal
+gap between the data snapshots is very large.
+
+### Discrete Time Models
+
+We begin by employing the general form of Runge-Kutta methods with $q$
+stages and obtain
+
+$$\begin\{aligned\}
+u^\{n+c_i\} &= u^n - \Delta t \sum_\{j=1\}^q a_\{ij\} \mathcal\{N\}[u^\{n+c_j\};\lambda], \ \ i=1,\ldots,q\\
+u^\{n+1\} &= u^\{n\} - \Delta t \sum_\{j=1\}^q b_j \mathcal\{N\}[u^\{n+c_j\};\lambda].        
+\end\{aligned\}$$
+
+Here, $u^\{n+c_j\}(x) = u(t^n + c_j \Delta t, x)$ for $j=1, \ldots, q$.
+This general form encapsulates both implicit and explicit time-stepping
+schemes, depending on the choice of the parameters $\{a_\{ij\},b_j,c_j\}$.
+The above equations can be equivalently expressed as
+
+$$\begin\{aligned\}
+u^\{n\} &= u^n_i, \ \ i=1,\ldots,q\\
+u^\{n+1\} &= u^\{n+1\}_\{i\}, \ \ i=1,\ldots,q
+\end\{aligned\}$$
+
+where
+
+$$\begin\{aligned\}
+u^n_i &:= u^\{n+c_i\} + \Delta t \sum_\{j=1\}^q a_\{ij\} \mathcal\{N\}[u^\{n+c_j\};\lambda], \ \ i=1,\ldots,q,\\
+u^\{n+1\}_\{i\} &:= u^\{n+c_i\} + \Delta t \sum_\{j=1\}^q (a_\{ij\} - b_j) \mathcal\{N\}[u^\{n+c_j\};\lambda], \ \ i=1,\ldots,q.
+\end\{aligned\}$$
+
+We proceed by placing a multi-output neural network prior on
+
+$$u^\{n+c_1\}(x), \ldots, u^\{n+c_q\}(x)$$
+
+This prior assumption result in two physics informed neural networks
+
+$$u^\{n\}_1(x), \ldots, u^\{n\}_q(x), u^\{n\}_\{q+1\}(x)$$
+
+and
+
+$$u^\{n+1\}_1(x), \ldots, u^\{n+1\}_q(x), u^\{n+1\}_\{q+1\}(x)$$
+
+Given noisy measurements at two distinct temporal snapshots
+$\{\mathbf\{x\}^\{n\}, \mathbf\{u\}^\{n\}\}$ and
+$\{\mathbf\{x\}^\{n+1\}, \mathbf\{u\}^\{n+1\}\}$ of the system at times $t^\{n\}$
+and $t^\{n+1\}$, respectively, the shared parameters of the neural
+networks along with the parameters $\lambda$ of the differential
+operator can be trained by minimizing the sum of squared errors
+
+$$SSE = SSE_n + SSE_\{n+1\},$$
+
+where
+
+$$SSE_n := \sum_\{j=1\}^q \sum_\{i=1\}^\{N_n\} |u^n_j(x^\{n,i\}) - u^\{n,i\}|^2,$$
+
+and
+
+$$SSE_\{n+1\} := \sum_\{j=1\}^q \sum_\{i=1\}^\{N_\{n+1\}\} |u^\{n+1\}_j(x^\{n+1,i\}) - u^\{n+1,i\}|^2.$$
+
+Here, $\mathbf\{x\}^n = \left\{x^\{n,i\}\right\}_\{i=1\}^\{N_n\}$,
+$\mathbf\{u\}^n = \left\{u^\{n,i\}\right\}_\{i=1\}^\{N_n\}$,
+$\mathbf\{x\}^\{n+1\} = \left\{x^\{n+1,i\}\right\}_\{i=1\}^\{N_\{n+1\}\}$, and
+$\mathbf\{u\}^\{n+1\} = \left\{u^\{n+1,i\}\right\}_\{i=1\}^\{N_\{n+1\}\}$.
+
+::: example
+Korteweg--de Vries Equation
+
+The final example aims to highlight the ability of the proposed
+framework to handle governing partial differential equations involving
+higher order derivatives. Here, we consider a mathematical model of
+waves on shallow water surfaces, the Korteweg-de Vries (KdV) equation.
+The KdV equation reads as
+
+$$u_t + \lambda_1 u u_x + \lambda_2 u_\{xxx\} = 0,$$
+
+with $(\lambda_1, \lambda_2)$ being the unknown parameters. For the KdV
+equation, the nonlinear operator is given by
+
+$$\mathcal\{N\}[u^\{n+c_j\}] = \lambda_1 u^\{n+c_j\} u^\{n+c_j\}_x - \lambda_2 u^\{n+c_j\}_\{xxx\}$$
+
+and the shared parameters of the neural networks along with the
+parameters $\lambda = (\lambda_1, \lambda_2)$ of the KdV equation can be
+learned by minimizing the sum of squared errors given above.
+
+![KdV equation: **Top:** Solution along with the temporal locations of
+the two training snapshots. Middle: Training data and exact solution
+corresponding to the two temporal snapshots depicted by the dashed
+vertical lines in the top panel. **Bottom:** Correct partial
+differential equation along with the identified
+one.](figures/KdV_book.png)\{#fig:my_label\}
+:::
+
+As we have shown in this chapter Physics-informed neural networks are a
+versatile class of universal function approximators that are capable of
+encoding any underlying physical laws that govern a given dataset.
+Physics-informed neural networks enable data-driven algorithms for
+inferring solutions to general nonlinear partial differential equations.
+In addition, it enables the construction of computationally efficient
+physics-informed surrogate models.
+
+## PINNs Implementation and Physika Code
+
+For the example case of obtaining the solution of the Burgers equation,
+which is a prototype example of a hyperbolic conservation law, the
+physika code is discussed below. The simplicity of the implementing the
+idea can be seen To recapitulate, the the Burger's equation along with
+Dirichlet boundary conditions reads as follows:
+
+$$\begin\{array\}\{l\}
+u_t + u u_x - (0.01/\pi) u_\{xx\} = 0,\ \ \ x \in [-1,1],\ \ \ t \in [0,1],\\
+u(0,x) = -\sin(\pi x),\\
+u(t,-1) = u(t,1) = 0.
+\end\{array\}$$
+
+We define $f(t,x)$ to be given by
+$$f := u_t + u u_x - (0.01/\pi) u_\{xx\},$$
+
+$u(t,x)$ is therefore approximated by a deep neural network.
+
+    def u(t,x):
+        u=neural_net(concat([t,x],1),weights,biases)
+        return u
+
+The physics-informed neural network $f(t, x)$ would be:
+
+    def f(t,x):
+        u=u(t,x)
+        u_t=gradients(u,t)[0]
+        u_x=gradients(u,x)[0]
+        u_xx=gradients(u_x,x)[0]
+        f=u_t+(u)(u_x)−(0.01/pi)u_xx
+        return f
+
+The loss function is defined in the following way. A precise description
+of the loss function is discussed earlier in the chapter for the same
+application example.
+
+    def loss:
+        MSE_u=(1/N_u) [(u0 - u0_pred) + (v0 - v0_pred) + (u_lb_pred - u_ub_pred)^2 +
+                        (v_lb_pred - v_ub_pred)^2 + 
+                        (u_x_lb_pred - u_x_ub_pred)^2 + 
+                        (v_x_lb_pred - v_x_ub_pred)^2 + 
+                        (f_u_pred)^2 + 
+                        (f_v_pred)^2)]
+
+The solution process at a high level can be described as follows:
+
+    model = PhysicsInformedNN(collocation points, initial conditions, boundary conditions, layers, lower and upper bounds)
+    model.train(10)
+    u_pred, v_pred, f_u_pred, f_v_pred = model.predict(X_star)

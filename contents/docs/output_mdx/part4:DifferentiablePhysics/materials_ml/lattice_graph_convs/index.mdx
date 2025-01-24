@@ -1,0 +1,288 @@
+# Lattice Graph Convolutions \{#chap:lattice_graphconvs\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:graphconvs\]](#chap:graphconvs)\{reference-type="ref+label"
+reference="chap:graphconvs"\},
+[\[chap:molecular_ml\]](#chap:molecular_ml)\{reference-type="ref+label"
+reference="chap:molecular_ml"\}\
+**Difficulty Level:** \*\*\*\
+
+------------------------------------------------------------------------
+
+In the previous chapter, we learned how crystal graph convolutions could
+be used to model the unit cell of a crystalline structure. Crystal graph
+convolutions are useful for modeling crystalline materials, but are less
+useful for modeling surface effects on materials. Is it possible to
+create an architecture more suited for these surface effects?
+
+Lattice graph convolutions are a variant of crystal graph convolutions
+suitable for modeling surface effects. In this chapter, we use
+adsorption as a guiding example, with the goal of creating an
+architecture that can predict the energies and configuration of surface
+adsorbates (more on what this means shortly).
+
+## A Brief Introduction to Adsorption
+
+As we learned previously, adsorption is the adhesion of molecules from a
+gas or liquid or dissolved solid onto a surface. Adsorption is a
+phenomenon similar to surface tension in some ways. Note that the
+surface of a solid must be more energetically disfavorable than the
+interior, for otherwise it would be energetically favorable for the
+solid to break apart to create more surfaces. The surface energy
+characterizes the amount of energy required to create a surface.
+Returning to adsorption, the energetically disfavorable nature of the
+surface means that there's opportunities for surface atoms to form
+chemical bonds with other atoms (which are called adsorbates).
+
+Let's introduce a couple of useful bits of terminology. An adsorption
+site is a location on the surface where an adsorbate can bond to the
+surface. The surface coverage (typically denoted $\theta$) is the
+fraction of the adsorption sites that are occupied. If there are
+multiple adsorbates, $\theta_j$ is the fraction occupied by the $j$-th
+adsorbate.
+
+One of the challenges of mathematically modeling an interesting
+adsorption system is that the adsorbates can interact with one another,
+creating "coverage effects." For a large lattice with many adsorption
+sites, this can create complex multibody interaction effects.
+
+![Basic Adsorption Reaction
+Modeled](figures/Differentiable Physics/Materials ML/lattice_convolution/irreversible_dissociation (1).png)\{#fig:lattice_adsorption
+width="50%"\}
+
+Note how in Figure [1.1](#fig:lattice_adsorption)\{reference-type="ref"
+reference="fig:lattice_adsorption"\} there are many different adsorbates
+on the surface which can engender multibody physical interactions.
+Here's the chemical interaction that's happening in the process of
+adsorption.
+
+$$\begin\{aligned\}
+\textrm\{Pt\} + \frac\{n_\{\textrm\{O\}\}\}\{2\}\textrm\{O\}_2 + n_\{\textrm\{NO\}\} \to \textrm\{O\}_\{\theta_\{\textrm\{O\}\}\}\textrm\{NO\}_\{\theta_\{\textrm\{O\}\}\}/\textrm\{Pt\} 
+\end\{aligned\}$$
+
+A system with $N$ sites and $M$ different types of adsorbates is
+represented by a configuration vector $\sigma$ of length $N$. Element
+$i$ represents the occupancy of site $i$ using the Ising convention, so
+
+$$\begin\{aligned\}
+ \sigma_i \in \{\pm m, \pm (m-1), \dotsc, \pm 1, 0\} \textrm\{ where \} M = 2m \textrm\{ or \} 2m+1 
+\end\{aligned\}$$
+
+## Computational Methods for Studying Adsorption Effects
+
+Studying coverage effects computationally using density functional
+theory, is impractical due to the large numbers of degrees of freedom
+(DFT struggles for systems with more than 100 atoms in general). An
+interesting lattice might contain on the order of a 1000 sites, so DFT
+calculations generally struggle to directly model interesting adsorption
+processes.
+
+Traditionally the workaround has been to train a surrogate model
+bootstrapped from DFT calculations which can be used to answer queries
+about more complex models. The traditional approach has been cluster
+expansion [@sanchez1984generalized], a modeling framework that is useful
+for modeling multicomponent periodic systems with both short and long
+range interactions. The cluster expansion computes a Taylor series
+expansion of the system's energy
+
+$$E^\{(\textrm\{CE\})\}_\sigma = J_0 + \sum_i J_i \sigma_i + \sum_\{i > j\} J_\{ij\} \sigma_i \sigma_j + \sum_\{i > j > k\} J_\{ijk\} \sigma_i \sigma_j \sigma_k + \dotsc$$
+
+Here the parameters $J_i$ are typically fit to full DFT calculations fit
+on smaller experimental systems. This form highlights the underlying
+Taylor expansion model here, but in practice it's more common to
+manually select clusters $\alpha$ to model. Figure
+[1.2](#fig:lattice_cluster_expansion)\{reference-type="ref"
+reference="fig:lattice_cluster_expansion"\} shows some example clusters
+which might be elected for modeling.
+
+<figure id="fig:lattice_cluster_expansion">
+<p><img
+src="figures/Differentiable Physics/Materials ML/lattice_convolution/hexagonal lattice cluster (1).png"
+alt="image" /> <span id="fig:lattice_cluster_expansion"
+data-label="fig:lattice_cluster_expansion"></span></p>
+</figure>
+
+Given a set of clusters $\{\alpha\}$, the system's Hamiltonian can then be
+rewritten as
+
+$$E_\{\textrm\{CE\}\}(\sigma) = \sum_\alpha \sum_\{(s)\} V_\alpha^\{(s)\} \Phi_\alpha^\{(s)\}(\sigma) = V\Phi$$
+
+Where $E_\{\textrm\{CE\}\}(\sigma)$ is the energy per site of configuration
+$\sigma$, $\alpha$ is the symmetrically distinct cluster,
+$V_\alpha^\{(s)\}$ is the interaction energy of the of the cluster using
+the specified basis functions, $\Phi_\alpha^\{(s)\}$ is the orbit averaged
+cluster function, $V$ is the vector of interaction energies, and $\Phi$
+is the correlation matrix where rows correspond to configurations, and
+columns to symmetrically distinct clusters with different basis
+functions.
+
+The terms $V_\alpha^\{(s)\}$ are analogous to the $J$ terms in the cluster
+expansion, and will be learned from a dataset. The $\Phi_\alpha^\{(s)\}$
+are functions which map configurations $\sigma$ to energy contributions.
+These are usually expressed as combinations of basis functions.
+
+Part of the challenge facing cluster expansion is that there are a
+theoretically infinite number of configurations that can be sampled from
+the lattice. In practice, the choice of clusters in the expansion has a
+large impact in how accurate cluster expansion techniques are in
+practice. Another challenge is that cluster expansion tends to converge
+very slowly when adsorbates move away from ideal lattice positions and
+lateral interactions are nonlinear.
+
+Graph convolutional methods tend to have strong predictive performance
+and have been applied for a number of materials property prediction
+tasks as we have seen elsewhere in the book. This suggests extending
+core graph convolutional techniques to prediction tasks on molecular
+lattices. The intuition here is to use a lattice convolution to directly
+predict energies from the lattice without having to manually select
+clusters for expansion. The convolutional network serves to select an
+"automatic taylor expansion".
+
+Figure [1.3](#fig:lcnn_architecture)\{reference-type="ref"
+reference="fig:lcnn_architecture"\} lays out the core architecture of a
+lattice convolutional neural network (LCNN). Notice how the lattice is
+directly fed into the model without requiring a choice of specific
+clusters.
+
+<figure id="fig:lcnn_architecture">
+<p><img
+src="figures/Differentiable Physics/Materials ML/lattice_convolution/lattice cnn.png"
+style="width:80.0%" alt="image" /> <span id="fig:lcnn_architecture"
+data-label="fig:lcnn_architecture"></span></p>
+</figure>
+
+## Lattice Convolutional Architectures
+
+With that background primer out of the way, let's dive into the actual
+substance of the lattice convolutional architecture.
+
+### The Pt(111) System
+
+Let us consider the adsorption of O$_2$ on a NO-O equilibrated Pt(111)
+surface. The formation energy for an adsorption configuration $\sigma_i$
+is denoted $E_f(\sigma)$. The formation energy can be computed as
+
+$$E_f(\sigma) = \frac\{E_f(\sigma) - E_0(0)\}\{N\} - \frac\{\theta_\{\textrm\{O\}\}\}\{2\}E_\{0,\textrm\{O\}_2\} - \theta_\{\textrm\{NO\}\}E_\{0,\textrm\{NO\}\}$$
+
+Where $E_0(\sigma)$, $E_0(0)$, $E_\{0,\textrm\{O\}_2\}$, and
+$E_\{0,\textrm\{NO\}\}$ respectively are the DFT calculated electronic
+energies of configuration $\sigma$, the vanilla Pt(111) surface with no
+adsorbates, an oxygen molecule in vacuum, and a nitric oxide molecule in
+vacuum respectively. In addition, $n_\{\textrm\{O\}\}$ and $n_\{\textrm\{NO\}\}$
+are the numbers of atomic oxygen and nitric oxide adsorbed,
+$\theta_\{\textrm\{O\}\}$ and $\theta_\{\textrm\{NO\}\}$ are the surface
+coverages of $\textrm\{O\}$ and $\textrm\{NO\}$, and $N$ is the number of
+fcc (face centered cubic) sites on the surface image source
+
+::: marginfigure
+![image](figures/Differentiable Physics/Materials ML/lattice_convolution/fc cubic unit cell (1).png)
+:::
+
+### Cluster Expansion Implementation
+
+Let's now discuss how to compute a cluster expansion. Nodes of the
+lattice graph contain site occupancy information, with $0$ for vacant,
+$1$ for $\textrm\{O\}$ filled, 2 for $\textrm\{NO\}$ filled. The following
+orthogonal basis set is used
+
+$$\begin\{aligned\}
+\Theta_0(\sigma_i) &= -\textrm\{cos\}\left ( \frac\{2\pi\sigma_i\}\{3\} \right ) \\
+\Theta_1(\sigma_i) &= -\textrm\{sin\}\left ( \frac\{2\pi\sigma_i\}\{3\} \right ) \\
+\end\{aligned\}$$
+
+Where $\sigma_i$ is the occupancy of the $i$-th site, and $\Theta_j$ is
+the $j$-th basis function. For a cluster in configuration $\sigma$, its
+weight is
+
+$$\Phi_\{a,i\}^\{(s)\}(\sigma) = \Theta_\{n_1\}(\sigma_1)\dotsc \Theta_\{n_\{|a|\}\}(\sigma_\{|a|\})$$
+
+Where $\alpha$ is the cluster with lattice points $\{1,2,\dotsc,|a|\}$,
+$(s) = \{n_1,\dotsc,n_\{|a|\}\}$ is the vector of indices indicating the
+basis function to use, and $i$ is the index of a particular arrangement
+of the cluster in the configuration. Each element of correlation matrix
+$\Phi$ corresponds to a configuration, cluster, and arrangement of basis
+functions and can be computed by
+
+$$\Phi_\{\alpha\}^\{(s)\}(\sigma) = \frac\{1\}\{N_\{\alpha\}^\{(s)\}(\sigma)\} \sum_i^\{N_\alpha^\{(s)\}(\sigma)\} \Phi^\{(s)\}_\{\alpha,i\}$$
+
+With $N_\{\alpha\}^\{(s)\}(\sigma)$ the number of symmetrically distinct
+clusters in configuration $\sigma$.
+
+::: marginfigure
+![image](figures/Differentiable Physics/Materials ML/lattice_convolution/Lattice_unit_cell2 (1).png)
+:::
+
+## Lattice Convolutional Networks
+
+The inputs for the lattice convolutional neural network are an atom
+feature vector $A$ and an atom-pair feature vector $P$. The LCNN
+formulation here follows that of the Weave convolutions
+[@kearnes2016molecular] we learned about earlier. Recall that Weave
+convolutions feature 4 different convolutional transformations, atom to
+atom $A\to A$, atom to bond $A \to P$, bond to atom $P \to A$, and bond
+to bond $P \to P$. As in other graph convolutional methods, atom
+descriptors are initialized with chemically relevant quantities such as
+atom type, chirality, formal charge, hybridization, hydrogen bonding,
+and aromaticity. Bond features include bond type, presence in the same
+ring, and spatial distance.
+
+The lattice convolution adapts the original graph convolution framework
+to lattices by the following adaptations: First, binding sites for
+adsorbates become nodes in the graph. Second, edges represent
+immediately adjacent sites
+
+The major challenge that faces lattices (unlike molecules) is symmetry.
+We want to consider multiple orderings of the neighbors of a given site
+so we have a symmetry-invariant local convolution. Figure
+[1.4](#fig:lcnn_transformation)\{reference-type="ref"
+reference="fig:lcnn_transformation"\} illustrates the LCNN
+transformation.
+
+![](figures/Differentiable Physics/Materials ML/lattice_convolution/Lattice_Cnn_Transform.png)\{#fig:lcnn_transformation
+width="70%"\}
+
+Given a periodic lattice with $n_s$ number of sites, each site $i$ has a
+site representation vector denoted $x_i$. One-hot encodings can be used
+as the initial feature vector for each site, but more complex encodings
+could be used as well. After $j$ convolutions have been applied, we
+denote the vector $x_i^j$. Let $$\begin\{aligned\}
+X^j &= [x_1^j,\dotsc,x_\{n_s\}^j]
+\end\{aligned\}$$ denote the matrix of all binding site vectors after the
+$j$-th convolution. We can then formally write the LCNN convolution as
+
+$$\begin\{aligned\}
+x_i^\{j+1\} &= g(f(h(X^j, v_\{i,1\})), f(h(X^j, v_\{i,2\})), f(h(X^j, v_\{i, 3\})),\dotsc, f(h(X^j, v_\{i,n_p\})) 
+\end\{aligned\}$$
+
+Function $h(X^j, v_\{i,k\})$ gathers local environment around site $i$,
+where $v_\{i, k\}$ is the $k$-th permutation considered.
+$h(X^j, v_\{i, k\})$ returns a subset of $X^j$ in a given permutation
+order. $f$ is the shifted softplus function. $n_p$ is the number of
+different permuted orders of the neighbors that are considered in the
+convolution, and $g$ is the summation function which "pools" the
+different permutations.
+
+### Evaluation Metrics
+
+Models can be evaluated with respect to root-mean-squared-error (RMSE)
+and mean-absolute-error (MAE):
+
+$$\begin\{aligned\}
+\textrm\{RMSE\}_\{\textrm\{model\}\} &= \sqrt\{\frac\{1\}\{N\}\sum_i^N (E_\{\textrm\{model\}\}(\sigma_i) - E_F(\sigma_i))^2\} \\
+\textrm\{MAE\}_\{\textrm\{model\}\} &= \frac\{1\}\{N\}\sum_i^N | E_\{\textrm\{model\}\}(\sigma_i) - E_F(\sigma_i)| 
+\end\{aligned\}$$
+
+Here $N$ is the number of test configurations,
+$E_\{\textrm\{model\}\}(\sigma_i)$ and $E_F(\sigma_i)$ are the formation
+energies of configuration $\sigma_i$ predicted by the model and DFT
+respectively.
+
+## Conclusion
+
+Lattice convolutions extend the reach of graph convolutional methods to
+a new type of physical system. As with crystal graph convolutions, this
+technique extends the core mathematical structure of graph convolutions
+to handle more complex physical systems.

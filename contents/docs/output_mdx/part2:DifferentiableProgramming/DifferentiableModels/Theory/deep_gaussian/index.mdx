@@ -1,0 +1,62 @@
+# Deep Networks Tend to Gaussian Processes \{#chap:ntk\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:ml_basics\]](#chap:ml_basics)\{reference-type="ref+label"
+reference="chap:ml_basics"\},
+[\[chap:grad_descent\]](#chap:grad_descent)\{reference-type="ref+label"
+reference="chap:grad_descent"\}\
+**Difficulty Level:** \*\*\*\
+
+------------------------------------------------------------------------
+
+Consider a fully connected neural network with $L$ hidden layers. Let
+the $\ell$-th layer have $N_\ell$ hidden units, bias $b^\ell$ and
+nonlinearity $\phi$. $x \in \mathbb\{R\}^d$ is the input and $z^\{\ell\}$ is
+the output of the $\ell$-th layer. One of the most important
+mathematical theorems in deep learning proves that as
+$N_\ell \to \infty$, the deep neural network converges to a Gaussian
+process.
+
+## A Single Hidden Layer Network is a Gaussian Process
+
+The $i$-th component output $z_i$ of a single hidden layer network is
+given by $$\begin\{aligned\}
+a_j &= \sigma \left ( b^0_j + \sum_\{k=1\}^d W^0_\{jk\} x_k \right ) \\
+z_i &= b^1_i + \sum_\{j=1\}^\{N\} W^1_\{ij\} a_j 
+\end\{aligned\}$$
+
+Assume that weight parameters $W^0_\{ij\}, W^1_\{ij\}$ and bias parameters
+$b^0_j, b^1_j$ are given by independent, identically distributed random
+draws from a Gaussian distribution. We can treat inputs $x_k$ as
+constants. Then note that the sum term $$\begin\{aligned\}
+b^0_j + \sum_\{k=1\}^d W^0_\{jk\} x_k
+\end\{aligned\}$$ itself follows a Gaussian distribution, and $a_j$ is
+drawn from the nonlinear transformation $\sigma$ of this Gaussian. Then
+it follows that $a_j$ and $a_\{j'\}$ are independent and identically
+distributed when $j \neq j'$ since the summation terms draw from
+independent distributions (note that $x_k$ are constant terms so it does
+not matter that they are shared.)
+
+The output term $z_i$ is then the sum of i.i.d terms. As $N \to \infty$,
+it follows from the central limit theorem that $z_i$ will converge to a
+Gaussian distribution (we can ignore the bias term as $N \to \infty$).
+
+It follows then that $$\begin\{aligned\}
+z^1_i \sim \mathcal\{GP\}(\mu^1, K^1)
+\end\{aligned\}$$ is given by a Gaussian process since any collection of
+these terms for different $i$ forms a multivariate Gaussian
+distribution. Assuming that random parameters have mean $0$, then,
+$\mu^1 = 0$. The covariance is given by
+
+$$\begin\{aligned\}
+K(x, x') &= \mathbb\{E\}[z_i(x)z_i(x')] \\
+\end\{aligned\}$$
+
+## Deep Neural Networks are Gaussian Processes
+
+An argument by induction can prove that as we add additional layers, a
+deeper neural network still converges to a Gaussian process as the width
+goes to infinity.

@@ -1,0 +1,86 @@
+# Feynman-Kac Formula \{#chap:perturbation_theory\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:schrodinger\]](#chap:schrodinger)\{reference-type="ref+label"
+reference="chap:schrodinger"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+The Feynman-Kac formula provides a powerful bridge between solutions to
+certain classes of PDEs and solutions to stochastic differential
+equations. In practice, the formula can provide a powerful formula to
+resolve certain classes of intractable PDEs.
+
+## Statement
+
+Suppose that we have a parabolic PDE given by
+
+$$\begin\{aligned\}
+\frac\{\partial u\}\{\partial t\}(x, t) + \mu(x, t)\frac\{\partial u\}\{\partial x\}(x, t) + \frac\{1\}\{2\}\sigma^2(x, t)\frac\{\partial^2 u\}\{\partial x^2\}(x, t) - V(x, t)u(x, t) + f(x, t) &= 0
+\end\{aligned\}$$ where $\mu, \sigma, V, f$ are known functions. Here we
+also impose a boundary condition that $$\begin\{aligned\}
+u(x, T) &= \psi(x)
+\end\{aligned\}$$ where $\psi$ is another known function. The Feynman-Kac
+formula states that the solution to this PDE is given by the conditional
+expectiation
+
+$$\begin\{aligned\}
+u(x, t) &= E\left [ \int_t^T e^\{-\int_t^r V(X_\tau, \tau) d \tau \} f(X_\tau, r) dr + e^\{- \int_t^T V(X_\tau, \tau) d \tau \psi(X_T)\}  \right ]
+\end\{aligned\}$$ Here, we have that $X_\tau$ is an Itô process given by
+the equation $$\begin\{aligned\}
+d X_t \mu(X, T) dt + \sigma(X, t) dW_t
+\end\{aligned\}$$ where $W$ is Wiener noise.
+
+## Derivation
+
+Let us start by considering one particular instantiation of this formula
+and performing a derivation. Consider $K$ to be the poropagator of
+Schrodinger's equation. Note that Schrodinger's equation is a parabolic
+PDE, so we can use the Feynman-Kac formula. We start by using the
+Trotter formula $$\begin\{aligned\}
+    e^\{A+B\} &= \lim_\{n\to\infty\} (e^\{A/n\}e^\{B/n\})^n
+\end\{aligned\}$$ Here $A$ and $B$ are matrices. The Trotter product
+formula can be extended to the case $A$ and $B$ are self-adjoint
+operators and $A+B$ is self-adjoint on the intersection of the domains
+of $A$ and $B$.
+
+$$\begin\{aligned\}
+    e^\{-it(A+B)\} &= s - \lim_\{n\to\infty\} \left (e^\{-itA/n\}e^\{-itB/n\}\right )^n
+\end\{aligned\}$$ Consider the unitary time evolution kernel
+$$\begin\{aligned\}
+    K(t, q, q') &= \langle q | e^\{-itH\}|q'\rangle 
+\end\{aligned\}$$ Suppose that the Hamiltonian has form $H_0 + V$. Then we
+split up the evolution into $n$ steps by using the Trotter formula.
+$$\begin\{aligned\}
+    K(t, q, q') &= \lim_\{n\to\infty\} \langle q | \left (e^\{-itH_0\}e^\{-itV\} \right )^n|q'\rangle 
+\end\{aligned\}$$ We insert the decomposition of identity given below $n$
+times between the factors $$\begin\{aligned\}
+    I &= \int dw_j |w_j\rangle \langle w_j |
+\end\{aligned\}$$ And we obtain $$\begin\{aligned\}
+    K(t,q,q') &= \lim_\{n\to\infty\} \int dw_1 \dotsc dw_n \prod_\{j=0\}^\{n-1\} \langle w_\{n+1\} | e^\{-itH_0/n\}e^\{-itV/n\}|w_j\rangle
+\end\{aligned\}$$ We note that the potential is diagonal in the coordinate
+representation since it directly multiplies by a constant value at each
+point in position space. Thus we can write $$\begin\{aligned\}
+    \langle w_\{n+1\} | e^\{-itH_0/n\}e^\{-itV/n\}|w_j\rangle &= \langle w_\{n+1\} | e^\{-itH_0/n\}|w_j\rangle e^\{-itV(w_j)/n\}
+\end\{aligned\}$$ Note that the free propagator is given by
+$$\begin\{aligned\}
+    K_0(t, q, q') &= \langle q' | e^\{-itH\} q \rangle \\
+    &= \left(\sqrt\{\frac\{m\}\{2\pi i \hbar t\}\}\right)^d e^\{im(q-q')^2/2\hbar t\} \\
+    &= A_t^d e^\{im(q-q')^2/2\hbar t\}
+\end\{aligned\}$$ where $$\begin\{aligned\}
+    A_t &= \sqrt\{\frac\{m\}\{2\pi i \hbar t\}\}
+\end\{aligned\}$$ Plugging this all together we obtain $$\begin\{aligned\}
+    K(t, q, q') &= \lim_\{n\to\infty\} A_\{\epsilon\}^n \int dw_1 \dotsc dw_\{n-1\}e^\{iS^\{(n)\}(w)/\hbar\} \\
+    S^\{(n)\}(w) &= \frac\{m\}\{2\}\sum_\{j=0\}^\{n-1\}\epsilon \left ( \frac\{w_\{j+1\} - w_j\}\{\epsilon\}\right) - \sum_\{j=0\}^\{n-1\} \epsilon V(w_j)
+\end\{aligned\}$$ This last quantity is a Riemann sum approximation to the
+action of a particle moving along the specified path $$\begin\{aligned\}
+    S^\{(n)\}(w) &\to \int_0^t ds (\frac\{m\}\{2\}\dot\{w\}^2 - V(w)) \\
+    &= S(w)
+\end\{aligned\}$$ This formula is often written thematically as
+$$\begin\{aligned\}
+K(t, q, q') &= \int_\{w(0)=q\}^\{w(t) =q'\} \mathcal\{D\}w e^\{iS[w]/\hbar\}
+\end\{aligned\}$$ where the integral is taken over all possible paths.

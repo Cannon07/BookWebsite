@@ -1,0 +1,1712 @@
+# Semantics of Programming Languages \{#chap:transformer\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:type_theory\]](#chap:type_theory)\{reference-type="ref+label"
+reference="chap:type_theory"\},
+[\[chap:grad_descent\]](#chap:grad_descent)\{reference-type="ref+label"
+reference="chap:grad_descent"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+Semantics attempts to assign rigorous mathematical meanings to computer
+programs. Given a syntactically valid string in a programming language,
+a semantic model assigns to it a mathematical object that represents the
+the given computation. (Invalid strings are assigned to a suitable no-op
+object.)
+
+Operational and denotational semantics are two common methods of
+assigning meaning to programs. Operational semantics directly describes
+the execution of language operations mathematically, while denotational
+semantics maps program constructs to abstract mathematical objects.
+
+## Operational Semantics
+
+Operational semantics transforms language operations into algorithmic
+instructions for a virtual machine. Operational semantics roughly
+presents a pseudocode implementation for an underlying interpreter.
+Operational semantics are typically broken into the two additional
+categories of small-step and big-step operational semantics. Small-step
+semantics provide a tight-grained update which directly considers
+updates to the underlying memory of the system. For example, here is a
+small-step semantics rule for sequential evaluation of a program.
+
+$$\begin\{aligned\}
+\{2\}
+    &\inference[]
+    \{
+     \langle C, s \rangle \Rightarrow s'
+    \}
+    \{
+    \langle C; D, s \rangle \Rightarrow \langle D, s' \rangle 
+    \} \ \textrm\{[Sequential]\} 
+\end\{aligned\}$$
+
+Here $C$, $D$ are programs and $s$, $s'$ represents memory states of an
+underlying virtual machine. The above expression corresponds to the
+statement \"If running program $C$ starting in memory state $s$ results
+in memory state $s'$, then running programs $C$ and $D$ in sequence has
+the same result as running program $D$ starting from memory state
+$s'$.\"
+
+Small step semantics typically provide the semantics for low level
+machine operations. This can become tedious for larger programs, so many
+papers often consider big step semantics, which attempts to directly
+provide meanings for higher order operations. For example, consider
+
+$$\begin\{aligned\}
+\{2\}
+    &\inference[]
+    \{
+     \langle a_1, s \rangle \Rightarrow i_1, \quad \langle a_2, s \rangle \Rightarrow i_2
+    \}
+    \{
+    \langle a_1 + a_2, s \rangle \Rightarrow i_1 + i_2 
+    \} \ \textrm\{[Sequential]\} 
+\end\{aligned\}$$ Here $a_1$, $a_2$ are arithmetic expressions. This
+statement can be read as \"If $a_1$ is an arithmetic expression which
+evaluates to $i_1$ and $a_2$ is an arithmetic expression which evaluates
+to $i_2$ then $a_1 + a_2$ evaluates to $i_1 + i_2$.
+
+## Denotational Semantics
+
+Denotational semantics provide a mathematical mechanism of transforming
+a function from standard types into mathematical objects. For example,
+suppose that `R` is the type of real numbers and $\mathbb\{R\}$ is the
+real numbers. We may say
+
+$$\begin\{aligned\}
+    x \in R \mapsto \llbracket x \rrbracket \in \mathbb\{R\}
+\end\{aligned\}$$ to capture how a variable of type `r` is mapped to its
+corresponding real number value. Intuitively, the denotational semantics
+of our Physika programs must match the underlying mathematical
+definitions of the functions involved.
+
+## Exercises
+
+1.  Construct an operational semantics for the Lambda calculus.
+
+2.  Construct a denotational semantics for the Lambda calculus.
+
+
+# Semantics for Array Programs \{#chap:grammar\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:autodiff\]](#chap:autodiff)\{reference-type="ref+label"
+reference="chap:autodiff"\},
+[\[chap:hindley_milner\]](#chap:hindley_milner)\{reference-type="ref+label"
+reference="chap:hindley_milner"\}\
+**Difficulty Level:** \*\*\*\
+
+------------------------------------------------------------------------
+
+Modern scientific programs are written to operate on arrays of numbers.
+These arrays provide a natural representation for numerical
+calculations. In this chapter, we consider a type theory for array
+calculations
+
+## Syntax
+
+Physika has two types of `for` loops. The first `for` loop behaves as a
+control structure.
+
+``` \{.python language="python"\}
+sum = 0
+for i in 100:
+  sum += i
+```
+
+We also make use of a second `for` which acts as an array builder. These
+`for` loops must feature only a single expression within the `for` loop
+which acts as an array constructor.
+
+``` \{.python language="python"\}
+A = for i in N: i
+```
+
+We also allow Physika to perform indexed access to array elements
+
+``` \{.python language="python"\}
+A[i]
+```
+
+## Types and Semantics
+
+Typing rules for array creation and indexing are defined as follows
+
+$$\begin\{aligned\}
+\{2\}
+    &\inference[1.]
+    \{
+     x: \tau_1, \quad \Gamma \vdash e : \tau_2
+    \}
+    \{
+    \Gamma \vdash (\textrm\{for\}\ x : \tau_1. e) : \tau_1 \Rightarrow \tau_2
+    \} \ \textrm\{[For]\} &&\qquad
+    \inference[2.]
+    \{
+     \Gamma \vdash v_1: (\tau_1 \Rightarrow \tau_2), \quad v_2 : \tau_1
+    \}
+    \{
+     \Gamma \vdash v_1[v_2] : \tau_2 
+    \} \ \textrm\{[Index]\} \\
+\end\{aligned\}$$
+
+For loops which operate as control structures are also governed by these
+same rules. Stateful update operations in a for-loop are wrapped up as
+an array \"effect\" objects which is automatically evaluated.
+
+
+# Physika Primer \{#chap:physika\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:math_basics\]](#chap:math_basics)\{reference-type="ref+label"
+reference="chap:math_basics"\}\
+**Difficulty Level:** \*\
+
+------------------------------------------------------------------------
+
+Throughout this book, we use pseudocode to represent various
+differentiable programs of interest. We code our pseudocode in a
+language called Physika (greek for physics). Physika is a fully
+differentiable, dependently typed language. This combination of features
+allows Physika to model physical theories succinctly and effectively. In
+this chapter we provide a brief introduction to Physika.
+
+## An Introduction to Physika by Example
+
+Much of Physika's syntax follows that of Python. For example, here's how
+you define a function that adds two numbers.
+
+``` \{.python language="python"\}
+# This is a comment.
+def add(x: $\mathbb\{R\}$, y: $\mathbb\{R\}$) $\to$ $\mathbb\{R\}$:
+  x + y
+```
+
+Notice that we don't define an explicit return type. Physika follows the
+convention that the last expression in a function is its return value.
+This allows for simple mathematically crisp definitions.
+
+Physika is a typed language with a rich and descriptive type system for
+annotating function inputs and outputs. We allow variables to have type
+$\mathbb\{R\}$. We can't directly represent infinite decimal place real
+numbers on an actual computer. But we can symbolically manipulate values
+in $\mathbb\{R\}$. We can also specialize this function to operate on a
+subset of $\mathbb\{R\}$ like the 32 bit floating point numbers
+$\textrm\{Float32\}$. In practice, it will be clear how to specialize a
+function that operates on the real numbers to a computationally
+realizable version, but if there are subtleties we will mention them
+with examples.
+
+We define the type of an array as
+
+``` \{.python language="python"\}
+x : $\mathbb\{R\}$[n]
+```
+
+Multidimensional arrays are defined similarly
+
+``` \{.python language="python"\}
+y : $\mathbb\{R\}$[n, m, o]
+```
+
+The type of a tensor is similar to the type for a multidimensional
+array, with a crucial difference that covariant and contravariant
+indices must be annotated in the type.
+
+``` \{.python language="python"\}
+z : $\mathbb\{R\}$[+n, +m, -o]
+```
+
+In mathematical tensor notation we would write this as something like
+$z^\{\alpha \beta\}_\{\gamma\}$. Note that tensor $z$ is not the same as a
+multidimensional array since it depends on a choice of basis. It is
+possible to *cast* a tensor object into a multidimensional array. The
+default cast will use the current basis of the tensor object.
+
+Physika is dependently typed. What does that mean? To start, it means
+that the following function is valid.
+
+``` \{.python language="python"\}
+def append(x: a, xs: a[n]) $\to$ a[n+1]:
+  xs + [x]
+```
+
+Note that the type is a free variable. This is typically referred to as
+parameteric polymorphism in the programming language literature. You can
+think about as a placeholder that can be replaced with any other type
+like $\mathbb\{R\}$ or . Another interesting property of this definition
+is that the return type can depend on the provided arguments.
+
+Let's now see how we can define a variable with a value
+
+``` \{.python language="python"\}
+x : $\mathbb\{R\}$ = 5.12
+```
+
+Next, we consider a more complex example of matrix multiplication. Here
+is how we would code a matrix multiplication algorithm in Physika
+
+``` \{.python language="python"\}
+def matmul(A: $\mathbb\{R\}$[n, m], B: $\mathbb\{R\}$[m, o]) $\to$ $\mathbb\{R\}$[n, o]:
+  C: $\mathbb\{R\}$[n, o] = 0
+  for i j k:
+    C[i, j] += A[i,k]*B[k, j]
+  C
+```
+
+We use the type system to infer that `i` and `j` above must respectively
+take values in `[0,...,n-1]` and `[0,...,o-1]`. Type inference allows us
+to make compact readable code for numerical applications. We can use
+type inference to simplify operations like Einstein summation. For
+example, an expression like $$\begin\{aligned\}
+    T^\{\alpha\}_\beta v^\{\beta\} 
+\end\{aligned\}$$ which represents a matrix vector multiplication can be
+represented as a code snippet
+
+``` \{.python language="python"\}
+T: $\mathbb\{R\}$[$+n$, $-m$]
+v: $\mathbb\{R\}$[$+m$]
+sum(for $\beta$ T[$\alpha$, $\beta$] * v[$\beta$])
+```
+
+We can also rely on Physika to do type inference on tensor shapes and
+covariances properly.
+
+``` \{.python language="python"\}
+T: $\mathbb\{R\}$[+m, +n, -o]
+U: $\mathbb\{R\}$[+o]
+T[+$\alpha$, +$\beta$, -$\gamma$]U[$+\gamma$]: $\mathbb\{R\}$[$+\alpha$, $+\beta$]
+```
+
+Physika is a differentiable programming language, so differentiation
+operators are first class in the language. Phyika has two
+differentiation operators for forward and backwards mode differentiation
+
+    T # Tangent Operator for forward mode
+    $\nabla$ # Gradient Operator for backwards mode
+    $\frac\{d\}\{dt\}$ # Alternative syntax for backwards mode
+
+We now explore a slightly more complicated example using Physika to
+encode some simple motion of particles. We can encode
+
+``` \{.python language="python"\}
+x: $\mathbb\{R\}$ $\to$ $\mathbb\{R\}^3$
+x(t) = (t, t, t)
+v = $\frac\{dx\}\{dt\}$
+```
+
+What is the type of $v$? We write
+
+``` \{.python language="python"\}
+v: $\mathbb\{R\}$ $\to$ $T \mathbb\{R\}^3$
+```
+
+Let's write down a type for the differentiation operator in this
+particular case.
+
+``` \{.python language="python"\}
+$\frac\{d\}\{dt\}$: ($\mathbb\{R\}$ $\to$ $\mathbb\{R\}^3$) $\to$ $T \mathbb\{R\}^3$
+```
+
+Physika is capable of expressing more complex function spaces. Notably,
+we will make use of $L^2$ function space types for representing wave
+functions.
+
+``` \{.python language="python"\}
+$\psi$: $L^2[\mathbb\{R\}^3, \mathbb\{C\}]$
+```
+
+The study of quantum mechanics encompasses not only the study of wave
+functions but of operators that act on them. For example, consider the
+momentum operator that acts on wave functions. This operator has type
+
+``` \{.python language="python"\}
+$\hat\{p\}$: $L^2[\mathbb\{R\}^3]$ $\to$ $L^2[\mathbb\{R\}^3]$
+```
+
+We could try to write this type as
+
+``` \{.python language="python"\}
+$\hat\{p\}$: $\mathcal\{B\}(L^2[\mathbb\{R\}^3])$
+```
+
+This model is wrong, since $\hat\{p\}$ is not necessarily bounded as an
+operator, but serves to show how Physika can represent the type of
+bounded operators on Hilbert space. We can represent common quantum
+mechanical operations such as bras, kets, and brakets with suitable
+types.
+
+``` \{.python language="python"\}
+$|\psi(x)\rangle$ $\equiv$ $\psi: L^2[\mathbb\{R\}^3, \mathbb\{C\}]$
+```
+
+The type of a quantum mechanical bra is given by
+
+``` \{.python language="python"\}
+$\langle \psi(x)|$ $\equiv$ $L^2[\mathbb\{R\}^3, \mathbb\{C\}] \to \mathbb\{C\}$
+```
+
+We can represent yet more complicated spaces. For example, to compute
+with path integrals, we need to represent the type of all evolution
+paths for a given quantum mechanical system.
+
+``` \{.python language="python"\}
+p: [0, 1] $\to$ $L^2(\mathbb\{R\}^3)$
+```
+
+## Symbolic Manipulation
+
+For describing certain algorithms, it will be useful to perform symbolic
+manipulations.
+
+``` \{.python language="python"\}
+x: Symbol
+x$^4$ - 3x$^2$ + 13
+```
+
+Symbolic variables can be used to express and manipulate formulas.
+
+## Parameterized Functions
+
+Layers in deep networks are typically represented as parameterized
+functions $f_\theta$. A parameterized function can be viewed as a family
+of concrete functions $$\begin\{aligned\}
+    \{ f_\{\theta\} | \theta \in \Theta \}
+\end\{aligned\}$$
+
+We write a parameterized layer function in Physika by using the `class`
+keyword.
+
+``` \{.python language="python"\}
+class Layer(param$_1$: T$_1$,$\dotsc$):
+  def $\lambda$(arg$_1$: A$_1$,$\dotsc$): R_1
+    ...
+```
+
+We use the notation $\lambda$ to denote the function call to the
+parameterized function. The parameters of the function are set in the
+constructor. We can define a simple weighted linear layer using a
+parameterized function as follows
+
+``` \{.python language="python"\}
+# Weighted Addition
+class F($w_1$: $\mathbb\{R\}$, $w_2$: $\mathbb\{R\}$):
+  def $\lambda$(x: $\mathbb\{R\}$, y: $\mathbb\{R\}$): $\mathbb\{R\}$:
+    $w_1$ * x + $w_2$ * y
+```
+
+We can express the type of a parameterized function in a type signature
+as
+
+$$\begin\{aligned\}
+    (\textrm\{Input Types\}\ \to \ \textrm\{Output Types\})[\textrm\{Parameter Types\}]
+\end\{aligned\}$$
+
+For the particular case of the simple weighted linear layer, we would
+express this signature as
+
+$$\begin\{aligned\}
+(\mathbb\{R\}\times\mathbb\{R\}\to\mathbb\{R\})[\mathbb\{R\}, \mathbb\{R\}]
+\end\{aligned\}$$
+
+## Standard Library
+
+Physika features a standard library of mathematical functions that
+should be familiar from other programming environments
+
+``` \{.python language="python"\}
+abs, max, min, uniform, zeros
+```
+
+
+# Integral Programming \{#ch:integralprog\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:ml_basics\]](#chap:ml_basics)\{reference-type="ref+label"
+reference="chap:ml_basics"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+Integral programs are differentiable programs which include integration
+as a construct. Many physical equations naturally feature integrals in
+their descriptions, making the ability to manipulate integrals within a
+differentiable program a powerful advantage. Let's start with a simple
+mathematical example. Assume that we want to learn a function $f$ with
+the form
+
+$$\begin\{aligned\}
+ f(x) = \int_0^x g(y, \theta) dy 
+\end\{aligned\}$$
+
+Here $\theta$ is a learnable parameter, $f$ is the function we'd like to
+learn and $g$ is its derivative. This general pattern arises often in
+physics, when we seek the solution to a set of differential equations.
+How can we optimize this function? Suppose that we have a dataset with
+training data points $X$ and labels $y$
+
+$$\begin\{aligned\}
+    X &= x_1,\dotsc, x_n \\
+    y &= y_1, \dotsc, y_n
+\end\{aligned\}$$
+
+Assume that we're performing a regression task with $L^2$ loss. The
+learning task then is
+
+$$\begin\{aligned\}
+    \arg\min_\{\theta\} \sum_\{i=1\}^N \left \| \int_0^\{x_i\} g(y, \theta) dy - y_i\right \|^2
+\end\{aligned\}$$
+
+Differentiating the loss $\mathcal\{L\}$ through the integral sign, we'll
+be left with a term that looks like
+
+$$\begin\{aligned\}
+\nabla \mathcal\{L\} \approx \int_0^x \frac\{\partial\}\{ \partial \theta\} g(y, \theta) dy 
+\end\{aligned\}$$
+
+Integrating arbitrary functions can be extremely challenging and is not
+possible to do in general except numerically. So, we fall back to some
+type of numerical solver. Assume that we have an algorithm
+$\textrm\{Integrate\}$ that implements a numerical solver. That is
+
+$$\begin\{aligned\}
+\int_0^x g(y, \theta) dy \approx \textrm\{Integrate\}(g, x, \theta) 
+\end\{aligned\}$$
+
+Then we can rewrite our learning task as
+
+$$\begin\{aligned\}
+    \arg\min_\{\theta\} \sum_\{i=1\}^N \| \textrm\{Integrate\}(g, x_i, \theta) - y_i\|^2
+\end\{aligned\}$$
+
+If $\textrm\{Integrate\}$ is a standard numerical integration scheme, it
+is easy to show that $\textrm\{Integrate\}$ is a differentiable function.
+This means that every term in the loss equation above is differentiable.
+We have succeeded in reducing an integral program into a differentiable
+program.
+
+In practice, the choice of integration scheme for $\textrm\{Integrate\}$
+will be critical. The example we covered above is 1-dimensional, but in
+practice, the integral program we seek to solve might involve a set of
+high dimensional differential equations. More sophisticated Monte Carlo
+integration schemes are required to solve such integrals.
+
+## Physical Examples
+
+We consider a few examples of integral programs in modeling physical
+systems.
+
+### Variational Problems
+
+Integral programs naturally lend themselves to solving variational
+problems which arise in physics. For example, consider the
+Euler-Lagrange equation
+
+$$\begin\{aligned\}
+    S[q] &= \int_\{x_1\}^\{x_2\} L(x, q(x), q'(x)) dx
+\end\{aligned\}$$
+
+Here $S$ is a quantity commonly known as the action functional and $L$
+is the Lagrangian. The minima of the action functional provides the
+equations of motion for a physical system. We can formulate the action
+function as an integral program
+
+``` \{.python language="python"\}
+def S(q: [$x_1$, $x_2$] $\to$ $\mathbb\{R\}$) $\to$ $\mathbb\{R\}$:
+  return Integrate(q, $x_1$, $x_2$, L(x, q, $\frac\{d\}\{dt\}$(q))
+```
+
+This differentiable program can be optimized directly by choosing a
+suitable parameterized form of `q` (perhaps as a fully connected
+network).
+
+### Path Integral Programming
+
+One of the most powerful tools of mathematical physics which we will
+develop in this book is the path integral. Path integral calculations
+are fundamental to modern quantum mechanics and modern quantum field
+theory. In this section, we will introduce some of their mathematical
+foundations and explain how we can use path integrals in integral
+programs. The foundation for path integral calculations is evaluation of
+Gaussian integrals so we will start by considering some Gaussian
+integrals. These integrals will be of considerable interest when we
+return to quantum field theory later in this book.
+
+### Gaussian Integrals
+
+Let's now consider a very simple integral program
+
+``` \{.python language="python"\}
+def gaussian_integral(a: $\mathbb\{R\}$, J: $\mathbb\{R\}$):
+  return $\int_\{-\infty\}^\{\infty\}$ exp(-$\frac\{1\}\{2\}$a*x$^2$ + J*x)
+```
+
+We can have Physika numerically evaluate this integral. This integral
+also has a direct value which can be computed by completing the square
+so the numerical evaluation isn't useful in practice.
+
+We can perturb this integral to consider $$\begin\{aligned\}
+ G = \int_\{-\infty\}^\{\infty\} e^\{-\frac\{1\}\{2\}ax^2 + iJ x\} dx 
+\end\{aligned\}$$
+
+where $i$ is the imaginary number. Our strategy of completing the square
+works here so we can simply plug into a standard formula and obtain.
+
+$$\begin\{aligned\}
+ G = \sqrt\{\frac\{2 \pi\}\{a\}\} e^\{(iJ)^2/2a\} = \sqrt\{\frac\{2 \pi\}\{a\}\} e^\{-J^2/2a\} 
+\end\{aligned\}$$
+
+Here's one more variant with $a$ replaced by $-ia$
+
+$$\begin\{aligned\}
+ \int_\{-\infty\}^\{\infty\} e^\{\frac\{1\}\{2\}iax^2 + iJx\} dx 
+\end\{aligned\}$$
+
+Let's again plug into the formula we derived above.
+
+$$\begin\{aligned\}
+ G = \sqrt\{\frac\{2 \pi\}\{-ia\}\} e^\{(iJ)^2/(-2ia)\} = \sqrt\{\frac\{2 \pi i\}\{a\}\} e^\{-iJ^2/2a\} 
+\end\{aligned\}$$
+
+What happens though when the integral we consider becomes non-Gaussian?
+
+$$\begin\{aligned\}
+ H = \int_\{-\infty\}^\{\infty\} e^\{-\frac\{1\}\{2\}ax^2 + b x^4\} dx 
+\end\{aligned\}$$ An integral program can be defined as
+
+``` \{.python language="python"\}
+def nongaussian_integral(a: $\mathbb\{R\}$, J: $\mathbb\{R\}$):
+  return $\int_\{-\infty\}^\{\infty\}$ exp(-$\frac\{1\}\{2\}$a*x$^2$ + J*x$^4$)
+```
+
+and evaluated numerically. Techniques from perturbation theory can be
+used to perform approximations in a structured fashion which we can
+encode into algorithmic solvers.
+
+
+# Simply Typed Lambda Calculus \{#chap:stlc\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:type_theory\]](#chap:type_theory)\{reference-type="ref+label"
+reference="chap:type_theory"\},
+[\[chap:grammar\]](#chap:grammar)\{reference-type="ref+label"
+reference="chap:grammar"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+The simply typed lambda calculus is the simplest typed programming
+language. In programming language theory, $\lambda$ is used to denote a
+function. As we shall shortly see, the simply typed lambda calculus uses
+functions as the building block for a language. The languages we will
+learn in future chapters, and Physika itself, build upon the primitives
+from the simply typed lambda calcluus.
+
+## Grammars for Types and Expressions
+
+We start by defining a set of atomic types $B$. For example, we could
+have a set of atomic types $$\begin\{aligned\}
+B = \{ Int, Bool\}
+\end\{aligned\}$$ The syntax for types is then given by $$\begin\{aligned\}
+\tau ::= \tau \to \tau | T, \quad T \in B
+\end\{aligned\}$$ That is, the only types available are the atomic types
+and functions mapping between the atomic types. No lists or other
+constructions are available. The grammar for expressions is similarly
+simple $$\begin\{aligned\}
+e ::= x | \lambda x: \tau . e | e e | c
+\end\{aligned\}$$ Here $c$ denotes constants and $x$ denotes a variable.
+The notation $$\begin\{aligned\}
+\lambda x: \tau. e
+\end\{aligned\}$$ might be unfamiliar to those without a background in
+type theory. $\lambda$ is a function creator. The function above accepts
+one argument $x$, which must have type $\tau$ and returns expression
+$e$. The term $e e$ is used to denote a function application. Let's look
+at some examples. Here are some examples of expressions which are valid
+in the simply typed lambda calculus
+
+    4
+    $\lambda$x:Bool . x
+
+Constructing more complicated programs in the simply typed lambda
+calculus can get onerous since the standard tools of programming
+languages aren't available to use.
+
+## Typing Rules
+
+The typing rules for the simply typed lambda calculus are given by the
+following expressions. $$\begin\{aligned\}
+\{2\}
+    &\inference[1.]
+    \{
+     x: \sigma \in \Gamma
+    \}
+    \{
+    \Gamma \vdash x : \sigma
+    \} &&\qquad
+    \inference[2.]
+    \{
+     c : T
+    \}
+    \{
+     \Gamma \vdash c : T 
+    \} \\
+    &\inference[3.]
+    \{
+     \Gamma, x: \sigma \vdash e : \tau
+    \}
+    \{
+     \Gamma \vdash (\lambda x: \sigma . e) : (\sigma \to \tau)
+    \}
+    &&\qquad 
+    \inference[4.]
+    \{ 
+     \Gamma \vdash e_1: \sigma \to \tau, \quad \Gamma \vdash e_2 : \sigma
+    \}
+    \{
+     \Gamma \vdash e_1 e_2 : \tau
+    \}
+    \\
+\end\{aligned\}$$
+
+Processing a collection of typing rules like this can be challenging
+upon first encounter. Let's start by translating the above statements
+into English.
+
+1.  **Variable typing**: If variable $x$ has type $\sigma$ in the
+    environment $\Gamma$, then we can conclude $x$ has type $\sigma$.
+
+2.  **Constant typing**: If constant $c$ has type $T$, we can conclude
+    that $c$ has type $T$. Note that constants must have the same type
+    across all environments.
+
+3.  **Function typing**: Let $\Gamma$ be an environment that doesn't
+    have a type for $x$. If by adding a statement that $x$ has type
+    $\sigma$ to $\Gamma$, we can conclude that $e$ has type $\tau$, then
+    the environment $\Gamma$ implies that the expression
+    $\lambda x: \sigma . e$ has type $\sigma \to \tau$.
+
+4.  **Function Application Typing**: If $e_1$ has type $\sigma \to \tau$
+    and $e_2$ has type $\sigma$ both in environment $\Gamma$, then
+    $e_1 e_2$ has type $\tau$ in environment $\Gamma$.
+
+The first two rules for variable typing and constant typing explains how
+typing works for variables and constants. The last two rules explain how
+to determine the type of functions and the types of function
+applications.
+
+## Free and Bound Type Variables
+
+A bound variable is one that appear within a $\lambda$ statement. For
+example in
+
+    $\lambda x : \tau . e$
+
+The variable $x$ is bound within expression $e$. On the other hand the
+plain variable
+
+    $x$
+
+is free. In programming languages, arguments to functions are passed in
+as bound variables that can be used within the body of the function.
+
+## Exercises
+
+1.  Use the simply typed lambda calculus to define a function that
+    returns another function upon being evaluated.
+
+2.  Define a function that accepts another function as an argument.
+
+
+# Dependent Types \{#chap:dependent_types\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:type_theory\]](#chap:type_theory)\{reference-type="ref+label"
+reference="chap:type_theory"\},
+[\[chap:grad_descent\]](#chap:grad_descent)\{reference-type="ref+label"
+reference="chap:grad_descent"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+Broadly speaking, dependent types allow for the output type of a
+function to depend on its input type. We find dependent types most
+useful when presenting the types of tensor operations. For example, the
+type of a matrix multiplication is naturally represented as a dependent
+type.
+
+``` \{.python language="python"\}
+def matmul(A: $\mathbb\{R\}$[n, m], B: $\mathbb\{R\}$[m, o]) $\to$ $\mathbb\{R\}$[n, o]:
+  C: $\mathbb\{R\}$[n, o] = 0
+  for i j k:
+    C[i, j] += A[i,k]*B[k, j]
+  return C
+```
+
+The major advantage of dependent types for differentiable programs is
+that it becomes possible to check whether complex deep networks with
+sequences of array operations are well defined directly from the
+associated type operations.
+
+More generally, dependent types blur the line between expressions and
+types. Any expression in a programming language can be used as a type.
+This richness of types enables dependent programming languages to encode
+rich programmatic invariants for their programs.
+
+## Value Dependent Types
+
+Constructing a fully dependent type theory for a programming language
+brings with it considerable challenges. For this reason, differentiable
+languages sometimes choose instead to construct a \"value dependent type
+theory.\" Such a system draws a difference between values and
+expressions, where a value is the fully reduced form of an expression.
+In a value dependent type theory, any value can become a type but not
+every expression.
+
+### Unification
+
+Performing type inference in a dependent programming language is
+considerably trickier than performing type inference for a
+Hindley-Milner language. Type inference for a value-dependent type
+theory can be implemented with a variant of Haskell's standard type
+inference algorithm. In general, performing full type-inference requires
+programmers to sometimes add type annotations to functions. Since adding
+type annotations to functional programs typically serves as
+documentation, this restriction does not prove restrictive in practice.
+
+## Full Dependent Type Theory
+
+In Physika, we rely on the ability to represent complex mathematical
+objects like $L^2(\mathbb\{R\}^3)$ as types. Constructing such types
+rigorously requires full dependent type theory with its ability to prove
+theorems. At the time of writing, it remains an open problem to
+construct a dependent, differentiable programming language. The
+construction of such a language will prove a milestone on the pathway to
+constructing rigorous models of physical reality.
+
+A critical challenge will be to provide for efficient implementations of
+sophisticated, possibly infinite mathematical objects. Considerable
+additional research will be needed to enable rigorous and efficient
+manipulation of mathematical structures within a differentiable
+programming language.
+
+
+# Introduction to Type Theory \{#chap:type_theory\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:math_basics\]](#chap:math_basics)\{reference-type="ref+label"
+reference="chap:math_basics"\},\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+Type theory is an increasingly important part of modern mathematics and
+computer science that provides technology to describe the behavior of
+computer programs.. In the rest of this book, we will use types to help
+us more accurate characterize physical systems.
+
+## Types, Terms, and Values
+
+The parts of a program are called terms, types and values. Terms are
+program statements and expressions such as
+
+    3+4, x, 234
+
+A term is usually denoted with the symbol $e$. Each term is associated
+with a type that provides extra semantic meaning to the type. Types are
+typically denoted by $\sigma$, $\tau$. To say that term $e$ has type
+$\tau$ we use the following notation $$\begin\{aligned\}
+    e : \tau
+\end\{aligned\}$$ Read this expression as \"e has type tau\". Function
+types are represented by the following notation $$\begin\{aligned\}
+    e: \sigma \to \tau
+\end\{aligned\}$$ Functions with multiple arguments by chaining arrows.
+For example, here's the type of a function with 3 arguments.
+$$\begin\{aligned\}
+    e: \tau_1 \to \tau_2 \to \tau_3 \to \tau_4
+\end\{aligned\}$$
+
+The type of a list is denoted by $$\begin\{aligned\}
+    e: [\tau]
+\end\{aligned\}$$
+
+When evaluating types for a program, we make use of what is called a
+type environment, typically denoted by $\Gamma$. Under the hood, a type
+environment is simply a list of pairs $e: \tau$ $$\begin\{aligned\}
+    \Gamma := [e_1: \tau_1,\dotsc,e_n: \tau_n]
+\end\{aligned\}$$ Judgments are the process by a type environment is used
+to derive a new term-type assignment. A judgment is written as
+$$\begin\{aligned\}
+    \Gamma \vdash e: \tau
+\end\{aligned\}$$ Read the above statement as \"type environment Gamma
+implies that term e is of type tau\".
+
+## Typing Rules
+
+Typing rules are rules for logical inference that describe how a given
+type system assigns a type to every term. A program is said to be well
+typed if every term has an associated type. An inference rule is given
+by the following general form.
+
+$$\begin\{aligned\}
+    \inference[]
+    \{
+     \textrm\{premises\}
+    \}
+    \{
+     \textrm\{conclusion\}
+    \}
+\end\{aligned\}$$
+
+If all the premises above the line are fulfilled, the conclusions below
+the line follows by the typing rule. Let's look at a more concrete
+example.
+
+$$\begin\{aligned\}
+    \inference[]
+    \{
+    \Gamma \vdash e_1 : \mathbb\{R\}, \quad \Gamma \vdash e_2 : \mathbb\{R\}
+    \}
+    \{
+    \Gamma \vdash e_1 + e_2 : \mathbb\{R\}
+    \}
+\end\{aligned\}$$
+
+The trick to reading typing rules is to convert them into English. The
+typing rule above corresponds to the following English statement:\
+\
+\"If expression $e_1$ has type $\mathbb\{R\}$ in type environment
+$\Gamma$, and if expression $e_2$ has type $\mathbb\{R\}$ in type
+environment $\Gamma$, then expression $e_1 + e_2$ has type $\mathbb\{R\}$
+in type environment $\Gamma$.\"\
+\
+Using common sense, this typing rule is encoding the statement that the
+sum of two real numbers is a real number. A type system for a
+programming language is specified by a series of typing rules like the
+one displayed above. We shall see multiple examples of type systems in
+the following chapters.
+
+## Exercises
+
+1.  We gave an example above of a typing rule for addition of real
+    numbers. Construct typing rules for subtraction, multiplication, and
+    division of real numbers.
+
+
+# Hindley-Milner Type System \{#chap:hindley_milner\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:type_theory\]](#chap:type_theory)\{reference-type="ref+label"
+reference="chap:type_theory"\},
+[\[chap:stlc\]](#chap:stlc)\{reference-type="ref+label"
+reference="chap:stlc"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+The simply typed lambda calculus suffices to write simple functions, but
+has no notion of generic functions. For example consider the following
+Physika function.
+
+``` \{.python language="python"\}
+def append(lst : [a], elt: a) $\to$ [a]:
+  return lst + [elt]
+```
+
+This function takes in a list of any type and appends a value to it.
+Note that $a$ is a *free type variable*. For this reason, we say that
+append is a polymorphic function. The Hindley-Milner type system
+provides an extension to the simply tped lambda calculus that handles
+polymorphic functions.
+
+## The Syntax of Hindley-Milner
+
+Expressions in Hindley-Milner languages take on the following syntactic
+forms. We start with the grammar for expressions
+
+$$\begin\{aligned\}
+\{2\}
+    e &:= x \quad &&\textrm\{variable\} \\
+    &\ |\ \ e_1 e_2 \quad &&\textrm\{application\} \\
+    &\ |\ \ \lambda x . e \quad &&\textrm\{abstraction\} \\
+    &\ |\ \ \textrm\{let \} x = e_1\textrm\{ in \}e_2 \quad &&\textrm\{binding\}
+\end\{aligned\}$$
+
+We introduce here the `let` clause which binds a variable within a local
+context. The `let` is a useful construct for building more complex
+programs. Here is the grammar for types, both non-polymorphic and
+polymorphic.
+
+$$\begin\{aligned\}
+\{2\}
+    \tau &:= \alpha \quad &&\textrm\{variable\} \\
+    &\ |\ \ C \tau \dotsc \tau \quad &&\textrm\{application\} \\
+    &\ |\ \ \tau \to \tau \quad &&\textrm\{abstraction\} \\
+    \sigma &:= \tau  \\
+    &\ |\ \ \forall \alpha . \sigma \quad &&\textrm\{quantifier\} \\
+\end\{aligned\}$$
+
+This grammar defines the different types present in Hindley-Milner
+languages. To provide a few examples, here are some valid Hindley-Milner
+programs (we assume for simplicity arithmetic operations are defined)
+
+    ($\lambda$ y. y +1) 5
+
+    let f = $\lambda y. y + 1$ in
+      f 3  
+
+## Typing Rules
+
+In order to determine the types of a Hindley-Milner program, we have to
+have suitable typing rules. These typing rules explain how to evaluate
+the types introduced by various Hindley-Milner syntax.
+
+$$\begin\{aligned\}
+\{2\}
+    &\inference[1.]
+    \{
+     x: \sigma \in \Gamma
+    \}
+    \{
+    \Gamma \vdash x : \sigma
+    \} \ \textrm\{[Var]\} &&\qquad
+    \inference[2.]
+    \{
+     c : T
+    \}
+    \{
+     \Gamma \vdash c : T 
+    \} \ \textrm\{[Cons]\} \\
+    &\inference[3.]
+    \{
+     \Gamma, x: \sigma \vdash e : \tau
+    \}
+    \{
+     \Gamma \vdash (\lambda x: \sigma . e) : (\sigma \to \tau)
+    \} \ \textrm\{[Abs]\}
+    &&\qquad 
+    \inference[4.]
+    \{ 
+     \Gamma \vdash e_1: \sigma \to \tau, \quad \Gamma \vdash e_2 : \sigma
+    \}
+    \{
+     \Gamma \vdash e_1 e_2 : \tau
+    \} \ \textrm\{[App]\}
+    \\
+    &\inference[5.]
+    \{
+     \Gamma \vdash e_0 : \sigma, \quad \Gamma, x: \sigma \vdash e_1 : \tau 
+    \}
+    \{
+     \Gamma \vdash \textrm\{let \} x = e_0 \textrm\{ in \} e_1 : \tau 
+    \} \ \textrm\{[Let]\}
+    &&\qquad 
+    \inference[6.]
+    \{
+     \Gamma \vdash e : \sigma', \quad \sigma' \sqsubseteq \sigma  
+    \}
+    \{
+     \Gamma \vdash e : \sigma 
+    \} \ \textrm\{[Inst]\}
+    \\
+    &\inference[7.]
+    \{
+     \Gamma \vdash e : \sigma, \quad \alpha \not\in \textrm\{free\}(\Gamma)  
+    \}
+    \{
+     \Gamma \vdash e : \forall \alpha . \sigma 
+    \} \ \textrm\{[Gen]\}
+\end\{aligned\}$$
+
+The notation $\sigma' \sqsubseteq \sigma$ means that $\sigma'$ is a more
+general instantiation of type $\sigma$. For example, the type
+`$\forall$ $\alpha$. $\alpha$ -> $\alpha$` is more general than
+`Int -> Int`. The terminology $\textrm\{free\}$ indicates the free
+variables in a given expression.
+
+## Type Inference
+
+Type inference is the algorithm that defines a type to a given
+expression in our language. Type inference is solvable for
+Hindley-Milner systems but not for more complex programming languages as
+we will see in later chapters.
+
+The union-find algorithm provides a method to solve for the types in a
+given Hindley-Milner program. We define a recursive procedure `unify`
+that is called repeatedly to unify type expressions. This algorithm
+starts by assigning symbolic types ($\tau_1$, $\tau_2$, etc) to all
+subexpressions. Using the typing rules, the algorithm constructs type
+equations in terms of type names. We solve type equations with the
+unification algorithm. In the code examples below, we make use of types
+
+``` \{.python language="python"\}
+Var, App, Name, Term
+```
+
+which encode language terms as types. Here `App` represents a function
+evaluation which has arguments as attributes. Similarly `Var` has a name
+attribute.
+
+``` \{.python language="python"\}
+class Term
+class App[Term](fname, args)
+class Var[Term](name)
+class Const[Term](value)
+```
+
+The unification algorithm `unify` returns an environment $\Gamma$ (map
+of name to term) that unifies `x` and `y`, or `None` if they can't be
+unified. The pseudocode below provides a partial implementation of the
+unification method (that leaves out some details).
+
+``` \{.python language="python"\}
+def unify(x: Var | App, y: Var | App, $\Gamma$: Optional[Name $\to$ Term]) -> Optional[Name $\to$ Term]:
+  if $\Gamma$ is None: None
+  elif x == y: $\Gamma$
+  elif x : Var: unify_variable(x, y, $\Gamma$)
+  elif y : Var: unify_variable(y, x, $\Gamma$)
+  elif x : App and y : App:
+    if len(x.args) != len(y.args): None
+    else:
+      for i in len(x.args):
+        unify(x.args[i], y.args[i], $\Gamma$)
+  else: None
+```
+
+The `unify_variable` algorithm solves the special case where `v` is
+known to be a variable
+
+``` \{.python language="python"\}
+def unify_variable(v: Var, x: Var | App, $\Gamma$: Optional[Name $\to$ Term]):
+  """Unifies variable v with term x, using $\Gamma$. """
+  if v.name in $\Gamma$: unify($\Gamma$[v.name], x, $\Gamma$)
+  elif x: Var and x.name in $\Gamma$: unify(v, $\Gamma$[x.name], $\Gamma$)
+  elif occurs(v, x, $\Gamma$): None
+  else:
+    # v is not yet in $\Gamma$ and can't simplify x. Extend $\Gamma$.
+    $\Gamma$ + \{v.name: x\}
+```
+
+The helper method `occurs` checks whether the specified variable appears
+in the given term.
+
+``` \{.python language="python"\}
+def occurs(v: Var, term: Term, $\Gamma$: Optional[Name $\to$ Term]) $\to$ Bool:
+  if v == term: True
+  elif term : Var and term.name in $\Gamma$: occurs(v, $\Gamma$[term.name], $\Gamma$)
+  elif term : App:
+    any(occurs(v, arg, $\Gamma$) for arg in term.args)
+  else: False
+```
+
+We next define representations of the core types in the Physika
+language. In particular, we define types for integers, booleans, type
+variables
+
+``` \{.python language="python"\}
+class IntType[Type]
+class BoolType[Type]
+class FuncType[Type](argtypes: [Type], rettype: Type):
+class TypeVar[Type](name)
+```
+
+The raw syntax for a program is processed into an abstract syntax tree,
+a data structure which represents the expression structure of a program.
+An auxiliary datastructure, the symbol table, is used to map symbols to
+types throughout the type inference process. Consider the code example
+
+``` \{.python language="python"\}
+b = 8
+c = 9
+def foo(a):
+  if a == 0 then b else c
+```
+
+The type inference procedure follows these steps
+
+1.  Visit the abstract syntax tree and assign types to all nodes. Known
+    types are assigned to constant nodes and fresh type variables to all
+    other nodes.
+
+2.  Visit the abstract syntax tree again, and apply type inference rules
+    to generate equations between types. The output is a list of type
+    equations which must be satisfied.
+
+3.  Solve these equations using the unification algorithm.
+
+We can define the core nodes in our abstract syntax tree as follows.
+
+``` \{.python language="python"\}
+class Expr(type: Type, children: [Expr])
+class AST[Expr]
+class LambdaExpr[Expr](name)
+class Identifier[Expr](name)
+class OpExpr[Expr](name)
+class IfExpr[Expr]
+class AppExpr[Expr]
+class IntConstant[Expr]
+class BoolConstant[Expr]
+```
+
+Our next function assigns type names to the given abstract syntax
+subtree and all its children. We track the initial symbol table $\Gamma$
+to query for identifiers found through the subtree. All identifiers in
+the subtree must be bound either in $\Gamma$ or in lambda expressions
+contained in the subtree.
+
+``` \{.python language="python"\}
+def assign(node: Expr, $\Gamma$=\{\}):
+    if node: Identifier:
+        if node.name in $\Gamma$:
+            node.type = $\Gamma$[node.name]
+    elif node : LambdaExpr:
+        node.type = TypeVar(fresh_typename())
+        local = \{\}
+        for argname in node.argnames:
+            typename = fresh_typename()
+            local[argname] = TypeVar(typename)
+        node.arg_types = local
+        assign(node.expr, $\Gamma$ + local)
+    elif node : OpExpr:
+        node.type = TypeVar(fresh_typename())
+        map($\lambda$ c: assign(c, $\Gamma$), node.children)
+    elif node : IfExpr:
+        node.type = TypeVar(fresh_typename())
+        map($\lambda$ c: assign(c, $\Gamma$), node.children)
+    elif node : AppExpr:
+        node.type = TypeVar(fresh_typename())
+        map($\lambda$ c: assign(c, $\Gamma$), node.children)
+    elif node : IntConstant:
+        node.type = IntType
+    elif node : BoolConstant:
+        node.type = BoolType
+    else:
+        raise TypingError('unknown node')
+```
+
+The `TypeEquation` type captures the type of an equation relating
+equality between two different types.
+
+``` \{.python language="python"\}
+class TypeEquation(left, right)
+```
+
+The following helper methods generate type equations from abstract
+syntax tree nodes.
+
+``` \{.python language="python"\}
+def generate_equations(node : Expr, equations : [TypeEquation]): 
+    left, right, type, children = node.left, node.right, node.type, node.children
+    if node : IntConstant:
+        equations += [TypeEquation(type, IntType)]
+    elif node : BoolConstant:
+        equations += [TypeEquation(type, BoolType)]
+    elif node : Identifier:
+        # Identifier references add no equations.
+        pass
+    elif node : OpExpr:
+        map($\lambda$ c: generate_equations(c, equations), children)
+        # All op arguments are integers.
+        equations += [TypeEquation(left.type, IntType), 
+                      TypeEquation(right.type, IntType)]
+        # Some ops return boolean, and some return integer.
+        if node.op in \{'!=', '==', '>=', '<=', '>', '<'\}:
+            equations += [TypeEquation(type, BoolType)]
+        else:
+            equations += [TypeEquation(type, IntType)]
+    elif node : AppExpr:
+        map($\lambda$ c: generate_equations(c, equations), chilren)
+        argtypes = [arg.type for arg in node.args]
+        # An application forces its function's type.
+        equations += [TypeEquation(node.func.type, FuncType(argtypes, type))]
+    elif node : IfExpr:
+        map($\lambda$ c: generate_equations(c, equations), children)
+        equations += [TypeEquation(node.ifexpr.type, BoolType),
+                      TypeEquation(type, node.thenexpr.type),
+                      TypeEquation(type, node.elseexpr.type)]
+    elif node : LambdaExpr:
+        map($\lambda$ c: generate_equations(c, equations), children)
+        argtypes = [node.arg_types[name] for name in node.argnames]
+        equations += [TypeEquation(type,
+                         FuncType(argtypes, node.expr.type))]
+    else:
+        raise TypingError
+```
+
+``` \{.python language="python"\}
+def unify_all_equations(ast: AST):
+  """Unifies all type equations in the sequence eqs.    """
+  eqs = generate_equations(ast)
+  $\Gamma$ = \{\}
+  for eq in eqs:
+    $\Gamma$ = unify(eq.left, eq.right, $\Gamma$)
+    if $\Gamma$ is None:
+      break
+  $\Gamma$
+```
+
+Here we use a helper method `generate_equations` which computes the type
+equations for a given program.
+
+## Exercises
+
+1.  Use the typing rules to determine the type of the following
+    expression.
+
+          let x = 5 in
+            $\lambda$ y . x + y
+
+2.  Implement the language term types `Var, App`, etc. to complete the
+    pseudocode for the unification algorithm.
+
+3.  Implement the `occurs` helper method.
+
+
+# Automatic Differentiation \{#chap:autodiff\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:calculus\]](#chap:calculus)\{reference-type="ref+label"
+reference="chap:calculus"\},\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+A differentiable programming language is one in which differentiation
+becomes a first class primitive in the language. Before we can define
+the syntax and semantics of a differentiable programming language, we
+need to first provide a mathematical definition for what differentiation
+of a program means.
+
+Derivatives can analytically be obtained when a functional form is known
+but can get tedious when the functional mapping is complex. Often
+derivatives are obtained numerically using a finite difference approach
+where the first derivative is computed as
+$$f'(x)=\frac\{f(x+h)-f(x)\}\{h\},\quad h \mathrm\{\ is\ small\}.$$ Similarly,
+the second derivative is typically numerically computed as
+$$f''(x)=\frac\{f(x+h)-2f(x)+f(x-h)\}\{h^2\},\quad h \mathrm\{\ is\ small\}.$$
+
+Automatic differentiation provides methods for automatically computing
+exact derivatives (up to floating-point error) given only the function
+$f$ itself. Automatic differentiation leverages the fact that every
+computer program executes a sequence of elementary arithmetic operations
+and elementary functions. By applying the chain rule repeatedly to these
+operations, derivatives of arbitrary order can be computed
+automatically, accurately to working precision, and using at most a
+small constant factor more arithmetic operations than the original
+program.
+
+![Automatic Differentiation
+Scheme](figures/Differentiable Programming/Programming Languages/automatic_differentiation/AutomaticDifferentiationNutshell0.png)\{#fig:AD\}
+
+Automatic differentiation is distinct from both symbolic differentiation
+and numerical differentiation. Symbolic differentiation typically
+involves converting a computer program into a single expression, which
+could lead to inefficient code, while numerical differentiation by means
+of finite differences can introduce round-off errors in the
+discretization process and cancellation. Both numerical and symbolic
+differentiation are associated with errors and increased complexity when
+computing higher derivatives. As a result, these methods are slow at
+computing partial derivatives of a function with respect to many inputs,
+as is needed for gradient-based optimization algorithms. Automatic
+differentiation provides a way to eliminate all of these issues.
+
+### Automatic Differentiation Methodology
+
+The core idea behind automatic differentiation is the chain rule. Every
+computer program or function can be viewed as a series of mathematical
+transformations or operations to the input variables to arrive at the
+output variables. Therefore, the input-output relationship is
+essentially a composite function with nested elementary operations. The
+chain rule allows computing the derivative of the composite function
+given prior knowledge of derivative functions associated with elementary
+operations. An implementation of the chain rule can be built into
+software packages to provide automatic derivatives for functions.
+
+For a simple case let $y$ represent the output vector, $x$ the input
+vector, and $f$, $g$ and $h$ the elementary operations. The mapping can
+be written as $y=f(g(h(x)))$. Applying the chain rule implies that
+
+$$\frac\{dy\}\{dx\}=\frac\{dy\}\{dg_x\}\frac\{dg_x\}\{dh_x\}\frac\{dh_x\}\{dx\}$$
+
+where $h_x=h(x)$, $g_x=g(h(x))$, and $y=f(g_x)$.
+
+### Demonstration of Automatic Differentiation for a Simple Program
+
+Let's take a program that encodes function $f(x)$ with variable $x$ as
+input and computes $(a \sin(x)+b)^2$, where $a$ and $b$ are constants.
+The program might looks like the following:
+
+    def f(x: $\mathbb\{R\}$) $\to$ $\mathbb\{R\}$:
+      a, b = 1, 2
+      u = sin(x)
+      v = a*u+b
+      y = v$^2$
+      y
+
+For this program, an automatic differentiation package identifies the
+elementary operations and computes the derivatives in a serial manner
+and returns thee product of the derivatives of individual steps in
+accordance with the chain rule as $f'(x)$. The automatic differentiation
+computation would involve the following calculations alongside the
+program to be able to return the derivatives of the function:
+
+    u' = cos(x)
+    v' = a
+    y' = 2*v
+    f' = y'*v'*u'
+    f'
+
+Forward accumulation and reverse accumulation are two different modes of
+automatic differentiation that packages use where forward accumulation
+involves traversing the chain rule from the innermost operation to the
+outermost operation while reverse accumulation involves traversing in
+the opposite order.
+
+Let's look at a simple example, a simple neural network with one hidden
+layer and two inputs. Let's assume that the weights and biases are
+computed through a training process are we are interested in computing
+the sensitivity of the output variable, on the input variables. As
+discussed earlier, automatic differentiation enables the program to
+compute the gradients with respect to the inputs without deriving and
+specifying the gradient functions.
+
+``` \{.python language="python"\}
+def two_layer_net(w: $\mathbb\{R\}$, h: $\mathbb\{R\}$, weights: $\mathbb\{R\}^6$, biases: $\mathbb\{R\}^3$) -> $\mathbb\{R\}$:
+  b1, b2, b3 = biases
+  w1, w2, w3, w4, w5, w6 = weights
+  g1 = b1 + w1*w + w2*h
+  g2 = b2 + w3*w + w4*h
+  h1 = $\sigma$(g1)
+  h2 = $\sigma$(g2)
+  u1 = b3 + w5*h1 + w6*h2
+  o1 = $\sigma$(u1)
+```
+
+We can now compute the dependence of the two layer network on its first
+input as given by the gradient.
+
+``` \{.python language="python"\}
+w: $\mathbb\{R\}$, h: $\mathbb\{R\}$
+weights: $\mathbb\{R\}^6$, biases: $\mathbb\{R\}^3$
+h = two_layer_network(w, h, weights, biases)
+$\nabla$(h, w)
+```
+
+Automatic differentiation is extremely useful in machine learning owing
+to the fact that computing gradients of functions especially in
+backpropagation is central to learning algorithms.
+
+## Exercises
+
+1.  Compute the following derivatives. Note that we have multiple
+    inputs, which implies that the derivative output has two components
+    `w,h`:
+
+    ``` \{.python language="python"\}
+    $\nabla$(g1, w) =                    
+    $\nabla$(g1, h) =
+    $\nabla$(g2, w) =                    
+    $\nabla$(g2, h) =
+    $\nabla$(h1, g1) =
+    $\nabla$(h2, g2) =
+    $\nabla$(u1, h1) =              
+    $\nabla$(u1, h2) =
+    $\nabla$(o, u1) =
+    ```
+
+
+# Grammars \{#chap:grammar\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:** High School Level Mathematics\
+**Difficulty Level:** \*\
+
+------------------------------------------------------------------------
+
+Over the next several chapters, we will introduce the foundations of
+programming language theory and build up to an explanation of how
+Physika works. We start with basics: the syntax of a programming
+language is given by a grammar, a set of rules for expanding out terms
+of a language. In this chapter, we introduce the basics of grammars.
+
+## Backus-Naur Form
+
+Backus-Naur Form (BNF) provides a mechanism to define how a programming
+language is defined. The simple grammar below defines the syntax for a
+very simple programming language with arithmetic. $$\begin\{aligned\}
+    e ::= & c  \\
+    &| e + e \\
+    &| e - e \\
+    &| e * e \\
+    &| e / e \\
+    c ::= & digit | nonzero\ c \\
+    digit ::= & 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 \\
+    nonzero ::=  & 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
+\end\{aligned\}$$ This layout should be read as a form of combinatorial
+expansion. Valid examples of strings in this language would be
+
+    3, 3 + 4, 3 + 4 + 5, 4 + 5 / 6
+
+Note how the symbolic form of the BNF governs the type of expressions
+that can be formed. In later chapters, we will use use BNF to define
+more complicated programming languages.
+
+## Lexers and Parsers
+
+Although this book isn't focused on the practical computer science and
+engineering considerations needed to implement a language, we note
+briefly that to implement a simple language we would need to define a
+lexer which transforms input text into tokens, and a parser, which
+assembles these tokens into an abstract syntax tree. There are a number
+of packages available which convert a given Backus-Naur form into a
+lexer/parser that can be used for language implementation.
+
+If you would like to learn more about these methods, we recommend
+referring to a standard compilers textbook.
+
+## Exercises
+
+1.  The simple language defined above doesn't handle operator ordering
+    correctly. For example, you cannot write the equivalent of the
+    fraction $$\begin\{aligned\}
+            \frac\{3+4\}\{5+6\}
+        
+    \end\{aligned\}$$ Define a Backus-Naur Form grammar for a language
+    with correct operator handling for arithmetic expressions.
+
+
+# Semantics for Differentiable Programs \{#chap:grammar\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:autodiff\]](#chap:autodiff)\{reference-type="ref+label"
+reference="chap:autodiff"\},
+[\[chap:hindley_milner\]](#chap:hindley_milner)\{reference-type="ref+label"
+reference="chap:hindley_milner"\}\
+**Difficulty Level:** \*\*\*\
+
+------------------------------------------------------------------------
+
+While we have studied semantics for simply typed and polymoriphically
+typed languages in the last few chapters, we have not yet seen how to
+model the semantics of a differentiable programming language. In this
+chapter, we present $\lambda_S$, a system of semantics for a
+differentiable programming language.
+
+## Physika is a Functional Language
+
+Throughout this book, we have given Physika code in what looks like
+imperative style. Most numerical programming and deep learning texts
+provide examples in imperative code, so allowing Physika to follow the
+same style simplifed exposition considerably. However, implementing
+automatic differentiation in an imperative language causes considerable
+additional difficulty since the values of variables can change during
+execution.
+
+For this reason, underneath the hood, Physika is actually a fully
+functional programming language. Let's work through a code example.
+Consider the imperative code
+
+    sum = 0
+    for i in 100:
+      sum += i
+
+Physika converts this loop into code that looks roughly like
+
+``` \{.python language="python"\}
+sum = 0
+sum0 = sum + 0
+sum1 = sum0 + 1
+sum2 = sum1 + 2
+...
+```
+
+That is, the loop is fully unrolled and each update to a variable
+actually creates an entirely new variable.
+
+As another example, consider
+
+``` \{.python language="python"\}
+setting = 3
+def g():
+  setting += 1
+  setting
+print(g())
+```
+
+This code is unrolled into
+
+``` \{.python language="python"\}
+setting = 3
+setting = setting + 1
+print(setting)
+```
+
+This unrolling operation allows for every Physika control structure to
+be unrolled into a simple trace that can be automatically
+differentiated.
+
+## Converting to Traces
+
+The core idea of how we assign semantics to Physika programs is that we
+simplify Physika programs into linear traces. The idea is that a complex
+program which may involve control structures is transformed into a
+simple list of instructions. This simpler architecture can then be
+directly backpropagated through in order to generate the needed
+gradients. Note that such a simplification tranform is always possible
+since any program must at the end of the transform down to simple
+instructions that can be run on assembly.
+
+We define a sub-language, the Physika trace language that is a
+restricted subset of Physika that has no conditional statements, no
+function definitions, no function calls, and no reverse mode
+differentiation. We define a series of transformations that transform an
+arbitrary Physika program into a trace language call. After the
+simplification transformations, Physika will be reduced to a core
+language that satisfies the following grammar.
+
+$$\begin\{aligned\}
+    C ::= & x  \\
+    &| r \in \mathbb\{R\} \\
+    &| C + D \\
+    &| (C, D) \\
+    &| C[i]   \\
+    &| C(D)
+\end\{aligned\}$$
+
+## Denotational Semantics
+
+Denotational semantics provide a mechanism to turn a Physika program
+into a function on a suitable mathematical space.
+
+$$\begin\{aligned\}
+    \llbracket R \rrbracket &= \mathbb\{R\} \\
+    \llbracket T \times U \rrbracket &= \llbracket T \rrbracket \times \llbracket U \rrbracket \\
+    \llbracket M + N \rrbracket &= \llbracket M \rrbracket + \llbracket N \rrbracket \\
+    \llbracket (M, N) \rrbracket &= (\llbracket M \rrbracket, \llbracket N \rrbracket)
+\end\{aligned\}$$
+
+The above fragment provides a partial listing of the denotational
+semantics for Physika programs that demonstrates how arithmetic
+operations can be mapped to corresponding operations on the real
+numbers.
+
+
+# Differentiable Programming \{#chap:diffprog\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:ml_basics\]](#chap:ml_basics)\{reference-type="ref+label"
+reference="chap:ml_basics"\},
+[\[chap:grad_descent\]](#chap:grad_descent)\{reference-type="ref+label"
+reference="chap:grad_descent"\},
+[\[chap:autodiff\]](#chap:autodiff)\{reference-type="ref+label"
+reference="chap:autodiff"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+In this chapter, we will seek to extend the basic material on machine
+learning with material more specific to \"differentiable programming.\"
+You might very reasonably ask here, what's the difference between
+differentiable programming and more standard machine learning? There
+really isn't a clear dividing line, but perhaps differentiable programs
+are more akin to classical programs with control structures such as
+loops, conditionals, and branching.
+
+You might also ask reasonably, which programs can be made
+differentiable? This is an open question for now, but as you will see in
+this chapter, a very broad range of programs can fruitfully be made
+differentiable. We will up front state an intriguing conjecture
+
+::: conjecture
+Any algorithm can be transformed into a differentiable program.
+:::
+
+To be up front, we don't entirely believe in this conjecture ourselves,
+but it serves as a powerful goal to either prove or disprove. If true,
+it implies that all the machinery of classical computer science can be
+adapted for differentiable programs. If false, it hints at potential
+future generalizations of differentiable programming.
+
+## Adapting Classical Control Structures
+
+In this section, we will consider how to adapt classical control
+structures into differentiable programs explicitly.
+
+### Condition Statements
+
+Here's a simple example of a conditional statement in Physika
+
+    def h(x):
+      if condition:
+        f(x)
+      else:
+        g(x)
+
+We can convert this into a differentiable program by the following
+branch statement
+
+    h(x) = $\sigma$ f(x) + $(1 - \sigma)$ g(x) 
+
+The basic idea here is that we allow for a linear combination of $f$ and
+$g$ controlled by a differentiable parameter $\sigma$ that can be
+learned.
+
+You might at this point reasonably ask, wait, we said Physika supports
+differentiation through the source code. Why would we use this
+alternative style instead? The answer comes down to optimization. At
+times, this alternative structure may perform more smoothly. As with
+many things in machine learning (and differentiable programming), at
+times the best answer is to just try both and see.
+
+### Loops
+
+Here's a generic loop structure
+
+    def h(a : int[N]):
+      for i in range(N):
+        z = f(z, a[i], i)
+      return z
+
+Note that this loop structure can be modeled by an RNN
+
+TODO: Write down RNN equations here or elsewhere.
+
+### Top K
+
+### SAT Solving

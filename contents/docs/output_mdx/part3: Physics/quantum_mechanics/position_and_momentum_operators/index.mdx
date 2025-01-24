@@ -1,0 +1,202 @@
+# An Introduction to Quantization \{#chap:position_and_momentum\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:quantum_mechanics\]](#chap:quantum_mechanics)\{reference-type="ref+label"
+reference="chap:quantum_mechanics"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+In this chapter we define the quantum mechanical analogues to position
+and momentum, the position and momentum operators. The general pattern
+is that the mathematical formulation of quantum mechanics turns
+classically vectorial quantities such as position and momentum into
+operators. This process is called *quantization*. The intuition is that
+the state space in quantum mechanics is more complex than that for
+classical mechanics. In classical physical theories, typically a state
+was a vector in $\mathbb\{R\}^n$. However, in quantum mechanics we operate
+in a larger Hilbert space of wave functions. It turns out that the right
+formulation for common quantities turns out to be operators that
+transform wave functions.
+
+## Position Operators
+
+The position of a wave functions is a trickier prospect than the
+position of a particle. Unlike a particle, the wave function $\psi$
+spreads out over all of space. How can we pick any one position for the
+wave function? One way to make sense of this is to use the fact that
+$\psi$ defines a probability density $\rho$. Perhaps we could define the
+position of a wave function as the expected value of probability density
+$\rho$?
+$$E_\rho[x] = \int_\{-\infty\}^\{\infty\} x |\psi(x)|^2 dx = \int_\{-\infty\}^\{\infty\} \psi^* x \psi dx$$
+
+This seems to be getting a little closer to what we're looking for, but
+is still a little unsatisfactory. The particle doesn't necessarily have
+to be at $E_\rho[x]$. However, we can re-use a part of the definition
+above to define the position operator by
+$$(\hat\{x\} \psi)(x) = x \psi(x)$$ That is, we have the identity
+$$E_\rho[x] = \langle \psi | \hat\{x\} | \psi \rangle$$ We can define this
+operator in Physika
+
+``` \{.python language="python"\}
+def $\hat\{x\}$($\psi$: $L^2(\mathbb\{R\})$) -> $L^2(\mathbb\{R\})$:
+  return $\lambda$ x: x * $\psi(x)$
+```
+
+One mathematical subtlety is the fact that $\hat\{x\}$ is not in
+$\mathcal\{B\}(L^2(\mathbb\{R\}))$ so we're actually operating in a larger
+type space. The reason is that the norm of the $\hat\{x\}$ operator can
+get unboundedly large. To see this, note that the identity function
+$f(x) = x$ is not in $L^2(\mathbb\{R\})$ since it has unbounded norm
+
+$$\begin\{aligned\}
+    \int_\{-\infty\}^\{\infty\}\|x\|^2 dx = \infty
+\end\{aligned\}$$
+
+As a result, multiplying by $x$ can take functions in $L^2$ outside
+$L^2$. For this reason, we have to restrict the definition of the
+position operator to a subset of $L^2(\mathbb\{R\})$ such that multiplying
+by $x$ does not exist $L^2$. This space is the Schwartz space
+$\mathcal\{S\}(\mathbb\{R\})$. The picture is a bit more complicated even in
+that we want to operate on the dual space of the Schwartz space, which
+is the space of tempered distributions. So $\hat\{x\}$ takes a tempered
+distribution over $\mathbb\{R\}$ to another tempered distribution
+
+$$\begin\{aligned\}
+\hat\{x\}: \mathcal\{S\}(\mathbb\{R\}) \to \mathcal\{S\}(\mathbb\{R\})
+\end\{aligned\}$$
+
+## Momentum Operator
+
+Momentum is also defined as an operator in the quantum mechanical
+formulation. $$\begin\{aligned\}
+\hat\{p\}_x = -i \hbar \frac\{\partial\}\{\partial x\}
+\end\{aligned\}$$ We can define this operator in Physika as
+
+``` \{.python language="python"\}
+def $\hat\{p\}$($\psi$: $L^2(\mathbb\{R\})$) $\to$ $L^2(\mathbb\{R\})$:
+  return -i * $\hbar$ * $\nabla$($(\psi)$)
+```
+
+It turns out that momentum like position is an unbounded operator (to
+convince yourself of this fact, take the Fourier transform, in which
+basis the momentum operator is multiplication by $p$). For this reason,
+the momentum operator has the type
+
+$$\begin\{aligned\}
+\hat\{p\}: \mathcal\{S\}(\mathbb\{R\}) \to \mathcal\{S\}(\mathbb\{R\})
+\end\{aligned\}$$
+
+## Position and Momentum Operators in 3D
+
+The position and momentum operators can be defined naturally in 3D by
+defining operators for each componeent.
+
+$$\begin\{aligned\}
+    \hat\{r\} &= (\hat\{x\}, \hat\{y\}, \hat\{z\}) \\
+    \hat\{p\} &= (\hat\{p\}_x, \hat\{p\}_y, \hat\{p\}_z)
+\end\{aligned\}$$
+
+For convenience in formulas we will often also write $$\begin\{aligned\}
+    \hat\{r\} &= (\hat\{x\}_1, \hat\{x\}_2, \hat\{x\}_3) \\
+    \hat\{p\} &= (\hat\{p\}_1, \hat\{p\}_2, \hat\{p\}_3)
+\end\{aligned\}$$
+
+At times, we will drop the hats for convenience in formulas.
+
+## Canonical Commutation Relationship
+
+As operators, position and momentum no longer necessarily commute! In
+fact, the position and momentum operators obey the following commutation
+relationship
+
+$$\begin\{aligned\}
+    [x_i, p_j] &= i \hbar \delta_\{ij\}
+\end\{aligned\}$$ Note that we have dropped the hats from the formulas
+above. Here $\delta_\{ij\}$ is the Kronecker Delta. We work through a
+couple of these commutation relationships explicitly. Let's start with
+the case $i = j = 1$
+
+$$\begin\{aligned\}
+    [x_1, p_1](f) &= [x, -i\hbar \frac\{\partial\}\{\partial x\}](f) \\
+    &= -i\hbar x\frac\{\partial f\}\{\partial x\}  + i \hbar \frac\{\partial\}\{\partial x\} \left (x f \right) \\
+    &= -i\hbar x\frac\{\partial f\}\{\partial x\}  + i \hbar f + i \hbar x \frac\{\partial f\}\{\partial x\} \\
+    &= i \hbar f
+\end\{aligned\}$$
+
+Let's now consider the case $i \neq j$.
+
+$$\begin\{aligned\}
+    [x_1, p_2](f) &= [x, -i \hbar \frac\{\partial\}\{\partial y\}](f) \\
+    &= -i \hbar x \frac\{\partial f\}\{\partial y\} + i \hbar \frac\{\partial\}\{\partial y\} \left (x f \right ) \\
+    &= -i \hbar x \frac\{\partial f\}\{\partial y\} + i \hbar x \frac\{\partial f\}\{\partial y\} \\
+    &= 0
+\end\{aligned\}$$ Note that in this case, since $x$ and $y$ are
+independent variables, the relationships commute with one another.
+
+## Momentum Wave Functions
+
+Consider the wavefunction $\psi(x)$ describing a possible state of a
+quantum particle. Once you rescale $\psi$ so it is normalized, the
+absolute probability density is $$\begin\{aligned\}
+p(x) &= |\psi(x)|^2
+\end\{aligned\}$$ for any $x$. If you look closely at the solution for the
+particle in a box, the wavelength $\lambda$ is equal to $2L/n$ and the
+wavefunction $$\begin\{aligned\}
+\psi_n(x) &=\sqrt\{\frac\{2\}\{L\}\} \sin\left (\frac\{n \pi x\}\{L\}\right )
+\end\{aligned\}$$ can be expressed as $$\begin\{aligned\}
+\psi_n(x) = \sqrt\{\frac\{2\}\{L\}\}\sin \left( \frac\{ p_nx\}\{\hslash\}\right)
+\end\{aligned\}$$ where $p_n$ is momentum of the particle in state $n$ and
+can be expressed in terms of wavelength using the de Broglie relation
+$$\begin\{aligned\}
+p_n &= \frac\{h\}\{\lambda_n\}
+\end\{aligned\}$$. Remember $\hslash = h/2\pi$.
+
+The wavefunction $\psi_p(x)$ of a particle in a state of momentum $p$
+can be expressed as $$\begin\{aligned\}
+\psi_p(x)=e^\{ip x/\hslash\}
+\end\{aligned\}$$. The subscript $p$ tells us that this wavefunction
+describes a particle of definite momentum, say $p$. In quantum
+mechanics, a particle of definite momentum $p$ has a definite wavelength
+$\lambda$ as this function does.
+
+This $\psi_p(x)$ is not normalized so we multiply it by a number $A$ and
+choose A so that we get a normalized function $$\begin\{aligned\}
+\int_\{\mathbb\{R\}\}|A|^2|e^\{\frac\{ipx\}\{\hslash\}\}|^2dx=\int_\{\mathbb\{R\}\}|A|^2dx=|A|^2L=1
+\end\{aligned\}$$ where $L$ is the length of a box we consider. Hence, a
+normalized state of momentum can be expressed as: $$\begin\{aligned\}
+\psi_p(x)=\frac\{1\}\{\sqrt\{L\}\}e^\{\frac\{ipx\}\{\hslash\}\}
+\end\{aligned\}$$
+
+In quantum mechanics, the complete information about the particle is
+given by wavefunction $\psi(x)$. Given this $\psi(x)$ we can ask where
+is the particle? As discussed earlier, the answer is you can find it any
+place where $\psi(x)$ is non-zero and the probability density is
+$P(x)=|\psi(x)|^2$.
+
+Similarly, we can ask what happens if we measure the particle's
+momentum. The information is contained in $\psi(x)$ itself. However, it
+takes more work than simply finding $|\psi(x)|^2$, which was the case
+for $P(x)$.
+
+To answer the question, we can expand thes wavefunction in terms of
+Fourier series, as follows: $$\begin\{aligned\}
+\psi(x) &= \sum_\{p\} A_p \frac\{e^\{\frac\{ipx\}\{\hslash\}\}\}\{\sqrt\{L\}\}\\
+&=\sum_\{p\}A_p\psi_p(x)
+\end\{aligned\}$$ where $A_p$ is given as $$\begin\{aligned\}
+A_p=\int_\{0\}^\{L\}\frac\{1\}\{\sqrt\{L\}\}e^\{-\frac\{ipx\}\{\hslash\}\}\psi(x) dx
+\end\{aligned\}$$
+
+The probability of obtaining a value of momentum $p$ would be
+$$P(p)=|A_p|^2$$
+
+## Exercises
+
+1.  Prove that $f(x) = \frac\{1\}\{x\}$ is in $L^2(\mathbb\{R\})$. Prove that
+    $\hat\{x\}(f)$ is not in $L^2(\mathbb\{R\})$
+
+2.  Prove that the \"eigenfunctions\" of $\hat\{x\}$ are shifted versions
+    of the Diract distribution $\delta(x-x_0)$.

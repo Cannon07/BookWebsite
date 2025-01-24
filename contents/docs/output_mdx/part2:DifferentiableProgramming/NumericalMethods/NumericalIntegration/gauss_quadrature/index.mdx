@@ -1,0 +1,205 @@
+# Numerical Integration with Gaussian Quadrature \{#chap:gauss_quadrature\}
+
+------------------------------------------------------------------------
+
+\
+**Prerequisites:**
+[\[chap:calculus\]](#chap:calculus)\{reference-type="ref+label"
+reference="chap:calculus"\},
+[\[chap:trapezoidal\]](#chap:trapezoidal)\{reference-type="ref+label"
+reference="chap:trapezoidal"\}\
+**Difficulty Level:** \*\*\
+
+------------------------------------------------------------------------
+
+In this chapter, we learn how Gaussian quadrature provides for superior
+integral estimates by picking optimal abcissas at which to evaluate the
+function. We study the importance of Gauss-Hermite and Gauss-Laguerre
+quadratures for estimating integrals with $\infty$ limits. We then study
+the use of Gauss-Legendre quadrature for approximating integrals with
+finite limits.
+
+## Gaussian Quadrature
+
+So far, we have employed the Newton-Cotes equations to evaluate the
+integrals. However, these methods provide estimates for integrals but
+are not exact. In addition, they cannot be used to evaluate improper
+integrals, which are definite integrals that have either or both of the
+limits infinite. These cases will have to be approximated further and
+evaluated using large numbers tending to infinity. For example, consider
+the integral $\int_\{-\infty\}^\{\infty\}e^\{-x^2\}\tan(x)dx$. The methods
+discussed in the previous chapters (Trapezoidal and Simpson's Rule) will
+yield results with large error. The Gauss quadrature methods discussed
+in this chapter will enable us to evaluate these integrals either
+exactly or with high accuracy.
+
+In numerical analysis, *quadrature* rule is an approximation of the
+integral of a function, usually stated as a weighted sum of function
+values at specified points within the domain of integration. By choosing
+these weights and positioning these specified points mathematically
+wisely, a very accurate estimate of the integral is obtained. These
+quadrature methods extend to integrals with infinite limits in addition
+to cases with finite limits. Note that any integral with finite limits
+can be converted to an integral going from $-1$ to $1$ by a simple
+change of variables, which will be used in the Gauss-Legendre quadrature
+later. The general $n$-point quadrature rule is given as
+$$\begin\{aligned\}
+I \cong c_0f(x_0) + c_1f(x_1) + \dots + c_\{n-1\}f(x_\{n-1\})
+\end\{aligned\}$$ where $c_i$ are the weights, $x_i$ are the points and
+$n$ is the number of points to be chosen.
+
+To evaluate such integrals, three common quadrature rules are used
+
+1.  *Gauss-Hermite Quadrature* evaluates integrals of the form
+    $\int_\{-\infty\}^\{\infty\}e^\{-x^2\}f(x)dx$. It can be extended to
+    improper integrals of any function with both limits unbounded.
+
+2.  *Gauss-Legendre Quadrature* evaluates integrals of the form
+    $\int_\{-1\}^\{1\}f(x)dx$. For polynomial functions of degree up to
+    $2n-1$, function evaluations at $n$ chosen points and corresponding
+    weights yield exact integral value.
+
+3.  *Gauss-Laguerre Quadrature* evaluates integrals of the form
+    $\int_\{0\}^\{\infty\}e^\{-x\}f(x)dx$. It can be extended to improper
+    integrals of any function with one of the two limits unbounded.
+
+Gauss quadrature yields the exact integral or a highly accurate estimate
+in cases where the function $f(x)$ to be integrated is known. For
+engineering applications where tabulated data is given at specific $x$
+values, a fit to the data is necessary to obtain the functional form, or
+if the functional form is knows from the physics of the system, Gauss
+quadrature can be used by interpolating at the quadrature points from
+the tabulated data. When the functional form is arbitrary or unknown,
+methods like Trapezoidal rule and Simpson's rule are favorable.
+
+## Gauss-Hermite Quadrature
+
+## Gauss-Legendre Quadrature
+
+Gauss-Legendre Quadrature is used to evaluate integrals with both the
+limits as finite which are of the form $\int_\{-1\}^\{1\}f(x)dx$. Using the
+two-point approximation,
+
+$$\begin\{aligned\}
+I = \int_\{-1\}^\{1\}f(x)dx \cong c_0f(x_0) + c_1f(x_1)
+\end\{aligned\}$$
+
+where the $c$'s are the unknown coefficients. Thus, we now have a total
+of four unknowns $c_0, c_1, x_0, x_1$ that must be evaluated, and
+consequently, we require four conditions to determine them exactly.
+
+We can obtain two of these conditions by assuming that the above
+equation fits the integral of a constant and a linear function exactly.
+Then, to arrive at the other two conditions, we merely extend this
+reasoning by assuming that it also fits the integral of a parabolic
+($y = x^2$) and a cubic ($y = x^3$) function. By doing this, we
+determine all four unknowns and in the bargain derive a linear two-point
+integration formula that is exact for cubics.
+
+::: marginfigure
+![image](figures/part1b/gauss_quadrature/twopoint01.png)\{width="2.7in"\}
+:::
+
+The four equations to be solved are $$\begin\{aligned\}
+    c_0 + c_1 &= \int_\{-1\}^\{1\}1dx = 2\\
+    c_0x_0 + c_1x_1 &= \int_\{-1\}^\{1\}xdx = 0\\
+    c_0x_0^2 + c_1x_1^2 &= \int_\{-1\}^\{1\}x^2dx = \frac\{2\}\{3\} \\
+    c_0x_0^3 + c_1x_1^3 &= \int_\{-1\}^\{1\}x^3dx = 0
+\end\{aligned\}$$ The symmetry of the weights and points in Gauss-Legendre
+can be observed from the above results. On simultaneously solving the
+above equations, we obtain, $$\begin\{aligned\}
+c_0 = c_1 = 1, x_0 = -\frac\{1\}\{\sqrt\{3\}\}, x_1 = \frac\{1\}\{\sqrt\{3\}\}    
+\end\{aligned\}$$ Therefore, the two-point Gauss-Legendre formula is
+$$\begin\{aligned\}
+I = f(-\frac\{1\}\{\sqrt\{3\}\}) + f(\frac\{1\}\{\sqrt\{3\}\})
+\end\{aligned\}$$. Thus, we arrive at the interesting result that the
+simple addition of the function values at $x$ = $-1/\sqrt\{3\}$ and
+$1/\sqrt\{3\}$ yields an integral estimate that is third-order accurate.
+
+Notice that the integration limits in the above equations are from -1
+to 1. This was done to simplify the mathematics and to make the
+formulation as general as possible. A simple change of variable can be
+used to translate other limits of integration into this form. This is
+accomplished by assuming that a new variable $x_d$ is related to the
+original variable $x$ in a linear fashion, $x = a_1 + a_2x_d$. The lower
+limit, $x$ = $a$, corresponds to $x_d$ = -1. The upper limit, $x$ = $b$,
+corresponds to $x_d$ = 1. These are substituted in the equation above to
+give, $$\begin\{aligned\}
+    a &= a_1 + a_2(-1)\\
+    b &= a_1 + a_2(1)
+\end\{aligned\}$$ On solving the above equations for $a_1$, $a_2$ and
+substituting for $x$, we get $$\begin\{aligned\}
+    a_1 &= \dfrac\{b+a\}\{2\}\\
+    a_2 &= \dfrac\{b-a\}\{2\}\\
+    x &= \dfrac\{(b+a) + (b-a)x_d\}\{2\}
+\end\{aligned\}$$ This equation can be differentiated to give
+$x = \dfrac\{b-a\}\{2\}dx_d$ These substitutions effectively transform the
+integration interval without changing the value of the integral.
+
+    def gauss_legendre(f):
+      return f($-1/\sqrt\{3\})$ + f($1/\sqrt\{3\})$ 
+
+As an example, we can try evaluating $\int_\{-1\}^\{1\}\tan^2(x)dx$
+
+``` \{.python language="python"\}
+def f(x: $\mathbb\{R\}$): $\mathbb\{R\}$ 
+  return tan(x)$^2$
+I = gauss_legendre(f)
+```
+
+It can be observed that the actual value of the integral is
+significantly different from the estimated integral from Gauss-Legendre
+quadrature. This is because, Gauss-Legendre gives accurate results for
+$(2N-1)^\{th\}$ order functions. In our case, since $N=2$, it can
+accurately measure integrals of third-order functions. This can be
+clearly observed from the next example.
+
+Let's try evaluating $\int_\{-1\}^\{1\}(5x^3 + 7x^2 +  2x + 3)dx$
+
+    def f(x: $\mathbb\{R\}$): $\mathbb\{R\}$ 
+      return 5*x$^3$ + 7*x$^2$ + 2*x + 3;
+    I =gauss_legendre(f)
+
+## Gauss-Laguerre Quadrature
+
+Gauss-Laguerre Quadrature is used to evaluate improper integrals with
+one of the limits as $\infty$ which are of the form
+$\int_\{0\}^\{\infty\}e^\{-x\}f(x)dx$. Using the two-point approximation,
+
+$$\begin\{aligned\}
+I = \int_\{0\}^\{\infty\}e^\{-x\}f(x)dx \cong c_0f(x_0) + c_1f(x_1)
+\end\{aligned\}$$ where the $c$'s are the unknown coefficients. Thus, we
+again have a total of four unknowns $c_0, c_1, x_0, x_1$ that must be
+evaluated, and consequently, we require four conditions to determine
+them exactly.
+
+We can obtain two of these conditions by assuming that the above
+equation fits the integral of a constant and a linear function exactly.
+Then, to arrive at the other two conditions, we merely extend this
+reasoning by assuming that it also fits the integral of a parabolic
+($y = x^2$) and a cubic ($y = x^3$) function.
+
+The two equations to be solved are $$\begin\{aligned\}
+c_0 + c_1 &= \int_\{0\}^\{\infty\}e^\{-x\}dx = 1\\
+c_0x_0 + c_1x_1 &= \int_\{0\}^\{\infty\}e^\{-x\}xdx = 1\\
+c_0x_0^2 + c_1x_1^2 &= \int_\{0\}^\{\infty\}e^\{-x\}x^2dx = 2 \\  c_0x_0x_0^3 + c_1x_1^3 &= \int_\{0\}^\{\infty\}e^\{-x\}x^3dx = 6
+\end\{aligned\}$$
+
+On simultaneously solving the above equations, we obtain,
+$$\begin\{aligned\}
+c_0 = 0.8535533, c_1 = 0.1464466, x_0 = 0.58578643, x_1 = 3.41421356
+\end\{aligned\}$$
+
+It can be observed that $c_0x_0 = c_1x_1 = 1$. Therefore, the two-point
+Gauss-Laguerre formula is
+
+$$\begin\{aligned\}
+I = 0.8535533f(0.58578643) + 0.1464466f(3.41421356)
+\end\{aligned\}$$ As an example, let's try evaluating
+$\int_\{0\}^\{\infty\}\log(1+e^\{-x\})dx$
+
+``` \{.python language="python"\}
+def f(x: $\mathbb\{R\}$): $\mathbb\{R\}$  
+  return exp(x)*log(1+exp(-x))
+I = gauss_laguerre(f)
+```

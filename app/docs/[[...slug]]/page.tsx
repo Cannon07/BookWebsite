@@ -55,7 +55,6 @@ export async function generateMetadata({ params: { slug = [] } }: PageProps) {
 }
 
 export function generateStaticParams() {
-  console.log("Hello")
   return page_routes.map((item) => ({
     slug: item.href.split("/").slice(1),
   }));

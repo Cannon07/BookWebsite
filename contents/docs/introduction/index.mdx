@@ -1,0 +1,354 @@
+# What is Differentiable Physics?
+
+The heart of physics is the construction of mathematical theories which
+accurately predict the behavior of real systems. If your background is
+in machine learning, you might pause and ask, doesn't machine learning
+also aim to achieve the same result? At a high level, the answer is yes.
+The difference is that accepted models of physical reality are far more
+predictive than traditional machine learning. Why is this the case? The
+reason is invariants are much more tightly defined and controlled for
+physical models than for machine learned models, which are often
+designed for ease of optimization rather than for fidelity to physical
+reality. The goal of this book is to help bridge the gap between
+accurate causal models of reality and machine learning. Let's start by
+making a definition of a physical theory.
+
+In a mathematical sense, we can view a physical theory as a mathematical
+object consisting of the following parts
+
+1.  States $\mathcal\{S\}$: This is a mathematical space which contains
+    different possible configurations of the system we are interested in
+    modeling.
+
+2.  Symmetries $\mathcal\{G\}$: A collection of symmetries which the
+    system must satisfy. These could be properties such as rotational or
+    translational invariances (or equivariances) which posit that
+    certain properties of the physical system are unchanged (or change
+    in a structured fashion) under these transformations. Each such
+    symmetry is associated with an according conservation law for the
+    system by Noether's theorem. For examples, one such conservation law
+    could be that energy is known to be conserved by the system.
+
+3.  Operators $\mathcal\{O\}$: A collection of functions which map states
+    in $\mathcal\{S\}$ to other states in $\mathcal\{S\}$. The most
+    important operator for a physical system is often the time-evolution
+    operator which governs how the system changes over time.
+
+4.  Parameters $\mathcal\{W\}$: The set of parameters which govern the
+    physical system. These could for example be physical constants such
+    as the gravitational constant $g$. We've chosen the evocative name
+    $\mathcal\{W\}$ for this parameter set to remind you of weights since
+    these parameters have to be \"learned\" from physical experiments.
+
+5.  Domain of Applicability $\mathcal\{C\}$: Physical theories typically
+    have constraints on when they are applied. We model the domain of
+    applicability as a set of constraints $\mathcal\{C\}$.
+
+6.  Hyperparameters $\mathcal\{HP\}$: A hyperparameter of a physical
+    theory is parameter that appears in a constraint on the system state
+    or system parameters. You can think of a hyperparameter as a
+    parameter that controls parameters. For example, if mass $m$ is a
+    parameter of a physical model, then there might be a hyperparameters
+    $M_\{\textrm\{max\}\}$ which limits $m < M_\{\textrm\{max\}\}$
+
+7.  Observables $\mathcal\{B\}$: An observable is a function that maps
+    from state space $\mathcal\{S\}$ to some other mathematical space,
+    typically $\mathcal\{R\}$. Think of an observable as a physical
+    quantity you can measure by observing the evolution of the physical
+    system over time.
+
+Put together, we can view a physical theory as a data structure, a tuple
+$$\begin\{aligned\}
+\textrm\{PhysicalTheory\} = (\mathcal\{S\}, \mathcal\{G\}, \mathcal\{O\}, \mathcal\{W\}, \mathcal\{C\}, \mathcal\{HP\}, \mathcal\{B\})
+\end\{aligned\}$$ which models an aspect of reality. An arbitrary physical
+theory is unlikely to be predictive. Part of the art of physics is
+constructing physical theories which are predictive of reality as we
+know it. Over the course of this book, we introduce a variety of
+techniques for constructing useful physical theories. Some techniques
+will draw upon classical physics, while others will draw from machine
+learning and the disciplines of type theory, and differentiable
+programming.
+
+Types are a technique originating in computer science and logic which
+associate to each term in a program a descriptive type. When
+constructing a physical theory, we will take care to specify the core
+types that populate that physical theory. For example, here are a few
+types we will see repeatedly in the book $$\begin\{aligned\}
+    \mathbb\{R\}^3, \mathbb\{R\}^\{1,3\} L^2(\mathbb\{R\}^3, \mathcal\{C\}), \mathcal\{B\}(\mathcal\{H\})
+\end\{aligned\}$$ which respectively represent the types of three
+dimensional space, Minkowski space, quantum wave functions in three
+dimensions, and quantum observables. By identifying the core types in a
+physical system, we can transform the system into a rich implementation
+in a programming language with a suitably powerful type theory. Note
+that by our earlier definition, a physical theory is itself a
+composition type.
+
+The last tool we will use to model physical systems is differentiable
+programming. The last decade of machine learning research has revealed
+that essentially arbitrarily sophisticated programs can be
+differentiated by using the tools of automatic differentiation. As a
+result, tools like differential equation solvers, and physical
+integrators can be leveraged as parts of a machine learning model. By
+leveraging the universal approximation capability of neural networks,
+which allow neural representations to represent arbitrarily complex
+functions, and combining with rich typed differentiable programs, we may
+achieve new insights into physical reality.
+
+Formally, a differentiable program is a computer program controlled by a
+set of *parameters* which can be *differentiated* with respect to any of
+its parameters. Let's introduce a simple example of a differentiable
+program. We will write this program in pseudo-code similar to a
+high-level language like Python.
+
+    \# Parameters \
+    $w_1$: $\mathbb\{R\}$, $w_2$: $\mathbb\{R\}$ \
+    def f(x: $\mathbb\{R\}$, y: $\mathbb\{R\}$) $\to$ $\mathbb\{R\}$: \
+    &nbsp; &nbsp; &nbsp; return $w_1$ * x + $w_2$ * y \
+    grad(f, $w_1$)
+
+We have a function $f$ which accepts two arguments, $x$, and $y$ which
+are both real numbers. We have two parameters $w_1$ and $w_2$. So far
+this should look pretty similar to a regular program you've seen before,
+with the difference that we can have variables that take values in
+$\mathbb\{R\}$ (recall that $\mathbb\{R\}$ denotes the set of real numbers).
+In programming languages, representing values in $\mathbb\{R\}$ isn't
+typically possible since infinite decimal representations can't be
+stored on a computer, but for mathematical simplicity it's quite
+convenient to be able to manipulate real numbers.
+
+There is one new operation we can do with differentiable programs that
+we can't typically do with regular programs: take derivatives. That is,
+the following operation is valid in a differentiable program.
+
+    grad = $\nabla$(f, $w_1$)
+
+In familiar mathematical notation this snippet of code computes
+$\frac\{\partial f\}\{\partial w_1\}$. At this point you might be confused
+as to why we've detoured from discussing physical theories to writing
+simple computer programs. The connection here is that this little
+differentiable program can be interpreted as a physical theorem. The
+state space is given by tuples $$\begin\{aligned\}
+(x, y) \in \mathbb\{R\}^2,
+\end\{aligned\}$$ and we have defined parameters, hyperparameters and an
+update rule `f`. The connection is a little forced, but emphasizes the
+reverse bridge from programs back to physical theories:
+
+1.  States $\mathcal\{S\}$: Since $x_1$ and $x_2$ are both real numbers,
+    $\mathcal\{S\} = \mathbb\{R\}^2$.
+
+2.  Symmetries $\mathcal\{G\}$: There are no symmetries
+    $\mathcal\{G\} = \emptyset$
+
+3.  Operators $\mathcal\{O\}$: There are no operators so
+    $\mathcal\{O\} = \emptyset$.
+
+4.  Parameters $\mathcal\{W\}$: We have two parameters $w_1$ and $w_2$
+    which both take real values, so we have parameter space
+    $\mathcal\{W\} = \{w_1, w_2\}$.
+
+5.  Constraints $\mathcal\{C\}$: There are no constraints on the variables
+    so $\mathcal\{C\} = \emptyset$.
+
+6.  Hyperparameters $\mathcal\{HP\}$: We have no constraints so
+    $\mathcal\{HP\} = \emptyset$
+
+7.  Observables $\mathcal\{B\}$: The function $f$ defines an observable so
+    $\mathcal\{B\} = \{f\}$
+
+In the rest of this book, we will find it useful to have a compressed
+table representation for the fields of a physical theory.
+Table 1 compresses the listing above into the format
+we will use throughout the book.
+
+| Property        | Definition                     |
+|----------------|------------------------------|
+| States          | $\mathcal\{S\} = \mathbb\{R\}^2$ |
+| Symmetries     | $\mathcal\{G\}$ = &#123;&#125;         |
+| Operators      | $\mathcal\{O\}$ = &#123;&#125;         |
+| Parameters     | $\mathcal\{W\}$ = &#123;&#125;         |
+| Constraints    | $\mathcal\{C\}$ = &#123;&#125;         |
+| Hyperparameters | $\mathcal\{HP\}$ = &#123;&#125;       |
+| Observables    | $\mathcal\{B\}$ = \{f\}        |
+
+Not all differentiable programs would make sense as physical theories,
+but the mapping between differentiable programs and physical theories is
+useful regardless since it emphasizes the computational nature of a
+physical theory. Through the rest of this chapter and this book, we will
+write down a variety of physical theories and show how to convert them
+to differentiable programs.
+
+This correspondence extends further. In fact, we assert that every
+physical theory is expressible as a differentiable program.\
+\
+***The Differentiable Church-Turing Thesis:** Any physical system can be
+effectively modeled as a differentiable program.*\
+We will make no attempts to prove this statement formally, but the rest
+of this book will attempt to prove by example by modeling a wide array
+of physical theories with different differentiable programs. We will
+note that the differentiable programs we introduce will at times have to
+use sophisticated operations and may be challenging to model in a
+standard programming language, but this is a question of engineering and
+programming language design.
+
+## Working with Physical Theories
+
+Let's return to discussing physical theories at a more abstract level.
+What would we like to do with physical theories in practice? As a
+simplified model, we posit that there are a few main operations that are
+interesting to perform with physical theories.
+
+### Learning the Theory from Data
+
+Suppose that we have a dataset of messy observations. When we learn the
+theory, we mean that we find a set of parameter values for the
+parameters in $\mathcal\{W\}$ that enable the physical theory to
+meaningfully recapitulate known facts. We write roughly
+
+$$\begin\{aligned\}
+\mathcal\{W\}^* &= \argmin_\{\mathcal\{W\}\} \mathcal\{L\}(\textrm\{PhysicalTheory\}, \mathcal\{D\})
+\end\{aligned\}$$
+
+Tools from differentiable programming such as automatic differentiation
+make learning parameter values much easier since we can perform gradient
+descent directly on a physical theory.
+
+### Solving the Theory
+
+What does it mean to solve a physical theory? Very broadly speaking, a
+\"solution\" to a physical theory is characterizing the trajectory any
+initial set of states takes through state space. That is, we'd like to
+know what the state of the physical system will be at all points in time
+given the initial conditions of the system.
+
+Traditionally, the solution of a physical theory meant solving the
+equations defining the theory analytically. This can work well for
+simple (and even not so simple) systems, but there's often an upper
+limit to the amount of complexity that can be handled analytically. This
+means for our system, we will have to extend this definition further.
+
+Our definition of a solution to a physical theory is an algorithm that
+efficiently computes the approximate state of the system at any point in
+time given the initial conditions. Suppose that $\mathcal\{D\}$ is the
+collection of available data (physical observations). Let $\mathcal\{L\}$
+be the loss, a mathematical measure of the error in fitting the theory
+to the data. Restated in the language we introduced above, we have a
+problem of learning the update operator which minimizes the loss.
+
+$$\begin\{aligned\}
+    \mathcal\{O\}^* &= \argmin_\{\mathcal\{O\}, \mathcal\{W\}\} \mathcal\{L\}(\textrm\{PhysicalTheory\}, \mathcal\{D\})
+\end\{aligned\}$$
+
+Differentiable physics provides a powerful collection of new tools to
+facilitate approximate solution of dynamic systems, including new
+families of techniques for high dimensional differential equation
+solution such as operator learning.
+
+### Taking a Measurement
+
+In many cases when solving a physical system isn't feasible, it is still
+possible to take *measurements* from the physical system. It might be
+helpful to think of a measurement as computing a bulk property. We can
+for example experimentally take a measurement of average temperature of
+a body without solving a complete physical theory describing the motion
+of all atoms in the system. In many cases, similar computational
+measurements can be taken from physical theories. We state the problem
+of simulating a measurement $B$ as
+
+$$\begin\{aligned\}
+B^* &= B\left (\argmin_\{\mathcal\{W\}\} \mathcal\{L\}(\textrm\{PhysicalTheory\}, \mathcal\{D\}) \right)
+\end\{aligned\}$$
+
+One of the most powerful tools for simulating measurements is learned
+representations. Roughly stated, a representation is a function that
+restructures the state space of a system $$\begin\{aligned\}
+    \phi: \mathcal\{S\} \to \mathcal\{S\}'
+\end\{aligned\}$$ where $\mathcal\{S\}'$ is called the representation space.
+The choice of a rich representation space can make learning measurements
+much easier since we can reduce the problem to finding some
+$$\begin\{aligned\}
+    B': \mathcal\{S\}' \to R
+\end\{aligned\}$$ where $B'$ may have a much simpler mathematical
+representation than $B$. Learned representations can be viewed as a
+generalization of Fourier theory in which transformations $\phi$ can
+have more complex than the Fourier transform which allow for easy
+computation of certain system properties.
+
+## Why Does Differentiable Physics Matter?
+
+Improved differentiable physics could allow for systematic design of new
+molecules and materials. Improved modeling of plasmas could lead to
+accelerated design of a functional fusion reactor. Differentiable
+cosmology models could help answer questions about the formation of the
+universe, and improved protein-ligand binding physics models could help
+accelerate the design of new medicine.
+
+### Who is the Target Audience?
+
+We anticipate that this book will be useful for beginning (and
+experienced) scientists who are interested in learning a new set of
+tools to understand the physical world. We provide in-depth introduction
+to both the basics of machine learning and the basics of physics in
+order to broaden the target audience.
+
+We anticipate that advanced undergraduates, beginning graduate students,
+and interested industry professionals might find this book useful. We
+also encourage determined younger students to give this work a try, so
+we've included a long appendix with needed mathematical foundations for
+students to tackle as they build needed skills.
+
+### Relationship with Geometric Deep Learning
+
+Geometric deep learning has emerged over the last few years as a
+proposed organizational framework for deep learning architectures. Deep
+layers are viewed as transformations which preserve (perhaps
+approximately) a symmetry of a system. For example, shift invariance
+induces a convolutional networks. Time-warp invariance induces an LSTM.
+The framework of geometric deep learning is both more and less general
+than differentiable physics. Geometric deep learning can apply to
+problems outside the purview of physics (for example to e-commerce
+challenges of three dimensional inventory management), while
+differentiable physics can study physical systems where there is no
+apparent symmetry. Differentiable physics also places on emphasis on the
+use of techniques from the theory of programming languages, such as
+strong type theories. Despite these differences, both frameworks are
+logically close to one another and we anticipate a rich interplay
+between these sets of ideas.
+
+### A Note on Mathematical Rigor
+
+Physicists are traditionally not rigorous with their mathematics. Often,
+a physicist's primary guiding intuition is their sense for how nature
+behaves, and not how the equations behave. This flexible approaches
+towards mathematical rigor has led to some amazing breakthroughs in both
+physics and mathematics.
+
+However, we cannot be as intuition driven as traditional physicists. Our
+goal in this book is to teach techniques which can eventually be
+implemented in a programming language. Programming requires precision,
+and we can't be sloppy with what our symbols mean. At the same time,
+excessive formalism is avoided when it doesn't lead to improved
+algorithms. We'll try to walk a middle path in this chapter and in the
+rest of the book of using the minimal amount of rigor which is needed to
+be precise and clear about what our models are actually doing.
+
+### Topics Covered
+
+In the rest of this book, we'll teach you how to apply the powerful
+tools of differentiable programming to applications in modern physics.
+Our discussion will be both theoretical and mathematical as well as
+pragmatic and practical. We will attempt to achieve a balance between
+these two viewpoints by interleaving dense mathematical analyses with
+down-to-earth and useful case studies. We hope that this blended
+approach will enable readers from a variety of backgrounds to approach
+the material in this book. Engineers and experimentalists may choose to
+focus on case studies in a first pass, while theorists may be more
+interested in the mathematical foundations we lay. We hope though that
+our practical readers will grow to appreciate the power of our
+mathematical techniques and that our theoretical readers will appreciate
+how useful these new tools can be in the \"real\" world.
+
+Most of all, we hope that you find beauty and interest in this book.
+Differentiable physics offers a new paradigm of looking at much of the
+edifice of modern physics. We enjoyed ourselves as we wrote this book,
+and we hope that you share our joy while working through this book
+yourselves.

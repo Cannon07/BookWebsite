@@ -55,13 +55,13 @@ $$E_\{\vec\{n\}\} = \frac\{h^2\}\{8mL^2\}\left(n_x^2+n_y^2+n_z^2\right) \hspace\
 which are the energy levels for a particle in a box for a particles with
 mass $m=9.10938\times 10^\{-31\} kg$.
 
-The average number of electrons in the $\vec\{n\}$ state is: $$\label\{Eq7\}
+The average number of electrons in the $\vec\{n\}$ state is: $$
 \langle n_\{\vec\{n\}\} \rangle = \frac\{1\}\{e^\{\beta (E_\{\vec\{n\}\} - \mu)\} + 1\} = F(E_\{\vec\{n\}\})$$
 
 where we have defined the Fermi function
 $F(\varepsilon) = \left[e^\{\beta(\varepsilon - \mu)\} + 1 \right] ^\{-1\}$.
 
-The total number of electrons is given by: $$\label\{Eq8\}
+The total number of electrons is given by: $$
 \langle N \rangle = 2 \sum_\{n_x = 1\}^\infty \sum_\{n_y = 1\}^\infty \sum_\{n_z = 1\}^\infty \frac\{1\}\{e^\{\beta (E_\{\vec\{n\}\} - \mu)\} + 1\} =  2 \sum_\{n_x = 1\}^\infty \sum_\{n_y = 1\}^\infty \sum_\{n_z = 1\}^\infty F(E_\{\vec\{n\}\})$$
 
 where we include a factor of 2 since the electrons can exist in spin-up
@@ -70,10 +70,10 @@ and a spin-down states.
 For sufficiently large $V$, the spectrum of translational wavemodes is
 effectively a continuum. Therefore, we can convert this summation to an
 integral over $\vec\{n\}$, resulting in: $$\begin\{aligned\}
-\langle N \rangle &= 2 \int_0^\infty dn_x \int_0^\infty dn_y \int_0^\infty dn_z F(E_\{\vec\{n\}\}) \notag\\
-&= 2 \int_0^\infty dk_x \frac\{L\}\{\pi\} \int_0^\infty dk_y \frac\{L\}\{\pi\} \int_0^\infty dk_z \frac\{L\}\{\pi\} F[\varepsilon (\vec\{k\})] \notag\\
-&= 2 \frac\{L^3\}\{\pi^3\} \frac\{1\}\{2^3\} \int_\{-\infty\}^\infty dk_x \int_\{-\infty\}^\infty dk_y \int_\{-\infty\}^\infty dk_z F[\varepsilon (\vec\{k\})] \notag\\ 
-&= \frac\{2V\}\{(2\pi)^3\} \int d\vec\{k\} F[\varepsilon (\vec\{k\})] \notag
+\langle N \rangle &= 2 \int_0^\infty dn_x \int_0^\infty dn_y \int_0^\infty dn_z F(E_\{\vec\{n\}\}) \\
+&= 2 \int_0^\infty dk_x \frac\{L\}\{\pi\} \int_0^\infty dk_y \frac\{L\}\{\pi\} \int_0^\infty dk_z \frac\{L\}\{\pi\} F[\varepsilon (\vec\{k\})] \\
+&= 2 \frac\{L^3\}\{\pi^3\} \frac\{1\}\{2^3\} \int_\{-\infty\}^\infty dk_x \int_\{-\infty\}^\infty dk_y \int_\{-\infty\}^\infty dk_z F[\varepsilon (\vec\{k\})] \\
+&= \frac\{2V\}\{(2\pi)^3\} \int d\vec\{k\} F[\varepsilon (\vec\{k\})] 
 \end\{aligned\}$$
 
 where we have used a coordinate change from $\vec\{n\}$ to

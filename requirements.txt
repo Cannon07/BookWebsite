@@ -1,2 +1,1 @@
-pypandoc>=1.11
-pandoc>=2.19 
+pypandoc>=1.11 

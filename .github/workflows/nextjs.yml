@@ -45,9 +45,11 @@ jobs:
         run: |
           pip install -r requirements.txt
       - name: Install Node dependencies
-        run: npm ci
+        run: |
+          npm ci
+          npm install -g ts-node typescript @types/node
       - name: Run process-chapter script
-        run: npx ts-node scripts/process-chapter.ts
+        run: ts-node scripts/process-chapter.ts
       - name: Commit changes
         run: |
           git config --local user.email "action@github.com"

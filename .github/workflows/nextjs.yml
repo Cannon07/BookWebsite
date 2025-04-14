@@ -47,9 +47,11 @@ jobs:
       - name: Install Node dependencies
         run: |
           npm ci
-          npm install -g ts-node typescript @types/node
+          npm install -g typescript ts-node
       - name: Run process-chapter script
-        run: ts-node scripts/process-chapter.ts
+        run: |
+          npx tsc
+          node dist/scripts/process-chapter.js
       - name: Commit changes
         run: |
           git config --local user.email "action@github.com"

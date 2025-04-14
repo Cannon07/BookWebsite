@@ -1,8 +1,15 @@
-import path from 'path';
-import fs from 'fs';
-import { exec } from 'child_process';
-import { promisify } from 'util';
-import { ROUTES, EachRoute } from '../lib/routes-config';
+const path = require('path');
+const fs = require('fs');
+const { exec } = require('child_process');
+const { promisify } = require('util');
+const { ROUTES } = require('../lib/routes-config');
+
+interface EachRoute {
+  title: string;
+  href: string;
+  noLink?: boolean;
+  items?: EachRoute[];
+}
 
 const execAsync = promisify(exec);
 
@@ -13,7 +20,7 @@ interface ProcessChapterOptions {
 
 async function updateRoutesConfig(title: string, href: string) {
   // Find or create the Chapters route
-  let chaptersRoute = ROUTES.find(route => route.title === "Chapters");
+  let chaptersRoute = ROUTES.find((route: EachRoute) => route.title === "Chapters");
   if (!chaptersRoute) {
     chaptersRoute = {
       title: "Chapters",
@@ -30,7 +37,7 @@ async function updateRoutesConfig(title: string, href: string) {
   }
 
   // Add new chapter if it doesn't exist
-  const chapterExists = chaptersRoute.items.some(item => item.href === href);
+  const chapterExists = chaptersRoute.items.some((item: EachRoute) => item.href === href);
   if (!chapterExists) {
     chaptersRoute.items.push({
       title,
@@ -38,7 +45,7 @@ async function updateRoutesConfig(title: string, href: string) {
     });
 
     // Sort chapters alphabetically by title
-    chaptersRoute.items.sort((a, b) => {
+    chaptersRoute.items.sort((a: EachRoute, b: EachRoute) => {
       // Keep Introduction always first
       if (a.title === "Introduction") return -1;
       if (b.title === "Introduction") return 1;

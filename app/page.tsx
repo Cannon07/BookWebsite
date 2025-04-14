@@ -3,6 +3,7 @@ import { page_routes } from "@/lib/routes-config";
 import Link from "next/link";
 
 export default function Home() {
+  console.log("Hello", page_routes);
   return (
     <div className="flex sm:min-h-[91vh] min-h-[88vh] flex-col items-center justify-center text-center px-2 py-8">
       <h1 className="text-5xl font-bold mb-4 sm:text-7xl">
@@ -12,7 +13,7 @@ export default function Home() {
         Machine Learning for Physical Systems
       </h1>
       <p className="mb-8 sm:text-md max-w-[800px] text-muted-foreground">
-        - Bharath Ramsundar
+        - Bharath Ramsundar, Dilip Krishnamurthy, Venkat Viswanathan
       </p>
       <div>
         <Link

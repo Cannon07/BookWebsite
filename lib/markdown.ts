@@ -7,15 +7,12 @@ import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import rehypeSlug from "rehype-slug";
 import rehypeCodeTitles from "rehype-code-titles";
 
-// custom components imports
 import Note from "@/components/note";
 
-// add custom components
 const components = {
   Note,
 };
 
-// can be used for other pages like blogs, Guides etc
 async function parseMdx<Frontmatter>(rawMdx: string) {
   return await compileMDX<Frontmatter>({
     source: rawMdx,
@@ -35,8 +32,6 @@ async function parseMdx<Frontmatter>(rawMdx: string) {
   });
 }
 
-// logic for docs
-
 type BaseMdxFrontmatter = {
   title: string;
   description: string;
@@ -55,7 +50,6 @@ export async function getDocsForSlug(slug: string) {
 export async function getDocsTocs(slug: string) {
   const contentPath = getDocsContentPath(slug);
   const rawMdx = await fs.readFile(contentPath, "utf-8");
-  // captures between ## - #### can modify accordingly
   const headingsRegex = /^(#{2,4})\s(.+)$/gm;
   let match;
   const extractedHeadings = [];

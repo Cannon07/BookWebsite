@@ -1,7 +1,3 @@
-# Sample workflow for building and deploying a Next.js site to GitHub Pages
-#
-# To get started with Next.js see: https://nextjs.org/docs/getting-started
-#
 name: Deploy Next.js site to Pages
 
 on:
@@ -25,9 +21,45 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  # Pre-build job to process chapters
+  pre-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y pandoc
+      - name: Install Python dependencies
+        run: |
+          pip install -r requirements.txt
+      - name: Install Node dependencies
+        run: npm ci
+      - name: Run process-chapter script
+        run: npx ts-node scripts/process-chapter.ts
+      - name: Commit changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add .
+          git commit -m "Update routes and content from process-chapter script" || echo "No changes to commit"
+          git push || echo "No changes to push"
+
   # Build job
   build:
     runs-on: ubuntu-latest
+    needs: pre-build
     steps:
       - name: Checkout
         uses: actions/checkout@v4

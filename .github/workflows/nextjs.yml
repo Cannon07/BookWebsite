@@ -65,6 +65,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ref: main  # Explicitly checkout the main branch
+          fetch-depth: 0  # Fetch all history
       - name: Detect package manager
         id: detect-package-manager
         run: |

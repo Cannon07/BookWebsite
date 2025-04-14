@@ -4,7 +4,6 @@ export type EachRoute = {
       noLink?: true;
       items?: EachRoute[];
     };
-
     export const ROUTES: EachRoute[] = [
   {
     "title": "Chapters",
@@ -16,15 +15,17 @@ export type EachRoute = {
         "href": "/introduction"
       },
       {
+        "title": "Kernel Methods",
+        "href": "/kernel_methods"
+      },
+      {
         "title": "What is Differentiable Physics?",
         "href": "/gaussian_process"
       }
     ]
   }
 ];
-
     type Page = { title: string; href: string };
-
     function getRecurrsiveAllLinks(node: EachRoute) {
       const ans: Page[] = [];
       if (!node.noLink) {
@@ -36,6 +37,5 @@ export type EachRoute = {
       });
       return ans;
     }
-
     export const page_routes = ROUTES.map((it) => getRecurrsiveAllLinks(it)).flat();
     

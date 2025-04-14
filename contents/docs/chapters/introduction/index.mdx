@@ -1,4 +1,9 @@
-# What is Differentiable Physics?
+---
+    title: "What is Differentiable Physics?"
+    description: "What is Differentiable Physics?"
+    ---
+
+    # What is Differentiable Physics? 
 
 The heart of physics is the construction of mathematical theories which
 accurately predict the behavior of real systems. If your background is
@@ -14,7 +19,7 @@ accurate causal models of reality and machine learning. Let's start by
 making a definition of a physical theory.
 
 In a mathematical sense, we can view a physical theory as a mathematical
-object consisting of the following parts
+object consisting of the following parts 123
 
 1.  States $\mathcal\{S\}$: This is a mathematical space which contains
     different possible configurations of the system we are interested in
@@ -100,10 +105,10 @@ its parameters. Let's introduce a simple example of a differentiable
 program. We will write this program in pseudo-code similar to a
 high-level language like Python.
 
-    \# Parameters \
-    $w_1$: $\mathbb\{R\}$, $w_2$: $\mathbb\{R\}$ \
-    def f(x: $\mathbb\{R\}$, y: $\mathbb\{R\}$) $\to$ $\mathbb\{R\}$: \
-    &nbsp; &nbsp; &nbsp; return $w_1$ * x + $w_2$ * y \
+    # Parameters
+    $w_1$: $mathbb\{R\}$, $w_2$: $\mathbb\{R\}$
+    def f(x: $\mathbb\{R\}$, y: $\mathbb\{R\}$) $\to$ $\mathbb\{R\}$:
+      return $w_1$ * x + $w_2$ * y
     grad(f, $w_1$)
 
 We have a function $f$ which accepts two arguments, $x$, and $y$ which
@@ -157,18 +162,19 @@ reverse bridge from programs back to physical theories:
 
 In the rest of this book, we will find it useful to have a compressed
 table representation for the fields of a physical theory.
-Table 1 compresses the listing above into the format
+Table [\[phs:theory:toy\]]\{reference-type="ref"
+reference="phs:theory:toy"\} compresses the listing above into the format
 we will use throughout the book.
 
-| Property        | Definition                     |
-|----------------|------------------------------|
-| States          | $\mathcal\{S\} = \mathbb\{R\}^2$ |
-| Symmetries     | $\mathcal\{G\}$ = &#123;&#125;         |
-| Operators      | $\mathcal\{O\}$ = &#123;&#125;         |
-| Parameters     | $\mathcal\{W\}$ = &#123;&#125;         |
-| Constraints    | $\mathcal\{C\}$ = &#123;&#125;         |
-| Hyperparameters | $\mathcal\{HP\}$ = &#123;&#125;       |
-| Observables    | $\mathcal\{B\}$ = \{f\}        |
+| Property | Definition |
+|-------------|---------------|
+| States | $\mathcal\{S\} = \mathbb\{R\}^2$ |
+| Symmetries | $\mathcal\{G\} = \{\}$ |
+| Operators | $\mathcal\{O\} = \{\}$ |
+| Parameters | $\mathcal\{W\} = \{\}$ |
+| Constraints | $\mathcal\{C\} =  \{\}$ |
+| Hyperparameters | $\mathcal\{HP\} = \{\}$ |
+| Observables | $\mathcal\{B\} = \{f\}$ |
 
 Not all differentiable programs would make sense as physical theories,
 but the mapping between differentiable programs and physical theories is
@@ -201,7 +207,7 @@ interesting to perform with physical theories.
 
 Suppose that we have a dataset of messy observations. When we learn the
 theory, we mean that we find a set of parameter values for the
-parameters in $\mathcal\{W\}$ that enable the physical theory to
+parameters in $mathcal\{W\}$ that enable the physical theory to
 meaningfully recapitulate known facts. We write roughly
 
 $$\begin\{aligned\}
@@ -215,7 +221,7 @@ descent directly on a physical theory.
 ### Solving the Theory
 
 What does it mean to solve a physical theory? Very broadly speaking, a
-\"solution\" to a physical theory is characterizing the trajectory any
+"solution\" to a physical theory is characterizing the trajectory any
 initial set of states takes through state space. That is, we'd like to
 know what the state of the physical system will be at all points in time
 given the initial conditions of the system.
@@ -254,7 +260,7 @@ of all atoms in the system. In many cases, similar computational
 measurements can be taken from physical theories. We state the problem
 of simulating a measurement $B$ as
 
-$$\begin\{aligned\}
+$$begin\{aligned\}
 B^* &= B\left (\argmin_\{\mathcal\{W\}\} \mathcal\{L\}(\textrm\{PhysicalTheory\}, \mathcal\{D\}) \right)
 \end\{aligned\}$$
 
@@ -345,7 +351,7 @@ focus on case studies in a first pass, while theorists may be more
 interested in the mathematical foundations we lay. We hope though that
 our practical readers will grow to appreciate the power of our
 mathematical techniques and that our theoretical readers will appreciate
-how useful these new tools can be in the \"real\" world.
+how useful these new tools can be in the "real\" world.
 
 Most of all, we hope that you find beauty and interest in this book.
 Differentiable physics offers a new paradigm of looking at much of the

@@ -8,13 +8,11 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "outDir": "./dist",
-    "rootDir": ".",
-    "baseUrl": ".",
+    "rootDir": "./",
+    "baseUrl": "./",
     "jsx": "preserve",
     "paths": {
-      "@/*": [
-        "./*"
-      ]
+      "@/*": ["./*"]
     },
     "lib": [
       "dom",
@@ -35,11 +33,10 @@
   "include": [
     "scripts/**/*",
     "lib/**/*",
-    "app/**/*",
-    ".next/types/**/*.ts",
-    "dist/types/**/*.ts"
+    "app/**/*"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "dist"
   ]
 }

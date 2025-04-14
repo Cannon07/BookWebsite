@@ -47,10 +47,10 @@ jobs:
       - name: Install Node dependencies
         run: |
           npm ci
-          npm install -g typescript ts-node
+          npm install -g typescript
       - name: Run process-chapter script
         run: |
-          npx tsc
+          npx tsc scripts/process-chapter.ts --outDir dist
           node dist/scripts/process-chapter.js
       - name: Commit changes
         run: |

@@ -8,6 +8,38 @@ from pathlib import Path
 import subprocess
 import tempfile
 import uuid
+import json
+
+def get_base_path():
+    """Extract basePath from next.config.mjs"""
+    try:
+        project_root = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
+        next_config_path = os.path.join(project_root, 'next.config.mjs')
+        
+        with open(next_config_path, 'r') as f:
+            config_content = f.read()
+            
+        # Extract basePath using regex
+        base_path_match = re.search(r'basePath:\s*([^,\n]+)', config_content)
+        if base_path_match:
+            base_path = base_path_match.group(1).strip()
+            
+            # Handle the conditional expression
+            if 'isProduction' in base_path:
+                # Use the production value since we're generating static files
+                production_path_match = re.search(r'"([^"]*)"', base_path)
+                if production_path_match:
+                    return production_path_match.group(1)
+            else:
+                # Remove quotes if present
+                return base_path.strip('"\'')
+    except Exception as e:
+        print(f"Warning: Could not extract basePath from next.config.mjs: {e}")
+    
+    return ''  # Default to empty string if not found
+
+# Get the basePath early
+BASE_PATH = get_base_path()
 
 def escape_braces(content):
     """Escape curly braces in math environments."""
@@ -168,7 +200,7 @@ def extract_and_render_tikz(content, tex_file_path, output_dir):
                     raise Exception("PDF output not generated")
                 
                 # Replace the TikZ environment with an image tag in the content
-                img_tag = f'<img src="/figures/{chapter_name}/{output_filename}" alt="TikZ diagram" />'
+                img_tag = f'<img src="{BASE_PATH}/figures/{chapter_name}/{output_filename}" alt="TikZ diagram" />'
                 content = content.replace(match.group(0), img_tag)
             
         except Exception as e:
@@ -204,9 +236,9 @@ def handle_images(content, tex_file_path, output_dir):
             # Don't convert to CSS, leave the width attribute to be handled by MDX renderer
             pass
         
-        # Use the Next.js public directory URL structure
+        # Use the Next.js public directory URL structure with basePath
         # Ensure the path starts with a forward slash
-        relative_path = f'/figures/{chapter_name}/{os.path.basename(image_basename)}.png'
+        relative_path = f'{BASE_PATH}/figures/{chapter_name}/{os.path.basename(image_basename)}.png'
         
         # Extract caption if present
         caption_match = re.search(r'\\caption\{([^}]*)\}', after_content)
@@ -292,8 +324,8 @@ def handle_subfigures(content, tex_file_path, output_dir):
                 # Process image to get the path in public directory
                 image_basename = os.path.splitext(image_path)[0]
                 
-                # Create the public URL path - ensure it starts with a slash
-                public_path = f'/figures/{chapter_name}/{os.path.basename(image_basename)}.png'
+                # Create the public URL path with basePath
+                public_path = f'{BASE_PATH}/figures/{chapter_name}/{os.path.basename(image_basename)}.png'
                 
                 # Add to our list of subfigure images
                 subfigure_images.append({
@@ -344,46 +376,64 @@ def handle_subfigures(content, tex_file_path, output_dir):
 
 def ensure_image_paths(content):
     """Ensure all image paths in the MDX content have the correct format."""
-    # Fix any image src that might not have a leading slash in HTML tags
-    content = re.sub(r'<img src="(?!\/|http)([^"]+)"', r'<img src="/\1"', content)
+    # Fix any image src that might not have the correct basePath in HTML tags
+    content = re.sub(r'<img src="(?!/|http|' + re.escape(BASE_PATH) + ')([^"]+)"', 
+                    r'<img src="' + BASE_PATH + r'/\1"', content)
+    
+    # Fix any image src that starts with a slash but doesn't have basePath
+    if BASE_PATH:
+        content = re.sub(r'<img src="(/[^"' + re.escape(BASE_PATH) + r'][^"]*)"', 
+                        r'<img src="' + BASE_PATH + r'\1"', content)
     
     # Fix any image paths in Markdown format ![alt](path) 
-    content = re.sub(r'!\[(.*?)\]\((?!\/|http)([^)]+)\)', r'![\1](/\2)', content)
+    content = re.sub(r'!\[(.*?)\]\((?!/|http|' + re.escape(BASE_PATH) + ')([^)]+)\)', 
+                    r'![\1](' + BASE_PATH + r'/\2)', content)
     
     # Also handle Markdown format with attributes ![alt](path){width="x"} 
-    content = re.sub(r'!\[(.*?)\]\((?!\/|http)([^)]+)\)(\{[^}]*\})', r'![\1](/\2)\3', content)
+    content = re.sub(r'!\[(.*?)\]\((?!/|http|' + re.escape(BASE_PATH) + ')([^)]+)\)(\{[^}]*\})', 
+                    r'![\1](' + BASE_PATH + r'/\2)\3', content)
     
     # Convert any Markdown images to the chapter-specific path format
     chapter_name = os.environ.get('CURRENT_CHAPTER_NAME', '')
     if chapter_name:
-        # Handle paths that aren't already in the /figures/chapter structure
+        # Handle paths that aren't already in the figures/chapter structure
         def fix_paths(match):
             alt_text = match.group(1)
             path = match.group(2)
             attrs = match.group(3) if len(match.groups()) > 2 else ''
             
-            # Skip if already in correct format
-            if re.match(r'^/figures/[^/]+/', path):
+            # Skip if already in correct format with basePath
+            if re.match(r'^' + re.escape(BASE_PATH) + r'/figures/[^/]+/', path):
                 return f'![{alt_text}]({path}){attrs}'
+            
+            # Skip if already in correct format without basePath but needs basePath
+            if re.match(r'^/figures/[^/]+/', path):
+                return f'![{alt_text}]({BASE_PATH}{path}){attrs}'
             
             # Extract filename from path
             filename = os.path.basename(path)
-            # Create new path in chapter figures directory
-            new_path = f'/figures/{chapter_name}/{filename}'
+            # Create new path in chapter figures directory with basePath
+            new_path = f'{BASE_PATH}/figures/{chapter_name}/{filename}'
             return f'![{alt_text}]({new_path}){attrs}'
         
         # Apply the path fixing to Markdown images
         content = re.sub(r'!\[(.*?)\]\(([^)]+)\)(\{[^}]*\})?', fix_paths, content)
         
         # Handle the specific pattern with figures/part1b/... paths
-        # Specifically target the pattern shown in the example
         content = re.sub(r'!\[(.*?)\]\(figures/part1b/[^)]+/([^/)]+)\)(\{[^}]*\})?', 
-                         lambda m: f'![{m.group(1)}](/figures/{chapter_name}/{m.group(2)}){m.group(3) if m.group(3) else ""}', 
+                         lambda m: f'![{m.group(1)}]({BASE_PATH}/figures/{chapter_name}/{m.group(2)}){m.group(3) if m.group(3) else ""}', 
                          content)
     
     # Check and fix any malformed paths (double slashes, etc.)
     content = re.sub(r'src="//+', r'src="/', content)
     content = re.sub(r'\]\(//+', r'](/', content)
+    
+    # Ensure that basePath is properly added without duplication
+    if BASE_PATH:
+        content = re.sub(r'src="' + re.escape(BASE_PATH) + re.escape(BASE_PATH), 
+                        r'src="' + BASE_PATH, content)
+        content = re.sub(r'\]\(' + re.escape(BASE_PATH) + re.escape(BASE_PATH), 
+                        r'](' + BASE_PATH, content)
     
     return content
 
@@ -427,6 +477,9 @@ def convert_tex_to_mdx(tex_file, output_dir):
         # Set environment variable for current chapter name for path fixing
         chapter_name = os.path.splitext(os.path.basename(tex_file))[0]
         os.environ['CURRENT_CHAPTER_NAME'] = chapter_name
+        
+        # Log the base path being used
+        print(f"Using basePath: '{BASE_PATH}' for image URLs")
         
         title = extract_title(content)
         

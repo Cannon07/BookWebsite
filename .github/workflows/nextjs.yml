@@ -53,6 +53,8 @@ jobs:
     needs: changes
     # Only run if chapters changed or workflow was manually triggered
     if: needs.changes.outputs.chapters_changed == 'true' || github.event_name == 'workflow_dispatch'
+    outputs:
+      prebuild_completed: "true"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -97,29 +99,17 @@ jobs:
   # Build job
   build:
     runs-on: ubuntu-latest
-    # Only depend on pre-build job if it actually ran, otherwise proceed directly
-    needs: [changes]
-    if: always()
+    needs: [changes, pre-build]
+    # This ensures build runs after pre-build completes or is skipped
+    if: |
+      always() && 
+      (needs.changes.result == 'success') && 
+      ((needs.pre-build.result == 'success') || (needs.pre-build.result == 'skipped'))
     steps:
-      - name: Determine if pre-build job ran
-        id: determine_prebuild
-        run: |
-          if [[ "${{ needs.changes.outputs.chapters_changed }}" == "true" || "${{ github.event_name }}" == "workflow_dispatch" ]]; then
-            echo "prebuild_ran=true" >> $GITHUB_OUTPUT
-          else
-            echo "prebuild_ran=false" >> $GITHUB_OUTPUT
-          fi
-      
-      - name: Wait for pre-build to complete
-        if: steps.determine_prebuild.outputs.prebuild_ran == 'true'
-        run: |
-          echo "Waiting for pre-build job to complete..."
-          # This is a no-op since the 'needs' dependency handles the waiting
-
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          ref: main  # Explicitly checkout the main branch
+          ref: main  # Explicitly checkout the main branch after pre-build may have pushed changes
           fetch-depth: 0  # Fetch all history
       
       - name: Detect package manager

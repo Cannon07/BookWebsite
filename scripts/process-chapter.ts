@@ -16,6 +16,7 @@ const execAsync = promisify(exec);
 interface ProcessChapterOptions {
   texFile: string;
   title: string;
+  forceUpdate?: boolean;  // New option to force update even if already processed
 }
 
 async function updateRoutesConfig(title: string, href: string) {
@@ -79,11 +80,22 @@ async function updateRoutesConfig(title: string, href: string) {
   }
 }
 
-async function processChapter({ texFile, title }: ProcessChapterOptions) {
+async function processChapter({ texFile, title, forceUpdate = false }: ProcessChapterOptions) {
   try {
     // 1. Create the output directory path
     const chapterName = path.basename(texFile, '.tex');
     const outputDir = path.join(process.cwd(), 'contents', 'docs', 'chapters', chapterName);
+    
+    // Check if this chapter has already been processed
+    if (fs.existsSync(outputDir) && !forceUpdate) {
+      console.log(`Skipping ${texFile} - already processed (directory exists: ${outputDir})`);
+      
+      // Still update routes configuration if needed
+      const href = `/${chapterName}`;
+      await updateRoutesConfig(title, href);
+      
+      return { status: 'skipped', reason: 'already processed' };
+    }
     
     // 2. Convert .tex to .mdx using the Python script
     console.log(`Converting ${texFile} to MDX...`);
@@ -103,19 +115,20 @@ async function processChapter({ texFile, title }: ProcessChapterOptions) {
         - Updated routes with title: "${title}" and href: "${href}"
     `);
     
-    return true;
+    return { status: 'success' };
   } catch (error) {
     console.error(`Error processing chapter ${texFile}:`, error);
-    return false;
+    return { status: 'error', error };
   }
 }
 
 /**
- * Processes all .tex files in the given directory
+ * Processes .tex files in the given directory, but only if they haven't been processed before
  */
-async function processAllChapters(chaptersDir: string) {
+async function processAllChapters(chaptersDir: string, options = { onlyNewChapters: true }) {
   try {
     console.log(`Scanning directory: ${chaptersDir}`);
+    console.log(`Processing mode: ${options.onlyNewChapters ? 'Only new chapters' : 'All chapters'}`);
     
     // Check if directory exists
     if (!fs.existsSync(chaptersDir)) {
@@ -137,8 +150,9 @@ async function processAllChapters(chaptersDir: string) {
     console.log(`Found ${texFiles.length} .tex files to process`);
     
     // Process each file
-    let successCount = 0;
-    let failCount = 0;
+    let newCount = 0;
+    let skippedCount = 0;
+    let errorCount = 0;
     
     for (const file of texFiles) {
       const texFile = path.join(chaptersDir, file);
@@ -149,18 +163,26 @@ async function processAllChapters(chaptersDir: string) {
       
       console.log(`\nProcessing ${file} with title "${title}"...`);
       
-      const success = await processChapter({ texFile, title });
-      if (success) {
-        successCount++;
+      const result = await processChapter({ 
+        texFile, 
+        title,
+        forceUpdate: !options.onlyNewChapters  // Force update if not in onlyNewChapters mode
+      });
+      
+      if (result.status === 'success') {
+        newCount++;
+      } else if (result.status === 'skipped') {
+        skippedCount++;
       } else {
-        failCount++;
+        errorCount++;
       }
     }
     
     console.log(`\nProcessing complete!`);
-    console.log(`Successfully processed: ${successCount} files`);
-    if (failCount > 0) {
-      console.log(`Failed to process: ${failCount} files`);
+    console.log(`New chapters processed: ${newCount}`);
+    console.log(`Chapters skipped (already processed): ${skippedCount}`);
+    if (errorCount > 0) {
+      console.log(`Failed to process: ${errorCount} files`);
     }
     
   } catch (error) {
@@ -174,22 +196,27 @@ if (require.main === module) {
   const args = process.argv.slice(2);
   
   if (args.length === 0) {
-    // Default mode: process all chapters in the default directory
+    // Default mode: process only new chapters in the default directory
     const chaptersDir = path.join(process.cwd(), 'chapters');
-    processAllChapters(chaptersDir);
+    processAllChapters(chaptersDir, { onlyNewChapters: true });
   } else if (args.length === 1) {
-    // Alternative mode: process all chapters in the specified directory
+    // Alternative mode: process only new chapters in the specified directory
     const chaptersDir = args[0];
-    processAllChapters(chaptersDir);
-  } else if (args.length === 2) {
+    processAllChapters(chaptersDir, { onlyNewChapters: true });
+  } else if (args.length === 2 && args[0] === '--all') {
+    // Process all chapters mode (force update)
+    const chaptersDir = args[1];
+    processAllChapters(chaptersDir, { onlyNewChapters: false });
+  } else if (args.length === 2 && args[0] !== '--all') {
     // Legacy mode: process a single chapter
     const [texFile, title] = args;
-    processChapter({ texFile, title });
+    processChapter({ texFile, title, forceUpdate: true });
   } else {
     console.error(`
 Usage: 
-  ts-node process-chapter.ts                      # Process all chapters in default 'chapters' directory
-  ts-node process-chapter.ts <chapters-directory> # Process all chapters in specified directory
+  ts-node process-chapter.ts                      # Process only new chapters in default 'chapters' directory
+  ts-node process-chapter.ts <chapters-directory> # Process only new chapters in specified directory
+  ts-node process-chapter.ts --all <chapters-directory> # Process all chapters (force update)
   ts-node process-chapter.ts <tex-file> <title>   # Process a single chapter
 `);
     process.exit(1);

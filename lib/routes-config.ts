@@ -23,6 +23,10 @@ export type EachRoute = {
         "href": "/multidimensional_optimization"
       },
       {
+        "title": "Physika Primer",
+        "href": "/physika_primer"
+      },
+      {
         "title": "What is Differentiable Physics?",
         "href": "/gaussian_process"
       }

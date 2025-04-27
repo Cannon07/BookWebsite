@@ -15,6 +15,10 @@ export type EachRoute = {
         "href": "/introduction"
       },
       {
+        "title": "Hindley Milner",
+        "href": "/hindley_milner"
+      },
+      {
         "title": "Kernel Methods",
         "href": "/kernel_methods"
       },

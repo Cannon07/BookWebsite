@@ -18,11 +18,7 @@
 
 ------------------------------------------------------------------------
 
-\
-**Prerequisites:**
-[$$chap:calculus$$]\{reference-type="ref+label"
-reference="chap:calculus"\}\
-**Difficulty Level:** \*\*\
+**Difficulty Level:** \*\*
 
 ------------------------------------------------------------------------
 
@@ -51,19 +47,25 @@ $$\begin\{aligned\}
 \end\{aligned\}$$
 
 We will for convenience write
+
 $\mathcal\{J\}_\{\vec\{x\}\}(f) = \frac\{\partial f\}\{\partial \vec\{x\}\} \in \mathbb\{R\}^\{1 \times N\}$
+
 but this is purely a syntactic representation. You should mentally
 expand this shorthand to the Jacobian when you read it. Let's now treat
 $\vec\{x\}$ as constants and take the derivative with respect to
-$\vec\{w\}$. We get $$\begin\{aligned\}
+$\vec\{w\}$. We get 
+
+$$\begin\{aligned\}
 \mathcal\{J\}_\{\vec\{w\}\}(f) &= \begin\{bmatrix\}
-     \frac\{\partial f\}\{dw_1\} & \cdots & \frac\{\partial f\}\{\partial w_N\}  \\
+    \frac\{\partial f\}\{dw_1\} & \cdots & \frac\{\partial f\}\{\partial w_N\}  \\
     \end\{bmatrix\} \\
     &= \begin\{bmatrix\}
     x_1 & \cdots & x_N \\
     \end\{bmatrix\} \\
     &= \vec\{x\}^T 
-\end\{aligned\}$$ For convenience, we can write
+\end\{aligned\}$$ 
+
+For convenience, we can write
 $\mathcal\{J\}_\{\vec\{w\}\}(f) = \frac\{\partial f\}\{\partial \vec\{w\}\} \in \mathbb\{R\}^\{1 \times N\}$.
 It's very useful to keep careful tracks of shapes when doing these types
 of derivatives.
@@ -90,7 +92,9 @@ $$\begin\{aligned\}
 &= \begin\{bmatrix\}
 \frac\{\partial f\}\{x_1\} & \cdots & \frac\{\partial f\}\{x_N\} \\
 \end\{bmatrix\} 
-\end\{aligned\}$$ Let's expand out these inner terms. We can use the fact
+\end\{aligned\}$$
+
+Let's expand out these inner terms. We can use the fact
 that partial derivatives factor through summation to write
 $$\begin\{aligned\}
     \frac\{\partial f\}\{\partial x_k\} &= \sum_\{i=1\}^M \frac\{\partial\}\{\partial x_k\} \left ( \sum_\{j=1\}^N W_\{ij\} x_j \right ) \\
@@ -113,14 +117,18 @@ have that
 
 $$\begin\{aligned\}
     \frac\{\partial f\}\{\partial W\} &= \mathcal\{J\}_\{W\}(f) \in \mathbb\{R\}^\{1 \times M \times N\} 
-\end\{aligned\}$$ We can view an element of
+\end\{aligned\}$$ 
+
+We can view an element of
 $\mathbb\{R\}^\{1 \times M \times N\}$ as a matrix in
 $\mathbb\{R\}^\{M \times N\}$ but for pedagogical reasons, let's keep the
-full shape. We write $$\begin\{aligned\}
-\left (\frac\{\partial f\}\{\partial W\}\right )_\{1, k, \ell\} &= \frac\{\partial f\}\{\partial W_\{k \ell\}\} \\
-&= \sum_\{i=1\}^M \sum_\{j=1\}^N \frac\{\partial W_\{ij\}\}\{\partial W_\{k \ell\}\} x_j \\
-&= x_\{\ell\} 
-\end\{aligned\}$$ We can visualize the full derivative as
+full shape. We write 
+
+$$\begin\{aligned\}
+\left (\frac\{\partial f\}\{\partial W\}\right )_\{1, k, \ell\} = \frac\{\partial f\}\{\partial W_\{k \ell\}\} \\
+\end\{aligned\}$$ 
+
+We can visualize the full derivative as
 $$\begin\{aligned\}
 \frac\{\partial f\}\{\partial W\} &=
     \begin\{bmatrix\}
@@ -172,16 +180,6 @@ is that there are a number of \"hidden\" intermediate variables. That
 is,
 
 $$(g \circ f)_i(\vec\{x\}) = g_i(f_1(\vec\{x\}), \dotsc, f_M(\vec\{x\}))$$
-
-The values $f_i(\vec\{x\})$ are the \"hidden\" variables here. We can use
-the chain rule for scalar variables to expand out the partial derivative
-we're working with.
-
-$$\begin\{aligned\}
-    \frac\{\partial (g \circ f)_i\}\{\partial x_j\} &= \sum_\{k=1\}^M \frac\{\partial (g \circ f)_i\}\{\partial f_k\} \frac\{\partial f_k\}\{\partial x_j\} \\
-    &= \sum_\{k=1\}^M \frac\{\partial g_i\}\{\partial y_k\} \frac\{\partial f_k\}\{\partial x_j\} \\
-    &= \mathcal\{J\}(g)[i, :]^T \mathcal\{J\}(f)[:, j]
-\end\{aligned\}$$
 
 That is, $\frac\{\partial (g \circ f)_i\}\{\partial x_j\}$ is simply the dot
 product of the $i$-th row of $\mathcal\{J\}(g)$ with the $j$-th column of

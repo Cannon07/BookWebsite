@@ -1,0 +1,31 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{listings}
+\usepackage{xcolor}
+
+% Use black text on white background - we'll invert colors in image processing
+\definecolor{codebackground}{RGB}{255, 255, 255}
+\definecolor{codetext}{RGB}{0, 0, 0}
+
+\lstset{
+  basicstyle=\ttfamily\color{codetext},
+  backgroundcolor=\color{codebackground},
+  frame=none,
+  breaklines=true,
+  mathescape=true,
+  escapeinside={$}{$},
+  language=python,
+}
+
+\begin{document}
+\begin{lstlisting}
+def newton_raphson_opt(f: $\mathbb{R} \\to \\mathbb{R}$, start: $\mathbb{R}$, tol:$\mathbb{R}$ = 1e-8): 
+  old = start
+  while True: 
+    new = old-grad(f)(old)/grad(grad(f))(old)
+    if abs((new-old)/new) < tol:
+      break
+    old = new
+  return new
+\end{lstlisting}
+\end{document}

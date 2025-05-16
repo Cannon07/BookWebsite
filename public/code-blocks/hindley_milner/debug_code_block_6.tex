@@ -1,0 +1,50 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{listings}
+\usepackage{xcolor}
+
+% Use black text on white background - we'll invert colors in image processing
+\definecolor{codebackground}{RGB}{255, 255, 255}
+\definecolor{codetext}{RGB}{0, 0, 0}
+
+\lstset{
+  basicstyle=\ttfamily\color{codetext},
+  backgroundcolor=\color{codebackground},
+  frame=none,
+  breaklines=true,
+  mathescape=true,
+  escapeinside={$}{$},
+  language=python,
+}
+
+\begin{document}
+\begin{lstlisting}
+def assign(node: Expr, $\\Gamma$={}):
+    if node: Identifier:
+        if node.name in $\\Gamma$:
+            node.type = $\\Gamma$[node.name]
+    elif node : LambdaExpr:
+        node.type = TypeVar(fresh_typename())
+        local = {}
+        for argname in node.argnames:
+            typename = fresh_typename()
+            local[argname] = TypeVar(typename)
+        node.arg_types = local
+        assign(node.expr, $\\Gamma$ + local)
+    elif node : OpExpr:
+        node.type = TypeVar(fresh_typename())
+        map($\\lambda$ c: assign(c, $\\Gamma$), node.children)
+    elif node : IfExpr:
+        node.type = TypeVar(fresh_typename())
+        map($\\lambda$ c: assign(c, $\\Gamma$), node.children)
+    elif node : AppExpr:
+        node.type = TypeVar(fresh_typename())
+        map($\\lambda$ c: assign(c, $\\Gamma$), node.children)
+    elif node : IntConstant:
+        node.type = IntType
+    elif node : BoolConstant:
+        node.type = BoolType
+    else:
+        raise TypingError('unknown node')
+\end{lstlisting}
+\end{document}

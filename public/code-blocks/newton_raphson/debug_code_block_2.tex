@@ -1,0 +1,33 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{listings}
+\usepackage{xcolor}
+
+% Use black text on white background - we'll invert colors in image processing
+\definecolor{codebackground}{RGB}{255, 255, 255}
+\definecolor{codetext}{RGB}{0, 0, 0}
+
+\lstset{
+  basicstyle=\ttfamily\color{codetext},
+  backgroundcolor=\color{codebackground},
+  frame=none,
+  breaklines=true,
+  mathescape=true,
+  escapeinside={$}{$},
+  language=python,
+}
+
+\begin{document}
+\begin{lstlisting}
+def secant_method(f: $\mathbb{R} \\to \\mathbb{R}$, now: $\mathbb{R}$ = 120, prev: $\mathbb{R}$ = 100): $\mathbb{R}$                                            
+  while True: 
+    f_prime = (f(prev)-f(now))/(prev-now)        
+    new = now-f(now)/f_prime                       
+    # Convergence criterion 
+    if abs((new-now)/new) < 10**(-8):           
+      break 
+    prev = now
+    now = new
+  return new
+\end{lstlisting}
+\end{document}

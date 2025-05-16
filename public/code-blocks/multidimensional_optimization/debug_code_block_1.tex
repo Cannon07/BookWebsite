@@ -1,0 +1,32 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{listings}
+\usepackage{xcolor}
+
+% Use black text on white background - we'll invert colors in image processing
+\definecolor{codebackground}{RGB}{255, 255, 255}
+\definecolor{codetext}{RGB}{0, 0, 0}
+
+\lstset{
+  basicstyle=\ttfamily\color{codetext},
+  backgroundcolor=\color{codebackground},
+  frame=none,
+  breaklines=true,
+  mathescape=true,
+  escapeinside={$}{$},
+  language=python,
+}
+
+\begin{document}
+\begin{lstlisting}
+def L(a: $\mathbb{R}$, b : $\mathbb{R}$, x: $\mathbb{R}$[N], y: $\mathbb{R}$[N]) $\to$ $\mathbb{R}$:
+  cost = 0
+  for i: cost += (y[i] - a*x[i] - b)$^2$
+  return cost/N
+
+a = Normal(0.8, 1)
+b = Normal(2.2, 1)
+def regression(x: $\mathbb{R}$[N], y:$\mathbb{R}$[N]) $\to$ $\mathbb{R}$:	
+  return gradient_descent(L(x=x, y=y), [a, b], $\alpha$=1e-7, $\epsilon$=1e-8)
+\end{lstlisting}
+\end{document}

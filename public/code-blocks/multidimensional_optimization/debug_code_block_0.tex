@@ -1,0 +1,33 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{listings}
+\usepackage{xcolor}
+
+% Use black text on white background - we'll invert colors in image processing
+\definecolor{codebackground}{RGB}{255, 255, 255}
+\definecolor{codetext}{RGB}{0, 0, 0}
+
+\lstset{
+  basicstyle=\ttfamily\color{codetext},
+  backgroundcolor=\color{codebackground},
+  frame=none,
+  breaklines=true,
+  mathescape=true,
+  escapeinside={$}{$},
+  language=python,
+}
+
+\begin{document}
+\begin{lstlisting}
+def gradient_descent(loss: $\mathbb{R}[N]$ $\to$ $\mathbb{R}$, guess: $\mathbb{R}[N]$, $\alpha$ : $\mathbb{R}$, $\epsilon$: $\mathbb{R}$) $\to$ $\mathbb{R}$[N]:
+  change = $\infty$
+  while change > $\epsilon$:
+    gradient = $\nabla$loss(guess)
+    new = guess - $\alpha$*gradient
+    change = $\\|$new - guess$\\|$ /$\\|$guess$\\|$
+    if change < $\epsilon$:
+      break
+    guess = new
+  guess
+\end{lstlisting}
+\end{document}

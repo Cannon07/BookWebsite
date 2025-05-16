@@ -65,7 +65,7 @@ y_{i+1} &= y_{i} - \alpha \nabla_y
 where $\alpha$ is the length of the step we want to take down the hill. We can generalize this discussion into a general gradient descent algorithm for $N$ dimensional function.
 	
 \begin{lstlisting}[language=python]
-def gradient_descent(loss: $\mathbb{R}[N] \to \mathbb{R}$, guess: $\mathbb{R}[N]$, $\alpha$ : $\mathbb{R}$, $\epsilon$: $\mathbb{R}$) $\to$ $\mathbb{R}$[N]:
+def gradient_descent(loss: $\mathbb{R}[N]$ $\to$ $\mathbb{R}$, guess: $\mathbb{R}[N]$, $\alpha$ : $\mathbb{R}$, $\epsilon$: $\mathbb{R}$) $\to$ $\mathbb{R}$[N]:
   change = $\infty$
   while change > $\epsilon$:
     gradient = $\nabla$loss(guess)

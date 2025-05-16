@@ -1,0 +1,32 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{listings}
+\usepackage{xcolor}
+
+% Use black text on white background - we'll invert colors in image processing
+\definecolor{codebackground}{RGB}{255, 255, 255}
+\definecolor{codetext}{RGB}{0, 0, 0}
+
+\lstset{
+  basicstyle=\ttfamily\color{codetext},
+  backgroundcolor=\color{codebackground},
+  frame=none,
+  breaklines=true,
+  mathescape=true,
+  escapeinside={$}{$},
+  language=python,
+}
+
+\begin{document}
+\begin{lstlisting}
+def unify_all_equations(ast: AST):
+  """Unifies all type equations in the sequence eqs.    """
+  eqs = generate_equations(ast)
+  $\\Gamma$ = {}
+  for eq in eqs:
+    $\\Gamma$ = unify(eq.left, eq.right, $\\Gamma$)
+    if $\\Gamma$ is None:
+      break
+  $\\Gamma$
+\end{lstlisting}
+\end{document}

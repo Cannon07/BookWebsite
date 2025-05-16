@@ -1,0 +1,29 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{listings}
+\usepackage{xcolor}
+
+% Use black text on white background - we'll invert colors in image processing
+\definecolor{codebackground}{RGB}{255, 255, 255}
+\definecolor{codetext}{RGB}{0, 0, 0}
+
+\lstset{
+  basicstyle=\ttfamily\color{codetext},
+  backgroundcolor=\color{codebackground},
+  frame=none,
+  breaklines=true,
+  mathescape=true,
+  escapeinside={$}{$},
+  language=python,
+}
+
+\begin{document}
+\begin{lstlisting}
+def occurs(v: Var, term: Term, $\\Gamma$: Optional[Name $\to$ Term]) $\to$ Bool:
+  if v == term: True
+  elif term : Var and term.name in $\\Gamma$: occurs(v, $\\Gamma$[term.name], $\\Gamma$)
+  elif term : App:
+    any(occurs(v, arg, $\\Gamma$) for arg in term.args)
+  else: False
+\end{lstlisting}
+\end{document}

@@ -1,0 +1,39 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{listings}
+\usepackage{xcolor}
+
+% Use black text on white background - we'll invert colors in image processing
+\definecolor{codebackground}{RGB}{255, 255, 255}
+\definecolor{codetext}{RGB}{0, 0, 0}
+
+\lstset{
+  basicstyle=\ttfamily\color{codetext},
+  backgroundcolor=\color{codebackground},
+  frame=none,
+  breaklines=true,
+  mathescape=true,
+  escapeinside={$}{$},
+  language=python,
+}
+
+\begin{document}
+\begin{lstlisting}
+%def apply_unifier(typ, $\\Gamma$):
+%  """Applies the unifier $\\Gamma$ to typ.
+%  Returns a type where all occurrences of variables bound in $\\Gamma$
+%  were replaced (recursively); on failure returns None.
+%  """
+%  if $\\Gamma$ is None: None
+%  elif len($\\Gamma$) == 0: typ
+%  elif typ : (BoolType, IntType)): typ
+%  elif typ : TypeVar:
+%    if typ.name in $\\Gamma$: apply_unifier($\\Gamma$[typ.name], $\\Gamma$)
+%    else: typ
+%    elif typ : FuncType:
+%      newargtypes = [apply_unifier(arg, $\\Gamma$) for arg in typ.argtypes]
+%      return FuncType(newargtypes, apply_unifier(typ.rettype, $\\Gamma$))
+%    else: None    
+%
+\end{lstlisting}
+\end{document}

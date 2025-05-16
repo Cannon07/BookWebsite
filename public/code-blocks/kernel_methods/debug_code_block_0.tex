@@ -1,0 +1,28 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{listings}
+\usepackage{xcolor}
+
+% Use black text on white background - we'll invert colors in image processing
+\definecolor{codebackground}{RGB}{255, 255, 255}
+\definecolor{codetext}{RGB}{0, 0, 0}
+
+\lstset{
+  basicstyle=\ttfamily\color{codetext},
+  backgroundcolor=\color{codebackground},
+  frame=none,
+  breaklines=true,
+  mathescape=true,
+  escapeinside={$}{$},
+  language=python,
+}
+
+\begin{document}
+\begin{lstlisting}
+def rbf($X: \\mathbb{R}^{M \\times N}$, $\\sigma$) $\to$ $\mathbb{R}^{M \\times M}$:
+  K: $\mathbb{R}^{M \\times M}$
+  for i j
+    K[i,j] = exp(-$\\|X[i]-X[j]\\|^2$/($2\\sigma^2$))
+  return K
+\end{lstlisting}
+\end{document}

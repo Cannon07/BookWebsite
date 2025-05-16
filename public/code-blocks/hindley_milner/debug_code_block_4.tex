@@ -1,0 +1,31 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{listings}
+\usepackage{xcolor}
+
+% Use black text on white background - we'll invert colors in image processing
+\definecolor{codebackground}{RGB}{255, 255, 255}
+\definecolor{codetext}{RGB}{0, 0, 0}
+
+\lstset{
+  basicstyle=\ttfamily\color{codetext},
+  backgroundcolor=\color{codebackground},
+  frame=none,
+  breaklines=true,
+  mathescape=true,
+  escapeinside={$}{$},
+  language=python,
+}
+
+\begin{document}
+\begin{lstlisting}
+def unify_variable(v: Var, x: Var | App, $\\Gamma$: Optional[Name $\to$ Term]):
+  """Unifies variable v with term x, using $\\Gamma$. """
+  if v.name in $\\Gamma$: unify($\\Gamma$[v.name], x, $\\Gamma$)
+  elif x: Var and x.name in $\\Gamma$: unify(v, $\\Gamma$[x.name], $\\Gamma$)
+  elif occurs(v, x, $\\Gamma$): None
+  else:
+    # v is not yet in $\\Gamma$ and can't simplify x. Extend $\\Gamma$.
+    $\\Gamma$ + {v.name: x}
+\end{lstlisting}
+\end{document}

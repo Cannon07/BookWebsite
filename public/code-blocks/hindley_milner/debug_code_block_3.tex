@@ -1,0 +1,34 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{listings}
+\usepackage{xcolor}
+
+% Use black text on white background - we'll invert colors in image processing
+\definecolor{codebackground}{RGB}{255, 255, 255}
+\definecolor{codetext}{RGB}{0, 0, 0}
+
+\lstset{
+  basicstyle=\ttfamily\color{codetext},
+  backgroundcolor=\color{codebackground},
+  frame=none,
+  breaklines=true,
+  mathescape=true,
+  escapeinside={$}{$},
+  language=python,
+}
+
+\begin{document}
+\begin{lstlisting}
+def unify(x: Var | App, y: Var | App, $\\Gamma$: Optional[Name $\to$ Term]) -> Optional[Name $\to$ Term]:
+  if $\\Gamma$ is None: None
+  elif x == y: $\\Gamma$
+  elif x : Var: unify_variable(x, y, $\\Gamma$)
+  elif y : Var: unify_variable(y, x, $\\Gamma$)
+  elif x : App and y : App:
+    if len(x.args) != len(y.args): None
+    else:
+      for i in len(x.args):
+        unify(x.args[i], y.args[i], $\\Gamma$)
+  else: None
+\end{lstlisting}
+\end{document}

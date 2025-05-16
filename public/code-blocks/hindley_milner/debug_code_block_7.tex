@@ -1,0 +1,59 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{listings}
+\usepackage{xcolor}
+
+% Use black text on white background - we'll invert colors in image processing
+\definecolor{codebackground}{RGB}{255, 255, 255}
+\definecolor{codetext}{RGB}{0, 0, 0}
+
+\lstset{
+  basicstyle=\ttfamily\color{codetext},
+  backgroundcolor=\color{codebackground},
+  frame=none,
+  breaklines=true,
+  mathescape=true,
+  escapeinside={$}{$},
+  language=python,
+}
+
+\begin{document}
+\begin{lstlisting}
+def generate_equations(node : Expr, equations : [TypeEquation]): 
+    left, right, type, children = node.left, node.right, node.type, node.children
+    if node : IntConstant:
+        equations += [TypeEquation(type, IntType)]
+    elif node : BoolConstant:
+        equations += [TypeEquation(type, BoolType)]
+    elif node : Identifier:
+        # Identifier references add no equations.
+        pass
+    elif node : OpExpr:
+        map($\\lambda$ c: generate_equations(c, equations), children)
+        # All op arguments are integers.
+        equations += [TypeEquation(left.type, IntType), 
+                      TypeEquation(right.type, IntType)]
+        # Some ops return boolean, and some return integer.
+        if node.op in {'!=', '==', '>=', '<=', '>', '<'}:
+            equations += [TypeEquation(type, BoolType)]
+        else:
+            equations += [TypeEquation(type, IntType)]
+    elif node : AppExpr:
+        map($\\lambda$ c: generate_equations(c, equations), chilren)
+        argtypes = [arg.type for arg in node.args]
+        # An application forces its function's type.
+        equations += [TypeEquation(node.func.type, FuncType(argtypes, type))]
+    elif node : IfExpr:
+        map($\\lambda$ c: generate_equations(c, equations), children)
+        equations += [TypeEquation(node.ifexpr.type, BoolType),
+                      TypeEquation(type, node.thenexpr.type),
+                      TypeEquation(type, node.elseexpr.type)]
+    elif node : LambdaExpr:
+        map($\\lambda$ c: generate_equations(c, equations), children)
+        argtypes = [node.arg_types[name] for name in node.argnames]
+        equations += [TypeEquation(type,
+                         FuncType(argtypes, node.expr.type))]
+    else:
+        raise TypingError
+\end{lstlisting}
+\end{document}

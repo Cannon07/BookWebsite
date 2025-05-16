@@ -10,6 +10,37 @@ import subprocess
 import tempfile
 import uuid
 
+def get_base_path():
+    """Extract basePath from next.config.mjs"""
+    try:
+        project_root = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
+        next_config_path = os.path.join(project_root, 'next.config.mjs')
+        
+        with open(next_config_path, 'r') as f:
+            config_content = f.read()
+            
+        # Extract basePath using regex
+        base_path_match = re.search(r'basePath:\s*([^,\n]+)', config_content)
+        if base_path_match:
+            base_path = base_path_match.group(1).strip()
+            
+            # Handle the conditional expression
+            if 'isProduction' in base_path:
+                # Use the production value since we're generating static files
+                production_path_match = re.search(r'"([^"]*)"', base_path)
+                if production_path_match:
+                    return production_path_match.group(1)
+            else:
+                # Remove quotes if present
+                return base_path.strip('"\'')
+    except Exception as e:
+        print(f"Warning: Could not extract basePath from next.config.mjs: {e}")
+    
+    return ''  # Default to empty string if not found
+
+# Get the basePath early
+BASE_PATH = get_base_path()
+
 def fix_code_blocks_with_math(content):
     """
     Convert LaTeX-style code blocks with embedded math to standard markdown
@@ -146,7 +177,7 @@ def render_code_blocks_with_images(content, tex_file_path, output_dir):
     for block in rendered_blocks:
         if 'img_path' in block:
             # Create the image tag using Markdown syntax
-            img_tag = f'![image](/code-blocks/{chapter_name}/{block["img_path"]})'
+            img_tag = f'![image]({BASE_PATH}/code-blocks/{chapter_name}/{block["img_path"]})'
             
             # Replace the original code block
             content = content[:block['start']] + img_tag + content[block['end']:]
@@ -883,10 +914,10 @@ def handle_marginfigure(content, tex_file_path, output_dir):
                 # If it's a path like figures/part1b/multidimensional_optimization/contour0.png
                 # We'll keep just the filename and use the proper chapter path
                 image_filename = os.path.basename(image_path)
-                return f'![{caption}](/figures/{chapter_name}/{image_filename})'
+                return f'![{caption}]({BASE_PATH}/figures/{chapter_name}/{image_filename})'
             else:
                 # If it's a simple filename, use the chapter path
-                return f'![{caption}](/figures/{chapter_name}/{image_basename})'
+                return f'![{caption}]({BASE_PATH}/figures/{chapter_name}/{image_basename})'
         
         # If no image found, return an empty string or placeholder
         return ""
@@ -1159,7 +1190,7 @@ def extract_and_render_tikz(content, tex_file_path, output_dir):
                     raise Exception("PDF output not generated")
                 
                 # Replace the TikZ environment with an image tag in the content
-                img_tag = f'<img src="/figures/{chapter_name}/{output_filename}" alt="TikZ diagram" />'
+                img_tag = f'<img src="{BASE_PATH}/figures/{chapter_name}/{output_filename}" alt="TikZ diagram" />'
                 content = content.replace(match.group(0), img_tag)
             
         except Exception as e:
@@ -1197,7 +1228,7 @@ def handle_images(content, tex_file_path, output_dir):
         
         # Use the Next.js public directory URL structure
         # Ensure the path starts with a forward slash
-        relative_path = f'/figures/{chapter_name}/{os.path.basename(image_basename)}.png'
+        relative_path = f'{BASE_PATH}/figures/{chapter_name}/{os.path.basename(image_basename)}.png'
         
         # Extract caption if present
         caption_match = re.search(r'\\caption\{([^}]*)\}', after_content)
@@ -1284,7 +1315,7 @@ def handle_subfigures(content, tex_file_path, output_dir):
                 image_basename = os.path.splitext(image_path)[0]
                 
                 # Create the public URL path - ensure it starts with a slash
-                public_path = f'/figures/{chapter_name}/{os.path.basename(image_basename)}.png'
+                public_path = f'{BASE_PATH}/figures/{chapter_name}/{os.path.basename(image_basename)}.png'
                 
                 # Add to our list of subfigure images
                 subfigure_images.append({
@@ -1334,77 +1365,109 @@ def handle_subfigures(content, tex_file_path, output_dir):
     return content
 
 def ensure_image_paths(content):
-    """Ensure all image paths in the MDX content have the correct format while preserving code block images."""
-    # First, find and temporarily mark code block image references to protect them
-    protected_content = re.sub(
-        r'(!\[image\])(\(/code-blocks/[^)]+\))',
-        r'CODE_BLOCK_IMAGE_MARKER\2CODE_BLOCK_IMAGE_END',
-        content
-    )
+    """Ensure all image paths in the MDX content have the correct format."""
+    # Fix any image src that might not have the correct basePath in HTML tags
+    content = re.sub(r'<img src="(?!/|http|' + re.escape(BASE_PATH) + ')([^"]+)"', 
+                    r'<img src="' + BASE_PATH + r'/\1"', content)
     
-    # Now apply normal path fixing to non-code-block images
-    # Fix any image src that might not have a leading slash in HTML tags
-    protected_content = re.sub(r'<img src="(?!\/|http)([^"]+)"', r'<img src="/\1"', protected_content)
+    # Fix any image src that starts with a slash but doesn't have basePath
+    if BASE_PATH:
+        content = re.sub(r'<img src="(/[^"' + re.escape(BASE_PATH) + r'][^"]*)"', 
+                        r'<img src="' + BASE_PATH + r'\1"', content)
     
-    # Fix any image paths in Markdown format ![alt](path) that are NOT code block images
-    protected_content = re.sub(
-        r'(?<!CODE_BLOCK_IMAGE_MARKER)!\[(.*?)\]\((?!\/|http)([^)]+)\)',
-        r'![\1](/\2)',
-        protected_content
-    )
+    # Fix any image paths in Markdown format ![alt](path) 
+    content = re.sub(r'!\[(.*?)\]\((?!/|http|' + re.escape(BASE_PATH) + ')([^)]+)\)', 
+                    r'![\1](' + BASE_PATH + r'/\2)', content)
     
     # Also handle Markdown format with attributes ![alt](path){width="x"} 
-    protected_content = re.sub(
-        r'(?<!CODE_BLOCK_IMAGE_MARKER)!\[(.*?)\]\((?!\/|http)([^)]+)\)(\{[^}]*\})',
-        r'![\1](/\2)\3',
-        protected_content
-    )
-    
-    # Convert any Markdown images to the chapter-specific path format
-    chapter_name = os.environ.get('CURRENT_CHAPTER_NAME', '')
-    if chapter_name:
-        # Handle paths that aren't already in the /figures/chapter structure
-        def fix_paths(match):
-            # Skip if this is a code block image path
-            if "CODE_BLOCK_IMAGE_MARKER" in match.string[max(0, match.start()-30):match.start()]:
-                return match.group(0)
-                
-            alt_text = match.group(1)
-            path = match.group(2)
-            attrs = match.group(3) if len(match.groups()) > 2 else ''
-            
-            # Skip if already in correct format or if it's a code-blocks path
-            if re.match(r'^/figures/[^/]+/', path) or re.match(r'^/code-blocks/[^/]+/', path):
-                return f'![{alt_text}]({path}){attrs}'
-            
-            # Extract filename from path
-            filename = os.path.basename(path)
-            # Create new path in chapter figures directory
-            new_path = f'/figures/{chapter_name}/{filename}'
-            return f'![{alt_text}]({new_path}){attrs}'
-        
-        # Apply the path fixing to Markdown images, but not to code block images
-        protected_content = re.sub(
-            r'(?<!CODE_BLOCK_IMAGE_MARKER)!\[(.*?)\]\(([^)]+)\)(\{[^}]*\})?',
-            fix_paths,
-            protected_content
-        )
-        
-        # Handle the specific pattern with figures/part1b/... paths
-        protected_content = re.sub(
-            r'(?<!CODE_BLOCK_IMAGE_MARKER)!\[(.*?)\]\(figures/part1b/[^)]+/([^/)]+)\)(\{[^}]*\})?', 
-            lambda m: f'![{m.group(1)}](/figures/{chapter_name}/{m.group(2)}){m.group(3) if m.group(3) else ""}', 
-            protected_content
-        )
+    content = re.sub(r'!\[(.*?)\]\((?!/|http|' + re.escape(BASE_PATH) + ')([^)]+)\)(\{[^}]*\})', 
+                    r'![\1](' + BASE_PATH + r'/\2)\3', content)
     
     # Check and fix any malformed paths (double slashes, etc.)
-    protected_content = re.sub(r'src="//+', r'src="/', protected_content)
-    protected_content = re.sub(r'\]\(//+', r'](/', protected_content)
+    content = re.sub(r'src="//+', r'src="/', content)
+    content = re.sub(r'\]\(//+', r'](/', content)
     
-    # Now restore the code block image references
-    final_content = protected_content.replace('CODE_BLOCK_IMAGE_MARKER', '![image').replace('CODE_BLOCK_IMAGE_END', '')
+    # Ensure that basePath is properly added without duplication
+    if BASE_PATH:
+        content = re.sub(r'src="' + re.escape(BASE_PATH) + re.escape(BASE_PATH), 
+                        r'src="' + BASE_PATH, content)
+        content = re.sub(r'\]\(' + re.escape(BASE_PATH) + re.escape(BASE_PATH), 
+                        r'](' + BASE_PATH, content)
     
-    return final_content
+    return content
+
+# def ensure_image_paths(content):
+#     """Ensure all image paths in the MDX content have the correct format while preserving code block images."""
+#     # First, find and temporarily mark code block image references to protect them
+#     protected_content = re.sub(
+#         r'(!\[image\])(\(/code-blocks/[^)]+\))',
+#         r'CODE_BLOCK_IMAGE_MARKER\2CODE_BLOCK_IMAGE_END',
+#         content
+#     )
+    
+#     # Now apply normal path fixing to non-code-block images
+#     # Fix any image src that might not have a leading slash in HTML tags
+#     protected_content = re.sub(r'<img src="(?!\/|http)([^"]+)"', r'<img src="/\1"', protected_content)
+    
+#     # Fix any image paths in Markdown format ![alt](path) that are NOT code block images
+#     protected_content = re.sub(
+#         r'(?<!CODE_BLOCK_IMAGE_MARKER)!\[(.*?)\]\((?!\/|http)([^)]+)\)',
+#         r'![\1](/\2)',
+#         protected_content
+#     )
+    
+#     # Also handle Markdown format with attributes ![alt](path){width="x"} 
+#     protected_content = re.sub(
+#         r'(?<!CODE_BLOCK_IMAGE_MARKER)!\[(.*?)\]\((?!\/|http)([^)]+)\)(\{[^}]*\})',
+#         r'![\1](/\2)\3',
+#         protected_content
+#     )
+    
+#     # Convert any Markdown images to the chapter-specific path format
+#     chapter_name = os.environ.get('CURRENT_CHAPTER_NAME', '')
+#     if chapter_name:
+#         # Handle paths that aren't already in the /figures/chapter structure
+#         def fix_paths(match):
+#             # Skip if this is a code block image path
+#             if "CODE_BLOCK_IMAGE_MARKER" in match.string[max(0, match.start()-30):match.start()]:
+#                 return match.group(0)
+                
+#             alt_text = match.group(1)
+#             path = match.group(2)
+#             attrs = match.group(3) if len(match.groups()) > 2 else ''
+            
+#             # Skip if already in correct format or if it's a code-blocks path
+#             if re.match(r'^/figures/[^/]+/', path) or re.match(r'^/code-blocks/[^/]+/', path):
+#                 return f'![{alt_text}]({path}){attrs}'
+            
+#             # Extract filename from path
+#             filename = os.path.basename(path)
+#             # Create new path in chapter figures directory
+#             new_path = f'/figures/{chapter_name}/{filename}'
+#             return f'![{alt_text}]({new_path}){attrs}'
+        
+#         # Apply the path fixing to Markdown images, but not to code block images
+#         protected_content = re.sub(
+#             r'(?<!CODE_BLOCK_IMAGE_MARKER)!\[(.*?)\]\(([^)]+)\)(\{[^}]*\})?',
+#             fix_paths,
+#             protected_content
+#         )
+        
+#         # Handle the specific pattern with figures/part1b/... paths
+#         protected_content = re.sub(
+#             r'(?<!CODE_BLOCK_IMAGE_MARKER)!\[(.*?)\]\(figures/part1b/[^)]+/([^/)]+)\)(\{[^}]*\})?', 
+#             lambda m: f'![{m.group(1)}](/figures/{chapter_name}/{m.group(2)}){m.group(3) if m.group(3) else ""}', 
+#             protected_content
+#         )
+    
+#     # Check and fix any malformed paths (double slashes, etc.)
+#     protected_content = re.sub(r'src="//+', r'src="/', protected_content)
+#     protected_content = re.sub(r'\]\(//+', r'](/', protected_content)
+    
+#     # Now restore the code block image references
+#     final_content = protected_content.replace('CODE_BLOCK_IMAGE_MARKER', '![image').replace('CODE_BLOCK_IMAGE_END', '')
+    
+#     return final_content
 
 def remove_inline_styles(content):
     """Remove inline style attributes from HTML tags in the MDX content."""
@@ -1522,7 +1585,7 @@ def convert_tex_to_mdx(tex_file, output_dir):
                 rendered = rendered_blocks[i]
                 if 'img_path' in rendered:
                     # Create clean image tag
-                    img_tag = f'![image](/code-blocks/{chapter_name}/{rendered["img_path"]})'
+                    img_tag = f'![image]({BASE_PATH}/code-blocks/{chapter_name}/{rendered["img_path"]})'
                     mdx_content = mdx_content.replace(block['placeholder'], img_tag)
                 elif 'fallback_html' in rendered:
                     mdx_content = mdx_content.replace(block['placeholder'], rendered['fallback_html'])
@@ -1532,7 +1595,7 @@ def convert_tex_to_mdx(tex_file, output_dir):
         mdx_content = mdx_content.replace('\\]', ']')
         mdx_content = mdx_content.replace('\\(', '(')
         mdx_content = mdx_content.replace('\\)', ')')
-        mdx_content = re.sub(r'(!\[image\]\(/code-blocks/[^)]+\))None', r'\1', mdx_content)
+        mdx_content = re.sub(r'(!\[image\]\(' + re.escape(BASE_PATH) + r'/code-blocks/[^)]+\))None', r'\1', mdx_content)
         
         # Add CSS for code block images
         css_for_code_blocks = """

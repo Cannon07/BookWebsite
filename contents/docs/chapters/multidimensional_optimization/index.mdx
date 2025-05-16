@@ -20,7 +20,7 @@
 
 \
 **Prerequisites:**
-[$$chap:newton_raphson$$]\{reference-type="autoref"
+[$$chap:newton_raphson$$]\{reference-type="ref+label"
 reference="chap:newton_raphson"\}\
 **Difficulty Level:** \*\
 
@@ -111,21 +111,7 @@ where $\alpha$ is the length of the step we want to take down the hill.
 We can generalize this discussion into a general gradient descent
 algorithm for $N$ dimensional function.
 
-<div className="code-block-with-latex">
-<pre><code className="language-python">
-[language=python]
-def gradient_descent(loss: $\mathbb{R}[N]$ $\to$ $\mathbb{R}$, guess: $\mathbb{R}[N]$, $\alpha$ : $\mathbb{R}$, $\epsilon$: $\mathbb{R}$) $\to$ $\mathbb{R}$[N]:
-  change = $\infty$
-  while change > $\epsilon$:
-    gradient = $\nabla$loss(guess)
-    new = guess - $\alpha$*gradient
-    change = $\|$new - guess$\|$ /$\|$guess$\|$
-    if change < $\epsilon$:
-      break
-    guess = new
-  guess
-</code></pre>
-</div>
+![image](/BookWebsite/code-blocks/multidimensional_optimization/code_block_0_63f83f2f.png)
 
 A simple version of gradient descent is shown above. The relative
 approximation error between the current guess and the previous guess is
@@ -181,20 +167,7 @@ Using these calculations, we iteratively take steps on the cost function
 along the gradient direction to obtain the optimal parameters $a$ and
 $b$.
 
-<div className="code-block-with-latex">
-<pre><code className="language-python">
-[language=python]
-def L(a: $\mathbb{R}$, b : $\mathbb{R}$, x: $\mathbb{R}$[N], y: $\mathbb{R}$[N]) $\to$ $\mathbb{R}$:
-  cost = 0
-  for i: cost += (y[i] - a*x[i] - b)$^2$
-  return cost/N
-
-a = Normal(0.8, 1)
-b = Normal(2.2, 1)
-def regression(x: $\mathbb{R}$[N], y:$\mathbb{R}$[N]) $\to$ $\mathbb{R}$:	
-  return gradient_descent(L(x=x, y=y), [a, b], $\alpha$=1e-7, $\epsilon$=1e-8)
-</code></pre>
-</div>
+![image](/BookWebsite/code-blocks/multidimensional_optimization/code_block_1_c1d3e2be.png)
 
 ## Newton Method
 

@@ -20,7 +20,7 @@
 
 \
 **Prerequisites:**
-[$$chap:math_basics$$]\{reference-type="autoref"
+[$$chap:math_basics$$]\{reference-type="ref+label"
 reference="chap:math_basics"\}\
 **Difficulty Level:** \*\
 
@@ -130,27 +130,8 @@ Let's go back to the example function that was used to demonstrate the
 other root finding methods and re-solve it using the Newton-Raphson
 method. Let's implement the same relative convergence criterion. We
 start with the function we seek to optimize
-<div className="code-block-with-latex">
-<pre><code className="language-python">
-[language=python]
-def f(x: $\mathbb{R}$):
-  return $x^3$ - 3.7*x$^2$ + 4.54*x - 1.848
-</code></pre>
-</div> Next we implement Newton-Raphson
-<div className="code-block-with-latex">
-<pre><code className="language-python">
-[language=python]
-def newton_raphson(f: $\mathbb{R} \to \mathbb{R}$, start: $\mathbb{R}$ = 0): $\mathbb{R}$  
-  old = start
-  while True:
-    new = old - f(old)/grad(f)(old)                 
-    # Convergence criterion                              
-    if abs((new-old)/new) < 10**(-8):           
-      break
-    old = new
-  return new
-</code></pre>
-</div>
+![image](/BookWebsite/code-blocks/newton_raphson/code_block_0_cf2c132a.png) Next we implement Newton-Raphson
+![image](/BookWebsite/code-blocks/newton_raphson/code_block_1_eb60e1db.png)
 
 Note that Newton Raphson converges much faster than the false position
 method for the same function. As an exercise, try the function $x^3-x-3$
@@ -189,21 +170,7 @@ compute derivatives.
 Let's use the same example and find a root using the secant method. Note
 that this requires two starting points.
 
-<div className="code-block-with-latex">
-<pre><code className="language-python">
-[language=python]
-def secant_method(f: $\mathbb{R} \to \mathbb{R}$, now: $\mathbb{R}$ = 120, prev: $\mathbb{R}$ = 100): $\mathbb{R}$                                            
-  while True: 
-    f_prime = (f(prev)-f(now))/(prev-now)        
-    new = now-f(now)/f_prime                       
-    # Convergence criterion 
-    if abs((new-now)/new) < 10**(-8):           
-      break 
-    prev = now
-    now = new
-  return new
-</code></pre>
-</div>
+![image](/BookWebsite/code-blocks/newton_raphson/code_block_2_87081ea4.png)
 
 Note that the secant method also converges much faster than the false
 position method in this case for the same tolerance level.
@@ -240,19 +207,7 @@ This approach to optimization is called the Newton's Method in one
 dimension. It is worth highlighting that this is an open method for
 optimization.
 
-<div className="code-block-with-latex">
-<pre><code className="language-python">
-[language=python]
-def newton_raphson_opt(f: $\mathbb{R} \to \mathbb{R}$, start: $\mathbb{R}$, tol:$\mathbb{R}$ = 1e-8): 
-  old = start
-  while True: 
-    new = old-grad(f)(old)/grad(grad(f))(old)
-    if abs((new-old)/new) < tol:
-      break
-    old = new
-  return new
-</code></pre>
-</div>
+![image](/BookWebsite/code-blocks/newton_raphson/code_block_3_1d7b9ee1.png)
 
 In a similar manner, other root finding techniques can also be used for
 optimization to converge to local optima where the derivative is zero.

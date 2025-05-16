@@ -83,10 +83,6 @@ export const ROUTES: EachRoute[] = [
     "href": "/mathematical_transforms"
   },
   {
-    "title": "Matrix Calculus",
-    "href": "/matrix_calculus"
-  },
-  {
     "title": "Multidimensional Optimization",
     "href": "/multidimensional_optimization"
   },

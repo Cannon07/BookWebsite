@@ -90,7 +90,7 @@ Mathematically, this can be interpreted as determining the slope along
 each dimension and taking a small step in that direction to go down the
 slope. The gradient of the two-dimensional function is evaluated as
 given below: $$\begin\{aligned\}
-\nabla_x &= \frac\{\partial f(x,y)\}\{\partial x\}\\
+\nabla_x &= \frac\{\partial f(x,y)\}\{\partial x\} \\\\
 \nabla_y &= \frac\{\partial f(x,y)\}\{\partial y\}
 \end\{aligned\}$$
 
@@ -99,7 +99,7 @@ gradient along y-direction. The update rule of gradient descent (i.e
 taking a step in the gradient direction) is given by
 
 $$\begin\{aligned\}
-x_\{i+1\} &= x_\{i\} - \alpha \nabla_x\\
+x_\{i+1\} &= x_\{i\} - \alpha \nabla_x \\\\
 y_\{i+1\} &= y_\{i\} - \alpha \nabla_y
 \end\{aligned\}$$
 
@@ -107,7 +107,7 @@ where $\alpha$ is the length of the step we want to take down the hill.
 We can generalize this discussion into a general gradient descent
 algorithm for $N$ dimensional function.
 
-![image](/BookWebsite/code-blocks/multidimensional_optimization/code_block_0_63f83f2f.png)
+![image](/BookWebsite/code-blocks/multidimensional_optimization/code_block_0_f4e40733.png)
 
 A simple version of gradient descent is shown above. The relative
 approximation error between the current guess and the previous guess is
@@ -155,7 +155,7 @@ minimize the above cost function. To do this, we require the computation
 of the gradient of the cost function with respect to our parameters. We
 can use automatic differentiation in general, but for this simple case,
 we can directly compute gradients to be $$\begin\{aligned\}
-\frac\{\partial L\}\{\partial a\} &= -2\sum(p_i-at_i-b)x_i\\
+\frac\{\partial L\}\{\partial a\} &= -2\sum(p_i-at_i-b)x_i \\\\
 \frac\{\partial L\}\{\partial b\} &= -2\sum(p_i-at_i-b)
 \end\{aligned\}$$
 
@@ -163,7 +163,7 @@ Using these calculations, we iteratively take steps on the cost function
 along the gradient direction to obtain the optimal parameters $a$ and
 $b$.
 
-![image](/BookWebsite/code-blocks/multidimensional_optimization/code_block_1_c1d3e2be.png)
+![image](/BookWebsite/code-blocks/multidimensional_optimization/code_block_1_b2089351.png)
 
 ## Newton Method
 
@@ -193,7 +193,7 @@ hessian of the function given by
 $$\begin\{aligned\}
 Hf(x,y) = 
 \begin\{bmatrix\}
-\frac\{\partial^2 f\}\{ \partial x^2\} && \frac\{\partial f\}\{\partial x \partial y\}\\ \\
+\frac\{\partial^2 f\}\{ \partial x^2\} && \frac\{\partial f\}\{\partial x \partial y\} \\\\ \\\\
 \frac\{\partial f\}\{\partial y \partial x\} && \frac\{\partial^2 f\}\{\partial y^2\}
 \end\{bmatrix\}
 ko

@@ -49,10 +49,10 @@ How can we solve this complex integral? Recall the formula
 $$e^\{ikx\} = \cos(kx) + i \sin(kx)$$
 
 and rewrite $$\begin\{aligned\}
-    d_K(x) &= \frac\{1\}\{2\pi\} \int_\{-K/2\}^\{K/2\} e^\{ikx\} dk \\
-    &= \frac\{1\}\{2\pi\} \int_\{-K/2\}^\{K/2\} \cos(kx) + i \sin(kx) dk \\
-    &= \frac\{1\}\{2\pi\} \int_\{-K/2\}^\{K/2\} \cos(kx)  dk + \frac\{i\}\{2\pi\} \int_\{-K/2\}^\{K/2\} \sin(kx) dk\\
-    &= \frac\{1\}\{2\pi\} \frac\{\sin(kx)\}\{kx\} \Big|^\{K/2\}_\{-K/2\} - \frac\{i\}\{2\pi\}  \frac\{\cos(kx)\}\{kx\} \Big | _\{-K/2\}^\{K/2\} \\
+    d_K(x) &= \frac\{1\}\{2\pi\} \int_\{-K/2\}^\{K/2\} e^\{ikx\} dk \\\\
+    &= \frac\{1\}\{2\pi\} \int_\{-K/2\}^\{K/2\} \cos(kx) + i \sin(kx) dk \\\\
+    &= \frac\{1\}\{2\pi\} \int_\{-K/2\}^\{K/2\} \cos(kx)  dk + \frac\{i\}\{2\pi\} \int_\{-K/2\}^\{K/2\} \sin(kx) dk \\\\
+    &= \frac\{1\}\{2\pi\} \frac\{\sin(kx)\}\{kx\} \Big|^\{K/2\}_\{-K/2\} - \frac\{i\}\{2\pi\}  \frac\{\cos(kx)\}\{kx\} \Big | _\{-K/2\}^\{K/2\} \\\\
 \end\{aligned\}$$
 
 To evaluate the last expression, note that $\cos$ is an even function
@@ -65,15 +65,16 @@ $$\begin\{aligned\}
 These functions spike at the origin with the spike growing more
 pronounced as $K \to \infty$ as the plot below shows
 
-![image](/BookWebsite/figures/distributions/distributions_d_50.png)
+![Plot of
+$d_\{50\}$.](figures/Mathematical Foundations/distributions/distributions_d_50.png)\
 
 $d_K(x)$ is damped by the factor $\frac\{1\}\{\pi x\}$ the further you get
 from the origin. Note that formally, $d_K(0)$ is undefined, but we can
 evaluate a reasonable value at the origin, by using L'Hôpital's rule
 
 $$\begin\{aligned\}
-    d_K(0) &:= \lim_\{x \to 0\} \frac\{\sin\{\tfrac\{Kx\}\{2\}\}\}\{\pi x\} \\
-    &= \lim_\{x \to 0\} \frac\{\tfrac\{K\}\{2\}\cos\{\tfrac\{Kx\}\{2\}\}\}\{\pi\} \\
+    d_K(0) &:= \lim_\{x \to 0\} \frac\{\sin\{\tfrac\{Kx\}\{2\}\}\}\{\pi x\} \\\\
+    &= \lim_\{x \to 0\} \frac\{\tfrac\{K\}\{2\}\cos\{\tfrac\{Kx\}\{2\}\}\}\{\pi\} \\\\
     &= \frac\{K\}\{2\pi\}
 \end\{aligned\}$$
 
@@ -82,13 +83,13 @@ $K$. To show this, consider the following definite integral
 
 $$\begin\{aligned\}
     \int_\{-\infty\}^\{\infty\} d_K(x) dx &= \int_\{\infty\}^\{\infty\} \frac\{1\}\{\pi x\} \sin \tfrac\{Kx\}\{2\}  dx\\
-    &= \frac\{1\}\{\pi\} \int_\{-\infty\}^\{\infty\} \frac\{\sin\{\tfrac\{Kx\}\{2\}\}\}\{x\} dx \\
+    &= \frac\{1\}\{\pi\} \int_\{-\infty\}^\{\infty\} \frac\{\sin\{\tfrac\{Kx\}\{2\}\}\}\{x\} dx \\\\
 \end\{aligned\}$$ Let's perform the substitution $y=\frac\{Kx\}\{2\}$. Then
 $x = \frac\{2y\}\{K\}$ $$\begin\{aligned\}
     \frac\{1\}\{\pi\} \int_\{-\infty\}^\{\infty\} \frac\{\sin\{\tfrac\{Kx\}\{2\}\}\}\{x\} dx
-    &= \frac\{1\}\{\pi\}\frac\{2\}\{K\} \frac\{K\}\{2\} \int_\{-\infty\}^\{\infty\} \frac\{\sin\{y\}\}\{y\} dy \\
-    &= \frac\{1\}\{\pi\}\int_\{-\infty\} ^ \{\infty\} \frac\{\sin(y)\}\{y\} dy \\
-    &= \frac\{1\}\{\pi\}\pi \\
+    &= \frac\{1\}\{\pi\}\frac\{2\}\{K\} \frac\{K\}\{2\} \int_\{-\infty\}^\{\infty\} \frac\{\sin\{y\}\}\{y\} dy \\\\
+    &= \frac\{1\}\{\pi\}\int_\{-\infty\} ^ \{\infty\} \frac\{\sin(y)\}\{y\} dy \\\\
+    &= \frac\{1\}\{\pi\}\pi \\\\
     &= 1
 \end\{aligned\}$$
 

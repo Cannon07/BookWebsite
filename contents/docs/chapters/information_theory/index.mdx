@@ -66,7 +66,7 @@ were no gloves on, 24 of them resulted in tails while only 6 of them
 resulted in heads. We can therefore evaluate the specific conditional
 entropy for when gloves were on and when gloves were off as done below.
 $$\begin\{aligned\}
-H(Y|X=\textrm\{gloves\}) &= -(\frac\{19\}\{20\}\log_2(\frac\{19\}\{20\})+\frac\{1\}\{20\}\log_2(\frac\{1\}\{20\}))=0.286\\
+H(Y|X=\textrm\{gloves\}) &= -(\frac\{19\}\{20\}\log_2(\frac\{19\}\{20\})+\frac\{1\}\{20\}\log_2(\frac\{1\}\{20\}))=0.286 \\\\
 H(Y|X=\textrm\{no\ gloves\}) &= -(\frac\{24\}\{30\}\log_2(\frac\{24\}\{30\})+\frac\{6\}\{30\}\log_2(\frac\{6\}\{30\}))=0.722
 \end\{aligned\}$$ We can then define the general conditional entropy as
 shown below. $$\begin\{aligned\}
@@ -88,11 +88,11 @@ a way to quantify how much more we know about Y when given X and will
 always be greater than or equal to 0. Below are listed several
 identities that will be used throughout the derivation of the rest of
 the chapter. $$\begin\{aligned\}
-    I(A;B) &= H(A)-H(A|B)\\
-    I(A;B) &= H(B)-H(B|A)\\
-    I(A;B) &= H(A)+H(B)-H(A,B)\\
-    I(A;B) &= H(A,B)-H(A|B)-H(B|A)\\
-    I(A,B;C) &= I(A;C)+I(B;C|A)\geq 0\\
+    I(A;B) &= H(A)-H(A|B) \\\\
+    I(A;B) &= H(B)-H(B|A) \\\\
+    I(A;B) &= H(A)+H(B)-H(A,B) \\\\
+    I(A;B) &= H(A,B)-H(A|B)-H(B|A) \\\\
+    I(A,B;C) &= I(A;C)+I(B;C|A)\geq 0 \\\\
     H(B|A) &= H(A,B) - H(A)
 \end\{aligned\}$$ In the above equations, terms such as $H(A,B)$ denote
 joint terms.

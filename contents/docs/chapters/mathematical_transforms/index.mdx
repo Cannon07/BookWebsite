@@ -47,8 +47,8 @@ opaque. Why does it make sense? Let's start by first outlining a few
 basic properties of the Fourier transform
 
 $$\begin\{aligned\}
-    \mathcal\{F\}(a f(x) + b g(x)) &= \int_\{-\infty\}^\{\infty\} (a f(x) + b g(x))e^\{-2\pi i x k\} dx \\
-    &= \frac\{a\}\{2\pi\} \int_\{-\infty\}^\{\infty\} f(x) e^\{i x k\} dx + \frac\{b\}\{2\pi\} \int_\{-\infty\}^\{\infty\} g(x) e^\{i x k\} dx \\
+    \mathcal\{F\}(a f(x) + b g(x)) &= \int_\{-\infty\}^\{\infty\} (a f(x) + b g(x))e^\{-2\pi i x k\} dx \\\\
+    &= \frac\{a\}\{2\pi\} \int_\{-\infty\}^\{\infty\} f(x) e^\{i x k\} dx + \frac\{b\}\{2\pi\} \int_\{-\infty\}^\{\infty\} g(x) e^\{i x k\} dx \\\\
     &= a \mathcal\{F\}(f(x)) + b \mathcal\{F\}(g(x))
 \end\{aligned\}$$
 
@@ -66,15 +66,15 @@ $u = e^\{ixk\}$ and $dv = f'(x)dx$. Then $du = ik e^\{ixk\}$ and $v = f(x)$.
 Then we can write
 
 $$\begin\{aligned\}
-    \mathcal\{F\}(f')(k) &= \frac\{1\}\{2\pi\}\int_\{-\infty\}^\{\infty\} u dv \\
-    &= \frac\{1\}\{2\pi\} \left (uv \Big |^\{\infty\}_\{-\infty\} - \int _\{-\infty\}^\{\infty\} v du \right ) \\
-    &= \frac\{1\}\{2\pi\} \left (e^\{ixk\} f(x) \Big |^\{\infty\} _\{-\infty\} - \int _\{-\infty\}^\{\infty\} f(x) ike^\{ixk\} dx \right ) \\
+    \mathcal\{F\}(f')(k) &= \frac\{1\}\{2\pi\}\int_\{-\infty\}^\{\infty\} u dv \\\\
+    &= \frac\{1\}\{2\pi\} \left (uv \Big |^\{\infty\}_\{-\infty\} - \int _\{-\infty\}^\{\infty\} v du \right ) \\\\
+    &= \frac\{1\}\{2\pi\} \left (e^\{ixk\} f(x) \Big |^\{\infty\} _\{-\infty\} - \int _\{-\infty\}^\{\infty\} f(x) ike^\{ixk\} dx \right ) \\\\
 \end\{aligned\}$$
 
 We assume that $f(x)$ goes to 0 at both infinities, so we are left with
 
 $$\begin\{aligned\}
-\mathcal\{F\}(f')(k) &= \frac\{-ik\}\{2\pi\} \int_\{-\infty\}^\{\infty\} f(x) e^\{ixk\} dx \\
+\mathcal\{F\}(f')(k) &= \frac\{-ik\}\{2\pi\} \int_\{-\infty\}^\{\infty\} f(x) e^\{ixk\} dx \\\\
 &= -ik \mathcal\{F\}(f)(k)
 \end\{aligned\}$$
 
@@ -159,7 +159,7 @@ We note that this Legendre transform correctly relates back to the
 original function by noting that $$\begin\{aligned\}
 \frac\{db\}\{dc\} = -\frac\{c\}\{2\} -2 = -x \notag
 \end\{aligned\}$$ endexample
-![image](/BookWebsite/figures/mathematical_transforms/thermo_legendre.png)None
+![image](/BookWebsite/figures/mathematical_transforms/thermo_legendre.png)
 
 ## Laplace Transform
 
@@ -180,8 +180,8 @@ And indeed, the two share similar properties. To start, $\mathcal\{L\}$ is
 a linear operator
 
 $$\begin\{aligned\}
-    \mathcal\{L\}\{af + bg\} &= \int_\{0\}^\{\infty\} (a f(t) + b g(t)) e^\{-st\} dt \\
-    &= a\int_\{0\}^\{\infty\} f(t)e^\{-st\} dt + b \int_\{0\}^\{\infty\} g(t) e^\{-st\} dt \\
+    \mathcal\{L\}\{af + bg\} &= \int_\{0\}^\{\infty\} (a f(t) + b g(t)) e^\{-st\} dt \\\\
+    &= a\int_\{0\}^\{\infty\} f(t)e^\{-st\} dt + b \int_\{0\}^\{\infty\} g(t) e^\{-st\} dt \\\\
     &= a\mathcal\{L\}\{f\} + b \mathcal\{L\}\{g\}
 \end\{aligned\}$$
 

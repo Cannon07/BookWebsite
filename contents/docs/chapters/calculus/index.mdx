@@ -88,9 +88,9 @@ simple example. We will compute $\frac\{df\}\{dx\}$ for the following
 function $$\begin\{aligned\}
     f(x) = 5 x + 6
 \end\{aligned\}$$ We use the definition to write $$\begin\{aligned\}
-    \frac\{df\}\{dx\} &= \lim_\{\Delta x \to 0\} \frac\{f(x+\Delta x) - f(x)\}\{\Delta x\} \\
-    &=  \lim_\{\Delta x \to 0\} \frac\{5(x+\Delta x) + 6 - (5x + 6)\}\{\Delta x\} \\
-    &=  \lim_\{\Delta x \to 0\} \frac\{5\Delta x \}\{\Delta x\} \\
+    \frac\{df\}\{dx\} &= \lim_\{\Delta x \to 0\} \frac\{f(x+\Delta x) - f(x)\}\{\Delta x\} \\\\
+    &=  \lim_\{\Delta x \to 0\} \frac\{5(x+\Delta x) + 6 - (5x + 6)\}\{\Delta x\} \\\\
+    &=  \lim_\{\Delta x \to 0\} \frac\{5\Delta x \}\{\Delta x\} \\\\
     &= 5
 \end\{aligned\}$$ That is, $\frac\{df\}\{dx\}$ is the slope of $f$. To compute
 derivatives for more complex functions, you can use the formal
@@ -157,7 +157,7 @@ Suppose that we have a function of two variables $$\begin\{aligned\}
     f(x, y) &= x^2 + y^2
 \end\{aligned\}$$ To find the rate of change of $f$ with respect to either
 argument, we use partial derivatives defined as $$\begin\{aligned\}
-    \frac\{\partial f\}\{\partial x\} &= \lim_\{\Delta x \to 0\} \frac\{f(x + \Delta x, y) - f(x, y)\}\{\Delta x \}\\
+    \frac\{\partial f\}\{\partial x\} &= \lim_\{\Delta x \to 0\} \frac\{f(x + \Delta x, y) - f(x, y)\}\{\Delta x \} \\\\
     \frac\{\partial f\}\{\partial y\} &= \lim_\{\Delta y \to 0\} \frac\{f(x, y + \Delta y) - f(x, y)\}\{\Delta y\}
 \end\{aligned\}$$
 
@@ -188,9 +188,9 @@ We define the gradient $\nabla f$ as follows
 
 $$\begin\{aligned\}
  \nabla f = \begin\{bmatrix\}
-    \frac\{df\}\{dx_1\} \\
-    \vdots \\
-    \frac\{df\}\{dx_N\} \\
+    \frac\{df\}\{dx_1\} \\\\
+    \vdots \\\\
+    \frac\{df\}\{dx_N\} \\\\
     \end\{bmatrix\} 
 \end\{aligned\}$$
 
@@ -208,9 +208,9 @@ $\mathcal\{J\}$ is defined as
 
 $$\begin\{aligned\}
  \mathcal\{J\}(f) = \begin\{bmatrix\}
-    \frac\{\partial f_1\}\{dx_1\} & \cdots & \frac\{\partial f_1\}\{dx_N\} \\
-    & \vdots & \\
-    \frac\{\partial f_M\}\{x_1\} & \cdots & \frac\{\partial f_M\}\{x_N\} \\
+    \frac\{\partial f_1\}\{dx_1\} & \cdots & \frac\{\partial f_1\}\{dx_N\} \\\\
+    & \vdots & \\\\
+    \frac\{\partial f_M\}\{x_1\} & \cdots & \frac\{\partial f_M\}\{x_N\} \\\\
     \end\{bmatrix\}
 \end\{aligned\}$$ Recall that $\frac\{\partial f_i\}\{\partial x_i\}$ is the
 partial derivative of function $f_i$ with respect to variable $x_i$.

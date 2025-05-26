@@ -87,14 +87,6 @@ export type EachRoute = {
         "href": "/matrix_calculus"
       },
       {
-        "title": "Multidimensional Optimization",
-        "href": "/multidimensional_optimization"
-      },
-      {
-        "title": "Newton Raphson",
-        "href": "/newton_raphson"
-      },
-      {
         "title": "Optimization",
         "href": "/optimization"
       },

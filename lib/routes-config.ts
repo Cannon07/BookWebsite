@@ -83,9 +83,57 @@ export type EachRoute = {
         "href": "/mathematical_transforms"
       },
       {
+        "title": "Matrix Calculus",
+        "href": "/matrix_calculus"
+      },
+      {
         "title": "Multidimensional Optimization",
         "href": "/multidimensional_optimization"
       },
+      {
+        "title": "Newton Raphson",
+        "href": "/newton_raphson"
+      },
+      {
+        "title": "Optimization",
+        "href": "/optimization"
+      },
+      {
+        "title": "Ordinary Differential Equations",
+        "href": "/ordinary_differential_equations"
+      },
+      {
+        "title": "Partial Differential Equations",
+        "href": "/partial_differential_equations"
+      },
+      {
+        "title": "Probability And Statistics",
+        "href": "/probability_and_statistics"
+      },
+      {
+        "title": "Representation Theory",
+        "href": "/representation_theory"
+      },
+      {
+        "title": "Special Functions",
+        "href": "/special_functions"
+      },
+      {
+        "title": "Spinors",
+        "href": "/spinors"
+      },
+      {
+        "title": "Sturm Liouville Theory",
+        "href": "/sturm_liouville_theory"
+      },
+      {
+        "title": "Symplectic Manifold",
+        "href": "/symplectic_manifold"
+      },
+      {
+        "title": "Vectors Scalars Tensors",
+        "href": "/vectors_scalars_tensors"
+      }
     ]
   }
 ];

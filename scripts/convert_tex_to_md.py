@@ -885,6 +885,10 @@ def fix_math_delimiters(content):
     
     # Handle align and align* environments
     content = re.sub(r'\\begin\{align\*?\}([\s\S]*?)\\end\{align\*?\}', r'$$\1$$', content)
+
+    content = re.sub(r'\\begin\{aligned\}([\s\S]*?)\\end\{aligned\}', 
+                     lambda m: r'\begin{aligned}' + m.group(1).replace(r'\\', r'\\\\') + r'\end{aligned}', 
+                     content)
     
     return content
 
@@ -1497,6 +1501,54 @@ def remove_inline_styles(content):
     
     return content
 
+def clean_prerequisites_and_difficulty(mdx_content):
+    """
+    Clean up prerequisites and difficulty level sections in converted MDX content.
+    Handles both chapters with and without difficulty levels.
+    
+    Args:
+        mdx_content (str): The MDX content to clean
+        
+    Returns:
+        str: Cleaned MDX content
+    """
+    # First, remove prerequisites section completely for chapters with difficulty level
+    mdx_content = re.sub(
+        r'(-{70,})([\s\S]*?)(\*\*Difficulty Level:\*\*[\s\S]*?)(-{70,})',
+        r'\1\n\n\3\n\n\4',  # Keep only the parts we want with proper spacing
+        mdx_content
+    )
+    
+    # Then handle chapters with ONLY Prerequisites (no Difficulty Level)
+    mdx_content = re.sub(
+        r'(-{70,})([\s\S]*?\*\*Prerequisites:\*\*[\s\S]*?)(-{70,})',
+        r'\1\n\n\3',  # Remove Prerequisites completely
+        mdx_content
+    )
+    
+    # Clean up backslashes before asterisks
+    mdx_content = re.sub(
+        r'(\*\*Difficulty Level:\*\*)\s*\\(\*+)(?:\\)*',
+        r'\1 \2',  # Clean format
+        mdx_content
+    )
+    
+    # Clean up backslashes after asterisks
+    mdx_content = re.sub(
+        r'(\*\*Difficulty Level:\*\*)\s*(\*+)\\',
+        r'\1 \2',  # Clean format
+        mdx_content
+    )
+    
+    # Final cleanup for any remaining backslashes
+    mdx_content = re.sub(
+        r'(\*\*Difficulty Level:\*\*\s*\*+)\\+',
+        r'\1',  # Remove any remaining backslashes
+        mdx_content
+    )
+    
+    return mdx_content
+
 def convert_tex_to_mdx(tex_file, output_dir):
     """Convert LaTeX file to MDX format."""
     if not os.path.exists(output_dir):
@@ -1596,7 +1648,18 @@ def convert_tex_to_mdx(tex_file, output_dir):
         mdx_content = mdx_content.replace('\\(', '(')
         mdx_content = mdx_content.replace('\\)', ')')
         mdx_content = re.sub(r'(!\[image\]\(' + re.escape(BASE_PATH) + r'/code-blocks/[^)]+\))None', r'\1', mdx_content)
+
+        def fix_aligned_line_breaks(match):
+            full_match = match.group(0)
+            # Replace \\ with \\\\ but only when it's a line break (not part of another command)
+            return full_match.replace(' \\\\', ' \\\\\\\\')
+
+        # Apply this fix to all math environments containing aligned environments
+        mdx_content = re.sub(r'\$\$\\begin\\{aligned\\}[\s\S]*?\\end\\{aligned\\}\$\$', 
+                         fix_aligned_line_breaks, mdx_content)
         
+        mdx_content = clean_prerequisites_and_difficulty(mdx_content)
+
         # Add CSS for code block images
         css_for_code_blocks = """
 <style jsx global>{`

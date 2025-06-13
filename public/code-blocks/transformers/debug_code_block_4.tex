@@ -1,0 +1,33 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{listings}
+\usepackage{xcolor}
+
+% Use black text on white background - we'll invert colors in image processing
+\definecolor{codebackground}{RGB}{255, 255, 255}
+\definecolor{codetext}{RGB}{0, 0, 0}
+
+\lstset{
+  basicstyle=\ttfamily\color{codetext},
+  backgroundcolor=\color{codebackground},
+  frame=none,
+  breaklines=true,
+  mathescape=true,
+  escapeinside={$}{$},
+  language=python,
+}
+
+\begin{document}
+\begin{lstlisting}
+class EncoderLayer(M: $\mathbb{N}$, H: $\mathbb{N}$, F: $\mathbb{N}$, dropout: $\mathbb{R}$):
+    Q = K = max(M // H, 1)
+    attention = Residual(
+        MultiHeadAttention(H, M, Q, K), M, dropout)
+    feed_forward = Residual(
+        FeedForward(M, F), M, dropout)
+
+    def $\\lambda$(src: $\mathbb{R}$[A, B]):
+      src = attention(src, src, src)
+      feed_forward(src)
+\end{lstlisting}
+\end{document}

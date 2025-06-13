@@ -1,0 +1,189 @@
+
+<style jsx global>{`
+  .code-block-container {
+    display: block;
+    margin: 1.5rem 0;
+    padding: 0;
+  }
+  .code-block-image {
+    display: block;
+    width: auto;
+    max-width: 100%;
+    height: auto;
+    filter: drop-shadow(0 0 0 transparent); /* Force transparency rendering in some browsers */
+  }
+  /* Other styles... */
+`}</style>
+# Physika Primer 
+
+------------------------------------------------------------------------
+
+**Difficulty Level:** *
+
+
+
+------------------------------------------------------------------------
+
+Throughout this book, we use pseudocode to represent various
+differentiable programs of interest. We code our pseudocode in a
+language called Physika (greek for physics). Physika is a fully
+differentiable, dependently typed language. This combination of features
+allows Physika to model physical theories succinctly and effectively. In
+this chapter we provide a brief introduction to Physika.
+
+## An Introduction to Physika by Example
+
+Much of Physika's syntax follows that of Python. For example, here's how
+you define a function that adds two numbers.
+
+![image](/BookWebsite/code-blocks/physika_primer/code_block_0_0d17f49c.png)
+
+Notice that we don't define an explicit return type. Physika follows the
+convention that the last expression in a function is its return value.
+This allows for simple mathematically crisp definitions.
+
+Physika is a typed language with a rich and descriptive type system for
+annotating function inputs and outputs. We allow variables to have type
+$\mathbb\{R\}$. We can't directly represent infinite decimal place real
+numbers on an actual computer. But we can symbolically manipulate values
+in $\mathbb\{R\}$. We can also specialize this function to operate on a
+subset of $\mathbb\{R\}$ like the 32 bit floating point numbers
+$\textrm\{Float32\}$. In practice, it will be clear how to specialize a
+function that operates on the real numbers to a computationally
+realizable version, but if there are subtleties we will mention them
+with examples.
+
+We define the type of an array as ![image](/BookWebsite/code-blocks/physika_primer/code_block_1_3f9733c0.png)
+Multidimensional arrays are defined similarly
+![image](/BookWebsite/code-blocks/physika_primer/code_block_2_2426dd00.png) The type of a tensor is similar to the
+type for a multidimensional array, with a crucial difference that
+covariant and contravariant indices must be annotated in the type.
+![image](/BookWebsite/code-blocks/physika_primer/code_block_3_21c7210e.png) In mathematical tensor notation we
+would write this as something like $z^\{\alpha \beta\}_\{\gamma\}$. Note
+that tensor $z$ is not the same as a multidimensional array since it
+depends on a choice of basis. It is possible to *cast* a tensor object
+into a multidimensional array. The default cast will use the current
+basis of the tensor object.
+
+Physika is dependently typed. What does that mean? To start, it means
+that the following function is valid.
+
+![image](/BookWebsite/code-blocks/physika_primer/code_block_4_de22f7ec.png)
+
+Note that the type is a free variable. This is typically referred to as
+parameteric polymorphism in the programming language literature. You can
+think about as a placeholder that can be replaced with any other type
+like $\mathbb\{R\}$ or . Another interesting property of this definition
+is that the return type can depend on the provided arguments.
+
+Let's now see how we can define a variable with a value
+
+![image](/BookWebsite/code-blocks/physika_primer/code_block_5_38887955.png)
+
+Next, we consider a more complex example of matrix multiplication. Here
+is how we would code a matrix multiplication algorithm in Physika
+
+![image](/BookWebsite/code-blocks/physika_primer/code_block_6_4648c2be.png)
+
+We use the type system to infer that `i` and `j` above must respectively
+take values in `[0,...,n-1]` and `[0,...,o-1]`. Type inference allows us
+to make compact readable code for numerical applications. We can use
+type inference to simplify operations like Einstein summation. For
+example, an expression like $$\begin\{aligned\}
+    T^\{\alpha\}_\beta v^\{\beta\} 
+\end\{aligned\}$$ which represents a matrix vector multiplication can be
+represented as a code snippet ![image](/BookWebsite/code-blocks/physika_primer/code_block_7_15dd5a09.png)
+
+We can also rely on Physika to do type inference on tensor shapes and
+covariances properly. ![image](/BookWebsite/code-blocks/physika_primer/code_block_8_f192303a.png)
+
+Physika is a differentiable programming language, so differentiation
+operators are first class in the language. Phyika has two
+differentiation operators for forward and backwards mode differentiation
+![image](/BookWebsite/code-blocks/physika_primer/code_block_9_7916bae8.png)
+
+We now explore a slightly more complicated example using Physika to
+encode some simple motion of particles. We can encode
+
+![image](/BookWebsite/code-blocks/physika_primer/code_block_10_16bf094b.png) What is the type of $v$? We write
+![image](/BookWebsite/code-blocks/physika_primer/code_block_11_7bb2cab5.png) Let's write down a type for the
+differentiation operator in this particular case.
+
+![image](/BookWebsite/code-blocks/physika_primer/code_block_12_09a97a8c.png)
+
+Physika is capable of expressing more complex function spaces. Notably,
+we will make use of $L^2$ function space types for representing wave
+functions. ![image](/BookWebsite/code-blocks/physika_primer/code_block_13_62aeb08d.png)
+
+The study of quantum mechanics encompasses not only the study of wave
+functions but of operators that act on them. For example, consider the
+momentum operator that acts on wave functions. This operator has type
+
+![image](/BookWebsite/code-blocks/physika_primer/code_block_14_58a3f5c1.png) We could try to write this type as
+![image](/BookWebsite/code-blocks/physika_primer/code_block_15_24ecd8f3.png)
+
+This model is wrong, since $\hat\{p\}$ is not necessarily bounded as an
+operator, but serves to show how Physika can represent the type of
+bounded operators on Hilbert space. We can represent common quantum
+mechanical operations such as bras, kets, and brakets with suitable
+types. ![image](/BookWebsite/code-blocks/physika_primer/code_block_16_e598becf.png)
+
+The type of a quantum mechanical bra is given by
+![image](/BookWebsite/code-blocks/physika_primer/code_block_17_88ba27b1.png)
+
+We can represent yet more complicated spaces. For example, to compute
+with path integrals, we need to represent the type of all evolution
+paths for a given quantum mechanical system.
+
+![image](/BookWebsite/code-blocks/physika_primer/code_block_18_70597011.png)
+
+## Symbolic Manipulation
+
+For describing certain algorithms, it will be useful to perform symbolic
+manipulations.
+
+![image](/BookWebsite/code-blocks/physika_primer/code_block_20_31d40003.png)
+
+Symbolic variables can be used to express and manipulate formulas.
+
+## Parameterized Functions
+
+Layers in deep networks are typically represented as parameterized
+functions $f_\theta$. A parameterized function can be viewed as a family
+of concrete functions $$\begin\{aligned\}
+    \{ f_\{\theta\} | \theta \in \Theta \}
+\end\{aligned\}$$
+
+We write a parameterized layer function in Physika by using the `class`
+keyword. ![image](/BookWebsite/code-blocks/physika_primer/code_block_21_6b4478ff.png)
+
+We use the notation $\lambda$ to denote the function call to the
+parameterized function. The parameters of the function are set in the
+constructor. We can define a simple weighted linear layer using a
+parameterized function as follows
+
+![image](/BookWebsite/code-blocks/physika_primer/code_block_22_9c8b0cf6.png)
+
+We can express the type of a parameterized function in a type signature
+as
+
+$$\begin\{aligned\}
+    (\textrm\{Input Types\}\ \to \ \textrm\{Output Types\})[\textrm\{Parameter Types\}]
+\end\{aligned\}$$
+
+For the particular case of the simple weighted linear layer, we would
+express this signature as
+
+$$\begin\{aligned\}
+(\mathbb\{R\}\times\mathbb\{R\}\to\mathbb\{R\})[\mathbb\{R\}, \mathbb\{R\}]
+\end\{aligned\}$$
+
+## Standard Library
+
+Physika features a standard library of mathematical functions that
+should be familiar from other programming environments
+
+```
+\{.python language="python"\}
+abs, max, min, uniform, zeros
+```

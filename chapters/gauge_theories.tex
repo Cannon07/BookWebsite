@@ -1,0 +1,56 @@
+\documentclass[book.tex]{subfiles}
+
+\begin{document}
+\chapter{An Introduction to Gauge Theories}
+
+\label{chap:gauge_theories}
+\noindent\rule{11cm}{0.4pt} \\
+\textbf{Prerequisites:} \autoref{chap:qft_basics}  \\
+\textbf{Difficulty Level:} ** \\
+\noindent\rule{11cm}{0.4pt}
+\vspace{5mm}
+
+Gauge theories arise in quantum field theories that obey a local symmetry that is position dependent. In this chapter, we introduce the basics of gauge theories.
+
+\section{The XY Model}
+
+The XY model provides a toy example of a gauge theory. This model is an example of what is called a \textit{nonlinear sigma model} and involves a $O(N)$ isovector $n$ with unit length which has the $O(N)$ invariant interaction
+
+\begin{align}
+Z(K) = \int \prod_r dn(r) \exp \Bigg [ K \sum_{\langle r, r' \rangle} n(r) \cdot n(r') \Bigg ], \qquad |n| = 1
+\end{align}
+
+%\textcolor{red}{(TODO: What does this formula really mean? I'm going off notes in Shankar but it isn't really clear to me)}. 
+Here $\langle r, r' \rangle$ means that $r$, $r'$ are nearest neighbors in a lattice. We can write
+\begin{align}
+    n(r) = i \cos \theta(r) + j \sin \theta(r)
+\end{align}
+Here we assume that we operate in two dimensions. We define the correlation function
+
+\begin{align}
+G_{\alpha\beta}(r - r') &= \langle e^{i\alpha \theta(r)} e^{i\beta \theta(r')} \rangle
+\end{align}
+
+The invariance that this theory satisfies is
+\begin{align}
+\theta(r) \mapsto \mathcal{S}(\theta(r)) = \theta(r) + \theta_0, \quad \forall r
+\end{align}
+
+%Note that the XY model is not a Gauge theory itself. % (why? Make this match with earlier note)
+
+\section{$\mathcal{Z}_2$ Gauge theory in two dimensions}
+
+Consider a square lattice. 
+
+\begin{align}
+    Z(K) = \sum_s \Bigg [ K \sum_{\square} s_i s_j s_k s_l \Bigg ]
+\end{align}
+Here $\square$ denotes squares in the lattice. Ising variables are placed on bonds in the lattice. Note that reversing all spins
+
+\begin{align}
+    s_i \mapsto -s_i
+\end{align}
+preserves the model. Note that this model also satisfies a local symmetry when we only flip the spins $B(r)$ that adjoin the lattice point. This means that products of spins around closed loops will survive the gauge transformation (since 2 or 0 will flip).
+
+
+\end{document}

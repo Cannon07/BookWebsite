@@ -1,0 +1,26 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{listings}
+\usepackage{xcolor}
+
+% Use black text on white background - we'll invert colors in image processing
+\definecolor{codebackground}{RGB}{255, 255, 255}
+\definecolor{codetext}{RGB}{0, 0, 0}
+
+\lstset{
+  basicstyle=\ttfamily\color{codetext},
+  backgroundcolor=\color{codebackground},
+  frame=none,
+  breaklines=true,
+  mathescape=true,
+  escapeinside={$}{$},
+  language=python,
+}
+
+\begin{document}
+\begin{lstlisting}
+class OneLayerNet($W_0$: $\mathbb{R}$[N], $w_1$: $\mathbb{R}$, $b_0$: $\mathbb{R}$, $b_1$: $\mathbb{R}$):
+  def $\\lambda$(x: $\mathbb{R}$[N]) $\to$ $\mathbb{R}$:
+    $\\sigma$($w_1$*$\\sigma$($W_0$*x+$b_0$)+$b_1$)
+\end{lstlisting}
+\end{document}

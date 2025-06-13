@@ -1,0 +1,32 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{listings}
+\usepackage{xcolor}
+
+% Use black text on white background - we'll invert colors in image processing
+\definecolor{codebackground}{RGB}{255, 255, 255}
+\definecolor{codetext}{RGB}{0, 0, 0}
+
+\lstset{
+  basicstyle=\ttfamily\color{codetext},
+  backgroundcolor=\color{codebackground},
+  frame=none,
+  breaklines=true,
+  mathescape=true,
+  escapeinside={$}{$},
+  language=python,
+}
+
+\begin{document}
+\begin{lstlisting}
+$\nabla$(g1, w) =                    
+$\nabla$(g1, h) =
+$\nabla$(g2, w) =                    
+$\nabla$(g2, h) =
+$\nabla$(h1, g1) =
+$\nabla$(h2, g2) =
+$\nabla$(u1, h1) =              
+$\nabla$(u1, h2) =
+$\nabla$(o, u1) =
+\end{lstlisting}
+\end{document}

@@ -1,0 +1,46 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{listings}
+\usepackage{xcolor}
+
+% Use black text on white background - we'll invert colors in image processing
+\definecolor{codebackground}{RGB}{255, 255, 255}
+\definecolor{codetext}{RGB}{0, 0, 0}
+
+\lstset{
+  basicstyle=\ttfamily\color{codetext},
+  backgroundcolor=\color{codebackground},
+  frame=none,
+  breaklines=true,
+  mathescape=true,
+  escapeinside={$}{$},
+  language=python,
+}
+
+\begin{document}
+\begin{lstlisting}
+def mass_damped_system(m : $\mathbb{R}$, k : $\mathbb{R}$, c : $\mathbb{R}$, F : $\mathbb{R}$, $x_i$, $dx_i$, 
+                       $(t_i, tf)$: $\mathbb{R}^2$, dt: $\mathbb{R}$)
+  N = (t$_f$ - t$_i$)/dt
+  x = zeros(N+1), dx = zeros(N+1)
+  x[0] = $x_i$, dx[0] = $dx_i$
+  for i = 1:N+1
+    k11 = dx[i-1]
+    k12 = -k/m*x[i-1] - c/m*dx[i-1] + F/m
+    x_mid =  x[i-1] + dt/2*(k11)
+    dx_mid =  dx[i-1] + dt/2*(k12)
+    k21 = dx_mid
+    k22 = -k/m*x_mid  - c/m*dx_mid + F/m
+    x_mid =  x[i-1] + dt/2*(k21)
+    dx_mid =  dx[i-1] + dt/2*(k22)
+    k31 = dx_mid
+    k32 = -k/m*x_mid  - c/m*dx_mid + F/m
+    x_mid =  x[i-1] + dt*(k31)
+    dx_mid =  dx[i-1] + dt*(k32)
+    k41 = dx_mid
+    k42 = -k/m*x_mid - c/m*dx_mid + F/m
+    x[i] = x[i-1] + dt*(k11 + 2*k21 + 2*k31 + k41)/6
+    dx[i] = dx[i-1] + dt*(k12 + 2*k22 + 2*k32 + k42)/6
+  x, dx
+\end{lstlisting}
+\end{document}

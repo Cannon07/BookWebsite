@@ -1,0 +1,51 @@
+\documentclass[book.tex]{subfiles}
+\begin{document}
+
+\chapter{Differentiable Molecular Dynamics}
+\label{chap:differentiable_md}
+\noindent\rule{11cm}{0.4pt} \\
+\textbf{Prerequisites:}  \autoref{chap:molecular_hamiltonian},   \\
+\textbf{Difficulty Level:} ** \\
+\noindent\rule{11cm}{0.4pt}
+\vspace{5mm}
+
+Molecular dynamics is traditionally performed by sophisticated simulator frameworks that combine methods for simulating systems of molecules. It has recently become possible to make such frameworks fully differentiable  \cite{schoenholz2020jax}, \cite{merchant2021learn2hop}, \cite{goodrich2021designing}. Since the simulations are fully differentiable, optimization can be performed over whole trajectories allowing for sophisticated optimizations. We discuss a few considerations of such systems in this chapter.
+
+\section{Spatial Partitioning}
+
+Spatial partitioning methods break a given system into a collection of local neighboring cells. This methodology follows standard assumptions that only atoms within a certain local neighborhood of one another have physical influence on each other (outside systems undergoing phase transition). The core primitive performs a transformation that transforms a vector of positions into a list of lists of neighboring elements within distance $\sigma$ of each other.
+
+\begin{lstlisting}[language=python]
+neighbor_list: $\mathbb{R}[3, N] \to [\mathbb{R}[3]]$
+\end{lstlisting}
+
+%\begin{lstlisting}[language=python]
+%class SpatialPartition():
+%
+%  def $\lambda$(a: $\mathbb{R}[3, N, K]$):
+%    # TODO: Add algorithm
+%\end{lstlisting}
+
+%"I will talk about JAX MD, a software package for performing differentiable physics simulations with a focus on molecular dynamics. JAX MD includes a number of physics simulation environments, as well as interaction potentials and neural networks that can be integrated into these environments without writing any additional code. Since the simulations themselves are differentiable functions, entire trajectories can be differentiated to perform meta-optimization. These features are built on primitive operations, such as spatial partitioning, that allow simulations to scale to hundreds-of-thousands of particles on a single GPU. My talk will include an introduction to automatic differentiation through the JAX software package (www.github.com/google/jax) so no background is required. If you are interested in trying out JAX MD, it is available at github.com/google/jax-md."
+
+
+%"""Molecular dynamics has shown success in obtaining biological insights by providing mechanistic interpretations of experimental data. However, the force fields used to describe how the atoms interact are biased towards keeping folded proteins folded and fail when applied to disordered proteins or protein aggregation. The idea of using the technique of automatic differentiation, most commonly used to train neural networks, to improve force fields is called differentiable molecular simulation (DMS). It overcomes the limitations of other methods by allowing multiple parameters to be tuned at once and allowing a variety of loss functions to be targeted. Work to learn a coarse-grained force field from scratch using DMS will be described, along with development and features of the Julia package Molly.jl. This package allows simulation of a variety of physical systems and is built specifically for applying DMS to all-atom protein force fields.""
+
+\section{Coarse Graining}
+
+The parameters of a full coarse grained force field can be learned entirely from scratch using a differentiable molecular dynamics engine. The potential for automatic learnable coarse graining could help extend molecular dynamics simulations to much larger systems.
+
+\section{Memory Usage}
+
+Learning is done by differentiating backwards through the full simulation, which causes memory growth. Some potential ideas to reduce memory consumption are to use gradient checkpointing or invertible simulations.
+
+%\textcolor{red}{TODO: Adjoint sensitivity is a type of automatic differentiation? We need to add this to the book.}
+
+There are also issues with exploding gradients with systems becoming chaotic at times. Using methods like Langevin integrators seem to improve the stability of gradients, but more research is still needed. %\textcolor{red}{TODO: Expand}
+
+
+
+%\url{https://github.com/JuliaMolSim/Molly.jl}, %\url{https://github.com/psipred/cgdms}
+
+
+\end{document}

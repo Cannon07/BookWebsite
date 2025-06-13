@@ -1,0 +1,29 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{listings}
+\usepackage{xcolor}
+
+% Use black text on white background - we'll invert colors in image processing
+\definecolor{codebackground}{RGB}{255, 255, 255}
+\definecolor{codetext}{RGB}{0, 0, 0}
+
+\lstset{
+  basicstyle=\ttfamily\color{codetext},
+  backgroundcolor=\color{codebackground},
+  frame=none,
+  breaklines=true,
+  mathescape=true,
+  escapeinside={$}{$},
+  language=python,
+}
+
+\begin{document}
+\begin{lstlisting}
+class DiscreteGroupConvolution(G: Group, w: $\mathbb{R}[|G|]$):
+  def $\\lambda$(X: $\mathbb{R}[|G|]$) -> $\mathbb{R}[|G|]$:
+    X$'$ = zeros(|G|)
+    for g h:
+      X$'$[h] += w[g]*X[$g^{-1}$*h]
+    return X$'$
+\end{lstlisting}
+\end{document}

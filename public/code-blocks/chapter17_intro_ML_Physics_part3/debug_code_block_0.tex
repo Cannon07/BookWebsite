@@ -1,0 +1,33 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{listings}
+\usepackage{xcolor}
+
+% Use black text on white background - we'll invert colors in image processing
+\definecolor{codebackground}{RGB}{255, 255, 255}
+\definecolor{codetext}{RGB}{0, 0, 0}
+
+\lstset{
+  basicstyle=\ttfamily\color{codetext},
+  backgroundcolor=\color{codebackground},
+  frame=none,
+  breaklines=true,
+  mathescape=true,
+  escapeinside={$}{$},
+  language=python,
+}
+
+\begin{document}
+\begin{lstlisting}
+def R(r: $\mathbb{R}$, rmax: $\mathbb{R}$, params: $\mathbb{R}^3$) -> $\mathbb{R}$
+  if r > rmax:
+    return 0
+
+  c, pow = params[1:2]
+  res = r ≈ 0 ? 0 : c / r^pow
+
+  c = params[3]
+  res += r ≈ 0 ? c : 0
+  return res
+\end{lstlisting}
+\end{document}

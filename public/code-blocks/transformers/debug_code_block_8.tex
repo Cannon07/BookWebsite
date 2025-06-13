@@ -1,0 +1,29 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{listings}
+\usepackage{xcolor}
+
+% Use black text on white background - we'll invert colors in image processing
+\definecolor{codebackground}{RGB}{255, 255, 255}
+\definecolor{codetext}{RGB}{0, 0, 0}
+
+\lstset{
+  basicstyle=\ttfamily\color{codetext},
+  backgroundcolor=\color{codebackground},
+  frame=none,
+  breaklines=true,
+  mathescape=true,
+  escapeinside={$}{$},
+  language=python,
+}
+
+\begin{document}
+\begin{lstlisting}
+class Transformer(NE: $\mathbb{N}$, ND: $\mathbb{N}$, M: $\mathbb{N}$, H: $\mathbb{N}$, F: $\mathbb{N}$, dropout: $\mathbb{R}$):
+    encoder = Encoder(NE, M, H, F, dropout)
+    decoder = Decoder(ND, M, H, F, dropout)
+
+    def $\\lambda$(src: $\mathbb{R}$[L, D], tgt: $\mathbb{R}$[L, D]) $\to$ Tensor:
+        decoder(tgt, encoder(src))
+\end{lstlisting}
+\end{document}

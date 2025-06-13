@@ -1,0 +1,32 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{listings}
+\usepackage{xcolor}
+
+% Use black text on white background - we'll invert colors in image processing
+\definecolor{codebackground}{RGB}{255, 255, 255}
+\definecolor{codetext}{RGB}{0, 0, 0}
+
+\lstset{
+  basicstyle=\ttfamily\color{codetext},
+  backgroundcolor=\color{codebackground},
+  frame=none,
+  breaklines=true,
+  mathescape=true,
+  escapeinside={$}{$},
+  language=python,
+}
+
+\begin{document}
+\begin{lstlisting}
+def reverse_derivative_ode($\\theta$: $\mathbb{R}$, $(t_0, t_1): \\mathbb{R}^2$, h(t$_1$), $\\mathcal{L}$(h(t$_1$))):
+  # Define initial augmented state
+  $s_0 = [h(t_1), \\frac{\\partial L}{\\partial h(t_1)}, {0}_{|\\theta|}]$ 
+  # Define dynamics on augmented state
+  def aug_dynamics($[h(t), a(t), \\cdot], t, \\theta$):
+    # Compute vector-Jacobian products
+    return $[f(h(t), t, \\theta), -a(t)^T   \\frac{\\partial f}{\\partial h}, -a(t)^T \\frac{\\partial f}{\\partial \\theta}]$ 
+  #Solve reverse-time ODE
+  [h($t_0$), $\\frac{\\partial L}{\\partial h(t_0)}$, $\\frac{\\partial L}{\\partial \\theta}$] = ODESolve($s_0$, aug_dynamics, $t_1$, $t_0$, $\\theta$)
+\end{lstlisting}
+\end{document}

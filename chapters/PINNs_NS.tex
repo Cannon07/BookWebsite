@@ -1,0 +1,101 @@
+\documentclass[book.tex]{subfiles}
+
+\begin{document}
+\chapter{Approximating the Navier-Stokes Equation}
+% \begin{example}{Navier-Stokes Equation}
+\label{chap:pinns_ns}
+\noindent\rule{11cm}{0.4pt} \\
+\textbf{Prerequisites:}  \autoref{chap:pinns},  \\
+\textbf{Difficulty Level:} ** \\
+\noindent\rule{11cm}{0.4pt}
+\vspace{5mm}
+
+The example in this chapter involves a realistic scenario of incompressible fluid flow as described by the Navier-Stokes equations. Navier-Stokes equations describe the physics of many phenomena of scientific and engineering interest. They may be used to model the weather, ocean currents, water flow in a pipe and air flow around a wing. The Navier-Stokes equations in their full and simplified forms help with the design of aircraft and cars, the study of blood flow, the design of power stations, the analysis of the dispersion of pollutants, and many other applications. Let us consider the Navier-Stokes equations in two dimensions (2D) given explicitly by
+
+
+\begin{align}
+\begin{split}
+u_t + \lambda_1 \left (u \frac{\partial u}{\partial x} + v \frac{\partial u}{\partial y}\right ) = -\frac{\partial p}{\partial x} + \lambda_2\left (\frac{\partial^2 u}{\partial x^2} + \frac{\partial^2 u}{\partial y^2}\right ),\\
+v_t + \lambda_1 \left (u \frac{\partial v}{\partial x} + v \frac{\partial v}{\partial y} \right ) = -\frac{\partial p}{\partial y} + \lambda_2\left (\frac{\partial^2 v}{\partial x^2} + \frac{\partial^2 v}{\partial y^2}\right ),    
+\end{split}
+\end{align}
+
+
+where $u(t, x, y)$ denotes the $x$-component of the velocity field, $v(t, x, y)$ the $y$-component, and $p(t, x, y)$ the pressure. Here, $\lambda = (\lambda_1, \lambda_2)$ are the unknown parameters. Solutions to the Navier-Stokes equations are sought in the set of divergence-free functions; i.e.,
+
+\begin{equation}
+\frac{\partial u}{\partial x} + \frac{\partial v}{\partial y} = 0.    
+\end{equation}
+
+
+This extra equation is the continuity equation for incompressible fluids that describes the conservation of mass of the fluid. We make the assumption that
+
+\begin{equation}
+u = \frac{\partial \psi}{\partial y},\ \ \ v = -\frac{\partial \psi}{\partial x},    
+\end{equation}
+
+
+for some latent function $\psi(t,x,y)$. Under this assumption, the continuity equation will be automatically satisfied. Given noisy measurements
+
+\begin{equation}
+\{t^i, x^i, y^i, u^i, v^i\}_{i=1}^{N}    
+\end{equation}
+
+
+of the velocity field, we are interested in learning the parameters $\lambda$ as well as the pressure $p(t,x,y)$. We define $f(t,x,y)$ and $g(t,x,y)$ to be given by
+
+\begin{align}
+f &:= \frac{\partial u}{\partial t} + \lambda_1 \left (u \frac{\partial u}{\partial x} + v \frac{\partial u}{\partial y} \right) + p_x - \lambda_2 \left (\frac{\partial^2 u}{\partial x^2} + \frac{\partial^2 u}{\partial y^2}\right )\\
+g &:= \frac{\partial v}{\partial t} + \lambda_1 \left (u \frac{\partial v}{\partial x} + v \frac{\partial v}{\partial y} \right) + \frac{\partial p}{\partial y} - \lambda_2 \left (\frac{\partial^2 v}{\partial x^2} + \frac{\partial^2 v}{\partial y^2} \right)        
+\end{align}
+
+\noindent and proceed by jointly approximating \[\begin{bmatrix}
+\psi(t,x,y) & p(t,x,y)
+\end{bmatrix} \] 
+using a single neural network with two outputs. This prior assumption results into a physics informed neural network \[\begin{bmatrix}
+f(t,x,y) & g(t,x,y)
+\end{bmatrix} \]
+The parameters $\lambda$ of the Navier-Stokes operator as well as the parameters of the neural networks can be trained by minimizing the mean squared error loss
+%\begin{align}
+%\begin{bmatrix}
+%\psi(t,x,y) & p(t,x,y)
+%\end{bmatrix}
+%\end{align}
+%and 
+%\begin{align}
+%\begin{bmatrix}
+%f(t,x,y) & g(t,x,y)
+%\end{bmatrix}
+%\end{align}
+
+
+\begin{align}
+\begin{split}
+    \textrm{MSE} :=& \frac{1}{N}\sum_{i=1}^{N} \left(|u(t^i,x^i,y^i) - u^i|^2 + |v(t^i,x^i,y^i) - v^i|^2\right) \\
+    +& \frac{1}{N}\sum_{i=1}^{N} \left(|f(t^i,x^i,y^i)|^2 + |g(t^i,x^i,y^i)|^2\right)
+    \end{split}
+\end{align}
+
+
+%\begin{figure}
+%    \centering    \includegraphics{figures/NavierStokes_data_book.png}
+%    \caption{Navier-Stokes equation: \textbf{Top:} Incompressible flow and dynamic vortex shedding past a circular cylinder at Re$=100$. The spatio-temporal training data correspond to the depicted rectangular region in the cylinder wake. \textbf{Bottom:} Locations of
+%training data-points for the the stream-wise and transverse velocity
+%components. \textcolor{red}{TODO: This needs to be replaced.}
+%}
+%\end{figure}
+
+%\begin{figure}
+%    \centering    \includegraphics{figures/NavierStokes_prediction_book.png}
+%    \caption{Navier-Stokes equation: \textbf{Top:} Predicted
+%versus exact instantaneous pressure field at a representative time
+%instant. By definition, the pressure can be recovered up to a constant,
+%hence justifying the different magnitude between the two plots. This
+%remarkable qualitative agreement highlights the ability of
+%physics-informed neural networks to identify the entire pressure field,
+%despite the fact that no data on the pressure are used during model
+%training. \textbf{Bottom:} Correct partial differential equation along
+%with the identified one. \textcolor{red}{TODO: This needs to be replaced with our own figures.}}
+%\end{figure}
+
+\end{document}

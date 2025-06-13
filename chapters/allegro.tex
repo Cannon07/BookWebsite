@@ -1,0 +1,98 @@
+\documentclass[book.tex]{subfiles}
+\begin{document}
+
+\chapter{Allegro}
+
+\label{chap:allegro}
+\noindent\rule{11cm}{0.4pt} \\
+\textbf{Prerequisites:} \autoref{chap:dft} \\
+\textbf{Difficulty Level:} ** \\
+\noindent\rule{11cm}{0.4pt}
+\vspace{5mm}
+
+The field of machine learning potentials uses learned potential energy functions which are trained on a limited library of quantum data to match energies and forces.
+
+\begin{align}
+F_i &= \frac{\partial E}{\partial \vec{r_i}}
+\end{align}
+
+The problem of learning machine learning potentials is heavily constrained by symmetries. In particular, rotations, inversions, translations and permutations are all symmetries that must be obeyed. How can we build models that respect these symmetries? For a long time, this was $O(3)$ rotationally invariant quantities. Invariant features don't change with rotation while equivariant features rotate or transform alongside the source data.
+
+\section{Constructing Equivariant Features}
+
+In practice, equivariance dramatically improves machine learning potentials. They have improved scaling laws and lower data requirements.
+
+Equivariant features are made up of a collection of geometric tensors which inhabit irreducible representations (irreps). For $O(3)$ the irreps are index by
+\begin{align}
+(\ell, p)
+\end{align}
+As $\ell$ grows, you get higher order tensors. $V$ consists of a set of equivariant features.
+
+\begin{align}
+(x \otimes y)_{\ell_{out}, m_{out}} &= \sum_{m_1, m_2} \begin{pmatrix}
+\ell_1 & \ell_2 & \ell_{out} \\
+m_1 & m_2 & m_{out}
+\end{pmatrix} x_{\ell_1, m_1} x_{\ell_2, m_2}
+\end{align}
+
+In message passing architectures, as we increase the number of message passing iterations, we get a massive increase in the number of atoms which have to communicate in updates.
+
+Recall that energies are given by
+\begin{align}
+E &= \sum_i E_i
+\end{align}
+In Allegro, we instead do pre-ordered pairs
+\begin{align}
+E &= \sum_{i} \sum_{j \in \mathcal{N}(i)} 
+\end{align}
+
+\section{Applying the Density Trick}
+
+Allegro has a two track architecture. First is invariants with all architectures allowed. Then we have equivariants for $E(3)$. The main reason is that invariants are much cheaper on existing hardware. So we have a large set of scalar invariants which control a small set of equivariant.
+\begin{align}
+x^{ij,L}, V^{ij,L}
+\end{align}
+The two-body MLP takes as input
+\begin{align}
+(Z_i, Z_j, \|\vec{r}_{ij}\|), Y
+\end{align}
+The tensor networks want to get access to higher order interactions. The tensor layer must interact tensor features of different orders. The tensor product is a powerful tool to do this.
+
+\begin{align}
+V^{ij, L} &= \sum_{k \in N(i)} w^{ik,L} (V^{ij,L-1} \otimes \vec{Y}^{ik})
+\end{align}
+This gives bad scaling due to the tensor computation. We can rewrite as
+\begin{align}
+&= \sum_{k \in N(i)} V^{ij,L-1} \otimes w^{ik,L}\vec{Y}^{ik} \\
+&= V^{ij,L-1} \otimes \sum_{k \in N(i)} w^{ik,L}\vec{Y}^{ik}
+\end{align}
+This trick allows us to only do one tensor product rather than one for all neighbors. This update rule also enforces strict locality.
+
+
+This technique is commonly called the density trick. The layer maps scalars and tensors back to scalars and tensors
+\begin{align}
+x^{ij,L-1}, x^{ik, L-1}, V^{ij,L-1}_{n,\ell,p} \mapsto x^{ij,L}, V^{ij,L}_{n,\ell,p}
+\end{align}
+
+The Allegro model is $O(N)$ scaling in the number of atoms. It is $O(M)$ in the number neighbors/atoms. Note that equivariant transformers are $O(M^2)$. It is also $O(1)$ in the number of chemical species. Other local descriptors like SOAP have worse scaling.
+
+\section{Discussion}
+
+The tensor order should be thought of as a type of Taylor expansion. Higher tensor orders $\ell$ correspond to higher spherical harmonics potentials. In practice, going up to $\ell=2$ seems to make a big difference but past that it's not as useful.
+
+There's also early empirical evidence that message passing struggles to learn long range correlations past a point, which may be why the Allegro trick works.mThe observed GPU scaling is very clean and scales nicely to multiple GPUs. %The authors have done scaling tests up to 50M atoms of $Li_3PO_4$ with 16x8 A100 GPUs.
+
+Reactive potentials are the hardest test case for all ML potentials. Forces converge better than energies but it's not fully understood why.
+
+MACE has a similar goal to Allegro but operates on nodes and has 2 layers of message passing. It has a similar effect in lowering the effective cutoff. It still has 2 layers with 4 angstrom layers so cutoff can still be large. MACE iterated tensor product lacks a feedbacking mechanism between the two tracks.
+
+%Venkat: the work challenges the original Behler assumption about energies. What else did you try?
+
+%They tried environments but it works considerably worse because things wash out. Edges seem to work much better. Triplets also induce a lot of overhead and seem to be worse. The ordered pair decomposition partitions not just energy but information
+
+%\textcolor{red}{TODO: Add NoisyNodes from DeepMind reference}
+
+
+
+\end{document}
+

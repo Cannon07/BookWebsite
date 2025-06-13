@@ -1,0 +1,176 @@
+\documentclass[book.tex]{subfiles}
+\begin{document}
+
+\chapter{Integration with the Trapezoidal Rule}
+\label{chap:trapezoidal}
+\noindent\rule{11cm}{0.4pt} \\
+\textbf{Prerequisites:} \autoref{chap:calculus} \\
+\textbf{Difficulty Level:} * \\
+\noindent\rule{11cm}{0.4pt}
+\vspace{5mm}
+
+In this chapter we will explain how Newton-Cotes integration formulas are based on the strategy of replacing a complicated function or tabulated data with a polynomial that is easy to integrate. We will then learn how to implement the single and composite application Newton-Cotes formulas using the Trapezoidal rule. 
+
+\section{Introduction}
+
+%Calculus is a mathematical discipline focused on limits, functions, derivatives, integrals, and infinite series. Isaac Newton and Gottfried Leibniz independently discovered calculus in the 17$^{\mathrm{th}}$ century. 
+Integration is one of the two main operations of calculus, with its inverse, differentiation, being the other. In most engineering and physical applications, the integrand $f(x)$ may be known only at certain points, such as obtained by sampling, which calls for computing an approximate solution to a definite integral or numerical integration. In some other cases, a formula for the integrand may be known, but it may be difficult or impossible to find an antiderivative that is an elementary function. In numerical integration, the problem is to compute an approximate solution to 
+\begin{align}
+I &= \int_{a}^{b} f(x) dx
+\end{align}
+to a given degree of accuracy.  Integration can also be interpreted as the total value, or summation, of $f(x) dx$  over the range $x = a$ to $b$. The integral corresponds to the area under the curve of $f(x)$ between $x = a$ and $b$. 
+\begin{marginfigure}[-40\baselineskip] 
+	\centering
+	% \includegraphics[width = 2.4in]{figures/part1b/integration_trapezoidal/integration.PNG}
+ \includegraphics[width = 2.4in]{figures/part1b/integration_trapezoidal/integration0.png}
+	\centering
+	\caption{Graphical representation of the integral of $f(x)$ between the limits $x = a$ to $b$.}
+	\label{fig:1}
+\end{marginfigure}
+\begin{marginfigure}[-10\baselineskip] 
+	\centering
+	% \includegraphics[width = 2.4in]{figures/part1b/integration_trapezoidal/intro.png}
+ \includegraphics[width = 2.4in]{figures/part1b/integration_trapezoidal/intro_0.png}
+	\centering
+	\caption{(a) Area of a field bounded by a meandering stream and two roads. (b) Cross-sectional area of a river. (c) Net force due to a nonuniform wind blowing against the side of a skyscraper.}
+	\label{fig:2}
+\end{marginfigure}
+For example, consider a non-uniform wind blowing against the leaning tower of Pisa given by velocity $v\mathrm{m}/\mathrm{s}$ as a function of position. Since the velocity is location dependent, we can write force $F$ as 
+\begin{align}
+F &= 0.5\rho\sum_{i=1}^{n} (\Delta A_i v_i^2)\end{align}
+\noindent where $n$ is the number of discrete area segments, $\rho$ is the air density and $A$ is the surface area. For the continuous case, where $v(x, y)$ is a known function, numerical integration yields 
+\begin{align}
+F &= 0.5\rho\int\int v(x,y)^2 dA
+\end{align}
+Similarly, the percentage of charge $C$ left in your phone is displayed by calculating the integral of instantaneous current $I(t)$ over time given by 
+\begin{align}
+C = \int_{t_1}^{t_2} I(t) dt
+\end{align}
+Your monthly electricity bill is compiled based on the total electrical energy $E$ consumed give by the numerical integral of the instantaneous power $P(t)$ over the entire month, 
+\begin{align}
+E = \int_{t_1}^{t_2} P(t) dt
+\end{align}
+In the context of stocks and shares, the average value of a share is evaluated over a period by computing the cost integral over time and dividing by the time-period length. Approximate values for integrals are obtained by using numerical integration techniques as described next. 
+
+%This formula has hundreds of engineering and scientific applications. For example, it is used to calculate the center of gravity of irregular objects in mechanical and civil engineering and to determine the root-mean-square current in electrical engineering. Integrals are also employed by engineers and scientists to evaluate the total amount or quantity of a given physical variable. The integral may be evaluated over a line, an area, or a volume. If functions are simple then integral is evaluated analytically. However, it is often difficult or impossible when the function is complicated. In addition, the underlying function is often unknown and defined only by measurement at discrete points. For both these cases, approximate values for integrals are obtained by using numerical techniques as described next.
+%\end{document}
+
+\section{Newton-Cotes Formulas}
+
+In this method a complicated function or tabulated data is replaced with a polynomial that is easy to integrate:
+
+\begin{align}
+I = \int_{a}^{b} f(x) dx \cong \int_{a}^{b} f_n(x) dx
+\end{align}
+where $f_n(x)$ is a polynomial of the form
+\begin{align}
+f_n(x) = a_0 + a_1x + a_2x^2 + ... + a_{n-1}x^{n-1} + a_nx^n
+\end{align}
+\begin{marginfigure}[-5\baselineskip] 
+	\centering
+	% \includegraphics[width = 2.4in]{figures/part1b/integration_trapezoidal/polynomial.png}
+ \includegraphics[width = 2.4in]{figures/part1b/integration_trapezoidal/polynomial0.png}
+	\centering
+	\caption{The approximation of an integral by the area under (a) a straight line and (b) a parabola.}
+	\label{fig:3}
+\end{marginfigure}
+where $n$ is the order of the polynomial. For example, in Fig. \ref{fig:3}a, a first-order polynomial (a straight line) is used as an approximation. In Fig. \ref{fig:3}b, a parabola is employed for the same purpose. The integral can also be approximated using a series of polynomials applied piecewise to the function or data over segments of constant length. For example, in Fig. \ref{fig:4}, three straight-line segments are used to approximate the integral. Higher-order polynomials can be utilized for the same purpose.
+\begin{marginfigure}[\baselineskip] 
+	\centering
+	% \includegraphics[width = 2.4in]{figures/part1b/integration_trapezoidal/piecewise.png}
+ \includegraphics[width = 2.4in]{figures/part1b/integration_trapezoidal/piecewise0.png}
+	\centering
+	\caption{The approximation of an integral by the area under three straight-line segments.}
+	\label{fig:4}
+\end{marginfigure}
+Newton-Cotes formulas include closed and open forms. The closed forms
+are those where the data points at the beginning and end of the limits of integration are known. The open forms have integration limits that extend beyond the range of the data. In this lecture we will deal with closed forms.
+%\end{document}
+\section{The Trapezoidal Rule}
+
+The trapezoidal rule is the first of the Newton-Cotes closed integration formulas. It corresponds to the case where the polynomial is first-order:
+\begin{align}
+I = \int_{a}^{b} [f(a) + \dfrac{f(b) - f(a)}{b - a}(x - a)] dx
+\end{align}
+The result of integration is called the trapezoidal rule.
+\begin{align}
+I = (b - a)\dfrac{f(a) + f(b)}{2}
+\end{align}
+Geometrically, the trapezoidal rule is equivalent to approximating the area of the
+trapezoid under the straight line connecting $f (a)$ and $f (b)$ in Fig.\ref{fig:5}. Now area of a trapezoid is height times the average of the bases.
+\begin{align}
+I &= \mathrm{width} \times \mathrm{average\ height} \\
+&= (b-a) \times \dfrac{[f(a)+f(b)]}{2}
+\end{align}
+We can convert this into Physika code directly as follows
+\begin{lstlisting}[language=python]
+def trapezoidal_rule(f: $\mathbb{R} \to \mathbb{R}$, a: $\mathbb{R}$, b: $\mathbb{R}$) $\to$ $\mathbb{R}$:
+  (b - a) * (f(b) + f(a))/2
+\end{lstlisting}
+
+\begin{marginfigure}[\baselineskip] 
+	\centering
+	% \includegraphics[width = 2.4in]{figures/part1b/integration_trapezoidal/trapezoidal.png}
+ \includegraphics[width = 2.4in]{figures/part1b/integration_trapezoidal/trapezoidal0.jpg}
+	\centering
+	\caption{Graphical depiction of the trapezoidal rule.}
+	\label{fig:5}
+\end{marginfigure}
+\subsection{Error of the Trapezoidal 
+% TODO: Add derivation from https://mx.nthu.edu.tw/~ychuang2/2014%20Spring/Trapezoidal%20Rule.pdf
+Rule} When we employ the integral under a straight-line segment to approximate the integral under a curve, we obviously can incur an error that may be substantial. An estimate for the local truncation error of a single application of the trapezoidal rule is
+
+\begin{align}
+E_t = -\dfrac{1}{12}f''(\xi)(b-a)^3
+\end{align}
+where $\xi$ lies somewhere in the interval from $a$ to $b$. The above equation indicates that if the function being integrated is linear, the trapezoidal rule will be exact because the second derivative of a straight line is zero. Otherwise, for functions with second- and higher-order derivatives, some error can occur.
+
+\subsection{The Composite Trapezoidal Rule} One way to improve the accuracy of the trapezoidal rule is to divide the integration interval from $a$ to $b$ into a number of segments and apply the method to each segment (Fig. \ref{fig:6}). The areas of individual segments can then be added to yield the integral for the entire interval. The resulting equations are called composite, or multiple-segment, integration formulas.
+There are $n + 1$ equally spaced base points $(x_0, x_1, x_2, . . . , x_n)$. Consequently,
+there are $n$ segments of equal width:
+\begin{align}
+h = \dfrac{b-a}{n}
+\end{align}
+\begin{marginfigure}[10\baselineskip] 
+	\centering
+	% \includegraphics[width = 2.4in]{figures/part1b/integration_trapezoidal/composite.png}
+ \includegraphics[width = 2.4in]{figures/part1b/integration_trapezoidal/composite0.jpg}
+	\centering
+	\caption{Composite trapezoidal rule.}
+	\label{fig:6}
+\end{marginfigure}
+If $a$ and $b$ are designated as $x_0$ and $x_n$, respectively, the total integral can be represented as
+\begin{align}
+I = \int_{x_0}^{x_1} f(x) dx + \int_{x_1}^{x_2} f(x) dx + \dotsc + \int_{x_{n-1}}^{x_n} f(x) dx
+\end{align}
+Substituting the trapezoidal rule for each integral and grouping yields 
+\begin{align}
+I &= h\dfrac{f(x_0) + f(x_1)}{2} + h\dfrac{f(x_1) + f(x_2)}{2} + ... + h\dfrac{f(x_{n-1}) + f(x_n)}{2}\\
+&= \dfrac{h}{2}[f(x_0) + 2\sum_{i=1}^{n-1}f(x_i)+f(x_n)] \\
+&= (b-a)\dfrac{f(x_0) + 2\sum_{i=1}^{n-1}f(x_i)+f(x_n)}{2n}
+\end{align}
+According to the above equation, the interior points are given twice the weight of the two end points $f(x_0)$ and $f(x_n)$. We can again directly convert this implementation into Physika
+
+\begin{lstlisting}[language=python]
+def composite_trapezoidal_rule(f: $\mathbb{R} \to \mathbb{R}$, xs: $\mathbb{R}^n$) $\to$ $\mathbb{R}$:
+  b = xs[n-1], a = xs[0]
+  (b-a)*(f(xs[0]) + 2*sum(
+    [f(xs[i]) for i in range(1,n)]) + f(xs[n-1]))/(2*n)
+\end{lstlisting}
+
+An error for the composite trapezoidal rule can be obtained by summing the individual errors for each segment to give
+\begin{align}
+E_t = -\dfrac{(b-a)^3}{12n^3}\sum_{i=1}^{n}f''(\xi_i)
+\end{align}
+where $f''(\xi_i)$ is the second derivative at a point $\xi_i$ located in segment $i$. This result can be simplified by estimating the mean or average value of the second derivative for the entire interval as
+\begin{align}
+\bar{f''} \cong \dfrac{\sum_{i=1}^{n}f''(\xi_i)}{n}
+\end{align}
+Therefore $\sum f''(\xi_i) = \cong n\bar{f''}$ and hence we have
+\begin{align}
+E_a = -\dfrac{(b-a)^3}{12n^2}\bar{f''}
+\end{align}
+Therefore the error decreases as the number of segments increases. However, the rate of decrease is gradual because the error is inversely related to the square of $n$. Therefore, doubling the number of segments quarters the error. Note that above equation is an approximate error.
+
+
+\end{document}

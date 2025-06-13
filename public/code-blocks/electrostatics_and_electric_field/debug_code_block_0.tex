@@ -1,0 +1,27 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{listings}
+\usepackage{xcolor}
+
+% Use black text on white background - we'll invert colors in image processing
+\definecolor{codebackground}{RGB}{255, 255, 255}
+\definecolor{codetext}{RGB}{0, 0, 0}
+
+\lstset{
+  basicstyle=\ttfamily\color{codetext},
+  backgroundcolor=\color{codebackground},
+  frame=none,
+  breaklines=true,
+  mathescape=true,
+  escapeinside={$}{$},
+  language=python,
+}
+
+\begin{document}
+\begin{lstlisting}
+$\epsilon_0$: $\mathbb{R}$ # Constant
+def coulomb(q1: $\mathbb{R}$, q2: $\mathbb{R}$, x1: $\mathbb{R}^3$, x2: $\mathbb{R}^3$) -> $(\\mathbb{R}^3, \\mathbb{R}^3)$:
+  Fmag = (1 / (4 * $\\pi$ * $\epsilon_0$)) * (q1 * q2 / $\\| \\textrm{x1} - \\textrm{x2} \\|^2$))
+  return (Fmag * (x2 - x1)/$\\| \\textrm{x1} - \\textrm{x2} \\|$, Fmag * (x1 - x2)/$\\| \\textrm{x1} - \\textrm{x2} \\|$)
+\end{lstlisting}
+\end{document}

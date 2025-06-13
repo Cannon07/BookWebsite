@@ -1,0 +1,25 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{listings}
+\usepackage{xcolor}
+
+% Use black text on white background - we'll invert colors in image processing
+\definecolor{codebackground}{RGB}{255, 255, 255}
+\definecolor{codetext}{RGB}{0, 0, 0}
+
+\lstset{
+  basicstyle=\ttfamily\color{codetext},
+  backgroundcolor=\color{codebackground},
+  frame=none,
+  breaklines=true,
+  mathescape=true,
+  escapeinside={$}{$},
+  language=python,
+}
+
+\begin{document}
+\begin{lstlisting}
+def Input([($Z_i$, $r_i$)]: $\mathbb{Z}^N \\times \\mathbb{R}^{N \\times 3}$) $\to$ ($\\overline{V}$)$^N$:
+  return [featurize($Z_i$, $r_i$)]
+\end{lstlisting}
+\end{document}

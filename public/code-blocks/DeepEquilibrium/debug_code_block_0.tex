@@ -1,0 +1,32 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{listings}
+\usepackage{xcolor}
+
+% Use black text on white background - we'll invert colors in image processing
+\definecolor{codebackground}{RGB}{255, 255, 255}
+\definecolor{codetext}{RGB}{0, 0, 0}
+
+\lstset{
+  basicstyle=\ttfamily\color{codetext},
+  backgroundcolor=\color{codebackground},
+  frame=none,
+  breaklines=true,
+  mathescape=true,
+  escapeinside={$}{$},
+  language=python,
+}
+
+\begin{document}
+\begin{lstlisting}
+class DeepEquilibriumModel(f: $[\\mathbb{R}^M](\\mathbb{R}^N \\times \\mathbb{R}^N \\to \\mathbb{R})$, $\\theta: \\mathbb{R}^M$):
+  def $\\lambda$(x):
+    hstar = RootFind(f($\\cdot$, $\\theta$))
+    return hstar
+
+  def d$\\lambda$(x, hstar, upstream):
+    J = ($\nabla$(f, hstar) - I)$^{-1}$
+    grad = $\nabla$(f(hstar, $\\cdot$), $\\theta$)
+    return (- upstream * J * grad)
+\end{lstlisting}
+\end{document}

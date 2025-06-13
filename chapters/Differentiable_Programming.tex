@@ -1,0 +1,67 @@
+\documentclass[book.tex]{subfiles}
+
+\begin{document}
+\chapter{Differentiable Programming}
+\label{chap:diffprog}
+\noindent\rule{11cm}{0.4pt} \\
+\textbf{Prerequisites:}  \autoref{chap:ml_basics}, \autoref{chap:grad_descent}, \autoref{chap:autodiff}  \\
+\textbf{Difficulty Level:} ** \\
+\noindent\rule{11cm}{0.4pt}
+\vspace{5mm}
+
+In this chapter, we will seek to extend the basic material on machine learning with material more specific to "differentiable programming." You might very reasonably ask here, what's the difference between differentiable programming and more standard machine learning? There really isn't a clear dividing line, but perhaps differentiable programs are more akin to classical programs with control structures such as loops, conditionals, and branching.
+
+You might also ask reasonably, which programs can be made differentiable? This is an open question for now, but as you will see in this chapter, a very broad range of programs can fruitfully be made differentiable. We will up front state an intriguing conjecture
+
+\begin{conjecture}[Differentiable Church Turing Thesis]
+Any algorithm can be transformed into a differentiable program.
+\end{conjecture}
+
+To be up front, we don't entirely believe in this conjecture ourselves, but it serves as a powerful goal to either prove or disprove. If true, it implies that all the machinery of classical computer science can be adapted for differentiable programs. If false, it hints at potential future generalizations of differentiable programming.
+
+\section{Adapting Classical Control Structures}
+
+In this section, we will consider how to adapt classical control structures into differentiable programs explicitly. 
+
+\subsection{Condition Statements}
+
+Here's a simple example of a conditional statement in Physika
+
+\begin{lstlisting}
+def h(x):
+  if condition:
+    f(x)
+  else:
+    g(x)
+\end{lstlisting}
+
+We can convert this into a differentiable program by the following branch statement
+
+\begin{lstlisting}
+h(x) = $\sigma$ f(x) + $(1 - \sigma)$ g(x) 
+\end{lstlisting}
+
+The basic idea here is that we allow for a linear combination of $f$ and $g$ controlled by a differentiable parameter $\sigma$ that can be learned.
+
+You might at this point reasonably ask, wait, we said Physika supports differentiation through the source code. Why would we use this alternative style instead? The answer comes down to optimization. At times, this alternative structure may perform more smoothly. As with many things in machine learning (and differentiable programming), at times the best answer is to just try both and see.
+
+\subsection{Loops}
+
+Here's a generic loop structure
+
+\begin{lstlisting}
+def h(a : int[N]):
+  for i in range(N):
+    z = f(z, a[i], i)
+  return z
+\end{lstlisting}
+
+Note that this loop structure can be modeled by an RNN
+
+TODO: Write down RNN equations here or elsewhere.
+
+\subsection{Top K}
+
+\subsection{SAT Solving}
+
+\end{document}

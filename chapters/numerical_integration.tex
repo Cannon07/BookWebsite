@@ -1,0 +1,732 @@
+\documentclass[book.tex]{subfiles}
+
+\begin{document}
+
+\chapter{Numerical Integration}
+
+\label{chap:numerical_integration}
+\noindent\rule{11cm}{0.4pt} \\
+\textbf{Prerequisites:} \autoref{chap:calculus} \\
+\textbf{Difficulty Level:} * \\
+\noindent\rule{11cm}{0.4pt}
+\vspace{5mm}
+
+In this chapter we will introduce you to the basics of numerical integration of systems of equations.
+
+\section{Newton-Cotes Formulas}
+In this method a complicated function or tabulated data is replaced with a polynomial that is easy to integrate:
+\begin{align}
+I = \int_{a}^{b} f(x) dx \cong \int_{a}^{b} f_n(x) dx
+\end{align}
+where $f_n(x)$ is a polynomial of the form
+\begin{align}
+f_n(x) = a_0 + a_1x + a_2x^2 + ... + a_{n-1}x^{n-1} + a_nx^n
+\end{align}
+
+where $n$ is the order of the polynomial.  %For example, in Fig. \ref{fig:3}a, a first-order polynomial (a straight line) is used as an approximation. In Fig. \ref{fig:3}b, a parabola is employed for the same purpose. The integral can also be approximated using a series of polynomials applied piecewise to the function or data over segments of constant length. For example, in Fig. \ref{fig:4}, three straight-line segments are used to approximate the integral. Higher-order polynomials can be utilized for the same purpose.
+%\begin{marginfigure}[\baselineskip] 
+%	\centering
+%	\includegraphics[width = 2.4in]{piecewise.png}
+%	\centering
+%	\caption{The approximation of an integral by the area under three straight-line segments.}
+%	\label{fig:4}
+%\end{marginfigure}
+Newton-Cotes formulas include closed and open forms. The closed forms
+are those where the data points at the beginning and end of the limits of integration are known. The open forms have integration limits that extend beyond the range of the data. In this chapter we will work with closed forms.
+
+\section{The Trapezoidal Rule}
+
+The trapezoidal rule is the first of the Newton-Cotes closed integration formulas. It corresponds to the case where the polynomial is first-order:
+\begin{align}
+I = \int_{a}^{b} [f(a) + \dfrac{f(b) - f(a)}{b - a}(x - a)] dx
+\end{align}
+The result of integration is called the trapezoidal rule.
+\begin{align}
+I = (b - a)\dfrac{f(a) + f(b)}{2}
+\end{align}
+Geometrically, the trapezoidal rule is equivalent to approximating the area of the
+trapezoid under the straight line connecting $f (a)$ and $f (b)$ in Fig.\ref{fig:5}. Now the area of a trapezoid is height times the average of the bases.
+\begin{align}
+I = \mathrm{width} \times \mathrm{average height} = (b-a) \times \dfrac{[f(a)+f(b)]}{2}
+\end{align}
+\begin{marginfigure}[\baselineskip] 
+	\centering
+	\includegraphics[width = 2.4in]{figures/trapezoidal_rule.png}
+	\centering
+	\caption{Graphical depiction of the trapezoidal rule. TODO: From \url{https://commons.wikimedia.org/wiki/File:Trapezoidal_rule_illustration.svg}. Swap for our own figure.}
+	\label{fig:5}
+\end{marginfigure}
+
+\subsection{\textit{Error of the Trapezoidal Rule}}
+
+When we employ the integral under a straight-line segment to approximate the integral under a curve, we obviously can incur an error that may be substantial. An estimate for the local truncation error of a single application of the trapezoidal rule is
+\begin{align}
+E_t = -\dfrac{1}{12}f''(\xi)(b-a)^3
+\end{align}
+where $\xi$ lies somewhere in the interval from $a$ to $b$. The above equation indicates that if the function being integrated is linear, the trapezoidal rule will be exact because the second derivative of a straight line is zero. Otherwise, for functions with second- and higher-order derivatives, some error can occur.
+
+\subsection{\textit{The Composite Trapezoidal Rule}}
+
+One way to improve the accuracy of the trapezoidal rule is to divide the integration interval from $a$ to $b$ into a number of segments and apply the method to each segment (Fig. \ref{fig:6}). The areas of individual segments can then be added to yield the integral for the entire interval. The resulting equations are called composite, or multiple-segment, integration formulas.
+There are $n + 1$ equally spaced base points $(x_0, x_1, x_2, . . . , x_n)$. Consequently,
+there are $n$ segments of equal width:
+\begin{align}
+h = \dfrac{b-a}{n}
+\end{align}
+\begin{marginfigure}[10\baselineskip] 
+	\centering
+	\includegraphics[width = 2.4in]{figures/chained_trapezoidal.png}
+	\centering
+	\caption{Composite trapezoidal rule. TODO: From \url{https://commons.wikimedia.org/wiki/File:Integration_num_trapezes_notation.svg}}
+	\label{fig:6}
+\end{marginfigure}
+If $a$ and $b$ are designated as $x_0$ and $x_n$, respectively, the total integral can be represented as
+\begin{align}
+I = \int_{x_0}^{x_1} f(x) dx + \int_{x_1}^{x_2} f(x) dx + ... + \int_{x_{n-1}}^{x_n} f(x) dx
+\end{align}
+Substituting the trapezoidal rule for each integral and grouping yields 
+\begin{align}
+\begin{gathered}
+I = h\dfrac{f(x_0) + f(x_1)}{2} + h\dfrac{f(x_1) + f(x_2)}{2} + ... + h\dfrac{f(x_{n-1}) + f(x_n)}{2}\\
+I = \dfrac{h}{2}[f(x_0) + 2\sum_{i=1}^{n-1}f(x_i)+f(x_n)] = (b-a)\dfrac{f(x_0) + 2\sum_{i=1}^{n-1}f(x_i)+f(x_n)}{2n}
+\end{gathered}
+\end{align}
+According to the above equation, the interior points are given twice the weight of the two end points $f(x_0)$ and $f(x_n)$. An error for the composite trapezoidal rule can be obtained by summing the individual errors for each segment to give
+\begin{align}
+E_t = -\dfrac{(b-a)^3}{12n^3}\sum_{i=1}^{n}f''(\xi_i)
+\end{align}
+where $f''(\xi_i)$ is the second derivative at a point $\xi_i$ located in segment $i$. This result can be simplified by estimating the mean or average value of the second derivative for the entire interval as
+\begin{align}
+\bar{f''} \cong \dfrac{\sum_{i=1}^{n}f''(\xi_i)}{n}
+\end{align}
+Therefore $\sum f''(\xi_i) = \cong n\bar{f''}$ and hence we have
+\begin{align}
+E_a = -\dfrac{(b-a)^3}{12n^2}\bar{f''}
+\end{align}
+Therefore the error decreases as the number of segments increases. However, the rate of decrease is gradual because the error is inversely related to the square of $n$. Therefore, doubling the number of segments quarters the error. Note that above equation is an approximate error.\\
+\begin{example}
+You are an engineer at Tesla and you want to estimate the packweight given the velocity profile of a real car. The force exerted on a vehicle, moving on any terrain is given by the following equation.
+\begin{align}
+F_{total} = F_{drag}+F_{friction}+F_{inertial}+F_{gradient}
+\end{align}
+The load power on the vehicle can be calculated based on the velocity profile $v(t)$ as
+\begin{align}
+P(t) &= F_{\textrm{total}} \\
+v(t) &= \frac{1}{2}\rho C_dA v(t)^3 + C_{rr}mg v(t) + mv \frac{dv}{dt} + mgZ v(t)
+\end{align}
+where $P(t)$ is the load power, $\rho$ is the density of air, $C_d$ is the coefficient of drag, $A$ is the frontal area of the vehicle, $v(t)$ is the instantaneous velocity, $C_{rr}$ is the coefficient of rolling resistance, $m$ is the total mass of the vehicle, $g$ is acceleration due to gravity, and $Z$ is the gradient in road elevation. It can be noted that, the elevation of the road can be accounted by increasing the mass of the vehicle. Under this assumption, the gradient term can be neglected. Given the velocity profile of a car driven on a highway and the initial packweight as $100 kg$, find the final kerbweight and packweight when the error between two successive iterations is less than $10^{-3}$, using the Composite trapezoidal rule. Note that, $\text{Energy Expended} = \int_{t=0}^{t=t}P(t)dt$ and 
+
+\begin{align}
+\begin{gathered}
+\text{Packweight} = \dfrac{\text{Effective Wh/mile}\times \text{mile range}}{\text{Energy density of battery}}
+\end{gathered}
+\end{align}
+
+\begin{marginfigure}[-10\baselineskip]
+	\textbf{Output}:
+	\begin{verbatim}
+	Iteration Packweight (kg)     Kerb Weight (kg)
+	0         100.0000        1600
+	1         677.1196        2177.1196
+	2         704.9957        2204.9957
+	3         706.3421        2206.3421
+	4         706.4072        2206.4072
+	5         706.4103        2206.4103
+	\end{verbatim}
+\end{marginfigure}
+%\begin{lstlisting}
+%packweight: kg = 100
+%base_mass: kg = 1500
+%v = [...] # The input velocities
+%
+%mass: kg = base_mass+packweight
+%g = 9.81, rho = 1.17, A_F = 5.5, C_D = 0.44, C_R = 0.0075
+%mile_range = 220, e_den_bat = 160 # Wh/kg
+%dvdt =  [0] + diff(v[:,2]) /diff(v[:,1])
+%p = v[:,1]
+%p[:,2] = 1/2*rho*C_D*A_F*v[:,2].^3+C_R*mass*g*v[:,2]+... mass*v[:,2] * (dvdt) # Watt
+%Distance = 0
+%for i in range(2, length(v)):
+%  Distance = Distance + (v[i,1]-v[i-1,1])*(v[i-1,2]+v[i,2])/2
+%
+%Distance_miles = (Distance/1000)/1.6
+%eps = 1e-3
+%while True:
+%  Energy = 0
+%  for i in range(2, length(p)):
+%    Energy = Energy + (p[i,1]-p[i-1,1])*(p[i-1,2]+p[i,2])/2;
+%    
+%  Energy_kWh = Energy*2.77778e-7 # kWh
+%  Eff_Wh_mile = Energy_kWh*1000/Distance_miles
+%  packweight_new = Eff_Wh_mile*mile_range/e_den_bat # in kg
+%  if (abs(packweight_new-packweight)<eps):
+%    break
+%  packweight = packweight_new
+%  mass = base_mass+packweight
+%  p[:,2] = 1/2*rho*C_D*A_F*v[:,2]**3+C_R*mass*g*v[:,2] + mass*v[:,2]*(dvdt) # Watt
+%  
+%\end{lstlisting}
+
+
+\end{example}
+
+\begin{example}
+ A 10 meter beam is subjected to a load and the shear force is given by the equation
+
+\begin{align}
+V(x) = 5 + 0.25x^2
+\end{align}
+
+where $V$ is the shear force, and $x$ is length in distance along
+the beam. We know that $V = \frac{dM}{dx}$, and $M$ is the bending moment. Integration yields the relationship
+\begin{align}
+M = M_0 + \int_{0}^{x}Vdx
+\end{align}
+
+If $M_0 = 0$ and x = $10$ meters, calculate the bending moment $M$ using the composite trapezoidal rule. Compare its accuracy against the analytical solution by evaluating the SSD error.
+
+\begin{lstlisting}
+# Shear Force on the beam
+def V(x: $\mathbb{R}$)
+  return 5 + 0.25*x.^2 
+
+dl = 1
+bar_length = 10
+x_len = range(0, bar_length, dl)
+V_len = V(x_len)
+
+# Composite Trapezoidal Rule
+moment = zeros(length(x_len), 1)
+for i = range(2, length(x_len)):
+  moment[i] = moment[i-1] + (x_len[i]-x_len[i-1])*(V_len[i-1]+V_len[i])/2
+
+
+# Evaluating exact analytical integral using symbolic variables
+f = $5 + 0.25x^2$
+moment_exact = zeros(length(x_len),1)
+for i in range(2, length(x_len)):
+  moment_exact(i) = integral(f,0,x_len[i])
+
+# SSD Error between Trapezoid Rule and Exact Integral
+error = sum((moment_exact - moment)**2/length(x_len))
+\end{lstlisting}
+
+\end{example}
+\begin{marginfigure}[\baselineskip] 
+	\centering
+	\includegraphics[width = 2.7in]{figures/simpsons_rule.png}
+	\centering
+	\caption{Graphical depiction of the Simpson's Rule. }
+	\label{fig:1}
+\end{marginfigure}
+To obtain a more accurate estimate of an integral (instead of finer segmentation of the trapezoidal rule) is to use higher-order polynomials to connect the points. For example, if there is an extra point midway between $f(a)$ and $f(b)$, the three points can be connected with a parabola (Fig \ref{fig:1}a). If there are two points equally spaced between $f(a)$ and $f(b)$, the four points can be connected with a third-order polynomial (Fig \ref{fig:1}b). The formulas that result from taking the integrals under these polynomials are called Simpson's rules. These formulas take inspiration from the Taylor series expansion, as in approximating the function with a higher order polynomial (rather than a linear function) for more accurate representation.
+
+The Simpson's 1/3 rule is the second of the Newton-Cotes closed integration formulas. It corresponds to the case where the polynomial is second-order. It is given as follows:
+
+\begin{align}
+\begin{split}
+I = \int_{x_0}^{x_2} [\dfrac{(x-x_1)(x-x_2)}{(x_0-x_1)(x_0-x_2)}f(x_0) + \dfrac{(x-x_0)(x-x_2)}{(x_1-x_0)(x_1-x_2)}f(x_1) \\
++ \dfrac{(x-x_0)(x-x_1)}{(x_2-x_0)(x_2-x_1)}f(x_2)] dx
+\end{split}
+\end{align}
+The result of integration is is given as
+
+\begin{align}
+I = \frac{h}{3}[f(x_0) + 4f(x_1) + f(x_2)]
+\end{align}
+
+where $a$ and $b$ are designated as $x_0$ and $x_2$, respectively. In this case $h = (b-a)/2$. This equation is known as Simpson's 1/3 rule. The label 1/3 stems from the fact that h is divided by 3 in the above equation.
+
+Simpson's 1/3 rule can also be expressed using the format of the below equation.
+
+\begin{align}
+I =\text{width} \times \text{weighted height} = (b-a) \times \dfrac{[f(x_0)+4f(x_1)+f(x_2)]}{6}
+\end{align}
+
+where $a$ = $x_0$, $b$ = $x_2$, and $x_1$ = the point midway between $a$ and $b$, which is given by $(a + b)/2$. Notice that, according to the above equation, the middle point is given more weight (two-thirds) and the two end points are weighted by one-sixth.
+
+\subsection{\textit{Error of the Simpson's rule}}
+
+It can be shown that a single-segment application of Simpson's 1/3 rule has a truncation error of
+
+\begin{align}
+E_t = -\dfrac{1}{90}h^5f^{(4)}(\xi)
+\end{align}
+
+or, because $h$ = $(b-a)/2$
+
+\begin{align}
+E_t = -\dfrac{(b-a)^5}{2880}f^{(4)}(\xi)
+\end{align}
+
+where $\xi$ lies somewhere in the interval from $a$ to $b$. Thus, Simpson's 1/3 rule is more accurate than the trapezoidal rule. However, in comparison with the error term from trapezoidal rule indicates that it is more accurate than expected. Rather than being proportional to the third derivative, the error is proportional to the fourth derivative. Consequently, Simpson's 1/3 rule is third-order accurate even though it is based on only three points. In other words, it yields exact results for cubic polynomials even though it is derived from a parabola.
+
+\subsection{\textit{Derivation of the Truncation Error}}
+
+Since Simpson's 1/3 rule approximates the function $f(x)$ as a quadratic through $x_0$,$x_1$ and $x_2$. The integral of $f(x)$ is approximated using Taylor Series about $x$=$x_1$ as
+
+\begin{align}
+%\begin{split}
+I &= \int_{x_0}^{x_2}f(x)dx \\
+&= \int_{x_0}^{x_2}[f(x_{1}) + (x-x_1)f'(x_1) + \dfrac{1}{2}(x-x_1)^2f^{(2)}(x_1) + \\
+& \nonumber \qquad \quad \dfrac{1}{6}(x-x_1)^3f^{(3)}(x_1) + \dfrac{1}{24}(x-x_1)^4f^{(4)}(x_1)]dx
+%\end{split}
+\end{align}
+
+Making a change of variables such that
+\begin{align}
+s = \dfrac{2(x-x_1)}{x_2-x_0} = \dfrac{x-x_1}{d}
+\end{align}
+
+\begin{align}
+\int_{x_0}^{x_2}f(x)dx & =  \int_{-1}^{1}[hf(x_{1}) + (h)^2sf'(x_1) + \frac{(h)^3}{2}s^2f^{(2)}(x_1) + \\
+& \nonumber \qquad \frac{(h)^4}{6}s^3f^{(3)}(x_1) + \frac{(h)^5}{24}s^4f^{(4)}(x_1)]ds 
+\end{align}
+
+Simplifying the above expression(integrals of all odd functions are zero) as
+\begin{align}
+\int_{x_0}^{x_2}f(x)dx &= hsf(x_{1}) + \frac{1}{2}h^2s^2f'(x_1) +  \frac{1}{6}h^3s^3f^{(2)}(x_1) \\
+&\nonumber \qquad + \frac{1}{24}h^4s^4f^{(3)}(x_1) + \frac{1}{120}h^5s^5f^{(4)}(x_1)\rvert_{s=-1}^{s=1}
+\end{align}
+
+Substituting the second order accurate approximation of the second derivative as 
+
+\begin{align}
+f^{(2)}(x_1) = \dfrac{f(x_0) - 2f(x_1) + 2f(x_2)}{h^2} - \frac{h^2}{12}f^{(4)}(x_1)
+\end{align}
+
+The integral of $f(x)$ is simplified as
+
+\begin{align}
+\int_{x_0}^{x_2}f(x)dx =  \frac{h}{3}[f(x_0) + 4f(x_1) + f(x_2)] - \underbrace{\frac{1}{90}h^5f^{(4)}(x_1)}{\text{Truncation Error}}
+\end{align}
+
+Just as with the trapezoidal rule, Simpson's rule can be improved by dividing the integration interval into a number of segments of equal width. The total integral can be represented as
+
+\begin{align}
+I = \int_{x_0}^{x_2} f(x) dx + \int_{x_2}^{x_4} f(x) dx + \dotsc + \int_{x_{n-2}}^{x_n} f(x) dx
+\end{align}
+
+Substituting Simpson's 1/3 rule for each integral and grouping yields
+\begin{align}
+\begin{split}
+I = 2h\dfrac{f(x_0) + 4f(x_1) + f(x_2)}{6} + 2h\dfrac{f(x_2) + 4f(x_3) + f(x_4)}{6} + \\
+\dotsc + 2h\dfrac{f(x_{n-2}) + 4f(x_{n-1}) + f(x_n)}{6}\\
+\end{split}
+\end{align}
+\begin{align}
+I = (b-a)\dfrac{f(x_0) + 4\sum_{i=1,3,5}^{n-1}f(x_i) + 2\sum_{j=2,4,6}^{n-2}f(x_j) + f(x_n)}{2n}
+\end{align}
+
+It should be noted that, an even number of segments must be utilized to implement the method. In addition, the coefficients $4$ and $2$ in the above equation might
+seem peculiar at first glance. However, they follow naturally from Simpson's 1/3 rule.
+
+An error estimate for the composite Simpson's rule is obtained in the same fashion as for the trapezoidal rule by summing the individual errors for the segments and averaging the derivative to yield
+
+\begin{align}
+E_a = -\dfrac{(b-a)^5}{180n^4}\bar{f^{(4)}}
+\end{align}
+
+where $\bar{f^{(4)}}$ is the average fourth derivative for the interval.
+
+\begin{example}
+The force exerted on a vehicle, moving on any terrain is given by the following equation.
+
+%\begin{marginfigure}[\baselineskip] 
+%	\centering
+%	\includegraphics[width = 2.7in]{composite.png}
+%	\centering
+%	\caption{Graphical representation of the relative weights used in the Composite Simpson's 1/3 rule}
+%	\label{fig:2}
+%\end{marginfigure}
+\begin{align}
+F_{total} = F_{drag}+F_{friction}+F_{inertial}+F_{gradient}
+\end{align}
+By measuring the velocity profile $v(t)$ of the vehicle, the load power on the vehicle can be calculated as
+\begin{align}
+P(t) = F_{total} v(t) = \frac{1}{2}\rho C_dA v(t)^3 + C_{rr}mg v(t) + mv\frac{dv}{dt} + mgZ  v(t)
+\end{align}
+where $P(t)$ is the load power, $\rho$ is the density of air, $C_d$ is the coefficient of drag, $A$ is the frontal area of the vehicle, $v(t)$ is the instantaneous velocity, $C_{rr}$ is the coefficient of rolling resistance, $m$ is the total mass of the vehicle, $g$ is acceleration due to gravity, and $Z$ is the gradient in road elevation. It can be noted that, the elevation of the road can be accounted by increasing the mass of the vehicle. Under this assumption, the gradient term can be neglected.
+
+%Using the velocity profile of a car driven on a highway, estimate the packweight given the velocity profile of a real car using the Composite Simpson's 1/3 Rule. (Hint: Start with an initial guess for your packweight and improve on it till it converges) Note that, $\text{Energy Expended} = \int_{t=0}^{t=t}P(t)dt$ and
+%and 
+
+%\begin{align}
+%\begin{gathered}
+%\text{Packweight} = \dfrac{\text{Effective Wh/mile}\times %\text{mile range}}{\text{Energy density of battery}}
+%\end{gathered}
+
+%\end{align}
+
+%\begin{lstlisting}
+%packweight = 100, base_mass = 1500, mass = base_mass+packweight # kg
+%rho = 1.17, A_F = 5.5, C_D = 0.44, C_R = 0.0075, g = 9.81
+%mile_range = 220, e_den_bat = 160 # Wh/kg
+%
+%dvdt =  [0] + diff(v[:,2])/diff(v[:,1]] #m/s^2
+%p = v[:,1] # timevector
+%p[:,2] = 1/2*rho*C_D*A_F*v[:,2]**3+C_R*mass*g*v[:,2]+mass*v[:,2]*(dvdt) # Watt
+%Distance = 0
+%for i in range(1, length(v)-2, 2):
+%  Distance=Distance+(v[i+2,1]-v[i,1])*(v[i,2]+4*v[i+1,2]+v[i+2,2])/6
+%  
+%Distance_miles = (Distance/1000)/1.6
+%eps = 1e-3
+%
+%while True:
+%  Energy = 0
+%  for i in range(1, length(p)-2, 2):
+%    Energy=Energy+(p[i+2,1]-p[i,1])*(p[i,2]+4*p[i+1,2]+p[i+2,2])/6
+%
+%	Energy_kWh=Energy*2.77778e-7 # kWh
+%	Eff_Wh_mile=Energy_kWh*1000/Distance_miles
+%
+%	# pack can accomodate 220 miles
+%	packweight_new=Eff_Wh_mile*mile_range/e_den_bat
+%	if (abs(packweight_new-packweight)<eps):
+%      break
+%	packweight=packweight_new # in kg
+%	mass=base_mass+packweight
+%	p[:,2]=1/2*rho*C_D*A_F*v[:,2]**3+C_R*mass*g*v[:,2]+mass*v[:,2]*(dvdt) # Watt
+%
+%\end{lstlisting}
+\begin{marginfigure}[-25\baselineskip]
+	\textbf{Output}:
+	\begin{verbatim}
+	 Iteration Packweight (kg)   Kerb Weight (kg)
+     0         100.0000        1600
+     1         678.9875        2178.9875
+     2         707.6067        2207.6067
+     3         709.0213        2209.0213
+     4         709.0913        2209.0913
+     5         709.0947        2209.0947
+	\end{verbatim}
+\end{marginfigure}
+\end{example}
+
+In a similar manner to the derivation of the trapezoidal and Simpson's 1/3 rule, a third-order Lagrange polynomial can be fit to four points and integrated to yield
+
+\begin{align}
+I = \frac{3h}{8}[f(x_0) + 3f(x_1) + 3f(x_2) + f(x_3)]
+\end{align}
+
+where $h = (b-a)/3$. This equation is known as Simpson's 3/8 rule because $h$ is multiplied by 3/8. It is the third Newton-Cotes closed integration formula. The 3/8 rule can also be expressed as
+
+\begin{align}
+I = (b-a) \times \dfrac{[f(x_0) + 3f(x_1) + 3f(x_2) + f(x_3)]}{8}
+\end{align}
+
+Thus, the two interior points are given weights of three-eighths, whereas the end points are weighted with one-eighth. Simpson's 3/8 rule has an error of
+
+\begin{align}
+E_t = -\dfrac{3}{80}h^5f^{(4)}(\xi)
+\end{align}
+or, because $h$ = $(b-a)/3$
+
+\begin{align}
+E_t = -\dfrac{(b-a)^5}{6480}f^{(4)}(\xi)
+\end{align}
+
+Since the denominator of the $E_t$ for 3/8 rule is larger than that for 1/3 rule, the 3/8 rule is somewhat more accurate than the 1/3 rule.
+
+%\begin{marginfigure}[\baselineskip] 
+%	\centering
+%	\includegraphics[width = 2.4in]{simpsonsodd.png}
+%	\centering
+%	\caption{Applying Simpson's 1/3 and 3/8 rules in tandem to handle odd number of intervals}
+%	\label{fig:3}
+%\end{marginfigure}
+
+Simpson's 1/3 rule is usually the method of preference because it attains third-order accuracy with three points rather than the four points required for the 3/8 version. However, the 3/8 rule has utility when the number of segments is odd. Suppose that you desired an estimate for five segments. One option would be to use a composite version of the trapezoidal rule. This may not be advisable, however,
+because of the large truncation error associated with this method. An alternative would be to apply Simpson's 1/3 rule to the first two segments and Simpson's 3/8 rule to the last three as represented in Figure \ref{fig:3}. In this way, we could obtain an estimate with third-order accuracy across the entire interval.
+
+\subsection{\textit{Derivation of the Truncation Error}}
+
+Since Simpson's 3/8 rule approximates the function $f(x)$ as a quartic through $x_0$,$x_1$,$x_2$ and $x_3$. The integral of $f(x)$ is approximated using Taylor Series about $x$=$x_{1.5}$ as	
+
+\begin{align}
+\begin{split}
+I = \int_{x_0}^{x_2}f(x)dx = \int_{x_0}^{x_2}[f(x_{1.5}) + (x-x_{1.5})f'(x_{1.5}) + \dfrac{1}{2}(x-x_{1.5})^2f^{(2)}(x_{1.5}) \\
++ \dfrac{1}{6}(x-x_{1.5})^3f^{(3)}(x_{1.5}) + \dfrac{1}{24}(x-x_{1.5})^4f^{(4)}(x_{1.5}) + O(5)]dx
+\end{split}
+\end{align}
+
+Integrating this function in a similar manner to that used for the 1/3 rule yields
+
+\begin{align}
+\int_{x_0}^{x_2}f(x)dx =  \frac{3h}{8}[f(x_0) + 3f(x_1) + 3f(x_2) + f(x_3)] - \underbrace{\frac{3}{80}h^5f^{(4)}(x_1)}{\text{Truncation Error}}
+\end{align}
+
+\section{Gauss Quadrature}
+So far, we have employed the Newton-Cotes equations to evaluate the integrals. However, these methods provide estimates for integrals but are not exact. In addition, they cannot be used to evaluate improper integrals, which are definite integrals that have either or both of the limits infinite. These cases will have to be approximated further and evaluated using large numbers tending to infinity. For example, consider the integral $\int_{-\infty}^{\infty}e^{-x^2}\tan(x)dx$. The methods discussed earlier (Trapezoidal and Simpson's Rule) will yield results with large error. The Gauss quadrature methods will enable us to evaluate these integrals either exactly or with high accuracy.
+
+In numerical analysis, a \textit{quadrature} rule is an approximation of the integral of a function, usually stated as a weighted sum of function values at specified points within the domain of integration. By choosing these weights and positioning these specified points mathematically wisely, a very accurate estimate of the integral is obtained. These quadrature methods extend to integrals with infinite limits in addition to cases with finite limits. Note that any integral with finite limits can be converted to an integral going from $-1$ to $1$ by a simple change of variables, which will be used in the Gauss-Legendre quadrature later. The general $n$-point quadrature rule is given as
+
+\begin{align}
+I \cong c_0f(x_0) + c_1f(x_1) + \dots + c_{n-1}f(x_{n-1})
+\end{align}
+
+where $c_i$ are the weights, $x_i$ are the points and $n$ is the number of points to be chosen.
+
+To evaluate such integrals, three common quadrature rules are used
+
+\begin{enumerate}
+	\item \textit{Gauss-Hermite Quadrature} evaluates integrals of the form $\int_{-\infty}^{\infty}e^{-x^2}f(x)dx$. It can be extended to improper integrals of any function with both limits unbounded.
+	\item \textit{Gauss-Legendre Quadrature} evaluates integrals of the form $\int_{-1}^{1}f(x)dx$. For polynomial functions of degree up to $2n-1$, function evaluations at $n$ chosen points and corresponding weights yield exact integral value.
+	\item \textit{Gauss-Laguerre Quadrature} evaluates integrals of the form $\int_{0}^{\infty}e^{-x}f(x)dx$.  It can be extended to improper integrals of any function with one of the two limits unbounded.
+\end{enumerate}
+Gauss quadrature yields the exact integral or a highly accurate estimate in cases where the function $f(x)$ to be integrated is known. For engineering applications where tabulated data is given at specific $x$ values, a fit to the data is necessary to obtain the functional form, or if the functional form is knows from the physics of the system, Gauss quadrature can be used by interpolating at the quadrature points from the tabulated data. When the functional form is arbitrary or unknown, methods like Trapezoidal rule and Simpson's rule are favorable.
+
+
+\subsection{Gauss-Hermite Quadrature}
+%\begin{marginfigure}
+%	\begin{Verbatim}
+%function [xi,w] = gauss_quad_N_2(type)
+%switch (type) 
+%	case 'hermite'
+%		xi = [-1/sqrt(2) 1/sqrt(2)];
+%		w = [sqrt(pi)/2 sqrt(pi)/2];
+%	case 'lague'
+%		xi(1,1) = [0.585786437626905];
+%		xi(2,1) = [3.414213562373095];
+%		w(1,1) = [0.853553390593274];
+%		w(2,1) = [0.146446609406726];
+%	case 'legendre'
+%		xi = [-1/sqrt(3) 1/sqrt(3)];
+%		w = [1 1];
+%	otherwise
+%		disp('Not Valid');     
+%end        
+%end
+%	\end{Verbatim}	
+%\end{marginfigure}
+
+Gauss-Hermite Quadrature is used to evaluate improper integrals with both the limits as $\infty$ which are of the form $\int_{-\infty}^{\infty}e^{-x^2}f(x)dx$. Using the two-point approximation,
+$I = \int_{-\infty}^{\infty}e^{-x^2}f(x)dx \cong c_0f(x_0) + c_1f(x_1)$, 
+where the $c$’s = the unknown coefficients. Thus, we now have a total of four unknowns that must be evaluated, and consequently, we require four conditions to determine them exactly. We can obtain two of these conditions by assuming that the above equation fits the integral of a constant and a linear function exactly. Then, to arrive at the other two conditions, we merely extend this reasoning by assuming that it also fits the integral of a parabolic ($y = x^2$) and a cubic ($y = x^3$) function.
+The equations to be solved are
+
+\begin{eqnarray*}
+	c_0 + c_1 = \int_{-\infty}^{\infty}e^{-x^2}dx = \sqrt{\pi}; c_0x_0 + c_1x_1 = \int_{-\infty}^{\infty}e^{-x^2}xdx = 0 \\
+	c_0x_0^2 + c_1x_1^3 = \int_{-\infty}^{\infty}e^{-x^2}x^2dx = \frac{ \sqrt{\pi}}{2};	c_0x_0^3 + c_1x_1^3 = \int_{-\infty}^{\infty}e^{-x^2}x^3dx = 0
+\end{eqnarray*}
+
+On simultaneously solving the above equations, we obtain,
+
+\begin{align}
+c_0 = c_1 = \frac{\sqrt{\pi}}{2}, x_0 = -\frac{1}{\sqrt{2}}, x_1 = \frac{1}{\sqrt{2}}
+\end{align}
+The symmetry of the weights and points in Gauss-Hermite can be observed from the above results. Therefore, the two-point Gauss-Hermite formula is $I = \frac{\sqrt{\pi}}{2}f(-\frac{1}{\sqrt{2}}) + \frac{\sqrt{\pi}}{2}f(\frac{1}{\sqrt{2}})$.
+
+
+\begin{example}
+Evaluate $ \int_{-\infty}^{\infty}(3x^2 - x + 2)e^{-x^2}dx$
+
+
+\begin{lstlisting}
+def f(x: $\mathbb{R}$):
+  return 3*x**2 - x + 2
+[xi, w] = gaussian_quadrature('hermite')
+I = sum(w * f(xi))
+I_mat = integral($\lambda$ x: exp(-x**2)*(3*x**2 - x + 1, $-\infty$, $\infty$)
+\end{lstlisting}
+\end{example}
+	
+
+\section{Gauss-Legendre Quadrature}
+Gauss-Legendre Quadrature is used to evaluate integrals with both the limits as finite which are of the form $\int_{-1}^{1}f(x)dx$. Using the two-point approximation, 
+
+\begin{align}
+I = \int_{-1}^{1}f(x)dx \cong c_0f(x_0) + c_1f(x_1)
+\end{align}
+
+where the $c$’s = the unknown coefficients. Thus, we now have a total of four unknowns that must be evaluated, and consequently, we require four conditions to determine them exactly.
+
+We can obtain two of these conditions by assuming that the above equation fits the integral of a constant and a linear function exactly. Then, to arrive at the other two conditions, we merely extend this reasoning by assuming that it also fits the integral of a parabolic ($y = x^2$) and a cubic ($y = x^3$) function. By doing this, we determine all four unknowns and in the bargain derive a linear two-point integration formula that is exact for cubics.
+
+\begin{marginfigure}[\baselineskip] 
+	\centering
+	\includegraphics[width = 2.7in]{figures/gaussian_quadrature.png}
+	\centering
+	%\caption{Comparison between 2-point Gaussian and trapezoidal quadrature. The blue line is the polynomial $y(x)=7x^{3}-8x^{2}-3x+3$, whose integral in $[−1, 1]$ is $-\tfrac{2}{3}$. The trapezoidal rule returns the integral of the orange dashed line, equal to $y(-1)+y(1)=-10$. The 2-point Gaussian quadrature rule returns the integral of the black dashed curve, equal to $y\left(-{\sqrt {\frac {1}{3}}}\right)+y\left({\sqrt {\frac {1}{3}}}\right)={\frac {2}{3}}$. Such a result is exact, since the green region has the same area as the sum of the red regions. TODO: Replace with our own.}
+	\label{fig:3}
+\end{marginfigure}
+
+The four equations to be solved are
+
+\begin{align}
+	c_0 + c_1 &= \int_{-1}^{1}1dx = 2 \\
+	c_0x_0 + c_1x_1 &= \int_{-1}^{1}xdx = 0\\
+	c_0x_0^2 + c_1x_1^2 &= \int_{-1}^{1}x^2dx = \frac{2}{3} \\
+	c_0x_0^3 + c_1x_1^3 &= \int_{-1}^{1}x^3dx = 0
+\end{align}
+
+The symmetry of the weights and points in Gauss-Legendre can be observed from the above results. On simultaneously solving the above equations, we obtain,
+\begin{align}
+    c_0 = c_1 = 1, x_0 = -\frac{1}{\sqrt{3}}, x_1 = \frac{1}{\sqrt{3}}
+\end{align} 
+Therefore, the two-point Gauss-Legendre formula is $ I = f(-\frac{1}{\sqrt{3}}) + f(\frac{1}{\sqrt{3}})$.
+Thus, we arrive at the interesting result that the simple addition of the function values at
+$x$ = $-1/\sqrt{3}$  and $1/\sqrt{3}$  yields an integral estimate that is third-order accurate.
+
+Notice that the integration limits in the above equations are from -1 to 1. This was done to simplify the mathematics and to make the formulation as general as possible. A simple change of variable can be used to translate other limits of integration into this form. This is accomplished by assuming that a new variable $x_d$ is related to the original variable $x$ in a linear fashion, $ x = a_1 + a_2x_d$.
+The lower limit, $x$ = $a$, corresponds to $x_d$ = -1. The upper limit, $x$ = $b$, corresponds to $x_d$ = 1. These are substituted in the equation above to give,
+\begin{eqnarray*}
+	a = a_1 + a_2(-1);	b = a_1 + a_2(1)
+\end{eqnarray*}
+On solving the above equations for $a_1$, $a_2$ and substituting for $x$, we get
+
+\begin{align}
+	a_1 = \dfrac{b+a}{2} ; a_2 = \dfrac{b-a}{2};  x = \dfrac{(b+a) + (b-a)x_d}{2}
+\end{align}
+
+This equation can be differentiated to give $ x = \dfrac{b-a}{2}dx_d$
+These substitutions effectively transform the integration interval without changing the value of the integral.
+
+\begin{example}
+Evaluate $ \int_{-1}^{1}\tan^2(x)dx$
+
+%\textit{Matlab Code:}
+%\begin{Verbatim}
+%f4 = @(x) tan(x).^2;
+%[xi,w]=gauss_quad_N_2('legendre')
+%I1 = sum(w.*f4(xi))
+%I_mat = integral(@(x) tan(x).^2,-1,1)
+%\end{Verbatim}
+
+\begin{lstlisting}
+def f(x: $\mathbb{R}$):
+  return tan(x)**2
+[xi, w] = gaussian_quadrature('legendre')
+I = sum(w * f(xi))
+I_mat = integral($\lambda$ x: tan(x)**2, -1, 1)
+\end{lstlisting}
+
+%\begin{marginfigure}
+%\begin{Verbatim}
+%xi =
+%-0.577350269189626
+%0.577350269189626
+%	
+%w =
+%1
+%1
+%	
+%I =
+%0.848612357848095
+%	
+%I_mat =
+%1.114815449309804
+%\end{Verbatim}
+%\end{marginfigure}
+\end{example}
+
+It can be observed that the actual value of the integral is significantly different from the estimated integral from Gauss-Legendre quadrature. This is because, Gauss-Legendre gives accurate results for $(2N-1)^{th}$ order functions. In our case, since $N=2$, it can accurately measure integrals of third-order functions. This can be clearly observed from the next example. 
+
+\begin{example}
+Evaluate $ \int_{-1}^{1}(5x^3 + 7x^2 +  2x + 3)dx$
+
+%\textit{Matlab Code:}
+%\begin{Verbatim}
+%f5 = @(x) 5*x.^3 + 7*x.^2 + 2*x + 3;
+%[xi,w]=gauss_quad_N_2('legendre')
+%I = sum(w.*f5(xi))
+%I_mat = integral(@(x)  5*x.^3 + 7*x.^2 + 2*x + %3,-1,1)
+%\end{Verbatim}
+
+\begin{lstlisting}
+def f(x: $\mathbb{R}$):
+  return 5*x**3 + 7*x**2 + 2*x + 3
+[xi, w] = gaussian_quadrature('legendre')
+I = sum(w * f(xi))
+I_mat = integral($\lambda$ x: 5*x**3 + 7*x**2 + 2*x + 3, -1, 1)
+\end{lstlisting}
+%\begin{marginfigure}
+%	\begin{Verbatim}
+%I =
+%10.666666666666668
+%
+%I_mat =
+%10.666666666666664
+%	\end{Verbatim}
+%\end{marginfigure}
+\end{example}
+
+
+\section{Gauss-Laguerre Quadrature}
+Gauss-Laguerre Quadrature is used to evaluate improper integrals with one of the limits as $\infty$ which are of the form $\int_{0}^{\infty}e^{-x}f(x)dx$. Using the two-point approximation, 
+
+\begin{align}
+I = \int_{0}^{\infty}e^{-x}f(x)dx \cong c_0f(x_0) + c_1f(x_1)
+\end{align} 
+
+where the $c$’s = the unknown coefficients. Thus, we now have a total of four unknowns that must be evaluated, and consequently, we require four conditions to determine them exactly.
+
+We can obtain two of these conditions by assuming that the above equation fits the integral of a constant and a linear function exactly. Then, to arrive at the other two conditions, we merely extend this reasoning by assuming that it also fits the integral of a parabolic ($y = x^2$) and a cubic ($y = x^3$) function.
+
+The two equations to be solved are
+
+\begin{align}
+	c_0 + c_1 &= \int_{0}^{\infty}e^{-x}dx = 1 \\
+	c_0x_0 + c_1x_1 &= \int_{0}^{\infty}e^{-x}xdx = 1\\
+	c_0x_0^2 + c_1x_1^2 &= \int_{0}^{\infty}e^{-x}x^2dx = 2 \\
+	c_0x_0x_0^3 + c_1x_1^3 &= \int_{0}^{\infty}e^{-x}x^3dx = 6
+\end{align}
+
+On simultaneously solving the above equations, we obtain,
+
+\begin{align}
+c_0 = 0.8535533, c_1 = 0.1464466, x_0 = 0.58578643, x_1 = 3.41421356
+\end{align}
+
+It can be observed that $c_0x_0 = c_1x_1 = 1$. Therefore, the two-point Gauss-Laguerre formula is
+
+\begin{align}
+I = 0.8535533f(0.58578643) + 0.1464466f(3.41421356)
+\end{align}
+%\begin{marginfigure}
+%	\begin{Verbatim}
+%xi =
+%0.585786437626905
+%3.414213562373095
+%
+%w =
+%0.853553390593274
+%0.146446609406726
+%
+%I =
+%0.822658694452162
+%
+%I_mat =
+%0.822467033424113
+%	\end{Verbatim}
+%\end{marginfigure}
+
+\begin{example}
+Evaluate $ \int_{0}^{\infty}\log(1+e^{-x})dx$
+
+%\textit{Matlab Code:}
+%\begin{Verbatim}
+%f3 = @(x) (exp(x).*log(1+exp(-x)));
+%[xi,w]=gauss_quad_N_2('lague')
+%I = sum(w.*f3(xi))
+%I_mat = integral(@(x) log(1+exp(-x)),0,inf)
+%\end{Verbatim}
+\begin{lstlisting}
+def f(x):
+  return exp(x)*log(1+exp(-x))
+[xi, w] = gaussian_quadrature('lague')
+I = sum(w * f(xi))
+I_mat = integral($\lambda$ x: exp(x)*log(1+exp(-x)), 0, $\infty$)
+\end{lstlisting}
+\section{Exercises}
+\begin{enumerate}
+    \item TODO
+\end{enumerate}
+\end{example}
+
+
+
+
+
+\end{document}

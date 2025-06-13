@@ -1,0 +1,36 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{listings}
+\usepackage{xcolor}
+
+% Use black text on white background - we'll invert colors in image processing
+\definecolor{codebackground}{RGB}{255, 255, 255}
+\definecolor{codetext}{RGB}{0, 0, 0}
+
+\lstset{
+  basicstyle=\ttfamily\color{codetext},
+  backgroundcolor=\color{codebackground},
+  frame=none,
+  breaklines=true,
+  mathescape=true,
+  escapeinside={$}{$},
+  language=python,
+}
+
+\begin{document}
+\begin{lstlisting}
+class NeuralGraphFingerprint(R: $\mathbb{N}$, [$H^1_1$,$\\dotsc$,$H^N_R$], $W_1,\\dotsc, W_R$):
+
+  def $\\lambda$(molecule: Graph):
+    for a in molecule:
+      r[a] = g(a)
+    for L in [1,$\\dotsc$, R]:
+      for a in molecule:
+        $r_1$,$\\dotsc$,$r_N$ = neighbors(a)
+        v = r[a] + $\\sum_{i=1}^N r_i$
+        $r_a$ = $\\sigma$(v$H^N_L$)
+        i = softmax($r_a$ $W_L$)
+        f = f + i
+    return f
+\end{lstlisting}
+\end{document}

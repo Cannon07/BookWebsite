@@ -1,0 +1,32 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{listings}
+\usepackage{xcolor}
+
+% Use black text on white background - we'll invert colors in image processing
+\definecolor{codebackground}{RGB}{255, 255, 255}
+\definecolor{codetext}{RGB}{0, 0, 0}
+
+\lstset{
+  basicstyle=\ttfamily\color{codetext},
+  backgroundcolor=\color{codebackground},
+  frame=none,
+  breaklines=true,
+  mathescape=true,
+  escapeinside={$}{$},
+  language=python,
+}
+
+\begin{document}
+\begin{lstlisting}
+def lotka_volterra(a: $\mathbb{R}$, b: $\mathbb{R}$, c: $\mathbb{R}$, d: $\mathbb{R}$,
+                   x$_i$: $\mathbb{R}$, y$_i$ : $\mathbb{R}$, $(t_i, t_f): \\mathbb{R}^2$, dt: $\mathbb{R}$):
+  N = (t$_f$-t$_i$)/dt
+  x = zeros(N+1), y = zeros(N+1)
+  x[0] = x$_i$, y[0] = y$_i$
+  for i = 1:n+1:
+    x[i] = x[i-1] + (a*x[i-1] - b*x[i-1]*y[i-1])*dt
+    y[i] = y[i-1] + (-c*y[i-1] + d*x[i-1]*y[i-1])*dt
+  x, y
+\end{lstlisting}
+\end{document}

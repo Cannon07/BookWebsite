@@ -1,0 +1,255 @@
+\documentclass[book.tex]{subfiles}
+
+\begin{document}
+
+\chapter{Simple Physical Theories}
+\label{chap:simple_physics}
+\noindent\rule{11cm}{0.4pt} \\
+\textbf{Prerequisites:} \autoref{chap:math_basics}, \autoref{chap:physika} \\
+\textbf{Difficulty Level:} * \\
+\noindent\rule{11cm}{0.4pt}
+\vspace{5mm}
+
+Over the coming chapters, we'll cover basic ideas such as Newton's laws, classical gravitation, electromagnetism and quantum mechanics, but we will do so using the machinery we have developed so far in the book. In particular, we will start to systematically use differentiable Physika programs to model the systems we study in interesting and nontrivial ways. One of the points that we will emphasize in this and subsequent chapter is \textit{types}. 
+
+In computer science, it is common practice to label useful quantities with annotations called types. These annotations prove powerful aids for understanding precisely the quantities that a given algorithm operates on. In contrast, physicists often play fast and loose with equations, and use familiar rules on exotic objects at times. Part of our thesis in this book is that a more careful accounting of the types associated with a physical model can lead to a deeper appreciation for the underlying physical system. We will start using type annotations in this chapter and will continue doing so over the remainder of the book.
+
+\section{A Static Particle}
+
+Let's start from the simplest example, 
+a world with only one particle. This world has no external forces acting on it. Let's model this world by $\mathbb{R}^3$. The position of the particle is given by a vector $\vec{x} \in \mathbb{R}^3$. Assume the world is static, with nothing moving. Then we can write down the simple theory in Table \ref{phs:theory:static:particle}.
+
+\begin{center}
+\begin{tabular}{|c|c|}
+    \hline
+    States & $\mathcal{S} = \mathbb{R}^3 $ \\
+    \hline
+    Symmetries & $\mathcal{G} = \{\}$\\
+    \hline
+    Operators & $\mathcal{O} = \{\} $\\
+    \hline
+    Parameters & $\mathcal{W} = \{\}$ \\
+    \hline
+    Constraints & $\mathcal{C} =  \{\}$ \\
+    \hline
+    Hyperparameters & $\mathcal{HP} = \{\}$  \\
+    \hline
+    Observables & $\mathcal{B} = \{f(x) = x + \mathcal{N}(b, \sigma) \}$  \\
+    \hline
+\end{tabular}
+\label{phs:theory:static:particle}
+\end{center}
+
+On the surface of it, this theory is trivial. but we have made one nontrivial choice by associating the state space $\mathcal{S}$ of this theory with the type $\mathbb{R}^3$. You might pause and ask, isn't $\mathbb{R}^3$ a mathematical space ? Why do we have to think of it as a type? In this case, thinking of $\mathbb{R}^3$ as a type is useful since it tells additional conformation about the system we model. For one thing, there is no concept of time: this world is static and unchanging. As a second point, the type for $\mathcal{S}$ makes it easier to create a very simple differentiable program that models this physical system.
+
+\begin{lstlisting}
+$s_0$: $\mathbb{R}^3$
+def state() $->$ $\mathbb{R}^3$:
+  return $s_0$
+\end{lstlisting}
+
+This differentiable program is pretty straightforward. We create a constant \lstinline{$s_0$ : $\mathbb{R}^3$} with type $\mathbb{R}^3$. The \lstinline{state()} function is then just a constant function since there are no time updates.
+
+We allow for noisy observations of the position of this particle and can write down another simple differentiable program to model observations from this system.
+
+\begin{lstlisting}
+def observe() -> $\mathbb{R}^3$
+  return $s_0$ + Normal(b, $\sigma$)
+\end{lstlisting}
+
+Here for simplicity we assume that $b$ and $\sigma$ are variables that are defined in the scope of \lstinline{observe}. This observation adds some sophistication to our system since to find a precise measurement of our particle's position, we would have to take multiple measurements and average to control for $\sigma$ and have some hypothesis for the source of bias $b$ in our measurements.
+
+This is still a simple theory since it models a static world with no movement. We have also assumed that our particle is a point particle with no mass. What would it take to add in movement to this theory? We will see in the next section.
+
+\section{A Moving Particle with Mass}
+
+Let's assume that our particle has a quantity called "mass" which we denote by $m$. We also allow the particle to move at a certain speed in a given direction. We call the quantity describing this motion $\vec{v}$. Since our particle moves, we need to specify an initial position for the particle, say $\vec{x_0}$. We also need to associate types to these objects. Let's say $\vec{v} \in \mathbb{R}^3$ and that it has mass $m \in \mathbb{R}^+$. Let's try constructing the physical theory for this world.
+
+Start by noting that our system evolves over time according to the rule
+
+\begin{align}
+\label{newton:move_particle}
+\vec{x_t} &= \vec{x_0} + t \vec{v}
+\end{align}
+
+\noindent where $t$ is the current time of the system. Here $t \in \mathbb{R}$ specifies the current time of the system, with $\vec{x_0}$ the position at $0$. Note times can be negative. With this groundwork in place, let's write down the physical theory that models this world.
+
+Let's work through each part of the physical theory. What should the state space for this system be? We have a position $\vec{x}$ and a velocity $\vec{v}$ that characterizes the state of a moving particle. We already mentioned that both of these are of type $\mathbb{R}^3$, so we define the state space as the product 
+
+\begin{align}
+    \mathcal{S} = \mathbb{R}^3 \times \mathbb{R}^3
+\end{align}
+
+What about mass? Mass is a setting of the theory which doesn't evolve, so mass is a parameter and not a state. We define mass to have type $\mathbb{R}^+$. Are there any other parameters that we should consider? Well we know that unlike the previous system, states of this system evolve over time. It stands to reason that we need to define an initial state for this system. We define the initial position and velocity by
+
+\begin{align}
+(\vec{x_0}, \vec{v_0}) \in  \mathcal{S}
+\end{align}
+
+\noindent where $\vec{x_0} \in \mathbb{R}^3$ is the initial state and $\vec{v_0} \in \mathbb{R}^3$ is the initial velocity. The combination of the mass, initial state, and initial velocity define the parameter space of the system. We consequently define the parameter space to have type
+
+\begin{align}
+\mathcal{W} : \mathbb{R}^+ \times \mathbb{R}^3 \times \mathbb{R}^3
+\end{align}
+
+\noindent You can think of an example element of $\mathcal{W}$ as
+\begin{align}
+(m, \vec{x_0}, \vec{v_0}) \in \mathcal{W}
+\end{align}
+
+With this framework in place, we consider the symmetries of the system. We haven't formally introduced this concept yet, but we can say that the system has a conserved \textit{energy}. If you haven't encountered energy before, don't worry, we'll come back to it shortly, but for now we say that energy is a function with the following type
+
+\begin{align}
+    E: \mathcal{S} \times \mathcal{W} \to \mathbb{R}
+\end{align}
+
+That is, energy is a function that maps from the product of the state space with the parameter space to the real numbers. This definition is formal, but specifying types requires precision. We go one step further and define $E$ by the explicit formula
+
+\begin{align}
+E\left ((\vec{x}, \vec{v}), (m, \vec{x_0}, \vec{v_0})\right) = \frac{1}{2}m \vec{v}^2
+\end{align}
+
+\noindent A standard physics textbook would just define 
+\begin{align}E = \tfrac{1}{2}mv^2\end{align}
+Why bother with the extra formalism? The biggest advantage is that we can now naturally convert this definition into a short differentiable program.
+
+\begin{lstlisting}
+def E(($x$, $v$): $\mathcal{S}$, (m, $x_0$, $v_0$): $\mathcal{W}$)$\to \mathbb{R}$:
+  return m * $\|$v$\|^2$
+\end{lstlisting}
+
+What can we do with this function? Well we can take derivatives! In particular
+
+\begin{align}
+    \nabla\textrm{\lstinline{(E, .)}} &: \mathbb{R}^3 \to \mathbb{R}^3
+\end{align}
+
+\noindent is now an accessible function that gives us the gradient of \lstinline{E} with respect of the velocity $v$. Now in this case, this gradient isn't very useful given how simple the system is, but for more complex system, this becomes much more interesting. 
+
+Let's take a a detour and talk about what energy means. The term energy is a little mysterious and often confuses newcomers to physics. We're not going to try to delve too deeply into the physical interpretation of energy yet, but we note that energy is a commonly useful quantity of physical systems that is conserved whenever a system is time invariant; that is the system exhibits the same behavior at different points in time. (This relationship is by Noether's theorem which we will discuss later in the book). In our framework, we say that energy is conserved if $E$ is a constant function on state space $\mathcal{S}$. 
+
+We often find it useful to break energy up into its component parts of kinetic energy and potential energy. We will say that kinetic energy is a function 
+\begin{align}
+T: \mathcal{S} \times \mathcal{W} \to \mathbb{R}
+\end{align}
+Intuitively, kinetic energy is the part of energy that's due to the motion of a particle. For a particle with mass $m$ and velocity $\vec{v}$, the kinetic energy is \begin{align}
+\tfrac{1}{2}m\|\vec{v}\|^2
+\end{align}
+In our current example, kinetic energy is the only type of energy. We will also introduce potential energy as a function 
+\begin{align}
+V: \mathcal{S} \times \mathcal{W} \to \mathbb{R}
+\end{align}. 
+We have not defined an example of potential energy yet, but we will define one later in this chapter.
+
+Commonly, we will have that the energy is the sum of the kinetic energy and the potential energy, or $E = T + V$. In our current system, we can define $T = \tfrac{1}{2}m\|\vec{v}\|^2$ and $V = 0$. We now have the symmetry for this system: energy is conserved. You can verify this by noting that the velocity never changes in this physical theory so $E$ is a constant function.
+
+Ok, let's now write down the state transition rule. We already wrote it down in \ref{newton:move_particle}. Let's turn that update equation into a simple differentiable program.
+
+\begin{lstlisting}
+def update(($m$, $x_0$, $v_0$): $\mathcal{W}$, $t$: $\mathbb{R}$) $\to \mathcal{S}$:
+  return ($x_0$ + $t$*$v_0$, $v_0$)
+\end{lstlisting}
+
+What does this differentiable program do? It computes the updated position of the particle at time $t$ by applying the rule 
+\begin{align}
+\vec{x} = \vec{x_0} + t \vec{v_0}
+\end{align}
+Note that the velocity doesn't change we just return the initial velocity as the second part of the typle.
+
+We've now got most of our physical theory defined, but there are a few more details that will be useful for us to specify. First, what are the constraints on when we expect this physical theory to be valid? There is the obvious constraint that lacking gravity, this simple model is not accurate for any real world moving particle. But let's set that aside for the moment. We haven't talked yet about special relativity, but as a sneak peek, Newtonian mechanics isn't valid for very high speeds. We could encode that as a constraint
+
+\begin{align}
+\|\vec{v_0}\| \ll c
+\end{align}
+
+\noindent where $c$ is the speed of light. Another constraint we could imagine is that if mass $m$ is too big or too small, the theory wouldn't be valid. For very small masses, we'd expect to have to deal with quantum mechanical effects and for very large masses, we'd have to deal with gravitational effects. Let's turn these into constraints.
+
+\begin{align}
+M_{\textrm{min}} \ll m \ll M_{\textrm{max}}
+\end{align}
+
+What's the observation model? Let's suppose that at time $t$ we have the ability to noisily observe the position of the particle with Normal noise with bias $b$ and standard deviation $\sigma$. We can write this down as a simple equation
+
+\begin{align}
+f(\vec{x}, \vec{v}) = \vec{x} + \mathcal{N}(b, \sigma)
+\end{align}
+
+Let's turn this into a brief differentiable program
+
+\begin{lstlisting}
+def observe(($x$, $v$): $\mathcal{S}$) -> $\mathbb{R}^3$:
+  return $x$ + Normal($b$, $\sigma$)
+\end{lstlisting}
+
+We've now introduced a physical theory in full. We summarize this physical theory in Table \ref{phs:theory:moving:particle}.
+
+\begin{center}
+\begin{tabular}{|c|c|}
+    \hline
+    States & $\mathcal{S} = \mathbb{R}^3 \times \mathbb{R}^3$ \\
+    \hline
+    Symmetries & $\mathcal{G} = \{E = \frac{1}{2}m\|\vec{v}\|^2\}$ is conserved \\
+    \hline
+    Operators & $\mathcal{O} = \{U(t) = \vec{x_0} + t \vec{v}$ \}\\
+    \hline
+    Parameters & $\mathcal{W} = \{m, \vec{x_0}, \vec{v_0}\}$. \\
+    \hline
+    Constraints & $\mathcal{C} = \vec{v} \ll c$ \\
+    \hline
+    Hyperparameters & $\mathcal{HP} = {M_{\textrm{min}} \ll m \ll M_{\textrm{max}}}$  \\
+    \hline
+    Observables & $\mathcal{B} = \{f(x, v) = x + \mathcal{N}(0, 1) \}$  \\
+    \hline
+\end{tabular}
+\label{phs:theory:moving:particle}
+\end{center}
+
+\section{Learning the Parameters of a Physical Theory}
+
+So far we've taken some very simple physics and re-dressed it into the language of differentiable programs. If you're a physicist you may reasonably wonder, why bother? What new insight into physics does it provide us? A first answer could be more philosophical, arguing that a new formalism often helps provide a new window into reality. But getting more concrete, our formalism is \textit{constructive}. That is, we've turned a physical theory into executable \footnote{Physika is a pseudocode language, but it's designed to be easy to translate into real programming languages. If you have a preferred programming language of choice, it can be an excellent exercise to translate Physika examples into your idiom of choice.} code.
+
+This is a conceptual shift since classically physics is often separated from numerical methods. The traditional viewpoint holds that the equations are central, and the numerical method a useful approximation. Our view blurs the line between the numeric and the symbolic and constructs effective computations alongside the raw equations. This provides some powerful benefits since there are operations we can do with Physika that we can't easily do in a traditional framework.
+
+The most significant such operation is the fact that we have access to a native $\nabla$ operator which can differentiate Physika programs. As we have already seen in Part 1, the ability to differentiate complex programs rests at the heart of modern machine learning. In this chapter and the remainder of this Part, we shall show how the ability to take gradients can extract new insights from physical theories.
+
+Let's start with the idea of learning the parameters of a physical theory from data. We've already seen in this chapter that our simple physical theories have associated with them observation models. Let's suppose that we have experimentally gathered $n$ observations of a static particle
+
+\begin{align}
+    (x_1, \dotsc, x_n) \in \mathbb{R}^{3n}
+\end{align}
+
+Let's use the Physika pseudocode to create a constructive model of how these $n$ observations were gathered. Assume that \lstinline{n} is a defined constant
+
+\begin{lstlisting}
+m: $\mathbb{R}^+$, $x_0$: $\mathbb{R}^3$
+
+def observe(N: $\mathbb{N}$):
+  # Note the types. We are calling the
+  # earlier static observe function
+  return [observe($x_0$) for _ in range(N)]
+  
+$x_0$' = Optimize(observe(n), ($x_1$,$\dotsc$,$x_n$), $x_0$)
+\end{lstlisting}
+
+What are we doing here? Well intuitively, we're saying take the generated observations \lstinline{observe(n)} and compare that against the experimentally gathered \lstinline{$x_1$,$\dotsc$,$x_n$} to find the value of \lstinline{$x_0$} that optimizes the likelihood of our experimental observations. This is done by the \lstinline{Optimize} function. Under the hood, \lstinline{Optimize} is using the fact that \lstinline{observe(n)} is a differentiable program. This means that the optimization techniques we studied in Part 1 carry over.
+
+You might then ask, well don't we need a likelihood function to optimize against? Implicitly, we have that \lstinline{observe} defines a likelihood since we sample from a Gaussian.
+
+It's worth emphasizing that for right now, this is a lot of fuss for small return. We could easily have instead just said
+\begin{align}
+x_0' = \frac{1}{n} \sum_{j=1}^n x_i
+\end{align}
+and called it quits. However as the scale and sophistication of the physical system grows, writing down analytic formula for parameter estimation will also grow increasingly complicated. Over the subsequent chapters, we will build progressively more sophisticated physical theories (and associated differentiable programs of course) and start to see examples where the differentiable methodology yields insights not easily accessible to more classical analytic methodology.
+
+
+\section{Exercises}
+\begin{enumerate}
+    \item In Example \ref{phs:theory:moving:particle} we introduced a simple model of a physical theory with one moving particle. Assume now that we have a dataset of observations 
+
+\[ X = [(t_1, \vec{x_1}), \cdots, (t_n, \vec{x_n}))] \]
+
+Observations are noisy. You can assume that the noise model for observations is given by the Gaussian distribution $\mathcal{N}(0, \sigma)$ where $\sigma$ is the standard deviation turn. Devise a learning algorithm which fits the physical theory of Example \ref{phs:theory:moving:particle} to dataset $X$.
+
+\end{enumerate}
+
+\end{document}

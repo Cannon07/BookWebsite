@@ -1,0 +1,46 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{listings}
+\usepackage{xcolor}
+
+% Use black text on white background - we'll invert colors in image processing
+\definecolor{codebackground}{RGB}{255, 255, 255}
+\definecolor{codetext}{RGB}{0, 0, 0}
+
+\lstset{
+  basicstyle=\ttfamily\color{codetext},
+  backgroundcolor=\color{codebackground},
+  frame=none,
+  breaklines=true,
+  mathescape=true,
+  escapeinside={$}{$},
+  language=python,
+}
+
+\begin{document}
+\begin{lstlisting}
+# Shear Force on the beam
+def V(x: $\mathbb{R}$)
+  return 5 + 0.25*x.^2 
+
+dl = 1
+bar_length = 10
+x_len = range(0, bar_length, dl)
+V_len = V(x_len)
+
+# Composite Trapezoidal Rule
+moment = zeros(length(x_len), 1)
+for i = range(2, length(x_len)):
+  moment[i] = moment[i-1] + (x_len[i]-x_len[i-1])*(V_len[i-1]+V_len[i])/2
+
+
+# Evaluating exact analytical integral using symbolic variables
+f = $5 + 0.25x^2$
+moment_exact = zeros(length(x_len),1)
+for i in range(2, length(x_len)):
+  moment_exact(i) = integral(f,0,x_len[i])
+
+# SSD Error between Trapezoid Rule and Exact Integral
+error = sum((moment_exact - moment)**2/length(x_len))
+\end{lstlisting}
+\end{document}

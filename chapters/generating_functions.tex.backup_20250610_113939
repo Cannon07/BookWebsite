@@ -1,0 +1,50 @@
+\documentclass[book.tex]{subfiles}
+
+\begin{document}
+\chapter{Generating Functions}
+\label{chap:generating_functions}
+\noindent\rule{11cm}{0.4pt} \\
+\textbf{Prerequisites:} \autoref{chap:math_basics} \\
+\textbf{Difficulty Level:} ** \\
+\noindent\rule{11cm}{0.4pt}
+\vspace{5mm}
+
+Generating functions are tools for converting sequences into functions. There are a few choices for performing this conversion. Ordinary generating functions use an expansion in powers of $x$
+
+\begin{align}
+    G(a_n; x) &= \sum_{n=0}^\infty a_n x^n
+\end{align}
+
+\section{Generating Functions in Probability}
+
+To ease calculations, we define the \textit{generating function} of a probability distribution as 
+\begin{align}
+    g(k) = \sum_{n=0}^{\infty}e^{-nk}P_n
+\end{align}
+which gives:
+
+\begin{align}
+\langle n^m \rangle = \lim_{k\rightarrow 0}\left[(-1)^m\frac{d^mg(k)}{dk^m}\right]
+\end{align}
+
+\noindent which alters the calculation to the evaluation of derivatives.
+
+For the Poisson distribution, we have:
+
+\begin{equation}
+g(k)= \sum_{n=0}^{\infty}e^{-kn}\frac{a^n}{n!}e^{-a}=exp\left[a\left(e^{-k}-1\right)\right]
+\end{equation}
+
+Using the generating function, we have:
+
+\begin{align}
+&\langle n \rangle = -\lim_{k \rightarrow 0} \left( -ae^{-k} exp \left[a \left(e^{-k}-1\right)\right]\right)=a \notag \\
+&\langle n^2 \rangle = -\lim_{k\rightarrow 0} \left( \left(a e^{-k}+a^2 e^{-2k}\right) exp\left[ a \left(e^{-k}-1\right)\right] \right) = a + a^2 \notag
+\end{align}
+
+%\section{Exercises}
+%\begin{enumerate}
+%    \item TODO
+%\end{enumerate}
+
+\end{document}

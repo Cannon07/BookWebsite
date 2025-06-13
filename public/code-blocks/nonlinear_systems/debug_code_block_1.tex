@@ -1,0 +1,30 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{listings}
+\usepackage{xcolor}
+
+% Use black text on white background - we'll invert colors in image processing
+\definecolor{codebackground}{RGB}{255, 255, 255}
+\definecolor{codetext}{RGB}{0, 0, 0}
+
+\lstset{
+  basicstyle=\ttfamily\color{codetext},
+  backgroundcolor=\color{codebackground},
+  frame=none,
+  breaklines=true,
+  mathescape=true,
+  escapeinside={$}{$},
+  language=python,
+}
+
+\begin{document}
+\begin{lstlisting}
+def newtons_method(f: $\mathbb{R}^N \\to \\mathbb{R}$, J: $\mathbb{R}[N, N]$, guess:$\mathbb{R}^N$, error: $\mathbb{R}$, tol: $\mathbb{R}$):
+  while (error > tol):
+    dGuess = -J(guess)$^{-1}$*f(guess) 
+    guess = guess + dGuess
+    # Wrap radians to [-$\\pi$, $\\pi$]
+    guess = wrapToPi(guess)
+    error = $\\|$f(guess))$\\|$
+\end{lstlisting}
+\end{document}

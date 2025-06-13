@@ -1,0 +1,27 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{listings}
+\usepackage{xcolor}
+
+% Use black text on white background - we'll invert colors in image processing
+\definecolor{codebackground}{RGB}{255, 255, 255}
+\definecolor{codetext}{RGB}{0, 0, 0}
+
+\lstset{
+  basicstyle=\ttfamily\color{codetext},
+  backgroundcolor=\color{codebackground},
+  frame=none,
+  breaklines=true,
+  mathescape=true,
+  escapeinside={$}{$},
+  language=python,
+}
+
+\begin{document}
+\begin{lstlisting}
+$\alpha$: $\mathbb{R}$
+def step(model: LinearModel, x: $\mathbb{R}^m$, y: $\mathbb{R}$):
+  model.w = model.w - $\alpha$ * $\nabla$(L(model, x, y), model.w)
+  model.b = model.b - $\alpha$ * $\nabla$(L(model, x, y), model.b)
+\end{lstlisting}
+\end{document}

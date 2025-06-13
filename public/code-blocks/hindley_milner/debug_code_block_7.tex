@@ -19,39 +19,39 @@
 
 \begin{document}
 \begin{lstlisting}
-def generate_equations(node : Expr, equations : [TypeEquation]): 
+def generate_equations(node : Expr, equations : [TypeEqn]): 
     left, right, type, children = node.left, node.right, node.type, node.children
     if node : IntConstant:
-        equations += [TypeEquation(type, IntType)]
+        equations += [TypeEqn(type, IntType)]
     elif node : BoolConstant:
-        equations += [TypeEquation(type, BoolType)]
+        equations += [TypeEqn(type, BoolType)]
     elif node : Identifier:
         # Identifier references add no equations.
         pass
     elif node : OpExpr:
         map($\\lambda$ c: generate_equations(c, equations), children)
         # All op arguments are integers.
-        equations += [TypeEquation(left.type, IntType), 
-                      TypeEquation(right.type, IntType)]
+        equations += [TypeEqn(left.type, IntType), 
+                      TypeEqn(right.type, IntType)]
         # Some ops return boolean, and some return integer.
         if node.op in {'!=', '==', '>=', '<=', '>', '<'}:
-            equations += [TypeEquation(type, BoolType)]
+            equations += [TypeEqn(type, BoolType)]
         else:
-            equations += [TypeEquation(type, IntType)]
+            equations += [TypeEqn(type, IntType)]
     elif node : AppExpr:
         map($\\lambda$ c: generate_equations(c, equations), chilren)
         argtypes = [arg.type for arg in node.args]
         # An application forces its function's type.
-        equations += [TypeEquation(node.func.type, FuncType(argtypes, type))]
+        equations += [TypeEqn(node.func.type, FuncType(argtypes, type))]
     elif node : IfExpr:
         map($\\lambda$ c: generate_equations(c, equations), children)
-        equations += [TypeEquation(node.ifexpr.type, BoolType),
-                      TypeEquation(type, node.thenexpr.type),
-                      TypeEquation(type, node.elseexpr.type)]
+        equations += [TypeEqn(node.ifexpr.type, BoolType),
+                      TypeEqn(type, node.thenexpr.type),
+                      TypeEqn(type, node.elseexpr.type)]
     elif node : LambdaExpr:
         map($\\lambda$ c: generate_equations(c, equations), children)
         argtypes = [node.arg_types[name] for name in node.argnames]
-        equations += [TypeEquation(type,
+        equations += [TypeEqn(type,
                          FuncType(argtypes, node.expr.type))]
     else:
         raise TypingError

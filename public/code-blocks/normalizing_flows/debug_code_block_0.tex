@@ -1,0 +1,45 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{listings}
+\usepackage{xcolor}
+
+% Use black text on white background - we'll invert colors in image processing
+\definecolor{codebackground}{RGB}{255, 255, 255}
+\definecolor{codetext}{RGB}{0, 0, 0}
+
+\lstset{
+  basicstyle=\ttfamily\color{codetext},
+  backgroundcolor=\color{codebackground},
+  frame=none,
+  breaklines=true,
+  mathescape=true,
+  escapeinside={$}{$},
+  language=python,
+}
+
+\begin{document}
+\begin{lstlisting}
+class AutoregressiveNetwork(params: $\mathbb{N}$, hidden_units: [$\mathbb{N}$], activations: String)
+
+class MaskedAutoregressiveFlow(net: Module)
+
+class TransformedDistribution(zdist: $\mathbb{R}^N$, bijection: $\mathbb{R}^N \\to \\mathbb{R}^N$)
+
+class NormalizingFlow(num_layers : $\mathbb{N}$, ndims: $\mathbb{N}$):
+bijects = []
+# loop over desired bijectors and put into list
+for i in num_layers:
+anet = AutoregressiveNetwork(
+    params=ndim, hidden_units=[128, 128], activation="relu")
+ab = MaskedAutoregressiveFlow(anet)
+bijects.append(ab)
+# Now permute 
+permute = Permute([1, 0])
+bijects.append(permute)
+chained = Chain(bijects)
+
+def $\\lambda$(zdist):
+# make transformed dist
+td = TransformedDistribution(zdist, bijector=chained)
+\end{lstlisting}
+\end{document}

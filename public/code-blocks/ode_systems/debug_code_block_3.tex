@@ -1,0 +1,46 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{listings}
+\usepackage{xcolor}
+
+% Use black text on white background - we'll invert colors in image processing
+\definecolor{codebackground}{RGB}{255, 255, 255}
+\definecolor{codetext}{RGB}{0, 0, 0}
+
+\lstset{
+  basicstyle=\ttfamily\color{codetext},
+  backgroundcolor=\color{codebackground},
+  frame=none,
+  breaklines=true,
+  mathescape=true,
+  escapeinside={$}{$},
+  language=python,
+}
+
+\begin{document}
+\begin{lstlisting}
+def lotka_volterra(a: $\mathbb{R}$, b: $\mathbb{R}$, c: $\mathbb{R}$, d: $\mathbb{R}$,
+                   x$_i$: $\mathbb{R}$, y$_i$: $\mathbb{R}$, $(t_i, t_f): \\mathbb{R}^2$, dt: $\mathbb{R}$): 
+  N = (t$_f$-t$_i$)/dt
+  x = zeros(N+1), y = zeros(N+1)
+  x[0] = x$_i$, y[0] = y$_i$
+  for i = 1:n+1:
+    k1x = a*x[i-1] - b*x[i-1]*y[i-1]
+    k1y = -c*y[i-1] + d*x[i-1]*y[i-1]
+    x_13 =  x[i-1] + dt/3*(k1x)
+    y_13 =  y[i-1] + dt/3*(k1y)
+    k2x = a*x_13 - b*x_13*y_13
+    k2y = -c*y_13 + d*x_13*y_13
+    x_23 =  x[i-1] - 1*dt/3*(k1x) + dt*(k2x)
+    y_23 =  y[i-1] - 1*dt/3*(k1y) + dt*(k2y)
+    k3x = a*x_23 - b*x_23*y_23
+    k3y = -c*y_23 + d*x_23*y_23
+    x_h =  x[i-1] + dt*(k1x-k2x+k3x)
+    y_h =  y[i-1] + dt*(k1y-k2y+k3y)
+    k4x = a*x_h - b*x_h*y_h
+    k4y = -c*y_h + d*x_h*y_h
+    x[i] = x[i-1] + dt*(k1x + 3*k2x + 3*k3x + k4x)/8
+    y[i] = y[i-1] + dt*(k1y + 3*k2y + 3*k3y + k4y)/8
+  x, y
+\end{lstlisting}
+\end{document}

@@ -1,0 +1,29 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{listings}
+\usepackage{xcolor}
+
+% Use black text on white background - we'll invert colors in image processing
+\definecolor{codebackground}{RGB}{255, 255, 255}
+\definecolor{codetext}{RGB}{0, 0, 0}
+
+\lstset{
+  basicstyle=\ttfamily\color{codetext},
+  backgroundcolor=\color{codebackground},
+  frame=none,
+  breaklines=true,
+  mathescape=true,
+  escapeinside={$}{$},
+  language=python,
+}
+
+\begin{document}
+\begin{lstlisting}
+class PositionEncoding(L: $\mathbb{N}$, M: $\mathbb{N}$, $\\ell$ : $\mathbb{N}$=1e4):
+  def $\\lambda$() $\to$ $\mathbb{R}$[L, M]:
+    pos = [1..L]
+    dim = [1..M]
+    phase = pos / ($\\ell$ ** (dim/M))   
+    where(d % 2 == 0, sin(phase), cos(phase))
+\end{lstlisting}
+\end{document}

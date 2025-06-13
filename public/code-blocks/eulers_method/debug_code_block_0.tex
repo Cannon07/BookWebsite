@@ -1,0 +1,37 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{listings}
+\usepackage{xcolor}
+
+% Use black text on white background - we'll invert colors in image processing
+\definecolor{codebackground}{RGB}{255, 255, 255}
+\definecolor{codetext}{RGB}{0, 0, 0}
+
+\lstset{
+  basicstyle=\ttfamily\color{codetext},
+  backgroundcolor=\color{codebackground},
+  frame=none,
+  breaklines=true,
+  mathescape=true,
+  escapeinside={$}{$},
+  language=python,
+}
+
+\begin{document}
+\begin{lstlisting}
+def cahn_hilliard_eulers(C : $\mathbb{R}^{N\\times N}$, $\\gamma: \\mathbb{R}$, D : $\mathbb{R}$, dt: $\mathbb{R}$, ($t_0$, $t_e$): $\mathbb{R}^2$, tol: $\mathbb{R}$) $\to$ $\mathbb{R}^{N\\times N}$:
+  out = zeros(N, N)
+  $t$ = $t_0$ 
+  while $t$ < $t_e$:
+    dc$^2$ = $\nabla^2$(C, dx) + $\nabla^2$(C, dy)
+    dc$^3$ = $\nabla^2$(C$^3$,dx) + $\nabla^2$(C$^3$,dy)
+    $\\frac{\\textrm{d}\\gamma}{\\textrm{dc}}$ = $\nabla^2$(gamma*dc$^2$, dx) + $\nabla^2$(gamma*dc$^2$, dy)
+    $\\frac{\\textrm{dc}}{\\textrm{dt}}$ = D*(dc$^3$ - dc$^2$ - $\\frac{\\textrm{d}\\gamma}{\\textrm{dc}}$)
+    C = C + $\\frac{\\textrm{d}\\gamma}{\\textrm{dc}}$*dt
+    if $|\\|\\textrm{out}\\|-\\|C\\|)|$ < tol:
+      break
+    out = C
+    time = time + dt
+  return out
+\end{lstlisting}
+\end{document}

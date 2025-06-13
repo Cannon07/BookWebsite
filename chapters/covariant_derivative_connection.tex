@@ -34,9 +34,10 @@ The goal of this definition is to make the definition of the covariant derivativ
 \phi:[-1, 1] \to M
 \end{align}
 such that $\phi(0) = p$ and $\phi'(0) = v$. Then we define the covariant derivative to be
-$$(\nabla_v f)_p = (f \circ \phi)'(0)$$
-
-$$= \lim_{t \to 0} \frac{f(\phi(t)) - f(p)}{t}$$
+\begin{align}
+(\nabla_v f)_p &= (f \circ \phi)'(0) \\
+&= \lim_{t \to 0} \frac{f(\phi(t)) - f(p)}{t}
+\end{align}
 We can then view the covariant derivative as a function mapping points in the manifold $M$ to real scalars $(nabla_v f)_p$
 \begin{align}
 \nabla_v f: M \to \mathbb{R}

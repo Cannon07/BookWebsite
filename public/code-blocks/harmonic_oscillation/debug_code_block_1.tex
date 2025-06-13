@@ -1,0 +1,29 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{listings}
+\usepackage{xcolor}
+
+% Use black text on white background - we'll invert colors in image processing
+\definecolor{codebackground}{RGB}{255, 255, 255}
+\definecolor{codetext}{RGB}{0, 0, 0}
+
+\lstset{
+  basicstyle=\ttfamily\color{codetext},
+  backgroundcolor=\color{codebackground},
+  frame=none,
+  breaklines=true,
+  mathescape=true,
+  escapeinside={$}{$},
+  language=python,
+}
+
+\begin{document}
+\begin{lstlisting}
+def U(k: $\mathbb{R}$, m: $\mathbb{R}$, t: $\mathbb{R}$):
+  $x_0$, $a$, $b$, $v_0$: Symbol
+  eq1 = `$x_0 = a + b$`
+  eq2 = `$v_0 = a i \\sqrt{k/m} - bi\\sqrt{k/m}$`
+  $a$, $b$ = solve(eq2, eq2)
+  return $a \\exp(it\\sqrt{k/m}) + b  \\exp(-it\\sqrt{k/m})$
+\end{lstlisting}
+\end{document}

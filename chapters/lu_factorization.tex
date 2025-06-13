@@ -1,0 +1,180 @@
+\documentclass[book.tex]{subfiles}
+\begin{document}
+
+\chapter{LU Factorization}
+\label{chap:lu_factorization}
+\noindent\rule{11cm}{0.4pt} \\
+\textbf{Prerequisites:} \autoref{chap:linear_systems} \\
+\textbf{Difficulty Level:} ** \\
+\noindent\rule{11cm}{0.4pt}
+\vspace{5mm}
+
+In this chapter, we will learn about the LU factorization technique for matrices and its mathematical underpinnings. We will explain how these methods can be used to solve linear algebraic equations.
+
+\section{LU Factorization}
+
+Consider a system of three equations defined as $Ax = b$ where $A$ is the coefficient matrix. This can be rearranged to get
+\begin{align} \label{eq:Eq1}
+Ax - b = 0
+\end{align}
+Suppose that Eq.$\ref{eq:Eq1}$ could be expressed as an upper triangular system, then
+\begin{align} 
+\begin{bmatrix}
+u_{11} & u_{12} & u_{13} \\ 
+0 & u_{22} & u_{23} \\ 
+0 & 0 & u_{33}
+\end{bmatrix}
+\left \{
+\begin{tabular}{c}
+$x_1$ \\
+$x_2$ \\
+$x_3$
+\end{tabular}
+\right \}
+= \left \{
+\begin{tabular}{c}
+$d_1$ \\
+$d_2$ \\
+$d_3$
+\end{tabular}
+\right \}
+\end{align} 
+\begin{align} \label{eq:Eq2}
+Ux - d = 0
+\end{align}
+Consider a lower diagonal matrix with 1's on the diagonal such that when premultiplied with Eq.\ref{eq:Eq2}, we get Eq.\ref{eq:Eq1}.
+\begin{align} 
+L =
+\begin{bmatrix}
+1 & 0 & 0 \\ 
+l_{21} & 1 & 0 \\ 
+l_{31} & l_{32} & 1
+\end{bmatrix}
+\end{align}
+\begin{align} \label{eq:Eq3}
+L(Ux - d) = Ax - b
+\end{align}
+Therefore from rules of matrix multiplication
+\begin{align} 
+\begin{gathered}
+LU = A\\
+Ld = b
+\end{gathered}
+\end{align}
+\begin{marginfigure} 
+	\centering
+% \includegraphics{figures/part1b/lu_factorization/lufactorization.PNG}
+\includegraphics{figures/part1b/lu_factorization/lufactorization_0.png}
+	\centering
+	\caption{Steps in LU Factorization}
+	\label{fig:1}
+\end{marginfigure}
+As shown in Figure \ref{fig:1} a two step strategy is formed to obtain solutions:
+\begin{enumerate}
+	\item \textit{LU factorization step}. $A$ is decomposed into lower $L$ and upper $U$ triangular matrices.
+	\item \textit{Substitution step}. $L$ and $b$ are used to evaluate intermediate matrix $d$ which is then used with $U$ to evaluate $x$ as in Eq.\ref{eq:Eq2}.
+\end{enumerate} 
+
+\begin{lstlisting}[language=python]
+def lu_factorization(A: $\mathbb{R}^{N \times N}$):
+  L = eye(N)
+  U = A
+  for i = 0:N-1
+    for j = i+1:N
+      ratio = U[j,i]/U[i,i]
+      U[j,i:N] = U[j,i:N]-ratio*U[i,i:N]
+      L[j,i] = ratio
+  i=U\(L\b)
+  
+\end{lstlisting}
+\begin{marginfigure}[-15\baselineskip]
+	Output:
+	\begin{Verbatim}
+L = 1.0000         0         0
+   -0.6250    1.0000         0
+         0   -0.4364    1.0000
+         
+U = 8.0000   -5.0000         0
+         0    6.8750   -3.0000
+         0         0    9.6909%
+
+i = 0.8630
+    0.3809
+   -0.1689
+	\end{Verbatim}
+\end{marginfigure}
+\end{document}
+
+% TODO: Look up matlab backslash operator
+%\section{Solving Linear Algebraic Equations with MATLAB}
+
+%Linear algebraic equations can be solved in MATLAB using two methods. Most efficient way is to use the backslash or "left-division" operator $\verb|x = A\b|$, the other way is to use matrix inversion $\verb|x = inv(A)*b|$. $\verb|x = mldivide(A,B)|$ is an alternative way to execute $\verb|x = A\B|$, but is rarely used. It enables operator overloading for classes.\\
+% \textit{Example}: For the example discussed above, solution can be obtained by the application of left-division or matrix inversion.\\ 
+%Left Division: 
+%\begin{Verbatim}
+%i = A\b;
+%\end{Verbatim}
+%Matrix Inversion:
+%\begin{Verbatim}
+%i = inv(A)*b;
+%\end{Verbatim}
+%\begin{marginfigure}
+%	\begin{Verbatim}
+%A=[8 -5 0;-5 10 -3;0 -3 11];
+%b=[5;0;-3];
+%	\end{Verbatim}
+%\end{marginfigure}
+%\begin{marginfigure}
+%Output:
+%	\begin{Verbatim}
+%	i = 0.8630
+%	    0.3809
+%	   -0.1689 
+%	\end{Verbatim}
+%\end{marginfigure}
+% When we implement left division with the backslash operator,  MATLAB examines the structure of the coefficient matrix and then implements an optimal method to obtain the solution. MATLAB checks to see whether [A] is one of the following systems (a) sparse and banded, (b) triangular, or (c) symmetric. If any of these cases are detected, the solution is obtained with the efficient techniques like banded solvers, back and forward substitution, and Cholesky factorization. If none of these simplified solutions are possible and the matrix is square, a general triangular factorization is computed by Gauss elimination with partial pivoting and the solution obtained with substitution.\\
+%The versatility of $\verb|mldivide|$ in solving linear systems stems from its ability to take advantage of symmetries in the problem by dispatching to an appropriate solver. This approach aims to minimize computation time. The first distinction the function makes is between full (also called "dense") and sparse input arrays.\\
+%\textit{Algorithm for Full Inputs}: The flow chart below shows the algorithm path when inputs A and B are full.\\
+%\begin{figure}
+%	\centering
+%	\includegraphics[width = 4in]{figures/part1b/lu_factorization/mldivide_full.png}
+%	\centering
+%	\label{fig:2}
+%\end{figure}\\
+%\textit{Algorithm for Sparse Inputs}: If A is full and B is sparse then  $\verb|mldivide|$ converts B to a full matrix and uses the full algorithm path (above) to compute a solution with full storage. If A is sparse, the storage of the solution x is the same as that of B and  $\verb|mldivide|$ follows the algorithm path for sparse inputs, shown below.
+%\begin{figure}
+%	\centering
+%	\includegraphics[width = 2.77in, height = 8in]{figures/part1b/lu_factorization/mldivide_sparse.png}
+%	\centering
+%	\label{fig:3}
+%\end{figure}
+%\end{document}
+\section{Exercises}
+\begin{enumerate}
+%    \item \textcolor{red}{TODO}
+\item Decompose the coefficient matrix below into $L$ and $U$ matrix
+\begin{align}
+\begin{bmatrix}
+8 & -5 & 0 \\ 
+-5 & 10 & -3 \\ 
+0 & -3 & 11
+\end{bmatrix} 
+\left \{
+\begin{tabular}{c}
+$i_1$ \\
+$i_2$ \\
+$i_3$  
+\end{tabular}
+\right \}
+=
+\left \{
+\begin{tabular}{c}
+5 \\
+0 \\
+-3  
+\end{tabular}
+\right \}
+\end{align}
+\end{enumerate}
+
+\end{document}

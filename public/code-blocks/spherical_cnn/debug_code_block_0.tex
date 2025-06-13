@@ -1,0 +1,28 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{listings}
+\usepackage{xcolor}
+
+% Use black text on white background - we'll invert colors in image processing
+\definecolor{codebackground}{RGB}{255, 255, 255}
+\definecolor{codetext}{RGB}{0, 0, 0}
+
+\lstset{
+  basicstyle=\ttfamily\color{codetext},
+  backgroundcolor=\color{codebackground},
+  frame=none,
+  breaklines=true,
+  mathescape=true,
+  escapeinside={$}{$},
+  language=python,
+}
+
+\begin{document}
+\begin{lstlisting}
+class SphericalConvolution(w: $\mathbb{R}[|m]$):
+  def $\\lambda$(X: $\mathbb{R}[m]$) -> $\mathbb{R}[|G|]$:
+    X$'$ = SphericalFourierTransform(X)
+    w$'$ = SphericalFourierTransform(w)
+    return InverseSphericalFourierTransform($2 \\pi \\sqrt{\\frac{4 \\pi}{2 \\ell + 1}}$ X$'$ * w$'$)
+\end{lstlisting}
+\end{document}

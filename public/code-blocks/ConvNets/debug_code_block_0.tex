@@ -1,0 +1,29 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{listings}
+\usepackage{xcolor}
+
+% Use black text on white background - we'll invert colors in image processing
+\definecolor{codebackground}{RGB}{255, 255, 255}
+\definecolor{codetext}{RGB}{0, 0, 0}
+
+\lstset{
+  basicstyle=\ttfamily\color{codetext},
+  backgroundcolor=\color{codebackground},
+  frame=none,
+  breaklines=true,
+  mathescape=true,
+  escapeinside={$}{$},
+  language=python,
+}
+
+\begin{document}
+\begin{lstlisting}
+class conv2d(w: $\mathbb{R}[m, m]$):
+  def $\\lambda$(X: $\mathbb{R}[N, N]$) $\to$ $\mathbb{R}[N-m+1,N-m+1]$:
+    X$'$ = zeros(N-m+1, n-m+1)
+    for i j a b:
+      X$'$[i, j] += w[a, b]*X[i, j]
+    X$'$
+\end{lstlisting}
+\end{document}

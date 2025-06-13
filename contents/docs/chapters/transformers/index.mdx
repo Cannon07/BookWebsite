@@ -1,0 +1,126 @@
+
+<style jsx global>{`
+  .code-block-container {
+    display: block;
+    margin: 1.5rem 0;
+    padding: 0;
+  }
+  .code-block-image {
+    display: block;
+    width: auto;
+    max-width: 100%;
+    height: auto;
+    filter: drop-shadow(0 0 0 transparent); /* Force transparency rendering in some browsers */
+  }
+  /* Other styles... */
+`}</style>
+# Transformers 
+
+------------------------------------------------------------------------
+
+**Difficulty Level:** **
+
+
+
+------------------------------------------------------------------------
+
+Recurrent neural networks provide powerful tools for working with
+series, but also have a powerful efficiency disadvantage. Because inputs
+have to be processed step by step, there are limits to how far RNNs can
+be parallelized on a modern processor. Transfomers offer an alternative
+interpretation of sequence handling that allow for more efficient
+processing.
+
+![Transformers use the attention mechanism to estimate the importance of
+each input in a
+sequence.](figures/Differentiable Models/transformers/Transformers-Attention Mechanism.png)\
+
+## Tokenizers and Vocabularies
+
+Transformers assume that input comes as a sequence $x_1,\dotsc,x_L$. In
+many applications, we can assume that each input is an integer
+$$\begin\{aligned\}
+    x_i \in \{1,\dotsc,N\}
+\end\{aligned\}$$ where $N$ is a large but finite number. These integers
+are assumed to index into a vocabulary set $V$, where $i$ represents
+some element of the vocabulary. Tokenization is the process of
+transforming an arbitrary input sequence into a sequence of integers
+drawn from the given vocabulary. An embedding matrix is typically used
+to associate to each index in the vocabulary an associated high
+dimensional embedding vector $$\begin\{aligned\}
+    W: \mathbb\{R\}^\{d \times N\}
+\end\{aligned\}$$
+
+Position encoding is a technique for representing the position $i$ of
+input $x_i$ in the original sequence to the model. The
+`PositionEncoding` layer provides a way to represent the position of a
+token by a continuous value.
+
+![image](/BookWebsite/code-blocks/transformers/code_block_0_d0b1eca6.png)
+
+## Transformer Equations
+
+The attention mechanism consists of three terms. First there are a set
+of query vectors $q_i \in \mathbb\{R\}^p$ for $i = 1,\dotsc,m$, then a set
+of key vectors $k_j \in \mathbb\{R\}^p$ for $j = 1,\dotsc,n$, and then a
+set of value vectors $v_j \in \mathbb\{R\}^r$. Here $r$ and $p$ are the
+sizes of low dimensional learned embeddings. The key $k_j$ and value
+$v_j$ are conceptually attached to the same input $j$. For query $q_i$
+we write the attention mechanism as
+
+$$\begin\{aligned\}
+    \textrm\{Attn\}(q_i, \{k_j\}, \{v_j\}) &= \sum_\{j=1\}^n \alpha_\{ij\} v_j \\\\
+    \alpha_\{ij\} &= \frac\{\exp(q_i^Tk_j)\}\{\sum_\{j'=1\}^n\exp(q_i^Tk_\{j'\})\}
+\end\{aligned\}$$ For self-attention networks, we write $$\begin\{aligned\}
+    q = h_Q(f),\qquad k=h_K(f),\qquad v=h_V(f)
+\end\{aligned\}$$ where $h_Q$, $h_K$, and $h_V$ are embedding neural
+networks.
+
+One of the most powerful properties of the attention mechanism is
+permutation invariance. Shuffling the order of the inputs does not
+change the output from the system. Let's look at the code for the
+attention mechanism. ![image](/BookWebsite/code-blocks/transformers/code_block_1_5b9ec8b3.png)
+
+In practice, we will often find it useful empirically to run multiple
+attention heads in parallel, much as we want to learn multiple
+convolutional filters in parallel. ![image](/BookWebsite/code-blocks/transformers/code_block_2_c9ed55f8.png)
+
+We introduce a simple feed forward layer for use in more complex
+architectures.
+
+![image](/BookWebsite/code-blocks/transformers/code_block_3_51bc7c51.png)
+
+There are several variants of the transformer that have been considered
+in the literature. In this chapter, we consider the originally proposed
+sequence-to-sequence encoder-decoder architecture. The encoder encodes
+the input sequence into a vector representation and the decoder undoes
+the encoding to make the prediction for the output sequence.
+
+![image](/BookWebsite/code-blocks/transformers/code_block_4_c3a4557b.png)
+
+The `Encoder` chains together a sequence of encoding layers.
+
+![image](/BookWebsite/code-blocks/transformers/code_block_5_4b7cd70c.png)
+
+The decoder layer plays a similar role to the encoder layer, but with
+the critical different that the decoder attempts to match the embedding
+produced by the encoder to the target sequence.
+
+![image](/BookWebsite/code-blocks/transformers/code_block_6_54ead389.png)
+
+The `Decoder` chains together a series of decoder layers.
+
+![image](/BookWebsite/code-blocks/transformers/code_block_7_c738970d.png)
+
+The `Transformer` itself simply chains a decoder and an encoder to
+prdouce the full sequence-to-sequence architecture.
+
+![image](/BookWebsite/code-blocks/transformers/code_block_8_4d9bfef6.png)
+
+## Masked Language Modeling
+
+Masked language modeling is a type of pretraining in which a random
+portion of the input data is removed and the model is trained to fill in
+the missing data. The major advantage of this pretraining is it can be
+done in a fully self supervised fashion. This and similar pretraining
+methods have proven highly influential in recent years.

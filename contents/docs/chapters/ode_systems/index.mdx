@@ -1,0 +1,156 @@
+
+<style jsx global>{`
+  .code-block-container {
+    display: block;
+    margin: 1.5rem 0;
+    padding: 0;
+  }
+  .code-block-image {
+    display: block;
+    width: auto;
+    max-width: 100%;
+    height: auto;
+    filter: drop-shadow(0 0 0 transparent); /* Force transparency rendering in some browsers */
+  }
+  /* Other styles... */
+`}</style>
+# Systems of Ordinary Differential Equations 
+
+------------------------------------------------------------------------
+
+**Difficulty Level:** **
+
+
+
+------------------------------------------------------------------------
+
+In this chapter we will learn how to implement Euler's method and
+Runge-Kutta's fourth order method for solving a general system of
+ordinary differential equations. We study the specific examples of the
+spring-mass damper system and the Lotka-Volterra system and solve these
+systems with Euler's method and Runge-Kutta's fourth order method.
+
+In this chapter, we will look at solving a system of ODEs using the
+Euler's and Runge-Kutta methods. In the previous lectures, we have
+solved a single ODE using either Euler or Runge-Kutta methods. However,
+in practice, many problems in engineering and science require the
+solution of a system of simultaneous ordinary differential equations.
+Here, we will look at extending our knowledge on solving single ODEs to
+this generalized system of ODEs.
+
+## Systems of Equations
+
+Many practical problems in engineering and science require the solution
+of a system of simultaneous ordinary differential equations rather than
+a single equation. Such systems may be represented generally as
+$$\begin\{aligned\}
+\frac\{\partial y_1\}\{\partial t\} = f_1(t,y_1,y_2,\dots,y_n)\\
+\frac\{\partial y_2\}\{\partial t\} = f_2(t,y_1,y_2,\dots,y_n)\\
+\vdots \\\\
+\frac\{\partial y_n\}\{\partial t\} = f_n(t,y_1,y_2,\dots,y_n)
+\end\{aligned\}$$ ![Depicting the location of intermediate points at
+which slopes are to be calculated for the Classical Fourth order
+Runge-Kutta's Method](/BookWebsite/figures/ode_systems/rk4.PNG) The
+solution of such a system requires that $n$ initial conditions be known
+at the starting value of $t$. All the methods discussed earlier for
+single equations can be extended to systems of ODEs. Engineering
+applications can involve thousands of simultaneous equations. In each
+case, the procedure for solving a system of equations simply involves
+applying the one-step technique for every equation at each step before
+proceeding to the next step.
+
+Note that any of the higher-order RK methods discussed earlier can also
+be applied to systems of equations. However, care must be taken in
+determining the slopes. These slopes can be observed for the classical
+fourth order method from the figure. That is, we first develop slopes
+for all variables at the initial value. These slopes (a set of $k1$'s)
+are then used to make predictions of the dependent variable at the
+midpoint of the interval. These midpoint values are in turn used to
+compute a set of slopes at the midpoint (the $k2$'s). These new slopes
+are then taken back to the starting point to make another set of
+midpoint predictions that lead to new slope predictions at the midpoint
+(the k3's). These are then employed to make predictions at the end of
+the interval that are used to develop slopes at the end of the interval
+(the $k4$'s). Finally, the $k$'s are combined into a set of increment
+functions that are brought back to the beginning to make the final
+predictions. The following example illustrates the approaches of Euler
+and Runge-Kutta methods.
+
+## A Mass-Damped Spring System
+
+A spring-mass damper system's amplitude is given by the following second
+order differential equation
+
+$$m\frac\{d^2x\}\{dt^2\} + c\frac\{dx\}\{dt\} + kx = F(t)$$
+
+The above equation can be written as two first order ODEs by using two
+state variables namely $$\begin\{aligned\}
+x_1 &= x\\ 
+x_2 &= \frac\{dx\}\{dt\}
+\end\{aligned\}$$ By doing so, the second order ODE can be re-written as
+$$\begin\{aligned\}
+    \begin\{split\}
+        \frac\{dx_1\}\{dt\} &= x_2\\
+        \frac\{dx_2\}\{dt\} &=  -\frac\{k\}\{m\}x_1 - -\frac\{c\}\{m\}x_2 + \frac\{F\}\{m\}
+    \end\{split\}
+\end\{aligned\}$$
+
+Now, the problem is reduced to solving a system of first order ODEs.
+Let's solve the above dynamical system to determine the state-variables
+at every time-step first using Euler's method
+
+![Spring-Mass
+Damper](/BookWebsite/figures/ode_systems/mass_spring_damper.png)
+![image](/BookWebsite/code-blocks/ode_systems/code_block_0_98ef8c2c.png)
+
+Now let's try again using Runge-Kutta. The implementation is only a
+little more complicated
+
+![image](/BookWebsite/code-blocks/ode_systems/code_block_1_34580d08.png)
+
+## The Lotka-Volterra Equations
+
+The *Lotka--Volterra* equations, also known as the predator--prey
+equations, are a pair of first-order, nonlinear, differential equations
+frequently used to describe the dynamics of biological systems in which
+two species interact, one as a predator and the other as prey. The
+populations change through time according to the pair of equations:
+$$\begin\{aligned\}
+\frac\{dx\}\{dt\} &= ax-bxy\\
+\frac\{dy\}\{dt\} &= -cy+dxy
+\end\{aligned\}$$ where $x$ and $y$ are the number of prey and predators,
+respectively, $a$ is the prey growth rate, $c$ is the predator death
+rate, and $b$ and $d$ are the rates characterizing the effect of the
+predator-prey interactions on the prey death and the predator growth,
+respectively. The multiplicative terms (i.e., those involving xy) are
+what make such equations nonlinear.
+
+Let's solve the above system of equations using Euler's and Runge-Kutta
+methods. First let's look at the implementation with Euler's equation
+
+![image](/BookWebsite/code-blocks/ode_systems/code_block_2_c7d142fe.png) Now let's try again using Runge-Kutta
+
+![image](/BookWebsite/code-blocks/ode_systems/code_block_3_2cd13d2b.png)
+
+![Time and Phase plots of the predator-prey
+model](/BookWebsite/figures/ode_systems/predator_prey.png)
+
+The results obtained from the Euler's and Runge-kutta methods are shown.
+The time series of Euler's method indicates that the amplitudes of the
+oscillations are expanding. These results indicate that the crude Euler
+method would require a much smaller time step to obtain accurate
+results.
+
+In contrast, because of its much smaller truncation error, the fourth
+order Runge-Kutta method yields good results with the same time step.
+The same time series of Runge-Kutta's method portrays a cyclical pattern
+emerging in time. Because the predator population is initially small,
+the prey grows exponentially. At a certain point, the prey become so
+numerous that the predator population begins to grow. Eventually, the
+increased predators cause the prey to decline. This decrease, in turn,
+leads to a decrease of the predators. Eventually, the process repeats.
+Notice that, as expected, the predator peak lags the prey. Also, observe
+that the process has a fixed period - that is, it repeats in a set time.
+The phase-plane representation for the accurate RK4 solution indicates
+that the interaction between the predator and the prey amounts to a
+closed counterclockwise orbit.

@@ -1,0 +1,32 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{listings}
+\usepackage{xcolor}
+
+% Use black text on white background - we'll invert colors in image processing
+\definecolor{codebackground}{RGB}{255, 255, 255}
+\definecolor{codetext}{RGB}{0, 0, 0}
+
+\lstset{
+  basicstyle=\ttfamily\color{codetext},
+  backgroundcolor=\color{codebackground},
+  frame=none,
+  breaklines=true,
+  mathescape=true,
+  escapeinside={$}{$},
+  language=python,
+}
+
+\begin{document}
+\begin{lstlisting}
+class RNN(f: FullyConnectedNetwork, N : $\mathbb{N}$, d : $\mathbb{N}$, T : $\mathbb{N}$):
+  def $\\lambda$(X : $\mathbb{R}$[N, T, d]) $\to$ $\mathbb{R}$[N, T]:
+    out = zeros(N, T)
+    for i in N:
+      x, y = X[i], Y[i] 
+      ht = zeros(H, 1)
+      for t in T:
+        out[i], ht = f(ht || x[t])
+    out
+\end{lstlisting}
+\end{document}

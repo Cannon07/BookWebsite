@@ -1,0 +1,138 @@
+
+<style jsx global>{`
+  .code-block-container {
+    display: block;
+    margin: 1.5rem 0;
+    padding: 0;
+  }
+  .code-block-image {
+    display: block;
+    width: auto;
+    max-width: 100%;
+    height: auto;
+    filter: drop-shadow(0 0 0 transparent); /* Force transparency rendering in some browsers */
+  }
+  /* Other styles... */
+`}</style>
+# Automatic Differentiation 
+
+------------------------------------------------------------------------
+
+**Difficulty Level:** **
+
+
+
+------------------------------------------------------------------------
+
+A differentiable programming language is one in which differentiation
+becomes a first class primitive in the language. Before we can define
+the syntax and semantics of a differentiable programming language, we
+need to first provide a mathematical definition for what differentiation
+of a program means.
+
+Derivatives can analytically be obtained when a functional form is known
+but can get tedious when the functional mapping is complex. Often
+derivatives are obtained numerically using a finite difference approach
+where the first derivative is computed as
+$$f'(x)=\frac\{f(x+h)-f(x)\}\{h\},\quad h \mathrm\{\ is\ small\}.$$ Similarly,
+the second derivative is typically numerically computed as
+$$f''(x)=\frac\{f(x+h)-2f(x)+f(x-h)\}\{h^2\},\quad h \mathrm\{\ is\ small\}.$$
+
+Automatic differentiation provides methods for automatically computing
+exact derivatives (up to floating-point error) given only the function
+$f$ itself. Automatic differentiation leverages the fact that every
+computer program executes a sequence of elementary arithmetic operations
+and elementary functions. By applying the chain rule repeatedly to these
+operations, derivatives of arbitrary order can be computed
+automatically, accurately to working precision, and using at most a
+small constant factor more arithmetic operations than the original
+program.
+
+![Automatic Differentiation
+Scheme](figures/Differentiable Programming/Programming Languages/automatic_differentiation/AutomaticDifferentiationNutshell0.png)\
+
+Automatic differentiation is distinct from both symbolic differentiation
+and numerical differentiation. Symbolic differentiation typically
+involves converting a computer program into a single expression, which
+could lead to inefficient code, while numerical differentiation by means
+of finite differences can introduce round-off errors in the
+discretization process and cancellation. Both numerical and symbolic
+differentiation are associated with errors and increased complexity when
+computing higher derivatives. As a result, these methods are slow at
+computing partial derivatives of a function with respect to many inputs,
+as is needed for gradient-based optimization algorithms. Automatic
+differentiation provides a way to eliminate all of these issues.
+
+### Automatic Differentiation Methodology
+
+The core idea behind automatic differentiation is the chain rule. Every
+computer program or function can be viewed as a series of mathematical
+transformations or operations to the input variables to arrive at the
+output variables. Therefore, the input-output relationship is
+essentially a composite function with nested elementary operations. The
+chain rule allows computing the derivative of the composite function
+given prior knowledge of derivative functions associated with elementary
+operations. An implementation of the chain rule can be built into
+software packages to provide automatic derivatives for functions.
+
+For a simple case let $y$ represent the output vector, $x$ the input
+vector, and $f$, $g$ and $h$ the elementary operations. The mapping can
+be written as $y=f(g(h(x)))$. Applying the chain rule implies that
+
+$$\frac\{dy\}\{dx\}=\frac\{dy\}\{dg_x\}\frac\{dg_x\}\{dh_x\}\frac\{dh_x\}\{dx\}$$
+
+where $h_x=h(x)$, $g_x=g(h(x))$, and $y=f(g_x)$.
+
+### Demonstration of Automatic Differentiation for a Simple Program
+
+Let's take a program that encodes function $f(x)$ with variable $x$ as
+input and computes $(a \sin(x)+b)^2$, where $a$ and $b$ are constants.
+The program might looks like the following:
+
+![image](/BookWebsite/code-blocks/automatic_differentiation/code_block_0_92e45b71.png)
+
+For this program, an automatic differentiation package identifies the
+elementary operations and computes the derivatives in a serial manner
+and returns thee product of the derivatives of individual steps in
+accordance with the chain rule as $f'(x)$. The automatic differentiation
+computation would involve the following calculations alongside the
+program to be able to return the derivatives of the function:
+
+    u' = cos(x)
+    v' = a
+    y' = 2*v
+    f' = y'*v'*u'
+    f'
+
+Forward accumulation and reverse accumulation are two different modes of
+automatic differentiation that packages use where forward accumulation
+involves traversing the chain rule from the innermost operation to the
+outermost operation while reverse accumulation involves traversing in
+the opposite order.
+
+Let's look at a simple example, a simple neural network with one hidden
+layer and two inputs. Let's assume that the weights and biases are
+computed through a training process are we are interested in computing
+the sensitivity of the output variable, on the input variables. As
+discussed earlier, automatic differentiation enables the program to
+compute the gradients with respect to the inputs without deriving and
+specifying the gradient functions.
+
+![image](/BookWebsite/code-blocks/automatic_differentiation/code_block_1_acb7ba4a.png)
+
+We can now compute the dependence of the two layer network on its first
+input as given by the gradient.
+
+![image](/BookWebsite/code-blocks/automatic_differentiation/code_block_2_6945cd68.png)
+
+Automatic differentiation is extremely useful in machine learning owing
+to the fact that computing gradients of functions especially in
+backpropagation is central to learning algorithms.
+
+## Exercises
+
+1.  Compute the following derivatives. Note that we have multiple
+    inputs, which implies that the derivative output has two components
+    `w,h`:
+
+    ![image](/BookWebsite/code-blocks/automatic_differentiation/code_block_3_eff601b3.png)

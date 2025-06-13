@@ -1,0 +1,33 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{listings}
+\usepackage{xcolor}
+
+% Use black text on white background - we'll invert colors in image processing
+\definecolor{codebackground}{RGB}{255, 255, 255}
+\definecolor{codetext}{RGB}{0, 0, 0}
+
+\lstset{
+  basicstyle=\ttfamily\color{codetext},
+  backgroundcolor=\color{codebackground},
+  frame=none,
+  breaklines=true,
+  mathescape=true,
+  escapeinside={$}{$},
+  language=python,
+}
+
+\begin{document}
+\begin{lstlisting}
+class MessagePassingNeuralNetwork(T: $\mathbb{N}$, M: Module, U: Module, R: $\mathbb{N}$):
+
+  def $\\lambda$((V, W): Graph):
+    for t in T:
+      for node in V:
+        message = 0
+        for nbr in neighbors(node):
+          message += M(node.h, nbr.h, edge_weights(node, nbr))
+        node.h = U(node.h, message)
+    return G
+\end{lstlisting}
+\end{document}

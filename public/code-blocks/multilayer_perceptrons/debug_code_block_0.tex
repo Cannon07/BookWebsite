@@ -1,0 +1,29 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{listings}
+\usepackage{xcolor}
+
+% Use black text on white background - we'll invert colors in image processing
+\definecolor{codebackground}{RGB}{255, 255, 255}
+\definecolor{codetext}{RGB}{0, 0, 0}
+
+\lstset{
+  basicstyle=\ttfamily\color{codetext},
+  backgroundcolor=\color{codebackground},
+  frame=none,
+  breaklines=true,
+  mathescape=true,
+  escapeinside={$}{$},
+  language=python,
+}
+
+\begin{document}
+\begin{lstlisting}
+def $\\sigma$(x: $\mathbb{R}$) $\to$ $\mathbb{R}$:
+  1/(1 + exp(-x))
+
+class h(w: $\mathbb{R}^n$, b: $\mathbb{R}$):
+  def $\\lambda$(x: $\mathbb{R}^n$) $\to$ $\mathbb{R}$:
+    $\\sigma$(w$^T$ * x + b)
+\end{lstlisting}
+\end{document}

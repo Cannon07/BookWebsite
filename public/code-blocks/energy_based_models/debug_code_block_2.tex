@@ -1,0 +1,44 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{listings}
+\usepackage{xcolor}
+
+% Use black text on white background - we'll invert colors in image processing
+\definecolor{codebackground}{RGB}{255, 255, 255}
+\definecolor{codetext}{RGB}{0, 0, 0}
+
+\lstset{
+  basicstyle=\ttfamily\color{codetext},
+  backgroundcolor=\color{codebackground},
+  frame=none,
+  breaklines=true,
+  mathescape=true,
+  escapeinside={$}{$},
+  language=python,
+}
+
+\begin{document}
+\begin{lstlisting}
+# Set $\epsilon$, the step size, to a small positive number
+# Set $k$, the number of Gibbs steps high enough to allow a 
+# Markov chain sampling from $p(x;\\theta)$ to mix when 
+# initialized from $p_{data}$      
+class BoltzmannMachine:
+  def contrastive_divergence(X: $\mathbb{R}^{N\\times d}$,  $\epsilon: \\mathbb{R}$, $k: \\mathbb{N}$):
+    while True:      # While not converged:
+      # Sample a minibatch of m examples 
+      # $\\{x^{(1)},..,x^{(m)}\\}$ from the training set
+      $\\{x^{(1)},..,x^{(m)}\\}$ = Sample(X)
+      $g = \\frac{1}{m}\\sum_{i=1}^m \\nabla_\\theta \\log\\ \\Tilde{p}(x^{(i)};\\theta)$
+      for i = 1 to m:
+        $\\Tilde{x}^{(i)}=x^{(i)}$
+      for i = 1 to k 
+        $\\Tilde{h}^{(i)}=\\textrm{gibbs_update}(\\Tilde{h}^{(i)}, \\Tilde{x})$
+      for j = 1 to m 
+        $\\Tilde{x}^{(j)}=\\textrm{gibbs_update}(\\Tilde{x}^{(j)}, \\Tilde{h})$
+      for i = 1 to k 
+        $\\Tilde{h}^{(i)}=\\textrm{gibbs_update}(\\Tilde{h}^{(i)}, \\Tilde{x})$
+      $g = g - \\frac{1}{m}\\sum_{i=1}^m \\nabla_\\theta \\log\\ \\Tilde{p}(\\Tilde{x}^{(i)};\\theta)$
+      $\\theta = \\theta + \\epsilon g$
+\end{lstlisting}
+\end{document}

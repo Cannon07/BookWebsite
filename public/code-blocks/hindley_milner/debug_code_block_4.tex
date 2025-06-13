@@ -20,7 +20,6 @@
 \begin{document}
 \begin{lstlisting}
 def unify_variable(v: Var, x: Var | App, $\\Gamma$: Optional[Name $\to$ Term]):
-  """Unifies variable v with term x, using $\\Gamma$. """
   if v.name in $\\Gamma$: unify($\\Gamma$[v.name], x, $\\Gamma$)
   elif x: Var and x.name in $\\Gamma$: unify(v, $\\Gamma$[x.name], $\\Gamma$)
   elif occurs(v, x, $\\Gamma$): None

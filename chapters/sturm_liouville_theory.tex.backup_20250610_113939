@@ -1,0 +1,80 @@
+\documentclass[book.tex]{subfiles}
+
+\begin{document}
+
+\chapter{Sturm-Liouville Equations}
+\label{chap:sturm_liouville}
+\noindent\rule{11cm}{0.4pt} \\
+\textbf{Prerequisites:} \autoref{chap:ode} \\ 
+\textbf{Difficulty Level:} ** \\
+\noindent\rule{11cm}{0.4pt}
+\vspace{5mm}
+
+Sturm-Liouville theory studies equations of the form
+
+\begin{align}
+    \frac{d}{dx} \left [ p(x) \frac{dy}{dx} \right ] + q(x) y = - \lambda w(x) y
+\end{align}
+where $p(x)$, $q(x)$, and $w(x)$ are arbitrary coefficient functions and $y$ is a function of $x$ that we wish to solve for. $\lambda$ here is a free parameter that is not specified in the equation and part of solving a Sturm-Liouville problem involves finding $\lambda$
+
+We can write this equation in differential operator form
+
+\begin{align}
+    Lu &= -\frac{1}{w(x)} \left ( \frac{d}{dx} \left [ p(x) \frac{du}{dx} \right ] + q(x) u \right )
+\end{align}
+
+We want to find the eigenvalues and eigenfunctions of this equation
+\begin{align}
+    Lu = \lambda u
+\end{align}
+
+Under some regularity conditions, the eigenfunctions of different Sturm-Liouville equations form interesting orthogonal bases which we will see again in multiple contexts throughout the book.
+
+\section{Bessel Equation}
+The Bessel equation is given by
+\begin{align}
+    x^2 \frac{d^2y}{dx^2} + x \frac{dy}{dx} + (x^2 - \nu^2) y = 0
+\end{align}
+By leveraging the product rule, the two terms on the left of the above equation can be grouped after we divide the Bessel equation through by $x$.
+\begin{align}
+   x \frac{d^2y}{dx^2} + \frac{dy}{dx} + (x - \frac{\nu^2}{x}) y &= 0\\
+   \frac{d}{dx} \left (x \frac{dy}{dx} \right) + \left (x - \frac{\nu^2}{x} \right) y &= 0
+\end{align}
+
+\section{Legendre Equation}
+The Legendre equation is given by
+
+\begin{align}
+    (1 - x^2)\frac{d^2 y}{dx^2} - 2 x \frac{dy}{dx} + \nu (\nu + 1) y &= 0
+\end{align}
+
+Here we once again apply the chain rule to the two terms on the left to obtain
+
+\begin{align}
+    \frac{d}{dx} \left ( (1 - x^2)\frac{dy}{dx}  \right ) + \nu (\nu + 1) y &= 0
+\end{align}
+
+\section{Solution Space of the Sturm-Liouville Equation}
+
+As we mentioned briefly above, we can think of the Sturm-Liouville equation as an operator equation. We seek solutions 
+\begin{align}
+    u \in L^2([a, b], w(x)dx)
+\end{align}
+This notation indicates that the inner product on the space is given by
+\begin{align}
+    \langle f, g \rangle &= \int_a^b \overline{f(x)} g(x) w(x) dx
+\end{align}
+
+\section{Exercises}
+\begin{enumerate}
+    \item Prove that the eigenfunctions of the Sturm-Liouville equation
+    \begin{equation}
+        L u = -\frac{d^2 u}{dx^2} = \lambda u
+    \end{equation}
+    with boundary constraints
+    \begin{equation}
+        u(0) = u(\pi) = 0
+    \end{equation}
+    are given by the Fourier basis of sinusoidal functions.
+\end{enumerate}
+\end{document}

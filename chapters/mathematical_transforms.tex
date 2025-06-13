@@ -43,8 +43,8 @@ To compute this integral, we can use integration by parts. Let $u = e^{ixk}$ and
 
 \begin{align}
     \mathcal{F}(f')(k) &= \frac{1}{2\pi}\int_{-\infty}^{\infty} u dv \\
-    &= \frac{1}{2\pi} \left (uv \Big |^{\infty}_{-\infty} - \int _{-\infty}^{\infty} v du \right ) \\
-    &= \frac{1}{2\pi} \left (e^{ixk} f(x) \Big |^{\infty} _{-\infty} - \int _{-\infty}^{\infty} f(x) ike^{ixk} dx \right ) \\
+    &= \frac{1}{2\pi} \left (uv \Big |^{\infty}_{-\infty} - \int_{-\infty}^{\infty} v du \right ) \\
+    &= \frac{1}{2\pi} \left (e^{ixk} f(x) \Big |^{\infty}_{-\infty} - \int_{-\infty}^{\infty} f(x) ike^{ixk} dx \right ) \\
 \end{align}
 
 We assume that $f(x)$ goes to 0 at both infinities, so we are left with
@@ -80,18 +80,14 @@ f(t\vec{v} + (1-t)\vec{u}) \leq tf(\vec{v}) + (1-t)f(\vec{u})
 Convex functions arise often in optimization and in physics. Intuitively, a convex function is "well-behaved". The Legendre transform is defined for convex functions as follows.
 
 %\textcolor{red}{TODO: Add a definition of a supremum.}
-Let $U \subseteq \mathbb{R}^n$ be a convex set. Let $f: U \to \mathbb{R}$ be a convex function. We defined the Legendre transform of $f$ to be a function $f$* defined by 
-
+Let $U \subseteq \mathbb{R}^n$ be a convex set. Let $f: U \to \mathbb{R}$ be a convex function. We defined the Legendre transform of $f$ to be a function $f^*$ defined by 
 \begin{align}
 f^*(y) = \mathrm{sup}_{\vec{x} \in U} \left (\vec{y}^T\vec{x} - f(x) \right )
 \end{align}
-
 where $\vec{y} \in V \subseteq \mathbb{R}^n$ is a set defined by
-
 \begin{align}
 V = \{\vec{y} \in \mathbb{R}^n : f^*(y) < \infty \}
 \end{align}
-
 Here $f^*$ is referred to as the convex conjugate of $f$.
 
 The mathematical method of performing this change of variables is called a Legendre Transform. The method is defined according to the following steps:
@@ -119,7 +115,7 @@ A change in $b(c)$ is given by
 db &= dy - cdx - xdc = -xdc
 \end{align}
 
-As an example, consider the function $y = (x - 2)^2$. We use a Legendre Transform to shift the variable from $x$ to the slope $c$. 
+As an example, consider the function $y = (x - 2)^2$. We use a Legendre Transform to shift the variable from $x$ to the slope $c$ (Fig.\ref{fig:Fig5}). 
 
 The slope of the function is: 
 \begin{align}
@@ -138,7 +134,9 @@ original function by noting that
 \end{align}
 end{example}
 \begin{marginfigure}%
-\includegraphics[width=\linewidth]{figures/mathematical_transforms/thermo_legendre.png}
+\includegraphics[width=\linewidth]{figures/Mathematical Foundations/mathematical_transforms/thermo_legendre.png}
+\caption{Plot of the function $y(x) = (x-2)^2$ and its corresponding
+Legendre transform $b(c) = -\frac{c^2}{4}-2c$}
 \label{fig:Fig5}
 \end{marginfigure}
 

@@ -1,0 +1,50 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{listings}
+\usepackage{xcolor}
+
+% Use black text on white background - we'll invert colors in image processing
+\definecolor{codebackground}{RGB}{255, 255, 255}
+\definecolor{codetext}{RGB}{0, 0, 0}
+
+\lstset{
+  basicstyle=\ttfamily\color{codetext},
+  backgroundcolor=\color{codebackground},
+  frame=none,
+  breaklines=true,
+  mathescape=true,
+  escapeinside={$}{$},
+  language=python,
+}
+
+\begin{document}
+\begin{lstlisting}
+def f(x: $\mathbb{R}$) -> $\mathbb{R}$:
+  return exp(x)-2*x                                        
+xl = -10                                                   
+xu = 10 
+eps = 1e-6                                                 
+phi = (-1+sqrt(5))/2
+x1 = xl + phi*(xu-xl)                                      
+x2 = xu - phi*(xu-xl)                                      
+fx1 = f(x1)                                                
+fx2 = f(x2)
+while True:
+  if fx1 < fx2:
+    xl = x2                                                
+    x2 = x1                                                
+    fx2 = fx1                                              
+    x1 = xl + phi*(xu-xl)                                  
+    fx1 = f(x1)                                            
+  else:
+    xu = x1
+    x1 = x2 
+    fx1 = fx2
+    x2 = xu - phi*(xu-xl)                                  
+    fx2 = f(x2)                                            
+  if abs(xu-xl) < eps:                                     
+    break 
+print('Extremum bracket')                                  
+print([xl, xu])
+\end{lstlisting}
+\end{document}

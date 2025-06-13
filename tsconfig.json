@@ -12,7 +12,9 @@
     "baseUrl": "./",
     "jsx": "preserve",
     "paths": {
-      "@/*": ["./*"]
+      "@/*": [
+        "./*"
+      ]
     },
     "lib": [
       "dom",
@@ -33,7 +35,9 @@
   "include": [
     "scripts/**/*",
     "lib/**/*",
-    "app/**/*"
+    "app/**/*",
+    "dist/types/**/*.ts",
+    ".next/types/**/*.ts"
   ],
   "exclude": [
     "node_modules",

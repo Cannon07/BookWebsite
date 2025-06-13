@@ -23,7 +23,7 @@ To ease calculations, we define the \textit{generating function} of a probabilit
 \end{align}
 which gives:
 
-\begin{align}
+\begin{align}\label{Eq14}
 \langle n^m \rangle = \lim_{k\rightarrow 0}\left[(-1)^m\frac{d^mg(k)}{dk^m}\right]
 \end{align}
 
@@ -31,15 +31,15 @@ which gives:
 
 For the Poisson distribution, we have:
 
-\begin{equation}
+\begin{equation}\label{Eq15}
 g(k)= \sum_{n=0}^{\infty}e^{-kn}\frac{a^n}{n!}e^{-a}=exp\left[a\left(e^{-k}-1\right)\right]
 \end{equation}
 
 Using the generating function, we have:
 
 \begin{align}
-&\langle n \rangle = -\lim_{k \rightarrow 0} \left( -ae^{-k} exp \left[a \left(e^{-k}-1\right)\right]\right)=a \notag\\
-&\langle n^2 \rangle = -\lim_{k\rightarrow 0} \left( \left(a e^{-k}+a^2 e^{-2k}\right) exp\left[ a \left(e^{-k}-1\right)\right] \right) = a + a^2 \notag
+&\langle n \rangle = -\lim_{k \rightarrow 0} \left\{-ae^{-k} exp \left[a \left(e^{-k}-1\right)\right]\right\}=a \notag\\
+&\langle n^2 \rangle = -\lim_{k\rightarrow 0} \left\{ \left(a e^{-k}+a^2 e^{-2k}\right) exp\left[ a \left(e^{-k}-1\right)\right] \right\} = a + a^2 \notag
 \end{align}
 
 %\section{Exercises}

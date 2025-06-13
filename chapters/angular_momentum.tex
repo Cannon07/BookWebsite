@@ -1,0 +1,40 @@
+\documentclass[book.tex]{subfiles}
+
+\begin{document}
+
+\chapter{Angular Momentum}
+\label{chap:angular_momentum}
+\noindent\rule{11cm}{0.4pt} \\
+\textbf{Prerequisites:} \autoref{chap:harmonic} \\
+\textbf{Difficulty Level:} * \\
+\noindent\rule{11cm}{0.4pt}
+\vspace{5mm}
+
+In this chapter, we study the basics of angular momentum. Angular momentum is a quantity, akin to the momentum we have learned about already, but which arises in rotating systems. 
+
+
+\section{Defining Angular Momentum}
+When defining angular momentum, we will find it useful to start by defining the center of mass. Suppose that we have $n$ particles with masses $m_1,\dotsc, m_n$ at positions $r_1,\dotsc,r_n$. We define the center of mass of this system to be
+\begin{align}
+    r_{\textrm{cent}} &= \frac{\sum_{i=1}^n m_i r_i}{\sum_{i=1}^n m_i}
+\end{align}
+For a contiguous body, we would have to convert this equation into an integral. Let us now let $r$ define the position of a particle relative to the origin. Then we can define the angular momentum as
+
+\begin{align}
+    L &= r \times p
+\end{align}
+
+where $p$ is the linear momentum. We can write down a dimensional type equation for angular momentum
+\begin{lstlisting}
+    [L] = [M][L]$^2$[T]$^{-1}$
+\end{lstlisting}
+
+We will find it useful for our later discussion of quantum mechanics to define spin angular momentum and orbital angular momentum. Spin angular momentum is the angular momentum arising from rotation around the center of mass $r_c$ of an object, while orbital angular momentum arises from rotation around a central point of rotation denoted as the origin. A planet orbiting the sun has both spin and orbital angular momentum for example.
+
+We next define the torque $\tau$ as the rate of change of angular momentum
+\begin{align}
+    \frac{dL}{dt} &= \tau
+\end{align}
+
+
+\end{document}

@@ -117,7 +117,7 @@ jobs:
           OVERLEAF_PROJECT_ID: ${{ secrets.OVERLEAF_PROJECT_ID }}
       
       - name: Commit and push changes
-        if: steps.pipeline.outputs.changes_detected == 'true'
+        if: steps.pipeline.outputs.changes_detected == 'true' || steps.pipeline.outputs.changes_detected == 'True'
         run: |
           echo "📝 Committing Overleaf changes..."
           git add chapters/

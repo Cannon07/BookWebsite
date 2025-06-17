@@ -118,30 +118,88 @@ jobs:
           OVERLEAF_GIT_TOKEN: ${{ secrets.OVERLEAF_GIT_TOKEN }}
           OVERLEAF_PROJECT_ID: ${{ secrets.OVERLEAF_PROJECT_ID }}
       
-      - name: Credential Validation Only
+      - name: Advanced Diagnostic Test
         if: github.event.inputs.test_type == 'credential_only'
         run: |
-          echo "🔍 CREDENTIAL VALIDATION TEST"
-          echo "============================"
+          echo ""
+          echo "🔬 ADVANCED DIAGNOSTIC TEST"
+          echo "=========================="
           
-          # Test if credentials are valid by trying different approaches
-          echo "Testing credential validity..."
+          # Test the exact same approach that works locally
+          echo "Testing exact local method replication..."
           
-          # Try with curl first
-          echo "  Testing with curl..."
-          HTTP_CODE=$(curl -s -w "%{http_code}" -o /dev/null \
-            -u "$OVERLEAF_GIT_USERNAME:$OVERLEAF_GIT_TOKEN" \
-            "https://git.overleaf.com/$OVERLEAF_PROJECT_ID/info/refs?service=git-upload-pack")
+          # Create credential file exactly like local version
+          mkdir -p scripts/overleaf-monitor/data
+          echo "https://$OVERLEAF_GIT_USERNAME:$OVERLEAF_GIT_TOKEN@git.overleaf.com" > scripts/overleaf-monitor/data/.git-credentials
+          chmod 600 scripts/overleaf-monitor/data/.git-credentials
           
-          echo "    HTTP response code: $HTTP_CODE"
-          if [ "$HTTP_CODE" = "200" ]; then
-            echo "    ✅ Credentials are VALID"
-          elif [ "$HTTP_CODE" = "401" ]; then
-            echo "    ❌ Credentials are INVALID (401 Unauthorized)"
-          elif [ "$HTTP_CODE" = "403" ]; then
-            echo "    ❌ Credentials valid but FORBIDDEN (403)"
+          # Set git config exactly like local
+          git config --global credential.helper "store --file=$(pwd)/scripts/overleaf-monitor/data/.git-credentials"
+          
+          echo "  Testing with local-style credential setup..."
+          if timeout 30 git ls-remote https://git.overleaf.com/$OVERLEAF_PROJECT_ID 2>&1; then
+            echo "  ✅ Local method replication SUCCESS"
           else
-            echo "    ⚠️  Unexpected response: $HTTP_CODE"
+            echo "  ❌ Local method replication FAILED"
+          fi
+          
+          # Test different project ID formats
+          echo ""
+          echo "🔍 Project ID Analysis:"
+          echo "  Full Project ID: $OVERLEAF_PROJECT_ID"
+          echo "  Project ID length: ${#OVERLEAF_PROJECT_ID}"
+          echo "  Starts with: ${OVERLEAF_PROJECT_ID:0:8}***"
+          
+          # Test if it's a Git URL format issue
+          echo ""
+          echo "🧪 Testing different URL formats..."
+          
+          # Format 1: Standard
+          echo "  Format 1: Standard git.overleaf.com/PROJECT_ID"
+          TEST_URL1="https://git.overleaf.com/$OVERLEAF_PROJECT_ID"
+          if timeout 10 curl -s -I -u "$OVERLEAF_GIT_USERNAME:$OVERLEAF_GIT_TOKEN" "$TEST_URL1/info/refs?service=git-upload-pack" | head -1; then
+            echo "    Response received"
+          else
+            echo "    No response"
+          fi
+          
+          # Format 2: With .git suffix
+          echo "  Format 2: With .git suffix"
+          TEST_URL2="https://git.overleaf.com/$OVERLEAF_PROJECT_ID.git"
+          if timeout 10 curl -s -I -u "$OVERLEAF_GIT_USERNAME:$OVERLEAF_GIT_TOKEN" "$TEST_URL2/info/refs?service=git-upload-pack" | head -1; then
+            echo "    Response received"
+          else
+            echo "    No response"
+          fi
+          
+          # Test character encoding issues
+          echo ""
+          echo "🔤 Character Encoding Test:"
+          echo "  Username bytes: $(echo -n "$OVERLEAF_GIT_USERNAME" | wc -c)"
+          echo "  Token bytes: $(echo -n "$OVERLEAF_GIT_TOKEN" | wc -c)"
+          echo "  Username contains @: $(echo "$OVERLEAF_GIT_USERNAME" | grep -q '@' && echo 'YES' || echo 'NO')"
+          echo "  Username hex dump (first 20 chars): $(echo -n "${OVERLEAF_GIT_USERNAME:0:20}" | xxd -p)"
+          
+          # Test if there are hidden characters
+          if [ ${#OVERLEAF_GIT_USERNAME} -ne $(echo -n "$OVERLEAF_GIT_USERNAME" | wc -c) ]; then
+            echo "  ⚠️  Username contains hidden characters!"
+          fi
+          if [ ${#OVERLEAF_GIT_TOKEN} -ne $(echo -n "$OVERLEAF_GIT_TOKEN" | wc -c) ]; then
+            echo "  ⚠️  Token contains hidden characters!"
+          fi
+          
+          # Final test: Exact replication of working local command
+          echo ""
+          echo "🎯 EXACT LOCAL REPLICATION TEST:"
+          echo "Using the exact git ls-remote command that works locally..."
+          
+          # This should be the exact command that works in your local environment
+          git config --list | grep credential
+          
+          if timeout 30 git ls-remote --heads https://git.overleaf.com/$OVERLEAF_PROJECT_ID 2>&1; then
+            echo "✅ EXACT LOCAL REPLICATION WORKS!"
+          else
+            echo "❌ Even exact replication fails"
           fi
         env:
           OVERLEAF_GIT_USERNAME: ${{ secrets.OVERLEAF_GIT_USERNAME }}

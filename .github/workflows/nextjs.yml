@@ -83,7 +83,7 @@ jobs:
         id: pipeline
         run: |
           echo "🚀 Starting Overleaf Pipeline..."
-          python3 scripts/overleaf-monitor/final_fixed_pipeline.py
+          python3 scripts/overleaf-monitor/pipeline.py
           
           # Read pipeline results
           if [ -f "pipeline_results.json" ]; then

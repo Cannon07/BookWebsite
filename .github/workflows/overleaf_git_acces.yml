@@ -17,7 +17,8 @@ jobs:
         echo "Testing access to Overleaf Git repository..."
         
         # Test git ls-remote to check access without cloning
-        if git ls-remote https://$OVERLEAF_USERNAME:$OVERLEAF_GIT_TOKEN@git.overleaf.com/$OVERLEAF_PROJECT_ID; then
+        # Overleaf uses 'git' as username, not your actual username
+        if git ls-remote https://git:$OVERLEAF_GIT_TOKEN@git.overleaf.com/$OVERLEAF_PROJECT_ID; then
           echo "✅ SUCCESS: Can access Overleaf repository!"
           echo "Repository URL: https://git.overleaf.com/$OVERLEAF_PROJECT_ID"
         else

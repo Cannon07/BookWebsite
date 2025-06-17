@@ -93,13 +93,13 @@ jobs:
             cat pipeline_results.json
             
             # Extract outputs for GitHub Actions
-            changes_detected=$(python3 -c "import json; print(json.load(open('pipeline_results.json'))['changes_detected'])" 2>/dev/null || echo "false")
-            pipeline_success=$(python3 -c "import json; print(json.load(open('pipeline_results.json'))['success'])" 2>/dev/null || echo "false")
-            conversion_success=$(python3 -c "import json; print(json.load(open('pipeline_results.json'))['conversion_success'])" 2>/dev/null || echo "false")
-            
-            echo "changes_detected=$changes_detected" >> $GITHUB_OUTPUT
-            echo "pipeline_success=$pipeline_success" >> $GITHUB_OUTPUT
-            echo "conversion_success=$conversion_success" >> $GITHUB_OUTPUT
+            changes_detected=$(python3 -c "import json; result=json.load(open('pipeline_results.json'))['changes_detected']; print('true' if result else 'false')" 2>/dev/null || echo "false")
+            pipeline_success=$(python3 -c "import json; result=json.load(open('pipeline_results.json'))['success']; print('true' if result else 'false')" 2>/dev/null || echo "false")
+            conversion_success=$(python3 -c "import json; result=json.load(open('pipeline_results.json'))['conversion_success']; print('true' if result else 'false')" 2>/dev/null || echo "false")
+
+            echo "changes_detected=${changes_detected}" >> $GITHUB_OUTPUT
+            echo "pipeline_success=${pipeline_success}" >> $GITHUB_OUTPUT
+            echo "conversion_success=${conversion_success}" >> $GITHUB_OUTPUT 
             
             echo "✅ Pipeline outputs set:"
             echo "  Changes detected: $changes_detected"

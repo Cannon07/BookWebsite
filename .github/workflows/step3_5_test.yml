@@ -118,9 +118,39 @@ jobs:
           OVERLEAF_GIT_TOKEN: ${{ secrets.OVERLEAF_GIT_TOKEN }}
           OVERLEAF_PROJECT_ID: ${{ secrets.OVERLEAF_PROJECT_ID }}
       
+      - name: Credential Validation Only
+        if: github.event.inputs.test_type == 'credential_only'
+        run: |
+          echo "🔍 CREDENTIAL VALIDATION TEST"
+          echo "============================"
+          
+          # Test if credentials are valid by trying different approaches
+          echo "Testing credential validity..."
+          
+          # Try with curl first
+          echo "  Testing with curl..."
+          HTTP_CODE=$(curl -s -w "%{http_code}" -o /dev/null \
+            -u "git:$OVERLEAF_GIT_TOKEN" \
+            "https://git.overleaf.com/$OVERLEAF_PROJECT_ID/info/refs?service=git-upload-pack")
+          
+          echo "    HTTP response code: $HTTP_CODE"
+          if [ "$HTTP_CODE" = "200" ]; then
+            echo "    ✅ Credentials are VALID"
+          elif [ "$HTTP_CODE" = "401" ]; then
+            echo "    ❌ Credentials are INVALID (401 Unauthorized)"
+          elif [ "$HTTP_CODE" = "403" ]; then
+            echo "    ❌ Credentials valid but FORBIDDEN (403)"
+          else
+            echo "    ⚠️  Unexpected response: $HTTP_CODE"
+          fi
+        env:
+          OVERLEAF_GIT_TOKEN: ${{ secrets.OVERLEAF_GIT_TOKEN }}
+          OVERLEAF_PROJECT_ID: ${{ secrets.OVERLEAF_PROJECT_ID }}
+
       - name: Corrected Pipeline Method Test
         if: github.event.inputs.test_type == 'credential_only'
         run: |
+          echo ""
           echo "🚀 CORRECTED PIPELINE METHOD TEST"
           echo "================================="
           echo "Using CORRECT format: git:token@git.overleaf.com"

@@ -221,11 +221,36 @@ def git_pull_updates(project_dir, config, logger):
     """Pull updates from existing repository"""
     logger.info("📥 Pulling latest changes...")
     
-    # Use standard git pull - credential helper will handle authentication
+    # For GitHub Actions, use 'git' as username with token (Overleaf format)
+    if config.get('environment') == 'github_actions':
+        git_token = config['git_token']
+        project_id = config['project_id']
+        
+        # Overleaf uses 'git' as username, not email address
+        auth_url = f"https://git:{git_token}@git.overleaf.com/{project_id}"
+        
+        # Temporarily set the remote URL with credentials
+        try:
+            subprocess.run([
+                'git', '-C', project_dir, 'remote', 'set-url', 'origin', auth_url
+            ], capture_output=True, text=True)
+        except:
+            pass
+    
     try:
         result = subprocess.run([
             'git', '-C', project_dir, 'pull', 'origin', 'master'
         ], capture_output=True, text=True, timeout=90)
+        
+        # Restore original URL for security
+        if config.get('environment') == 'github_actions':
+            try:
+                git_url = f"https://git.overleaf.com/{config['project_id']}"
+                subprocess.run([
+                    'git', '-C', project_dir, 'remote', 'set-url', 'origin', git_url
+                ], capture_output=True)
+            except:
+                pass
         
         if result.returncode == 0:
             if "Already up to date" in result.stdout:
@@ -251,18 +276,36 @@ def git_clone_repository(config, project_dir, logger):
     project_id = config['project_id']
     git_url = f"https://git.overleaf.com/{project_id}"
     
-    # Use the standard Git URL - credential helper will handle authentication
-    logger.info("   🔧 Using credential helper for authentication")
+    # For GitHub Actions, use 'git' as username with token (Overleaf format)
+    if config.get('environment') == 'github_actions':
+        git_token = config['git_token']
+        
+        # Overleaf uses 'git' as username, not email address
+        auth_url = f"https://git:{git_token}@git.overleaf.com/{project_id}"
+        logger.info("   🔧 Using 'git' username with token (Overleaf format)")
+    else:
+        auth_url = git_url
+        logger.info("   🔧 Using credential helper (local environment)")
     
     try:
         # Use shallow clone for better performance (based on Step 4 testing)
         logger.info("   🌱 Using shallow clone for optimal performance...")
         result = subprocess.run([
-            'git', 'clone', '--depth', '1', git_url, project_dir
+            'git', 'clone', '--depth', '1', auth_url, project_dir
         ], capture_output=True, text=True, timeout=90)
         
         if result.returncode == 0:
             logger.info("   ✅ Successfully cloned repository (shallow)")
+            
+            # For security, remove embedded credentials from git config
+            if config.get('environment') == 'github_actions':
+                try:
+                    subprocess.run([
+                        'git', '-C', project_dir, 'remote', 'set-url', 'origin', git_url
+                    ], capture_output=True)
+                except:
+                    pass
+            
             return True
         else:
             logger.warning(f"   ⚠️  Shallow clone failed: {result.stderr}")
@@ -274,11 +317,21 @@ def git_clone_repository(config, project_dir, logger):
             
             # Try full clone as fallback
             result = subprocess.run([
-                'git', 'clone', git_url, project_dir
+                'git', 'clone', auth_url, project_dir
             ], capture_output=True, text=True, timeout=120)
             
             if result.returncode == 0:
                 logger.info("   ✅ Successfully cloned repository (full)")
+                
+                # For security, remove embedded credentials from git config
+                if config.get('environment') == 'github_actions':
+                    try:
+                        subprocess.run([
+                            'git', '-C', project_dir, 'remote', 'set-url', 'origin', git_url
+                        ], capture_output=True)
+                    except:
+                        pass
+                
                 return True
             else:
                 logger.error(f"   ❌ Full clone also failed: {result.stderr}")

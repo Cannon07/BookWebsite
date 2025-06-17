@@ -89,6 +89,27 @@ jobs:
           echo "https://${{ secrets.OVERLEAF_GIT_USERNAME }}:${{ secrets.OVERLEAF_GIT_TOKEN }}@git.overleaf.com" > ~/.git-credentials
           chmod 600 ~/.git-credentials
           
+          # Debug: Verify credential setup
+          echo "🔍 DEBUG - Credential verification:"
+          echo "Git config credential.helper: $(git config --global --get credential.helper)"
+          echo "Credential file exists: $([ -f ~/.git-credentials ] && echo 'YES' || echo 'NO')"
+          echo "Credential file permissions: $(ls -la ~/.git-credentials 2>/dev/null || echo 'FILE NOT FOUND')"
+          echo "Credential file content (masked): $(cat ~/.git-credentials 2>/dev/null | sed 's/:.*@/:***@/' || echo 'CANNOT READ FILE')"
+          
+          # Test Git access before running pipeline
+          echo "🧪 Testing Git access directly..."
+          if git ls-remote --heads https://git.overleaf.com/${{ secrets.OVERLEAF_PROJECT_ID }} > /dev/null 2>&1; then
+            echo "✅ Git ls-remote test PASSED"
+          else
+            echo "❌ Git ls-remote test FAILED"
+            echo "Trying with explicit credentials..."
+            if git ls-remote --heads "https://${{ secrets.OVERLEAF_GIT_USERNAME }}:${{ secrets.OVERLEAF_GIT_TOKEN }}@git.overleaf.com/${{ secrets.OVERLEAF_PROJECT_ID }}" > /dev/null 2>&1; then
+              echo "✅ Git with explicit credentials PASSED"
+            else
+              echo "❌ Git with explicit credentials FAILED"
+            fi
+          fi
+          
           # Run the pipeline
           python3 scripts/overleaf-monitor/pipeline.py
           

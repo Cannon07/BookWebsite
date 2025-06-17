@@ -112,36 +112,57 @@ def setup_git_credential_helper(config, logger):
     logger.info("🔧 Setting up Git credential helper...")
     
     try:
-        script_dir = config['script_dir']
-        
-        # Handle GitHub Actions vs local environment for credential file location
-        if config.get('environment') == 'github_actions':
-            credential_file = os.path.join(script_dir, ".git-credentials")
-        else:
-            credential_file = os.path.join(script_dir, "data", ".git-credentials")
-        
-        # Ensure directory exists
-        os.makedirs(os.path.dirname(credential_file), exist_ok=True)
-        
-        # Create credential entry (same format as working git_sync.py)
         git_username = config['git_username']
         git_token = config['git_token']
-        git_url_with_creds = f"https://{git_username}:{git_token}@git.overleaf.com"
         
-        with open(credential_file, 'w') as f:
-            f.write(f"{git_url_with_creds}\\n")
+        if not git_username or not git_token:
+            logger.error("❌ Git credentials are missing")
+            return False
         
-        # Set secure permissions
-        os.chmod(credential_file, 0o600)
+        # Log credential info (masked)
+        logger.info(f"   🔑 Username: {git_username[:4]}***")
+        logger.info(f"   🔑 Token: {git_token[:8]}***")
         
-        # Configure git to use this credential store with absolute path
-        abs_credential_file = os.path.abspath(credential_file)
-        subprocess.run([
-            'git', 'config', '--global', 'credential.helper', f'store --file={abs_credential_file}'
-        ], check=True)
-        
-        logger.info("✅ Git credential helper configured")
-        return True
+        # Different approach for GitHub Actions vs local
+        if config.get('environment') == 'github_actions':
+            logger.info("   🔧 Using GitHub Actions credential setup...")
+            
+            # Method 1: Set up global git config with credentials
+            auth_url = f"https://{git_username}:{git_token}@git.overleaf.com"
+            
+            # Configure git to use embedded credentials for overleaf.com
+            subprocess.run([
+                'git', 'config', '--global', f'url.{auth_url}.insteadOf', 'https://git.overleaf.com'
+            ], check=True)
+            
+            logger.info("   ✅ GitHub Actions credential helper configured")
+            return True
+            
+        else:
+            # Local environment - use credential file approach
+            script_dir = config['script_dir']
+            credential_file = os.path.join(script_dir, "data", ".git-credentials")
+            
+            # Ensure directory exists
+            os.makedirs(os.path.dirname(credential_file), exist_ok=True)
+            
+            # Create credential entry
+            git_url_with_creds = f"https://{git_username}:{git_token}@git.overleaf.com"
+            
+            with open(credential_file, 'w') as f:
+                f.write(f"{git_url_with_creds}\\n")
+            
+            # Set secure permissions
+            os.chmod(credential_file, 0o600)
+            
+            # Configure git to use this credential store with absolute path
+            abs_credential_file = os.path.abspath(credential_file)
+            subprocess.run([
+                'git', 'config', '--global', 'credential.helper', f'store --file={abs_credential_file}'
+            ], check=True)
+            
+            logger.info("   ✅ Local credential helper configured")
+            return True
         
     except Exception as e:
         logger.error(f"❌ Error setting up credential helper: {e}")
@@ -192,14 +213,39 @@ def backup_directory(project_dir, logger):
         shutil.move(project_dir, backup_path)
         logger.info(f"   🗂️  Backed up existing directory to: {backup_name}")
 
-def git_pull_updates(project_dir, logger):
+def git_pull_updates(project_dir, config, logger):
     """Pull updates from existing repository"""
     logger.info("📥 Pulling latest changes...")
+    
+    # For GitHub Actions, we need to set up authentication for pull too
+    if config.get('environment') == 'github_actions':
+        git_username = config['git_username']
+        git_token = config['git_token']
+        project_id = config['project_id']
+        auth_url = f"https://{git_username}:{git_token}@git.overleaf.com/{project_id}"
+        
+        # Temporarily set the remote URL with credentials
+        try:
+            subprocess.run([
+                'git', '-C', project_dir, 'remote', 'set-url', 'origin', auth_url
+            ], capture_output=True, text=True)
+        except:
+            pass
     
     try:
         result = subprocess.run([
             'git', '-C', project_dir, 'pull', 'origin', 'master'
-        ], capture_output=True, text=True, timeout=90)  # Increased from 60s based on testing
+        ], capture_output=True, text=True, timeout=90)
+        
+        # Restore original URL for security
+        if config.get('environment') == 'github_actions':
+            try:
+                git_url = f"https://git.overleaf.com/{config['project_id']}"
+                subprocess.run([
+                    'git', '-C', project_dir, 'remote', 'set-url', 'origin', git_url
+                ], capture_output=True)
+            except:
+                pass
         
         if result.returncode == 0:
             if "Already up to date" in result.stdout:
@@ -225,15 +271,35 @@ def git_clone_repository(config, project_dir, logger):
     project_id = config['project_id']
     git_url = f"https://git.overleaf.com/{project_id}"
     
+    # For GitHub Actions, use direct URL with embedded credentials
+    if config.get('environment') == 'github_actions':
+        git_username = config['git_username']
+        git_token = config['git_token']
+        auth_url = f"https://{git_username}:{git_token}@git.overleaf.com/{project_id}"
+        logger.info("   🔧 Using direct authentication for GitHub Actions")
+    else:
+        auth_url = git_url
+        logger.info("   🔧 Using credential helper for local environment")
+    
     try:
         # Use shallow clone for better performance (based on Step 4 testing)
         logger.info("   🌱 Using shallow clone for optimal performance...")
         result = subprocess.run([
-            'git', 'clone', '--depth', '1', git_url, project_dir
-        ], capture_output=True, text=True, timeout=90)  # Based on 40s actual time + margin
+            'git', 'clone', '--depth', '1', auth_url, project_dir
+        ], capture_output=True, text=True, timeout=90)
         
         if result.returncode == 0:
             logger.info("   ✅ Successfully cloned repository (shallow)")
+            
+            # For security, remove embedded credentials from git config
+            if config.get('environment') == 'github_actions':
+                try:
+                    subprocess.run([
+                        'git', '-C', project_dir, 'remote', 'set-url', 'origin', git_url
+                    ], capture_output=True)
+                except:
+                    pass
+            
             return True
         else:
             logger.warning(f"   ⚠️  Shallow clone failed: {result.stderr}")
@@ -245,11 +311,21 @@ def git_clone_repository(config, project_dir, logger):
             
             # Try full clone as fallback
             result = subprocess.run([
-                'git', 'clone', git_url, project_dir
-            ], capture_output=True, text=True, timeout=120)  # Longer timeout for full clone
+                'git', 'clone', auth_url, project_dir
+            ], capture_output=True, text=True, timeout=120)
             
             if result.returncode == 0:
                 logger.info("   ✅ Successfully cloned repository (full)")
+                
+                # For security, remove embedded credentials from git config
+                if config.get('environment') == 'github_actions':
+                    try:
+                        subprocess.run([
+                            'git', '-C', project_dir, 'remote', 'set-url', 'origin', git_url
+                        ], capture_output=True)
+                    except:
+                        pass
+                
                 return True
             else:
                 logger.error(f"   ❌ Full clone also failed: {result.stderr}")
@@ -295,7 +371,7 @@ def automated_git_sync(config, logger):
     
     # Execute appropriate action
     if action == 'pull_updates':
-        if git_pull_updates(project_dir, logger):
+        if git_pull_updates(project_dir, config, logger):
             return True
         else:
             logger.info("   🔄 Pull failed, will try fresh clone...")

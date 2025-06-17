@@ -118,7 +118,7 @@ jobs:
           OVERLEAF_GIT_TOKEN: ${{ secrets.OVERLEAF_GIT_TOKEN }}
           OVERLEAF_PROJECT_ID: ${{ secrets.OVERLEAF_PROJECT_ID }}
       
-      - name: Credential Validation Only
+      - name: Credential Validation Test
         if: github.event.inputs.test_type == 'credential_only'
         run: |
           echo "🔍 CREDENTIAL VALIDATION TEST"
@@ -127,8 +127,8 @@ jobs:
           # Test if credentials are valid by trying different approaches
           echo "Testing credential validity..."
           
-          # Try with curl first
-          echo "  Testing with curl..."
+          # Try with curl using correct 'git' username
+          echo "  Testing with curl (git:token format)..."
           HTTP_CODE=$(curl -s -w "%{http_code}" -o /dev/null \
             -u "git:$OVERLEAF_GIT_TOKEN" \
             "https://git.overleaf.com/$OVERLEAF_PROJECT_ID/info/refs?service=git-upload-pack")
@@ -147,116 +147,22 @@ jobs:
           OVERLEAF_GIT_TOKEN: ${{ secrets.OVERLEAF_GIT_TOKEN }}
           OVERLEAF_PROJECT_ID: ${{ secrets.OVERLEAF_PROJECT_ID }}
 
-      - name: Corrected Pipeline Method Test
+      - name: Pipeline Method Test
         if: github.event.inputs.test_type == 'credential_only'
         run: |
           echo ""
-          echo "🚀 CORRECTED PIPELINE METHOD TEST"
-          echo "================================="
-          echo "Using CORRECT format: git:token@git.overleaf.com"
+          echo "🚀 PIPELINE METHOD TEST"
+          echo "======================="
+          echo "Testing the exact method our pipeline will use..."
           
           # Test the CORRECT method with 'git' as username
-          echo "📥 Testing with correct 'git' username format..."
+          echo "📥 Testing with correct 'git:token' format..."
           
           # Method that actually works (from your working test)
           CORRECT_AUTH_URL="https://git:$OVERLEAF_GIT_TOKEN@git.overleaf.com/$OVERLEAF_PROJECT_ID"
           
           echo "  Testing shallow clone..."
           if timeout 60 git clone --depth 1 "$CORRECT_AUTH_URL" test-repo-shallow 2>&1; then
-            echo "  ✅ SHALLOW CLONE SUCCESS with 'git' username!"
-            echo "  📊 Repository info:"
-            echo "    Files: $(find test-repo-shallow -name "*.tex" | wc -l) .tex files found"
-            echo "    Size: $(du -sh test-repo-shallow | cut -f1)"
-            rm -rf test-repo-shallow
-            SHALLOW_SUCCESS=true
-          else
-            echo "  ❌ Shallow clone failed even with 'git' username"
-            SHALLOW_SUCCESS=false
-          fi
-          
-          echo ""
-          echo "  Testing full clone..."
-          if timeout 120 git clone "$CORRECT_AUTH_URL" test-repo-full 2>&1; then
-            echo "  ✅ FULL CLONE SUCCESS with 'git' username!"
-            echo "  📊 Repository info:"
-            echo "    Files: $(find test-repo-full -name "*.tex" | wc -l) .tex files found"
-            echo "    Size: $(du -sh test-repo-full | cut -f1)"
-            echo "    Commits: $(cd test-repo-full && git log --oneline | wc -l)"
-            rm -rf test-repo-full
-            FULL_SUCCESS=true
-          else
-            echo "  ❌ Full clone failed even with 'git' username"
-            FULL_SUCCESS=false
-          fi
-          
-          echo ""
-          echo "🎯 CORRECTED PIPELINE READINESS:"
-          if [ "$SHALLOW_SUCCESS" = true ] || [ "$FULL_SUCCESS" = true ]; then
-            echo "✅ PIPELINE WILL WORK with 'git' username!"
-            echo "🔧 Need to update pipeline to use 'git' instead of email"
-          else
-            echo "❌ Still failing even with correct format"
-          fi
-          
-          # Test git pull with correct format
-          echo ""
-          echo "📥 Testing git pull with correct format..."
-          if timeout 60 git clone --depth 1 "$CORRECT_AUTH_URL" test-pull-repo >/dev/null 2>&1; then
-            cd test-pull-repo
-            
-            # Remove embedded credentials from remote (security)
-            git remote set-url origin "https://git.overleaf.com/$OVERLEAF_PROJECT_ID"
-            
-            # Set remote back to correct auth URL for pull test
-            git remote set-url origin "$CORRECT_AUTH_URL"
-            
-            if timeout 60 git pull origin master 2>&1; then
-              echo "  ✅ Git pull works with 'git' username!"
-            else
-              echo "  ❌ Git pull failed"
-            fi
-            
-            cd ..
-            rm -rf test-pull-repo
-          else
-            echo "  ⏭️  Skipping pull test (clone failed)"
-          fi
-          
-          echo ""
-          echo "🔍 COMPARISON TEST:"
-          echo "Testing old method vs new method side by side..."
-          
-          # Old method (email as username)
-          OLD_AUTH_URL="https://$OVERLEAF_GIT_USERNAME:$OVERLEAF_GIT_TOKEN@git.overleaf.com/$OVERLEAF_PROJECT_ID"
-          echo "  Old method (email): $(timeout 10 git ls-remote "$OLD_AUTH_URL" 2>&1 | head -1 || echo 'FAILED')"
-          
-          # New method (git as username)  
-          echo "  New method (git): $(timeout 10 git ls-remote "$CORRECT_AUTH_URL" 2>&1 | head -1 || echo 'FAILED')"
-        env:
-          OVERLEAF_GIT_USERNAME: ${{ secrets.OVERLEAF_GIT_USERNAME }}
-          OVERLEAF_GIT_TOKEN: ${{ secrets.OVERLEAF_GIT_TOKEN }}
-          OVERLEAF_PROJECT_ID: ${{ secrets.OVERLEAF_PROJECT_ID }}
-        if: github.event.inputs.test_type == 'credential_only'
-        run: |
-          echo ""
-          echo "🚀 PIPELINE METHOD VERIFICATION"
-          echo "==============================="
-          echo "Testing the exact method our pipeline will use..."
-          
-          # Test Method 3 with actual git clone (what our pipeline does)
-          echo "📥 Testing Method 3: URL encoded git clone"
-          
-          # Set up URL encoding exactly like our pipeline
-          ENCODED_USERNAME=$(python3 -c "import urllib.parse; print(urllib.parse.quote('$OVERLEAF_GIT_USERNAME', safe=''))")
-          ENCODED_TOKEN=$(python3 -c "import urllib.parse; print(urllib.parse.quote('$OVERLEAF_GIT_TOKEN', safe=''))")
-          AUTH_URL="https://$ENCODED_USERNAME:$ENCODED_TOKEN@git.overleaf.com/$OVERLEAF_PROJECT_ID"
-          
-          echo "  Encoded username: ${ENCODED_USERNAME:0:4}***"
-          echo "  Encoded token: ${ENCODED_TOKEN:0:8}***"
-          echo "  Testing shallow clone..."
-          
-          # Test shallow clone (what pipeline does first)
-          if timeout 60 git clone --depth 1 "$AUTH_URL" test-repo-shallow 2>&1; then
             echo "  ✅ SHALLOW CLONE SUCCESS!"
             echo "  📊 Repository info:"
             echo "    Files: $(find test-repo-shallow -name "*.tex" | wc -l) .tex files found"
@@ -270,9 +176,7 @@ jobs:
           
           echo ""
           echo "  Testing full clone..."
-          
-          # Test full clone (pipeline fallback)
-          if timeout 120 git clone "$AUTH_URL" test-repo-full 2>&1; then
+          if timeout 120 git clone "$CORRECT_AUTH_URL" test-repo-full 2>&1; then
             echo "  ✅ FULL CLONE SUCCESS!"
             echo "  📊 Repository info:"
             echo "    Files: $(find test-repo-full -name "*.tex" | wc -l) .tex files found"
@@ -286,7 +190,7 @@ jobs:
           fi
           
           echo ""
-          echo "🎯 PIPELINE READINESS ASSESSMENT:"
+          echo "🎯 PIPELINE READINESS:"
           if [ "$SHALLOW_SUCCESS" = true ] || [ "$FULL_SUCCESS" = true ]; then
             echo "✅ PIPELINE WILL WORK!"
             if [ "$SHALLOW_SUCCESS" = true ]; then
@@ -297,22 +201,15 @@ jobs:
           else
             echo "❌ PIPELINE WILL FAIL"
             echo "   Both shallow and full clone failed"
-            echo "   Need to resolve credential/permission issues"
           fi
           
-          # Test git pull simulation (for future runs)
+          # Test git pull simulation
           echo ""
           echo "📥 Testing git pull simulation..."
-          
-          # Clone first, then test pull
-          if timeout 60 git clone --depth 1 "$AUTH_URL" test-pull-repo >/dev/null 2>&1; then
+          if timeout 60 git clone --depth 1 "$CORRECT_AUTH_URL" test-pull-repo >/dev/null 2>&1; then
             cd test-pull-repo
-            
-            # Remove embedded credentials from remote (security)
             git remote set-url origin "https://git.overleaf.com/$OVERLEAF_PROJECT_ID"
-            
-            # Set remote back to auth URL temporarily for pull test
-            git remote set-url origin "$AUTH_URL"
+            git remote set-url origin "$CORRECT_AUTH_URL"
             
             if timeout 60 git pull origin master 2>&1; then
               echo "  ✅ Git pull works!"
@@ -327,29 +224,15 @@ jobs:
           fi
           
           echo ""
-          echo "🔐 Security Test:"
-          echo "Testing credential cleanup..."
+          echo "🔍 COMPARISON TEST:"
+          echo "Testing old method vs new method..."
           
-          # Test that we can successfully remove credentials from git config
-          if timeout 30 git clone --depth 1 "$AUTH_URL" test-security-repo >/dev/null 2>&1; then
-            cd test-security-repo
-            
-            # This is what our pipeline does for security
-            git remote set-url origin "https://git.overleaf.com/$OVERLEAF_PROJECT_ID"
-            
-            # Verify credentials are removed
-            REMOTE_URL=$(git remote get-url origin)
-            if echo "$REMOTE_URL" | grep -q "@"; then
-              echo "  ⚠️  Credentials still in remote URL!"
-            else
-              echo "  ✅ Credentials successfully removed from git config"
-            fi
-            
-            cd ..
-            rm -rf test-security-repo
-          else
-            echo "  ⏭️  Skipping security test (clone failed)"
-          fi
+          # Old method (email as username)
+          OLD_AUTH_URL="https://$OVERLEAF_GIT_USERNAME:$OVERLEAF_GIT_TOKEN@git.overleaf.com/$OVERLEAF_PROJECT_ID"
+          echo "  Old method (email): $(timeout 10 git ls-remote "$OLD_AUTH_URL" 2>&1 | head -1 || echo 'FAILED')"
+          
+          # New method (git as username)  
+          echo "  New method (git): $(timeout 10 git ls-remote "$CORRECT_AUTH_URL" 2>&1 | head -1 || echo 'FAILED')"
         env:
           OVERLEAF_GIT_USERNAME: ${{ secrets.OVERLEAF_GIT_USERNAME }}
           OVERLEAF_GIT_TOKEN: ${{ secrets.OVERLEAF_GIT_TOKEN }}

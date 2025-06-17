@@ -1,0 +1,27 @@
+name: Test Overleaf Git Access
+
+on:
+  workflow_dispatch:  # Manual trigger only
+
+jobs:
+  test-access:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Test Overleaf Git Repository Access
+      env:
+        OVERLEAF_USERNAME: ${{ secrets.OVERLEAF_USERNAME }}
+        OVERLEAF_PROJECT_ID: ${{ secrets.OVERLEAF_PROJECT_ID }}
+        OVERLEAF_GIT_TOKEN: ${{ secrets.OVERLEAF_GIT_TOKEN }}
+      run: |
+        echo "Testing access to Overleaf Git repository..."
+        
+        # Test git ls-remote to check access without cloning
+        if git ls-remote https://$OVERLEAF_USERNAME:$OVERLEAF_GIT_TOKEN@git.overleaf.com/$OVERLEAF_PROJECT_ID; then
+          echo "✅ SUCCESS: Can access Overleaf repository!"
+          echo "Repository URL: https://git.overleaf.com/$OVERLEAF_PROJECT_ID"
+        else
+          echo "❌ FAILED: Cannot access Overleaf repository"
+          echo "Please check your credentials and project ID"
+          exit 1
+        fi

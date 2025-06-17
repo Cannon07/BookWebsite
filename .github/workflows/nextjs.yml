@@ -85,7 +85,7 @@ jobs:
           echo "🚀 Starting Overleaf Pipeline..."
           
           # Run the pipeline (handles its own credential setup)
-          python3 scripts/overleaf-monitor/final_fixed_pipeline.py
+          python3 scripts/overleaf-monitor/pipeline.py
           
           # Read pipeline results
           if [ -f "pipeline_results.json" ]; then

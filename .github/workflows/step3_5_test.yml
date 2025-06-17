@@ -118,7 +118,40 @@ jobs:
           OVERLEAF_GIT_TOKEN: ${{ secrets.OVERLEAF_GIT_TOKEN }}
           OVERLEAF_PROJECT_ID: ${{ secrets.OVERLEAF_PROJECT_ID }}
       
-      - name: Pipeline Method Verification Test
+      - name: Secret Verification Test
+        if: github.event.inputs.test_type == 'credential_only'
+        run: |
+          echo "🔍 SECRET VERIFICATION TEST"
+          echo "=========================="
+          
+          echo "Checking if secrets have been updated..."
+          echo "  Username: ${OVERLEAF_GIT_USERNAME:0:4}***${OVERLEAF_GIT_USERNAME: -3}"
+          echo "  Token: ${OVERLEAF_GIT_TOKEN:0:8}***${OVERLEAF_GIT_TOKEN: -3}"
+          echo "  Project ID: ${OVERLEAF_PROJECT_ID:0:8}***${OVERLEAF_PROJECT_ID: -3}"
+          
+          echo ""
+          echo "Token characteristics:"
+          echo "  Token length: ${#OVERLEAF_GIT_TOKEN}"
+          echo "  Token starts with: ${OVERLEAF_GIT_TOKEN:0:12}"
+          echo "  Token format: $(echo $OVERLEAF_GIT_TOKEN | grep -o '^olp_[a-zA-Z0-9]*' | head -c 12)***"
+          
+          # Check if this is the OLD token format
+          if [[ "$OVERLEAF_GIT_TOKEN" == *"olp_1Wn3"* ]]; then
+            echo "  ⚠️  This appears to be the OLD token!"
+            echo "  ⚠️  GitHub Actions may not have picked up the new secret yet"
+          else
+            echo "  ✅ This appears to be a NEW token"
+          fi
+          
+          echo ""
+          echo "🕐 Secret update timing check:"
+          echo "  Current time: $(date -u)"
+          echo "  Workflow run: $GITHUB_RUN_NUMBER"
+          echo "  Run ID: $GITHUB_RUN_ID"
+        env:
+          OVERLEAF_GIT_USERNAME: ${{ secrets.OVERLEAF_GIT_USERNAME }}
+          OVERLEAF_GIT_TOKEN: ${{ secrets.OVERLEAF_GIT_TOKEN }}
+          OVERLEAF_PROJECT_ID: ${{ secrets.OVERLEAF_PROJECT_ID }}
         if: github.event.inputs.test_type == 'credential_only'
         run: |
           echo ""

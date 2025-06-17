@@ -219,10 +219,16 @@ def git_pull_updates(project_dir, config, logger):
     
     # For GitHub Actions, we need to set up authentication for pull too
     if config.get('environment') == 'github_actions':
+        import urllib.parse
         git_username = config['git_username']
         git_token = config['git_token']
         project_id = config['project_id']
-        auth_url = f"https://{git_username}:{git_token}@git.overleaf.com/{project_id}"
+        
+        # URL encode credentials to handle special characters
+        encoded_username = urllib.parse.quote(git_username, safe='')
+        encoded_token = urllib.parse.quote(git_token, safe='')
+        
+        auth_url = f"https://{encoded_username}:{encoded_token}@git.overleaf.com/{project_id}"
         
         # Temporarily set the remote URL with credentials
         try:
@@ -273,10 +279,16 @@ def git_clone_repository(config, project_dir, logger):
     
     # For GitHub Actions, use direct URL with embedded credentials
     if config.get('environment') == 'github_actions':
+        import urllib.parse
         git_username = config['git_username']
         git_token = config['git_token']
-        auth_url = f"https://{git_username}:{git_token}@git.overleaf.com/{project_id}"
-        logger.info("   🔧 Using direct authentication for GitHub Actions")
+        
+        # URL encode credentials to handle special characters like @ and :
+        encoded_username = urllib.parse.quote(git_username, safe='')
+        encoded_token = urllib.parse.quote(git_token, safe='')
+        
+        auth_url = f"https://{encoded_username}:{encoded_token}@git.overleaf.com/{project_id}"
+        logger.info("   🔧 Using direct authentication for GitHub Actions (URL-encoded)")
     else:
         auth_url = git_url
         logger.info("   🔧 Using credential helper for local environment")

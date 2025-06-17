@@ -116,14 +116,44 @@ jobs:
           OVERLEAF_GIT_TOKEN: ${{ secrets.OVERLEAF_GIT_TOKEN }}
           OVERLEAF_PROJECT_ID: ${{ secrets.OVERLEAF_PROJECT_ID }}
       
+      # - name: Commit and push changes
+      #   if: steps.pipeline.outputs.changes_detected == 'true' || steps.pipeline.outputs.changes_detected == 'True'
+      #   run: |
+      #     echo "📝 Committing Overleaf changes..."
+      #     git add chapters/
+      #     git add app/
+      #     git add pipeline_results.json
+          
+      #     if git diff --staged --quiet; then
+      #       echo "ℹ️  No changes to commit"
+      #     else
+      #       git commit -m "📚 Auto-update from Overleaf: $(date '+%Y-%m-%d %H:%M:%S UTC')"
+      #       git push
+      #       echo "✅ Changes committed and pushed"
+      #     fi
+
       - name: Commit and push changes
         if: steps.pipeline.outputs.changes_detected == 'true' || steps.pipeline.outputs.changes_detected == 'True'
         run: |
           echo "📝 Committing Overleaf changes..."
+          echo "🔍 Debug: Checking what changes exist..."
+
+          echo "Git status:"
+          git status
+
+          echo "Files in chapters/:"
+          ls -la chapters/ | head -10
+
+          echo "Files in app/:"
+          ls -la app/ | head -10 2>/dev/null || echo "app/ directory not found"
+
           git add chapters/
           git add app/
           git add pipeline_results.json
-          
+
+          echo "Git status after add:"
+          git status
+
           if git diff --staged --quiet; then
             echo "ℹ️  No changes to commit"
           else

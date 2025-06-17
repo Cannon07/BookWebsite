@@ -1,0 +1,29 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{listings}
+\usepackage{xcolor}
+
+% Use black text on white background - we'll invert colors in image processing
+\definecolor{codebackground}{RGB}{255, 255, 255}
+\definecolor{codetext}{RGB}{0, 0, 0}
+
+\lstset{
+  basicstyle=\ttfamily\color{codetext},
+  backgroundcolor=\color{codebackground},
+  frame=none,
+  breaklines=true,
+  mathescape=true,
+  escapeinside={$}{$},
+  language=python,
+}
+
+\begin{document}
+\begin{lstlisting}
+def $\\psi$(x: $\mathbb{R}^3$, t: $\mathbb{R}$) -> $\mathbb{C}$:
+  return C * exp(-m * $\\|$x$\\|^2$/2)
+assert $\\psi$ : $L^2(\\mathbb{R}^3 \\times \\mathbb{R}, \\mathbb{C})$
+
+def pdf(x: $\mathbb{R}^3$, t: $\mathbb{R}$):
+  return $|\\psi$(x, t)$|^2$
+\end{lstlisting}
+\end{document}

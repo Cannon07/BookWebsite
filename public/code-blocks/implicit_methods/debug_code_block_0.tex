@@ -1,0 +1,32 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{listings}
+\usepackage{xcolor}
+
+% Use black text on white background - we'll invert colors in image processing
+\definecolor{codebackground}{RGB}{255, 255, 255}
+\definecolor{codetext}{RGB}{0, 0, 0}
+
+\lstset{
+  basicstyle=\ttfamily\color{codetext},
+  backgroundcolor=\color{codebackground},
+  frame=none,
+  breaklines=true,
+  mathescape=true,
+  escapeinside={$}{$},
+  language=python,
+}
+
+\begin{document}
+\begin{lstlisting}
+def adaptive_step($\\frac{dy}{dt}$: $\mathbb{R} \\to \\mathbb{R}$, t$_i$: $\mathbb{R}$ = 0, t$_f$: $\mathbb{R}$ = 3, t_adp: $\mathbb{R}[n]$):
+  f_d = $\nabla$($\\frac{dy}{dt}$, t)
+  y[0] = 0, e_b = 1e-10, t_adp[0] = t$_i$
+  h = sqrt(2*e_b/|f_d(y[0],t_adp[0])|)
+  while(t_adp[i] < t$_f$):
+    y[i+1] = y[i] + $\\frac{dy}{dt}$(y[i],t_adp[i]) * h[i]
+    h[i+1] = sqrt(2*e_b/abs(f_d(y[i],t_adp[i])))
+    t_adp[i+1] = t_adp[i]+h[i+1]
+    i = i+1
+\end{lstlisting}
+\end{document}

@@ -1,0 +1,32 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{listings}
+\usepackage{xcolor}
+
+% Use black text on white background - we'll invert colors in image processing
+\definecolor{codebackground}{RGB}{255, 255, 255}
+\definecolor{codetext}{RGB}{0, 0, 0}
+
+\lstset{
+  basicstyle=\ttfamily\color{codetext},
+  backgroundcolor=\color{codebackground},
+  frame=none,
+  breaklines=true,
+  mathescape=true,
+  escapeinside={$}{$},
+  language=python,
+}
+
+\begin{document}
+\begin{lstlisting}
+sample_path : Rand[$\mathbb{R}^3 \\to \\mathbb{R}^3$]
+path_prob: ($\mathbb{R}^3 \\to \\mathbb{R}^3$) $\to$ $\mathbb{R}$
+
+def path_integral(q: $\mathbb{R}^3$, s: $\mathbb{R}^3$): $\mathbb{C}$
+  amplitude = 0
+  for i in range(N):
+    path = sample_path(q, s)
+    amplitude += path_prob(path)
+  return amplitude
+\end{lstlisting}
+\end{document}

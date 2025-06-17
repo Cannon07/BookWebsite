@@ -1,4 +1,4 @@
-name: Deploy Next.js site to Pages
+name: Deploy Next.js site to Pages with Overleaf Integration
 
 on:
   # Runs on pushes targeting the default branch
@@ -13,6 +13,15 @@ on:
         type: boolean
         default: false
         required: false
+      force_overleaf_sync:
+        description: 'Force Overleaf sync even if no changes detected'
+        type: boolean
+        default: false
+        required: false
+
+  # Schedule automatic Overleaf checks (optional - runs every 6 hours)
+  schedule:
+    - cron: '0 */6 * * *'
 
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
@@ -27,90 +36,228 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  # Job to check for changes
-  changes:
+  # NEW: Overleaf Pipeline Job - handles sync, change detection, and chapter processing
+  overleaf-pipeline:
     runs-on: ubuntu-latest
     outputs:
-      chapters_changed: ${{ steps.filter.outputs.chapters_changed }}
+      changes_detected: ${{ steps.pipeline.outputs.changes_detected }}
+      pipeline_success: ${{ steps.pipeline.outputs.pipeline_success }}
+      conversion_success: ${{ steps.pipeline.outputs.conversion_success }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Check for changes in chapters directory
-        id: filter
-        shell: bash
-        run: |
-          if git diff --name-only ${{ github.event.before }} ${{ github.event.after }} | grep -q "^chapters/"; then
-            echo "chapters_changed=true" >> $GITHUB_OUTPUT
-          else
-            echo "chapters_changed=false" >> $GITHUB_OUTPUT
-          fi
-  
-  # Pre-build job to process chapters - only for new chapters
-  pre-build:
-    runs-on: ubuntu-latest
-    needs: changes
-    # Only run if chapters changed or workflow was manually triggered
-    if: needs.changes.outputs.chapters_changed == 'true' || github.event_name == 'workflow_dispatch'
-    outputs:
-      prebuild_completed: "true"
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20"
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.x'
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      
       - name: Install system dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y pandoc
+          sudo apt-get install -y pandoc git
+      
       - name: Install Python dependencies
         run: |
           pip install -r requirements.txt
+      
       - name: Install Node dependencies
         run: |
           npm ci
           npm install -g ts-node
-      - name: Run process-chapter script
+      
+      - name: Configure Git
         run: |
-          if [[ "${{ github.event.inputs.process_all_chapters }}" == "true" ]]; then
-            # Process all chapters (force update)
-            ts-node scripts/process-chapter.ts --all chapters
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action - Overleaf Sync"
+      
+      - name: Run Overleaf Pipeline
+        id: pipeline
+        run: |
+          echo "🚀 Starting Overleaf Pipeline..."
+          python3 scripts/overleaf-monitor/final_fixed_pipeline.py
+          
+          # Read pipeline results
+          if [ -f "pipeline_results.json" ]; then
+            echo "📊 Pipeline results found"
+            cat pipeline_results.json
+            
+            # Extract outputs for GitHub Actions
+            changes_detected=$(python3 -c "import json; print(json.load(open('pipeline_results.json'))['changes_detected'])" 2>/dev/null || echo "false")
+            pipeline_success=$(python3 -c "import json; print(json.load(open('pipeline_results.json'))['success'])" 2>/dev/null || echo "false")
+            conversion_success=$(python3 -c "import json; print(json.load(open('pipeline_results.json'))['conversion_success'])" 2>/dev/null || echo "false")
+            
+            echo "changes_detected=$changes_detected" >> $GITHUB_OUTPUT
+            echo "pipeline_success=$pipeline_success" >> $GITHUB_OUTPUT
+            echo "conversion_success=$conversion_success" >> $GITHUB_OUTPUT
+            
+            echo "✅ Pipeline outputs set:"
+            echo "  Changes detected: $changes_detected"
+            echo "  Pipeline success: $pipeline_success"
+            echo "  Conversion success: $conversion_success"
           else
-            # Process only new chapters
-            ts-node scripts/process-chapter.ts
+            echo "❌ Pipeline results file not found"
+            echo "changes_detected=false" >> $GITHUB_OUTPUT
+            echo "pipeline_success=false" >> $GITHUB_OUTPUT
+            echo "conversion_success=false" >> $GITHUB_OUTPUT
           fi
+        env:
+          OVERLEAF_GIT_USERNAME: ${{ secrets.OVERLEAF_GIT_USERNAME }}
+          OVERLEAF_GIT_TOKEN: ${{ secrets.OVERLEAF_GIT_TOKEN }}
+          OVERLEAF_PROJECT_ID: ${{ secrets.OVERLEAF_PROJECT_ID }}
+      
+      - name: Commit and push changes
+        if: steps.pipeline.outputs.changes_detected == 'true'
+        run: |
+          echo "📝 Committing Overleaf changes..."
+          git add chapters/
+          git add app/
+          git add pipeline_results.json
+          
+          if git diff --staged --quiet; then
+            echo "ℹ️  No changes to commit"
+          else
+            git commit -m "📚 Auto-update from Overleaf: $(date '+%Y-%m-%d %H:%M:%S UTC')"
+            git push
+            echo "✅ Changes committed and pushed"
+          fi
+      
+      - name: Upload pipeline logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: overleaf-pipeline-logs
+          path: scripts/overleaf-monitor/data/pipeline.log
+          retention-days: 30
+
+  # SIMPLIFIED: Git changes check (now just supplements Overleaf changes)
+  changes:
+    runs-on: ubuntu-latest
+    needs: overleaf-pipeline
+    outputs:
+      git_chapters_changed: ${{ steps.filter.outputs.git_chapters_changed }}
+      should_build: ${{ steps.determine.outputs.should_build }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Check for git changes in chapters directory
+        id: filter
+        shell: bash
+        run: |
+          if [ "${{ github.event_name }}" == "schedule" ]; then
+            echo "git_chapters_changed=false" >> $GITHUB_OUTPUT
+            echo "ℹ️  Scheduled run - skipping git change detection"
+          elif [ -n "${{ github.event.before }}" ] && [ -n "${{ github.event.after }}" ]; then
+            if git diff --name-only ${{ github.event.before }} ${{ github.event.after }} | grep -q "^chapters/"; then
+              echo "git_chapters_changed=true" >> $GITHUB_OUTPUT
+              echo "📝 Git changes detected in chapters directory"
+            else
+              echo "git_chapters_changed=false" >> $GITHUB_OUTPUT
+              echo "ℹ️  No git changes in chapters directory"
+            fi
+          else
+            echo "git_chapters_changed=false" >> $GITHUB_OUTPUT
+            echo "ℹ️  Unable to determine git changes"
+          fi
+      
+      - name: Determine if build should run
+        id: determine
+        run: |
+          overleaf_changes="${{ needs.overleaf-pipeline.outputs.changes_detected }}"
+          git_changes="${{ steps.filter.outputs.git_chapters_changed }}"
+          manual_trigger="${{ github.event_name == 'workflow_dispatch' }}"
+          process_all="${{ github.event.inputs.process_all_chapters }}"
+          
+          echo "🔍 Build decision factors:"
+          echo "  Overleaf changes: $overleaf_changes"
+          echo "  Git changes: $git_changes"
+          echo "  Manual trigger: $manual_trigger"
+          echo "  Process all chapters: $process_all"
+          
+          if [ "$overleaf_changes" == "true" ] || [ "$git_changes" == "true" ] || [ "$manual_trigger" == "true" ]; then
+            echo "should_build=true" >> $GITHUB_OUTPUT
+            echo "✅ Build should run"
+          else
+            echo "should_build=false" >> $GITHUB_OUTPUT
+            echo "⏭️  Build will be skipped"
+          fi
+
+  # SIMPLIFIED: Pre-build job (now only for manual override processing)
+  pre-build:
+    runs-on: ubuntu-latest
+    needs: [overleaf-pipeline, changes]
+    # Only run for manual triggers with process_all_chapters option
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.process_all_chapters == 'true'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y pandoc
+      
+      - name: Install Python dependencies
+        run: |
+          pip install -r requirements.txt
+      
+      - name: Install Node dependencies
+        run: |
+          npm ci
+          npm install -g ts-node
+      
+      - name: Force process all chapters
+        run: |
+          echo "🔄 Force processing all chapters..."
+          ts-node scripts/process-chapter.ts --all chapters
+      
       - name: Commit changes
         run: |
           git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
+          git config --local user.name "GitHub Action - Force Process All"
           git add .
-          git commit -m "Update routes and content from process-chapter script" || echo "No changes to commit"
+          git commit -m "🔄 Force update all chapters from manual trigger" || echo "No changes to commit"
           git push || echo "No changes to push"
 
-  # Build job
+  # UPDATED: Build job with new conditions
   build:
     runs-on: ubuntu-latest
-    needs: [changes, pre-build]
-    # This ensures build runs after pre-build completes or is skipped
+    needs: [overleaf-pipeline, changes, pre-build]
+    # Run if changes detected OR manual trigger, and pipeline was successful
     if: |
       always() && 
-      (needs.changes.result == 'success') && 
+      needs.changes.outputs.should_build == 'true' &&
+      (needs.overleaf-pipeline.outputs.pipeline_success == 'true' || needs.changes.outputs.git_chapters_changed == 'true') &&
       ((needs.pre-build.result == 'success') || (needs.pre-build.result == 'skipped'))
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          ref: main  # Explicitly checkout the main branch after pre-build may have pushed changes
-          fetch-depth: 0  # Fetch all history
+          ref: main  # Get latest changes after potential commits
+          fetch-depth: 0
       
       - name: Detect package manager
         id: detect-package-manager
@@ -161,14 +308,14 @@ jobs:
         with:
           path: ./dist
 
-  # Deployment job
+  # UNCHANGED: Deployment job
   deploy:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     needs: [build]
-    if: always()
+    if: needs.build.result == 'success'
     steps:
       - name: Deploy to GitHub Pages
         id: deployment

@@ -1,0 +1,29 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{listings}
+\usepackage{xcolor}
+
+% Use black text on white background - we'll invert colors in image processing
+\definecolor{codebackground}{RGB}{255, 255, 255}
+\definecolor{codetext}{RGB}{0, 0, 0}
+
+\lstset{
+  basicstyle=\ttfamily\color{codetext},
+  backgroundcolor=\color{codebackground},
+  frame=none,
+  breaklines=true,
+  mathescape=true,
+  escapeinside={$}{$},
+  language=python,
+}
+
+\begin{document}
+\begin{lstlisting}
+def L(g: $(\\mathbb{R}^M \\to \\mathbb{R})[\\mathbb{R}^M, \\mathbb{R}]$, X: $\mathbb{R}$[N, M], y: $\mathbb{R}$[N], $\\lambda$: $\mathbb{R}$) $\to$ $\mathbb{R}$:
+  sum = 0
+  for i: sum += (g(X[i]) - y[i])$^2$
+  for j: sum += $\\lambda$ * |g.w[j]|
+  sum += $\\lambda$ * |b|
+  sum
+\end{lstlisting}
+\end{document}

@@ -80,42 +80,96 @@ async function updateRoutesConfig(title: string, href: string) {
   }
 }
 
+/**
+ * Check if a chapter needs to be reprocessed by comparing file modification times
+ */
+function shouldProcessChapter(texFile: string, outputDir: string, forceUpdate: boolean = false): boolean {
+  // Always process if forced
+  if (forceUpdate) {
+    return true;
+  }
+  
+  // Process if output directory doesn't exist
+  if (!fs.existsSync(outputDir)) {
+    return true;
+  }
+  
+  // Check if the main output file exists
+  const outputFile = path.join(outputDir, 'index.mdx');
+  if (!fs.existsSync(outputFile)) {
+    return true;
+  }
+  
+  try {
+    // Get modification times
+    const texStats = fs.statSync(texFile);
+    const outputStats = fs.statSync(outputFile);
+    
+    // Process if tex file is newer than output file
+    if (texStats.mtime > outputStats.mtime) {
+      return true;
+    }
+    
+    // Check if conversion script has been modified more recently than output
+    const conversionScript = path.join(process.cwd(), 'scripts', 'convert_tex_to_md.py');
+    if (fs.existsSync(conversionScript)) {
+      const scriptStats = fs.statSync(conversionScript);
+      if (scriptStats.mtime > outputStats.mtime) {
+        return true;
+      }
+    }
+    
+    return false;
+  } catch (error) {
+    console.warn(`Warning: Could not check file times for ${texFile}, processing anyway:`, error);
+    return true;
+  }
+}
+
 async function processChapter({ texFile, title, forceUpdate = false }: ProcessChapterOptions) {
   try {
     // 1. Create the output directory path
     const chapterName = path.basename(texFile, '.tex');
     const outputDir = path.join(process.cwd(), 'contents', 'docs', 'chapters', chapterName);
     
-    // Check if this chapter has already been processed
-    if (fs.existsSync(outputDir) && !forceUpdate) {
-      console.log(`Skipping ${texFile} - already processed (directory exists: ${outputDir})`);
+    // 2. Smart check: should we process this chapter?
+    const needsProcessing = shouldProcessChapter(texFile, outputDir, forceUpdate);
+    
+    if (!needsProcessing) {
+      console.log(`Skipping ${texFile} - up to date (source not modified since last conversion)`);
       
       // Still update routes configuration if needed
       const href = `/${chapterName}`;
       await updateRoutesConfig(title, href);
       
-      return { status: 'skipped', reason: 'already processed' };
+      return { status: 'skipped', reason: 'up to date' };
     }
     
-    // 2. Convert .tex to .mdx using the Python script
+    // 3. Process the chapter (it's new or has been modified)
+    const outputFile = path.join(outputDir, 'index.mdx');
+    const isNewChapter = !fs.existsSync(outputFile);
+    
+    console.log(`${isNewChapter ? 'Converting new chapter' : 'Updating modified chapter'}: ${texFile}`);
+    
+    // 4. Convert .tex to .mdx using the Python script
     console.log(`Converting ${texFile} to MDX...`);
     await execAsync(`python3 scripts/convert_tex_to_md.py "${texFile}" "${outputDir}"`);
     
-    // 3. Generate the href
+    // 5. Generate the href
     const href = `/${chapterName}`;
     
-    // 4. Update routes configuration
+    // 6. Update routes configuration
     console.log('Updating routes...');
     await updateRoutesConfig(title, href);
     
     console.log(`
         Successfully processed chapter:
-        - Converted ${texFile} to MDX
+        - ${isNewChapter ? 'Converted new' : 'Updated existing'} ${texFile} to MDX
         - Placed in ${outputDir}/index.mdx
         - Updated routes with title: "${title}" and href: "${href}"
     `);
     
-    return { status: 'success' };
+    return { status: 'success', wasNew: isNewChapter };
   } catch (error) {
     console.error(`Error processing chapter ${texFile}:`, error);
     return { status: 'error', error };
@@ -123,12 +177,12 @@ async function processChapter({ texFile, title, forceUpdate = false }: ProcessCh
 }
 
 /**
- * Processes .tex files in the given directory, but only if they haven't been processed before
+ * Processes .tex files in the given directory, checking modification times to determine what needs updating
  */
 async function processAllChapters(chaptersDir: string, options = { onlyNewChapters: true }) {
   try {
     console.log(`Scanning directory: ${chaptersDir}`);
-    console.log(`Processing mode: ${options.onlyNewChapters ? 'Only new chapters' : 'All chapters'}`);
+    console.log(`Processing mode: ${options.onlyNewChapters ? 'Smart update (only new/modified chapters)' : 'Force update all chapters'}`);
     
     // Check if directory exists
     if (!fs.existsSync(chaptersDir)) {
@@ -147,10 +201,11 @@ async function processAllChapters(chaptersDir: string, options = { onlyNewChapte
       return;
     }
     
-    console.log(`Found ${texFiles.length} .tex files to process`);
+    console.log(`Found ${texFiles.length} .tex files to check`);
     
     // Process each file
     let newCount = 0;
+    let updatedCount = 0;
     let skippedCount = 0;
     let errorCount = 0;
     
@@ -161,7 +216,7 @@ async function processAllChapters(chaptersDir: string, options = { onlyNewChapte
         .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
         .join(' ');
       
-      console.log(`\nProcessing ${file} with title "${title}"...`);
+      console.log(`\nChecking ${file} with title "${title}"...`);
       
       const result = await processChapter({ 
         texFile, 
@@ -170,7 +225,11 @@ async function processAllChapters(chaptersDir: string, options = { onlyNewChapte
       });
       
       if (result.status === 'success') {
-        newCount++;
+        if (result.wasNew) {
+          newCount++;
+        } else {
+          updatedCount++;
+        }
       } else if (result.status === 'skipped') {
         skippedCount++;
       } else {
@@ -180,9 +239,18 @@ async function processAllChapters(chaptersDir: string, options = { onlyNewChapte
     
     console.log(`\nProcessing complete!`);
     console.log(`New chapters processed: ${newCount}`);
-    console.log(`Chapters skipped (already processed): ${skippedCount}`);
+    console.log(`Existing chapters updated: ${updatedCount}`);
+    console.log(`Chapters skipped (up to date): ${skippedCount}`);
     if (errorCount > 0) {
       console.log(`Failed to process: ${errorCount} files`);
+    }
+    
+    // Summary
+    const totalProcessed = newCount + updatedCount;
+    if (totalProcessed > 0) {
+      console.log(`\n✅ Successfully processed ${totalProcessed} chapters total`);
+    } else {
+      console.log(`\n✅ All chapters are up to date`);
     }
     
   } catch (error) {
@@ -196,11 +264,11 @@ if (require.main === module) {
   const args = process.argv.slice(2);
   
   if (args.length === 0) {
-    // Default mode: process only new chapters in the default directory
+    // Default mode: process only new/modified chapters in the default directory
     const chaptersDir = path.join(process.cwd(), 'chapters');
     processAllChapters(chaptersDir, { onlyNewChapters: true });
   } else if (args.length === 1) {
-    // Alternative mode: process only new chapters in the specified directory
+    // Alternative mode: process only new/modified chapters in the specified directory
     const chaptersDir = args[0];
     processAllChapters(chaptersDir, { onlyNewChapters: true });
   } else if (args.length === 2 && args[0] === '--all') {
@@ -214,8 +282,8 @@ if (require.main === module) {
   } else {
     console.error(`
 Usage: 
-  ts-node process-chapter.ts                      # Process only new chapters in default 'chapters' directory
-  ts-node process-chapter.ts <chapters-directory> # Process only new chapters in specified directory
+  ts-node process-chapter.ts                      # Process only new/modified chapters in default 'chapters' directory
+  ts-node process-chapter.ts <chapters-directory> # Process only new/modified chapters in specified directory
   ts-node process-chapter.ts --all <chapters-directory> # Process all chapters (force update)
   ts-node process-chapter.ts <tex-file> <title>   # Process a single chapter
 `);

@@ -1,0 +1,40 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{listings}
+\usepackage{xcolor}
+
+% Use black text on white background - we'll invert colors in image processing
+\definecolor{codebackground}{RGB}{255, 255, 255}
+\definecolor{codetext}{RGB}{0, 0, 0}
+
+\lstset{
+  basicstyle=\ttfamily\color{codetext},
+  backgroundcolor=\color{codebackground},
+  frame=none,
+  breaklines=true,
+  mathescape=true,
+  escapeinside={$}{$},
+  language=python,
+}
+
+\begin{document}
+\begin{lstlisting}
+def tridiagonal(F: $\mathbb{R}$, m: $\mathbb{R}$, k: $\mathbb{R}$, (xi, xe) : $\mathbb{R}^2$, (ti,te): $\mathbb{R}^2$, dt: $\mathbb{R}$):
+  N = (te - ti)/dt- 1
+  a = -m*ones(N)
+  b = (k*dt + 2*m)*ones(N)
+  c = -(k*dt + m)*ones(N)
+  d = (-F*dt$^2$)*ones(N)
+  d[0] = -F*dt$^2$ + m*xi
+  d[N-1] = -F*dt$^2$ + xe*(k*dt + m)
+  x = ones(N)
+
+  for i:
+    b[i] = b[i] - (a[i]/b[i-1])*c[i-1]
+    d[i] = d[i] - (a[i]/b[i-1])*d[i-1]  
+  x[N-1] = d[N-1]/b[N-1] # Perform the backsubstitution
+  for j = N-2:-1:0:
+    x[j] = (d[j] - x[j+1]*c[j])/b[j]
+  x
+\end{lstlisting}
+\end{document}

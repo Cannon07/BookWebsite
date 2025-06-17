@@ -1,0 +1,11 @@
+{
+  "project_id": "68428c5d41c2ef888f0b2a5e",
+  "project_url": "https://www.overleaf.com/project/68428c5d41c2ef888f0b2a5e",
+  "project_dir": "overleaf-project",
+  "chapters_dir": "chapters",
+  "conversion_script": "scripts/process-chapter.ts",
+  "hash_file": "scripts/overleaf-monitor/data/overleaf_hashes.json",
+  "log_file": "scripts/overleaf-monitor/logs/overleaf_sync.log",
+  "file_extensions": [".tex", ".bib"],
+  "exclude_dirs": [".git", "__pycache__", "node_modules", ".aux", ".out", ".log", ".fdb_latexmk", ".fls", ".synctex.gz"]
+}

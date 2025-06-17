@@ -1,0 +1,32 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{listings}
+\usepackage{xcolor}
+
+% Use black text on white background - we'll invert colors in image processing
+\definecolor{codebackground}{RGB}{255, 255, 255}
+\definecolor{codetext}{RGB}{0, 0, 0}
+
+\lstset{
+  basicstyle=\ttfamily\color{codetext},
+  backgroundcolor=\color{codebackground},
+  frame=none,
+  breaklines=true,
+  mathescape=true,
+  escapeinside={$}{$},
+  language=python,
+}
+
+\begin{document}
+\begin{lstlisting}
+def mass_damped_system(m : $\mathbb{R}$, k : $\mathbb{R}$, c : $\mathbb{R}$, F: $\mathbb{R}$, $x_i: \\mathbb{R}$, $dx_i: \\mathbb{R}$, 
+                       $(t_i, t_f)$: $\mathbb{R}^2$, dt: $\mathbb{R}$)
+  N = (t$_f$ - t$_i$)/dt
+  x = zeros(N+1), dx = zeros(N+1)
+  x[0] = $x_i$, dx[0] = $dx_i$
+  for i = 1:N+1
+    x[i] = x[i-1] + dx[i-1]*dt
+    dx[i] = dx[i-1] + (-k/m*x[i-1] - c/m*dx[i-1] + F/m)*dt
+  x, dx
+\end{lstlisting}
+\end{document}

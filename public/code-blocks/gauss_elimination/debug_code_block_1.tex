@@ -1,0 +1,37 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{listings}
+\usepackage{xcolor}
+
+% Use black text on white background - we'll invert colors in image processing
+\definecolor{codebackground}{RGB}{255, 255, 255}
+\definecolor{codetext}{RGB}{0, 0, 0}
+
+\lstset{
+  basicstyle=\ttfamily\color{codetext},
+  backgroundcolor=\color{codebackground},
+  frame=none,
+  breaklines=true,
+  mathescape=true,
+  escapeinside={$}{$},
+  language=python,
+}
+
+\begin{document}
+\begin{lstlisting}
+def pivoting(A : $\mathbb{R}^{N \\times N}$, B : $\mathbb{R}^N$):
+  x = zeros(N,1)
+  Aug = [A B]
+  for k = 0:N-2
+    [big,index_change] = max(abs(Aug[k:N,k]))
+    index = index_change + k - 1
+    if index != k
+      Aug[k,index,:] = Aug[index,k,:]
+    for index = k+1:N
+      ratio = Aug[index,k]/Aug[k,k]
+      Aug[index,k:B+1] = Aug[index,k:B+1] - ratio*Aug[k,k:B+1]
+  x[N] = Aug[N,N+1]/Aug[N,N]
+  for i = n-1:-1:0
+    x[i] = (Aug[i,N+1]-Aug[i,i+1:N]*x[i+1:N])/Aug[i,i]
+\end{lstlisting}
+\end{document}

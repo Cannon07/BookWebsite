@@ -1,0 +1,25 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{listings}
+\usepackage{xcolor}
+
+% Use black text on white background - we'll invert colors in image processing
+\definecolor{codebackground}{RGB}{255, 255, 255}
+\definecolor{codetext}{RGB}{0, 0, 0}
+
+\lstset{
+  basicstyle=\ttfamily\color{codetext},
+  backgroundcolor=\color{codebackground},
+  frame=none,
+  breaklines=true,
+  mathescape=true,
+  escapeinside={$}{$},
+  language=python,
+}
+
+\begin{document}
+\begin{lstlisting}
+def measure(q: $\mathbb{R}$, dq: $\mathbb{R}$, x: $\mathbb{R}^3$, x': $\mathbb{R}^3$, b: $\mathbb{R}^3$, $\\sigma$: $\mathbb{R}^3$) $\to \\mathbb{R}^3$:
+  return E($\epsilon_0$, q, x, x') + Normal(b, $\\sigma^2$/$\\textrm{dq}^2$)
+\end{lstlisting}
+\end{document}

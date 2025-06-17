@@ -1,0 +1,32 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{listings}
+\usepackage{xcolor}
+
+% Use black text on white background - we'll invert colors in image processing
+\definecolor{codebackground}{RGB}{255, 255, 255}
+\definecolor{codetext}{RGB}{0, 0, 0}
+
+\lstset{
+  basicstyle=\ttfamily\color{codetext},
+  backgroundcolor=\color{codebackground},
+  frame=none,
+  breaklines=true,
+  mathescape=true,
+  escapeinside={$}{$},
+  language=python,
+}
+
+\begin{document}
+\begin{lstlisting}
+def initialize_grid(N: $\mathbb{N}$) $\to \\mathbb{R}^{N \\times N}$:
+  C = zeros(N, N)
+  for i j:
+    temp = randi(2)
+    if (temp==1):
+      C[j,i] = -1
+    else 
+      C[j,i] = 1
+C: $\mathbb{R}^{N, N}$ = initialize_grid(N)
+\end{lstlisting}
+\end{document}

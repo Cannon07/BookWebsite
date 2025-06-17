@@ -1,0 +1,28 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{listings}
+\usepackage{xcolor}
+
+% Use black text on white background - we'll invert colors in image processing
+\definecolor{codebackground}{RGB}{255, 255, 255}
+\definecolor{codetext}{RGB}{0, 0, 0}
+
+\lstset{
+  basicstyle=\ttfamily\color{codetext},
+  backgroundcolor=\color{codebackground},
+  frame=none,
+  breaklines=true,
+  mathescape=true,
+  escapeinside={$}{$},
+  language=python,
+}
+
+\begin{document}
+\begin{lstlisting}
+# Parameters
+$w_1$: $\mathbb{R}$, $w_2$: $\mathbb{R}$
+def f(x: $\mathbb{R}$, y: $\mathbb{R}$) $\to$ $\mathbb{R}$:
+  return $w_1$ * x + $w_2$ * y
+grad(f, $w_1$)
+\end{lstlisting}
+\end{document}

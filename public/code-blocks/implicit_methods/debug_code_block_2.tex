@@ -1,0 +1,32 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{listings}
+\usepackage{xcolor}
+
+% Use black text on white background - we'll invert colors in image processing
+\definecolor{codebackground}{RGB}{255, 255, 255}
+\definecolor{codetext}{RGB}{0, 0, 0}
+
+\lstset{
+  basicstyle=\ttfamily\color{codetext},
+  backgroundcolor=\color{codebackground},
+  frame=none,
+  breaklines=true,
+  mathescape=true,
+  escapeinside={$}{$},
+  language=python,
+}
+
+\begin{document}
+\begin{lstlisting}
+def implicit_euler_method($\\mu$: $\mathbb{R}$, t$_f$: $\mathbb{R}$, dt: $\mathbb{R}$):
+  t = 0:dt:t$_f$
+  n = len(t)
+  y1i = zeros(n,1), y2i = zeros(n,1)
+  y1i[0] = 1, y2i[0] = 1
+  for i in 1 .. n-1:
+    solution = fsolve($\\lambda$ (y) root2d(y,y1i[i],y2i[i],$\\mu$,dt),  [y1i[i], y2i[i]])
+    y1i[i+1] = solution[0]
+    y2i[i+1] = solution[1]
+\end{lstlisting}
+\end{document}

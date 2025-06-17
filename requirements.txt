@@ -1,3 +1,5 @@
 pypandoc>=1.11 
 pdf2image==1.17.0
 Pillow>=10.2.0
+requests>=2.25.0
+beautifulsoup4>=4.9.0

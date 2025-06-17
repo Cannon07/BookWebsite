@@ -1,0 +1,28 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{listings}
+\usepackage{xcolor}
+
+% Use black text on white background - we'll invert colors in image processing
+\definecolor{codebackground}{RGB}{255, 255, 255}
+\definecolor{codetext}{RGB}{0, 0, 0}
+
+\lstset{
+  basicstyle=\ttfamily\color{codetext},
+  backgroundcolor=\color{codebackground},
+  frame=none,
+  breaklines=true,
+  mathescape=true,
+  escapeinside={$}{$},
+  language=python,
+}
+
+\begin{document}
+\begin{lstlisting}
+def root2d(y, y1, y2, $\\mu$, h):
+ y1dash = y[0], y2dash = y[1]
+ F[0] = -y1dash + y1 + (y2dash)*h
+ F[1] = -y2dash + y2 + (($\\mu$*(1-y1dash$^2$)*y2dash - y1dash))*h
+ return F
+\end{lstlisting}
+\end{document}

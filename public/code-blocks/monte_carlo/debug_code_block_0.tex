@@ -1,0 +1,35 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{listings}
+\usepackage{xcolor}
+
+% Use black text on white background - we'll invert colors in image processing
+\definecolor{codebackground}{RGB}{255, 255, 255}
+\definecolor{codetext}{RGB}{0, 0, 0}
+
+\lstset{
+  basicstyle=\ttfamily\color{codetext},
+  backgroundcolor=\color{codebackground},
+  frame=none,
+  breaklines=true,
+  mathescape=true,
+  escapeinside={$}{$},
+  language=python,
+}
+
+\begin{document}
+\begin{lstlisting}
+def metropolis_hastings($\\theta: \\mathbb{R}$, $q: \\mathbb{R} \\to \\mathbb{R}$, $\\beta: \\mathbb{R}$, N : $\mathbb{N}$):
+  $E_\\theta$ = E($\\theta$)
+  for i < N:
+    $\\theta^*$ = $q(\\theta)$
+    $E_{\\theta^*}$ = E($\\theta^*$)
+    $\alpha$ = exp($\\beta(E_\\theta - E_{\\theta^*}$)
+    if $\alpha$ >= 1:
+      $\\theta$ = $\\theta^*$
+    else:
+      A = uniform(0, 1)
+      if A < $\alpha$:
+        $\\theta$ = $\\theta^*$
+\end{lstlisting}
+\end{document}

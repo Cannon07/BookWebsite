@@ -1,0 +1,2532 @@
+{
+  "timestamp": "2025-06-13T16:41:28.931725",
+  "file_count": 421,
+  "hashes": {
+    "part_diffphys_statmech_ml.tex": {
+      "hash": "e8b3773b36ff7cdd6ac4ac8550d12cd76f7dcf2a160504f38906ff80246444f5",
+      "size": 704,
+      "modified": "2025-06-10T11:39:38.944774",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/part_diffphys_statmech_ml.tex"
+    },
+    "geometric_shape.tex": {
+      "hash": "6616d6157879a6bc796cf0608883bc44b797a782880208c14dc2b0756488e7f7",
+      "size": 1643,
+      "modified": "2025-06-10T11:39:38.719474",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/geometric_shape.tex"
+    },
+    "lecture_38.tex": {
+      "hash": "884ca694304e1df66bc03f3f5e640cf9088d7964d6f2d82dab6e2ec2dcd4dd9e",
+      "size": 359,
+      "modified": "2025-06-10T11:39:38.941620",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/lecture_38.tex"
+    },
+    "lecture_10.tex": {
+      "hash": "3869a7bc35a7e9f25887ef75a9a22870ea2380dd783a85fbec42bc36b74af122",
+      "size": 307,
+      "modified": "2025-06-10T11:39:38.939996",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/lecture_10.tex"
+    },
+    "phase_field.tex": {
+      "hash": "bd9ffb94c56cb3a8e867cb8b43aa908df1b7c93fe5c18d3121d9ece579b0d7c9",
+      "size": 5169,
+      "modified": "2025-06-10T11:39:38.724230",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/phase_field.tex"
+    },
+    "intro.tex": {
+      "hash": "1270bd7c903fdac11cf2f038f4c15fe90229dfb903eccbbdca39e1c5434a7ed3",
+      "size": 19403,
+      "modified": "2025-06-10T11:39:38.693882",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/intro.tex"
+    },
+    "greens_function_klein_gordon.tex": {
+      "hash": "19741e3d66ca2dcd85a77e80ec001f307aa04307b363d748d014799c750bd2b0",
+      "size": 6650,
+      "modified": "2025-06-10T11:39:38.709868",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/greens_function_klein_gordon.tex"
+    },
+    "gauss_quadrature.tex": {
+      "hash": "2b8271c46c4b31524eff9971d39c66c3f3e20a23161d32bf121c4b727110fd7d",
+      "size": 12650,
+      "modified": "2025-06-10T11:39:38.701106",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/gauss_quadrature.tex"
+    },
+    "linear_systems.tex": {
+      "hash": "fff577965d6c91ffe45e1c9b75b97dd2ced9dc82b185ea2c4b07180d594bed11",
+      "size": 13113,
+      "modified": "2025-06-10T11:39:38.700804",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/linear_systems.tex"
+    },
+    "manifolds.tex": {
+      "hash": "9dc4681692c67e3b6aa329bb4203bd809e04fccdada9792afe70e0dc831f4187",
+      "size": 7212,
+      "modified": "2025-06-10T11:39:38.695719",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/manifolds.tex"
+    },
+    "lecture_11.tex": {
+      "hash": "78b30ccf1aae520e1a11e611402277106d8f3f451cd76e95c62c1ed0777f16a5",
+      "size": 382,
+      "modified": "2025-06-10T11:39:38.940052",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/lecture_11.tex"
+    },
+    "lecture_39.tex": {
+      "hash": "147a801e25dc85a944dbf6bc9ad6fdb9699b724dd0091ed08e5ebbacb2761f8c",
+      "size": 427,
+      "modified": "2025-06-10T11:39:38.941687",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/lecture_39.tex"
+    },
+    "operational_and_denotational_semantics.tex": {
+      "hash": "f3d7a576079096278847a21835a5538a96eca8a2a73816f69eb5e659b8d26158",
+      "size": 3836,
+      "modified": "2025-06-10T11:39:38.703823",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/operational_and_denotational_semantics.tex"
+    },
+    "DL_MaxwellEquations.tex": {
+      "hash": "a5520e755aa3aa12f19a8448cfa167071985c14b406a83de241d408cea3f7c53",
+      "size": 309,
+      "modified": "2025-06-10T11:39:38.716563",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/DL_MaxwellEquations.tex"
+    },
+    "quantum_statistic_mechanics.tex": {
+      "hash": "e1dfbae18a23254dc0575d80d3dd7d9a354c429a1138316a27e572a9da365ec1",
+      "size": 775,
+      "modified": "2025-06-10T11:39:38.715371",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/quantum_statistic_mechanics.tex"
+    },
+    "phonon_density_prediction.tex": {
+      "hash": "d02310e836a2b79f518e5b2f7aa299e551c30a4ed302d39ff0d326bd6b6a6cc7",
+      "size": 4227,
+      "modified": "2025-06-10T11:39:38.718462",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/phonon_density_prediction.tex"
+    },
+    "gauge_theories.tex": {
+      "hash": "70350fab4fe9cfc97df650847d4f7247127977de50b61309a9b6ee79ef55f886",
+      "size": 2220,
+      "modified": "2025-06-10T11:39:38.709747",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/gauge_theories.tex"
+    },
+    "universal_approximation.tex": {
+      "hash": "ace3e5732ddbd450304a83955a4aa74faf167ef6055ce9c403560ef4e6076dfd",
+      "size": 2591,
+      "modified": "2025-06-10T11:39:38.700320",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/universal_approximation.tex"
+    },
+    "array_semantics.tex": {
+      "hash": "38076e9eacf4127271a4cd6e7ae81749565a7d7ec370d2669ef0b05c34373eaf",
+      "size": 1867,
+      "modified": "2025-06-10T11:39:38.703090",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/array_semantics.tex"
+    },
+    "String_Theory_And_Quantum_Gravity.tex": {
+      "hash": "041ff39abf9ccc4d56a385c3c2bb198e39aaab7a115e00b2f83e0c41d0e6af83",
+      "size": 112,
+      "modified": "2025-06-10T11:39:38.709342",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/String_Theory_And_Quantum_Gravity.tex"
+    },
+    "vacuum_solution.tex": {
+      "hash": "63747699f34203a853b74fe0a78eec71ef9c7c5563eae99eafebd21d0640e375",
+      "size": 1549,
+      "modified": "2025-06-10T11:39:38.706685",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/vacuum_solution.tex"
+    },
+    "general_relativity.tex": {
+      "hash": "f20db2017eb05ad2e88cebc3d24b7b7896010963009679b9a3f52347637391db",
+      "size": 7423,
+      "modified": "2025-06-10T11:39:38.706490",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/general_relativity.tex"
+    },
+    "MathematicalFoundations.tex": {
+      "hash": "33a691eec045602681c06ae7498f85c391bdbbd410c1527035d248e25284d89f",
+      "size": 2762,
+      "modified": "2025-06-10T11:39:38.690546",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/MathematicalFoundations.tex"
+    },
+    "generative_adversarial_symmetry.tex": {
+      "hash": "3e3623651f2a0540d669af5e0fba4d31a08cf30e9adbb584982c395bdaf420a1",
+      "size": 2235,
+      "modified": "2025-06-10T11:39:38.719359",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/generative_adversarial_symmetry.tex"
+    },
+    "ray_tracing.tex": {
+      "hash": "13d6394888953168246981f1715fdda0726e9924f6646f7086e3a06f59fb4458",
+      "size": 2033,
+      "modified": "2025-06-10T11:39:38.708175",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/ray_tracing.tex"
+    },
+    "representation_theory.tex": {
+      "hash": "d8c4c4c273b41471ddbc8cd3fc782ff7466315ba934ac9cdd46a8f21346ad578",
+      "size": 3195,
+      "modified": "2025-06-10T11:39:38.696889",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/representation_theory.tex"
+    },
+    "part_diffphys_conclusion.tex": {
+      "hash": "29cc13d622ca8f1781af59058e7595f2090351863451f9e9ea09482f47dce84c",
+      "size": 1541,
+      "modified": "2025-06-10T11:39:38.943865",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/part_diffphys_conclusion.tex"
+    },
+    "mathematical_transforms.tex": {
+      "hash": "573ef103731335e9ff08625b8afdc0d9ae3880836a37a091a6e3d59f5c464e42",
+      "size": 7823,
+      "modified": "2025-06-10T11:39:38.696009",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/mathematical_transforms.tex"
+    },
+    "part_physics_quantum.tex": {
+      "hash": "74e95adf0eb900a7c5be7c5ede31cedb629dcdc04f032e6ca0770b94303167bb",
+      "size": 1454,
+      "modified": "2025-06-10T11:39:38.945247",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/part_physics_quantum.tex"
+    },
+    "computational_fluid_dynamics.tex": {
+      "hash": "3a42ee977367505b29599c72e297a478ef23cf288e4b24bf44452954e377ce93",
+      "size": 6103,
+      "modified": "2025-06-10T11:39:38.706110",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/computational_fluid_dynamics.tex"
+    },
+    "physika_primer.tex": {
+      "hash": "e2253f22c75687be799f77adaf5c3acbaa0989a1bb7a011bafb420a51c9699a7",
+      "size": 9280,
+      "modified": "2025-06-10T11:39:38.703920",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/physika_primer.tex"
+    },
+    "part_diffphys.tex": {
+      "hash": "652ba2cf2389e422c49f57a344a1e8c714339d059a6f7dbd1201256332fdfa65",
+      "size": 9111,
+      "modified": "2025-06-10T11:39:38.943738",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/part_diffphys.tex"
+    },
+    "vectors_scalars_tensors.tex": {
+      "hash": "fb5758894767873dc50e34953db30bba9fb0a5e6f040572562bcc0bcea75fd76",
+      "size": 6531,
+      "modified": "2025-06-10T11:39:38.697485",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/vectors_scalars_tensors.tex"
+    },
+    "molecular_hamiltonian.tex": {
+      "hash": "7c2518cf4656ed16daee45b4cdae53b4b58eb18e589e5564e1d7f0ebc8e81a9a",
+      "size": 3415,
+      "modified": "2025-06-10T11:39:38.708587",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/molecular_hamiltonian.tex"
+    },
+    "natural_message_passing.tex": {
+      "hash": "c852efa0b10beaf391fd7d0dcf12ba68e503c6eefe89f89996bbbbbddbab4243",
+      "size": 3203,
+      "modified": "2025-06-10T11:39:38.719662",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/natural_message_passing.tex"
+    },
+    "n_body.tex": {
+      "hash": "1004c4738f1c08142eec834783ffac153bca21a1d7baeb2da5c7e75ac1cf58c9",
+      "size": 1042,
+      "modified": "2025-06-10T11:39:38.715734",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/n_body.tex"
+    },
+    "lecture_13.tex": {
+      "hash": "4e2fced0c019d8288db22c99f0e24affdeeeace64cebe8b2e8102e3333d3e534",
+      "size": 411,
+      "modified": "2025-06-10T11:39:38.940162",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/lecture_13.tex"
+    },
+    "simpsons_rule.tex": {
+      "hash": "8cc5341f4f20af18bcf2cec8b5895e97aafe3d2d67bdb71f97968911f4fd2b5f",
+      "size": 13175,
+      "modified": "2025-06-10T11:39:38.701365",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/simpsons_rule.tex"
+    },
+    "pde_gnn.tex": {
+      "hash": "0628bd2d407156003006ad16663c3b96da39fce2eb6204d266f95f2c90be8377",
+      "size": 2478,
+      "modified": "2025-06-10T11:39:38.717253",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/pde_gnn.tex"
+    },
+    "variational_principle.tex": {
+      "hash": "c9b170000a0984f21d3cab0737cda8988494e41ce3920008e8b96d4a6d7fcaff",
+      "size": 4518,
+      "modified": "2025-06-10T11:39:38.713323",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/variational_principle.tex"
+    },
+    "pinns_failures.tex": {
+      "hash": "db4c861e6a4fb0ff0735b0a82ce41dd95082f16c3cc00c2fd08833142a39e0a4",
+      "size": 2050,
+      "modified": "2025-06-10T11:39:38.724766",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/pinns_failures.tex"
+    },
+    "quantum_machine_learning.tex": {
+      "hash": "9da776e6b548e2aacbfe6daf807c0032949cd529c45569ecf47d2ef85915d833",
+      "size": 525,
+      "modified": "2025-06-10T11:39:38.708985",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/quantum_machine_learning.tex"
+    },
+    "long_range_atomic.tex": {
+      "hash": "a0f0d2bbea674ddae0395ea92d086b9b8eacae3d7f9c31dfb378195a4bd6cc86",
+      "size": 6781,
+      "modified": "2025-06-10T11:39:38.723577",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/long_range_atomic.tex"
+    },
+    "graph_NeuralNets.tex": {
+      "hash": "e5e430ac9d57ff7b08179f9543864fb9678fa65db8731788567b6b39ce49ed20",
+      "size": 6743,
+      "modified": "2025-06-10T11:39:38.699214",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/graph_NeuralNets.tex"
+    },
+    "part2b.tex": {
+      "hash": "ccb9b7684104b84adc8ca6dbcbe4db2b7b70f206b2d4ed731dbd9ac8c8bac0a9",
+      "size": 856,
+      "modified": "2025-06-10T11:39:38.943485",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/part2b.tex"
+    },
+    "lecture_12.tex": {
+      "hash": "3fb7fc0c84092d283ae13611c2c411ae348e7bf4dda0ff255b5726fd8addd427",
+      "size": 451,
+      "modified": "2025-06-10T11:39:38.940109",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/lecture_12.tex"
+    },
+    "lattice_field_theory_normalizing_flows.tex": {
+      "hash": "c5596df53a18256c2a0daccbe88420bce2dda56eee39bd9b168125e5fe6da70f",
+      "size": 7817,
+      "modified": "2025-06-10T11:39:38.724993",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/lattice_field_theory_normalizing_flows.tex"
+    },
+    "LagrangianNNs.tex": {
+      "hash": "723767cdb90eade70561c752dd9b65d27b31fed3cb6da9b21f8f726fd122db8e",
+      "size": 5079,
+      "modified": "2025-06-10T11:39:38.718788",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/LagrangianNNs.tex"
+    },
+    "lorentz_group.tex": {
+      "hash": "02ee0a37e0e5b13a31f0da88c8e8d8b10a1cb1601704d6275ec3c8f260dad8e4",
+      "size": 4188,
+      "modified": "2025-06-10T11:39:38.695563",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/lorentz_group.tex"
+    },
+    "lecture_16.tex": {
+      "hash": "50e6aad8da1a128f4cabdc94f428258fbca8e914c1aad762a1c8ed3b55dba2d0",
+      "size": 398,
+      "modified": "2025-06-10T11:39:38.940320",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/lecture_16.tex"
+    },
+    "inverse_design.tex": {
+      "hash": "84f6f5bc72922d1bdba7f4ddca09a37bc27a2a419ddf8f6ed9252140a30a7f15",
+      "size": 2663,
+      "modified": "2025-06-10T11:39:38.720702",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/inverse_design.tex"
+    },
+    "gauge_equivariant_mesh_conv_nets.tex": {
+      "hash": "e9fa258220667784e6a23ae01cc2026676dd7c28345f3a244e781f51fdc76d11",
+      "size": 1478,
+      "modified": "2025-06-10T11:39:38.719296",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/gauge_equivariant_mesh_conv_nets.tex"
+    },
+    "heat_equation.tex": {
+      "hash": "06d9dfd90e17053e2c151a90bf11d8da314adb06ba9891a43e81e677bb52b65e",
+      "size": 7483,
+      "modified": "2025-06-10T11:39:38.707253",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/heat_equation.tex"
+    },
+    "part_physics_fluids.tex": {
+      "hash": "a40d66cb2d6d72df7a35b082405e8799552ee6f150749a8dda2786b21990802c",
+      "size": 326,
+      "modified": "2025-06-10T11:39:38.945011",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/part_physics_fluids.tex"
+    },
+    "part_physics.tex": {
+      "hash": "7345a38568052b6b7376d161b83ae8f97acd0b47ae6c3fe3552e856f4da45f59",
+      "size": 1299,
+      "modified": "2025-06-10T11:39:38.944835",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/part_physics.tex"
+    },
+    "part_diffphys_hep_ml.tex": {
+      "hash": "fca64e24cd1ea0d57834b53eea37bd0dd289ccc45475887ca4009ad4f60dba4a",
+      "size": 370,
+      "modified": "2025-06-10T11:39:38.944226",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/part_diffphys_hep_ml.tex"
+    },
+    "part_physics_condensed_matter.tex": {
+      "hash": "7c2c964b4369f0997aced8dbdf9560e7191300d4ae3ed4c95d0c23030e67a8db",
+      "size": 414,
+      "modified": "2025-06-10T11:39:38.944895",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/part_physics_condensed_matter.tex"
+    },
+    "part_diffphys_electromagnetism_ml.tex": {
+      "hash": "d731c135f57ac041653d5e884bfa32484144a25ef0597d5e929a12a9fcc83985",
+      "size": 620,
+      "modified": "2025-06-10T11:39:38.944055",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/part_diffphys_electromagnetism_ml.tex"
+    },
+    "se(3)transformer.tex": {
+      "hash": "d61ad621010c092e1add0c2482e3c7682e5f98bddffd490335716bf91cb4cb46",
+      "size": 8288,
+      "modified": "2025-06-10T11:39:38.721007",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/se(3)transformer.tex"
+    },
+    "steerable_cnn.tex": {
+      "hash": "15e75e982f132d49db22c04a4352701e545cb5e016fe7b9ede5859f75a3bfaa8",
+      "size": 12522,
+      "modified": "2025-06-10T11:39:38.719956",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/steerable_cnn.tex"
+    },
+    "ResidualPhysics_UODEs.tex": {
+      "hash": "bf668bac95d0cf046e8d77c71647158836ba1dc7c7675db06a79dee88c36a0e3",
+      "size": 2554,
+      "modified": "2025-06-10T11:39:38.721341",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/ResidualPhysics_UODEs.tex"
+    },
+    "part_prog.tex": {
+      "hash": "f4a5d38a34ae0bef106624c57153416a355ff6548cedaf1f2c8416b0f8ae3a61",
+      "size": 1560,
+      "modified": "2025-06-10T11:39:38.945488",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/part_prog.tex"
+    },
+    "learning_equivariances.tex": {
+      "hash": "ad2f993cabb71a220d7fd85435e2109dec9e264c784cd2e111c96aaec3b79209",
+      "size": 2710,
+      "modified": "2025-06-10T11:39:38.719534",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/learning_equivariances.tex"
+    },
+    "dtnn.tex": {
+      "hash": "451ffdbb4c695c2cec01ef3948df9584a0a000e84ed4b2381013e7e4ae7782df",
+      "size": 1721,
+      "modified": "2025-06-10T11:39:38.720534",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/dtnn.tex"
+    },
+    "linear_analytical.tex": {
+      "hash": "b9ca1891b6103157769c104a04a1c1fbf1fc5a2872ce5abd2fc3a490d13d485d",
+      "size": 8376,
+      "modified": "2025-06-10T11:39:38.691472",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/linear_analytical.tex"
+    },
+    "part_physics_statmech.tex": {
+      "hash": "c13831f602507e4d327f2288810407c929c3932d29ae5a9c7cec2860b45f1354",
+      "size": 1765,
+      "modified": "2025-06-10T11:39:38.945420",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/part_physics_statmech.tex"
+    },
+    "lecture_17.tex": {
+      "hash": "f0887553db30b04dfc599e7a07970d63b87941e18a7e3a6e66f6baee89c88a33",
+      "size": 322,
+      "modified": "2025-06-10T11:39:38.940369",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/lecture_17.tex"
+    },
+    "adversarial_methods.tex": {
+      "hash": "7e73bb974773501125dca572d37a815009b396e7b67dadde6f971db818d5deac",
+      "size": 3928,
+      "modified": "2025-06-10T11:39:38.722500",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/adversarial_methods.tex"
+    },
+    "part_diffphys_molecular_ml.tex": {
+      "hash": "bf254411fc270ea551c76dd5bc487cc712b8441b0aba748bd178ae17a427c95b",
+      "size": 1277,
+      "modified": "2025-06-10T11:39:38.944472",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/part_diffphys_molecular_ml.tex"
+    },
+    "monte_carlo.tex": {
+      "hash": "0bae798440cb6ab2988e5fa8ae4258cbc59bfe919b8125180a67da3b07dce3e7",
+      "size": 18981,
+      "modified": "2025-06-10T11:39:38.702655",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/monte_carlo.tex"
+    },
+    "gauge_equivariant.tex": {
+      "hash": "473b08504f5f9e970f39eaa305205af24bf723ac4cfb71b9fc7195de220e67e8",
+      "size": 4904,
+      "modified": "2025-06-10T11:39:38.698938",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/gauge_equivariant.tex"
+    },
+    "special_relativity.tex": {
+      "hash": "6327ce89db13b0824b263e7f69c0f7ae59e370909e4d6f4fab8ca615f7e05aa4",
+      "size": 4758,
+      "modified": "2025-06-10T11:39:38.707839",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/special_relativity.tex"
+    },
+    "deepmdkit.tex": {
+      "hash": "19494b006c8d179f74b88b2ec7bf3b9bdbb45fa7fcac697ef6bfd67c7e16c4d2",
+      "size": 5779,
+      "modified": "2025-06-10T11:39:38.723287",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/deepmdkit.tex"
+    },
+    "implicit_methods.tex": {
+      "hash": "af154fdb12ee6a45f8481b95bc32d0a58d78fc5f97776902df8cae4040ae749e",
+      "size": 11958,
+      "modified": "2025-06-10T11:39:38.701768",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/implicit_methods.tex"
+    },
+    "molecular_dynamics.tex": {
+      "hash": "4467075821ddf4b530e913b8f4c60327c8f25ba1afb25de006caa74885718292",
+      "size": 4391,
+      "modified": "2025-06-10T11:39:38.714847",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/molecular_dynamics.tex"
+    },
+    "intro_feynman_diagrams.tex": {
+      "hash": "7a66e3a7403933ff7a122d87143e9112a23ad449c450473ca147aa0feb83d2f6",
+      "size": 9924,
+      "modified": "2025-06-10T11:39:38.709972",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/intro_feynman_diagrams.tex"
+    },
+    "spinors.tex": {
+      "hash": "7f7dfe0ecf79b24d0696d509af93997fd8b978ca7c0bb1a0ae489dae9c5b0e91",
+      "size": 4112,
+      "modified": "2025-06-10T11:39:38.697159",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/spinors.tex"
+    },
+    "covariance_contravariance.tex": {
+      "hash": "b5c4a1379f278218c1469f68454e9c1010757b129392166644e443de4a0ca117",
+      "size": 595,
+      "modified": "2025-06-10T11:39:38.694331",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/covariance_contravariance.tex"
+    },
+    "tensor_analysis.tex": {
+      "hash": "24bb9a8935a1c3b2b7b9784ad4f5339cf9f2665f4b35e523f52602f6a854b2d5",
+      "size": 2172,
+      "modified": "2025-06-10T11:39:38.706621",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/tensor_analysis.tex"
+    },
+    "spherical_cnn.tex": {
+      "hash": "03103443aad052daacf5bb70691c30c05da742986dbc9250d9da7d12e3cfdd05",
+      "size": 7088,
+      "modified": "2025-06-10T11:39:38.719836",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/spherical_cnn.tex"
+    },
+    "lecture_15.tex": {
+      "hash": "0ef31c15e652a4052b6794191a65b04683b45564281853c526e1f3ed5a027e36",
+      "size": 311,
+      "modified": "2025-06-10T11:39:38.940268",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/lecture_15.tex"
+    },
+    "lecture_29.tex": {
+      "hash": "0827f3a3493936d925ffd00a1654f1f1b257eba834edbdafd6ece12e922d43c9",
+      "size": 271,
+      "modified": "2025-06-10T11:39:38.941082",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/lecture_29.tex"
+    },
+    "part_physics_electromagnetism.tex": {
+      "hash": "f267c09abe02d8a3c9653ea5f03bec31c9f1e378fe9f1b26abf2d6a32eeb5820",
+      "size": 534,
+      "modified": "2025-06-10T11:39:38.944952",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/part_physics_electromagnetism.tex"
+    },
+    "pinns_blowup.tex": {
+      "hash": "f502e33a6375656c4eb503989719df691c2e014a456b9d97a5f386bc234e8f28",
+      "size": 5255,
+      "modified": "2025-06-10T11:39:38.724698",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/pinns_blowup.tex"
+    },
+    "kohn_sham_regularizers.tex": {
+      "hash": "0bd7accb21cebcaeb03857184d8546ec01ca2a6d7de923d787d3019e448e8dda",
+      "size": 4222,
+      "modified": "2025-06-10T11:39:38.716329",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/kohn_sham_regularizers.tex"
+    },
+    "preamble.tex": {
+      "hash": "6c718b59c911b255ab6a9542d3027aa5b70435aa6529cd1ef5a5dda13b11752a",
+      "size": 5256,
+      "modified": "2025-06-10T11:39:38.726437",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/preamble.tex"
+    },
+    "superconductors.tex": {
+      "hash": "7f339118c2d7e50d0a076b7228c2c0ea589aa8d441fa39fedec60f7fd85c08c9",
+      "size": 1485,
+      "modified": "2025-06-10T11:39:38.713205",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/superconductors.tex"
+    },
+    "lecture_28.tex": {
+      "hash": "81affd39a62890da986453ec4473fd76e10f8119bf3515190512ddb75c43dc9c",
+      "size": 262,
+      "modified": "2025-06-10T11:39:38.941035",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/lecture_28.tex"
+    },
+    "lecture_14.tex": {
+      "hash": "c02a707cca379c754644590f34a3cb038c937fbbb027376b927af5882c66928a",
+      "size": 203,
+      "modified": "2025-06-10T11:39:38.940212",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/lecture_14.tex"
+    },
+    "numerical_partial_differential_equations.tex": {
+      "hash": "07beef168a58f2fa8f727a748c11f737dccb50d8206e91399ba28e487407eaa2",
+      "size": 1693,
+      "modified": "2025-06-10T11:39:38.702167",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/numerical_partial_differential_equations.tex"
+    },
+    "calculus.tex": {
+      "hash": "c8e9e710ec53d67dcf0610ba44ca24d6690d99f8e260379f7989d3db60d12c02",
+      "size": 10264,
+      "modified": "2025-06-13T16:41:28.778704",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/calculus.tex"
+    },
+    "geometric_learning_quantum_chemistry.tex": {
+      "hash": "49565e110dcb8e6d5d8aa799d9381b2159553cf693719f6a2290393269a36a68",
+      "size": 2461,
+      "modified": "2025-06-10T11:39:38.716104",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/geometric_learning_quantum_chemistry.tex"
+    },
+    "part_physics_quantum_chemistry.tex": {
+      "hash": "5fd7dab657fba165aab33fe2b36056be5659b53ee8b5713836c5a96bc2d7b257",
+      "size": 368,
+      "modified": "2025-06-10T11:39:38.945307",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/part_physics_quantum_chemistry.tex"
+    },
+    "lagrangian_mechanics.tex": {
+      "hash": "3adb4d9de3f18b59e31da1cb9a8dcfa4a295e9e6feff9300a17890052f75d46b",
+      "size": 12614,
+      "modified": "2025-06-10T11:39:38.707434",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/lagrangian_mechanics.tex"
+    },
+    "pinns_maxwell.tex": {
+      "hash": "d46d53b775de7698287107d8e2d34b75b7ba74d6c4567e5be6555f055c932cfe",
+      "size": 3373,
+      "modified": "2025-06-10T11:39:38.716635",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/pinns_maxwell.tex"
+    },
+    "electrical_circuits.tex": {
+      "hash": "e59b4534026ecf1d8f1d6700fba97591676e3312d2ce151d30ee599d6cb890ed",
+      "size": 8427,
+      "modified": "2025-06-10T11:39:38.705368",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/electrical_circuits.tex"
+    },
+    "electric_current_and_magnetic_field.tex": {
+      "hash": "a4ee1c56e075800d36fc2db34988a60fc2f3f86b8df3702cbf5d91071b1cc60a",
+      "size": 7063,
+      "modified": "2025-06-10T11:39:38.705273",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/electric_current_and_magnetic_field.tex"
+    },
+    "graph_generation.tex": {
+      "hash": "efbc77c53d4e6840e5281c9151862bc4edf0c248a5f21dd80641994ba139425f",
+      "size": 4326,
+      "modified": "2025-06-10T11:39:38.720638",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/graph_generation.tex"
+    },
+    "multidimensional_optimization.tex": {
+      "hash": "748b71643489cd5c91773c67b68292afc44c226bf4e5829e5d0fcbb3eb57702c",
+      "size": 13382,
+      "modified": "2025-06-10T11:39:38.702343",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/multidimensional_optimization.tex"
+    },
+    "first_principles_mixture_nets.tex": {
+      "hash": "b4568d72a84e6acd71e2db3eb9420f6a77308be91e1871f6a4a31fe4cbde3aa2",
+      "size": 2903,
+      "modified": "2025-06-10T11:39:38.725869",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/first_principles_mixture_nets.tex"
+    },
+    "lecture_2.tex": {
+      "hash": "065be2c1da4daaa1127439966490c7ef1301d60b2c84abb52efec5e26019eef0",
+      "size": 736,
+      "modified": "2025-06-10T11:39:38.940543",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/lecture_2.tex"
+    },
+    "non_interacting_systems.tex": {
+      "hash": "3f7ce1a7e12b5ef1249a78b57fe7fca8c4a0e4b0077469abe510d5a6443cf74a",
+      "size": 13263,
+      "modified": "2025-06-10T11:39:38.714975",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/non_interacting_systems.tex"
+    },
+    "numerical_relativity.tex": {
+      "hash": "439e9c26926247ec05704daaca90fcfd813d6eddc1b086164c8d742a4db84a20",
+      "size": 1251,
+      "modified": "2025-06-10T11:39:38.706559",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/numerical_relativity.tex"
+    },
+    "quantum_fourier_transform.tex": {
+      "hash": "b4239e14aff014e2f973f07ea18c7c588ccec975ee5e59fbfd73482ecd4aff98",
+      "size": 920,
+      "modified": "2025-06-10T11:39:38.708916",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/quantum_fourier_transform.tex"
+    },
+    "scattering_theory.tex": {
+      "hash": "9eee950b6526951350a813aef622648c6eef820dcd5fbe32c0781cecf04b116f",
+      "size": 2776,
+      "modified": "2025-06-10T11:39:38.712529",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/scattering_theory.tex"
+    },
+    "part_diffphys_qft_ml.tex": {
+      "hash": "675c6834cb3dffed4c1504eb94b5e40c9fba17739382752e645609545588afd2",
+      "size": 1471,
+      "modified": "2025-06-10T11:39:38.944653",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/part_diffphys_qft_ml.tex"
+    },
+    "bloch_sphere.tex": {
+      "hash": "3de66f0832ed340e0bf764b3fd7dfbb66377649cff2308df9333cbcf0f2c1542",
+      "size": 3125,
+      "modified": "2025-06-10T11:39:38.708712",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/bloch_sphere.tex"
+    },
+    "machine_learning_for_fluids.tex": {
+      "hash": "d09ef6205cd72ff1716daf962240ddd7799a42dabb677e530b6029edfb625ed8",
+      "size": 21687,
+      "modified": "2025-06-10T11:39:38.717169",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/machine_learning_for_fluids.tex"
+    },
+    "Integral_Programming.tex": {
+      "hash": "bb6354a3d95811ce6be49723484731cb7a3231eaeb59b21e200eb5be056bf7a9",
+      "size": 6140,
+      "modified": "2025-06-10T11:39:38.703016",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/Integral_Programming.tex"
+    },
+    "quantum_programming.tex": {
+      "hash": "3ba4cc88fa186d6797bee1bbd0ca5642dbc3994f41243b1b422196e14d866504",
+      "size": 1584,
+      "modified": "2025-06-10T11:39:38.709059",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/quantum_programming.tex"
+    },
+    "matrix_calculus.tex": {
+      "hash": "b7bc696075b547f93a0de14df404bf1d22459b21054e50a28a1adabbfe0e8295",
+      "size": 9812,
+      "modified": "2025-06-10T11:39:38.696118",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/matrix_calculus.tex"
+    },
+    "optimization.tex": {
+      "hash": "645676fa8a01f166613b3fb5c98f95f99afc1e0a6e5ea669c0fa80472e5bd2c4",
+      "size": 6325,
+      "modified": "2025-06-10T11:39:38.696254",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/optimization.tex"
+    },
+    "statistical_thermodynamics.tex": {
+      "hash": "d4b1f053954d8e0a64ff57cc17911aa739c96c7f3ae94124157b97166f75ba3c",
+      "size": 7480,
+      "modified": "2025-06-10T11:39:38.715576",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/statistical_thermodynamics.tex"
+    },
+    "feynman_diagrams.tex": {
+      "hash": "7cd7016ebe17df881a84dabea170a4f89603c0d7e359a1eed645f87e905afb47",
+      "size": 6789,
+      "modified": "2025-06-10T11:39:38.709673",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/feynman_diagrams.tex"
+    },
+    "classical_thermodynamics.tex": {
+      "hash": "9744cbadeca4e325f997c9042c6549b0f47adcfad101342df4e5de6ff6b60e10",
+      "size": 13225,
+      "modified": "2025-06-10T11:39:38.713611",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/classical_thermodynamics.tex"
+    },
+    "boundary_value.tex": {
+      "hash": "2d6a6c040e76ef4b4240764696cc2e0691e77131d8bc08abff37a97a19ed24b2",
+      "size": 11503,
+      "modified": "2025-06-10T11:39:38.701521",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/boundary_value.tex"
+    },
+    "lecture_3.tex": {
+      "hash": "a6b69a1d2e57a48e89092f9b46edbfe75f7c244d96b29742ed650652ca6bae22",
+      "size": 552,
+      "modified": "2025-06-10T11:39:38.941134",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/lecture_3.tex"
+    },
+    "intro_outtakes.tex": {
+      "hash": "fee73a77362de86fdd9626ca0b17d486ab700c653680e7963707f475447cbaca",
+      "size": 16835,
+      "modified": "2025-06-10T11:39:38.692544",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/intro_outtakes.tex"
+    },
+    "wicks_theorem.tex": {
+      "hash": "4abcf10d2664123f589a27fc2edf13efe891a8bfa77f6c8bd5ed1d2b4738e45f",
+      "size": 2977,
+      "modified": "2025-06-10T11:39:38.711068",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/wicks_theorem.tex"
+    },
+    "DeepEquilibrium.tex": {
+      "hash": "55435a8ff4a877bdfcb565dd8f1cad7e35e31d2f799e7cc74684207bcefd9515",
+      "size": 8607,
+      "modified": "2025-06-10T11:39:38.699506",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/DeepEquilibrium.tex"
+    },
+    "foundations_low_data.tex": {
+      "hash": "080f272b14a84ffb16d62a945f79b9dd4b286e330a648e8f1f2c0280bb2e2ca1",
+      "size": 1303,
+      "modified": "2025-06-10T11:39:38.725932",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/foundations_low_data.tex"
+    },
+    "crystal_graph_convs.tex": {
+      "hash": "d86b2f987879644164646b5afdc00e374bcac37a90ab3f2dc13d26439e03e4e6",
+      "size": 8021,
+      "modified": "2025-06-10T11:39:38.717839",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/crystal_graph_convs.tex"
+    },
+    "feynman_kac.tex": {
+      "hash": "5267656d9552fc6fa862c14e378412929a939b5d5ad3a22fb52a0fbc7c068ad5",
+      "size": 4526,
+      "modified": "2025-06-10T11:39:38.711462",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/feynman_kac.tex"
+    },
+    "spin_and_fermionic_path_integrals.tex": {
+      "hash": "19673cde159e24d84c5bd86612de48059d1364337245eba26789db1a6887b615",
+      "size": 1117,
+      "modified": "2025-06-10T11:39:38.713134",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/spin_and_fermionic_path_integrals.tex"
+    },
+    "foreword.tex": {
+      "hash": "a918a933dafab0b0b4a69d5af9117283ebe9f30cdf0e03e73fa30b379786132e",
+      "size": 92,
+      "modified": "2025-06-10T11:39:38.726270",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/foreword.tex"
+    },
+    "clifford_algebra.tex": {
+      "hash": "972b91852fb59cbb65c2f6b2de07c82dc8a05387d5500f0f92fc9f2671e817fe",
+      "size": 9573,
+      "modified": "2025-06-10T11:39:38.721437",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/clifford_algebra.tex"
+    },
+    "cormorant.tex": {
+      "hash": "65624e61ca7f86ee8e98612a25e9491349062f0cb59e4519600b40d7aa8fbecb",
+      "size": 15009,
+      "modified": "2025-06-10T11:39:38.720472",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/cormorant.tex"
+    },
+    "lecture_1.tex": {
+      "hash": "9e48801e165450ff87f304b8072e206277a48e1a42d84d6602d8f371d90d100c",
+      "size": 308,
+      "modified": "2025-06-10T11:39:38.939937",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/lecture_1.tex"
+    },
+    "bracketing_and_bisection.tex": {
+      "hash": "2cfb0ae381bc04b728b20849a7bcd7c53a6c3c860884bd3e60d443598b6a18ab",
+      "size": 11805,
+      "modified": "2025-06-10T11:39:38.690922",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/bracketing_and_bisection.tex"
+    },
+    "fluid_physical_theory.tex": {
+      "hash": "21433dcab4718065775accd5c2591532978497f41f7f7c1812994bbfb2af97cf",
+      "size": 3009,
+      "modified": "2025-06-10T11:39:38.717073",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/fluid_physical_theory.tex"
+    },
+    "lecture_58.tex": {
+      "hash": "641e0212df393a815693951bcab43af34f6bb3011cdf1a84c37946369a8057a6",
+      "size": 506,
+      "modified": "2025-06-10T11:39:38.942943",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/lecture_58.tex"
+    },
+    "spatial_graph_convolutions.tex": {
+      "hash": "890a0fc0ffbe966d34e7925f30a70f4291e33d9a6c57060cdc56ab1bfdd9e01d",
+      "size": 1559,
+      "modified": "2025-06-10T11:39:38.721147",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/spatial_graph_convolutions.tex"
+    },
+    "coarse_graining_and_closure_modeling.tex": {
+      "hash": "6e4ff3299d2af885ab1767e9adb2f283e681619922bfb782b11cdb04032bf855",
+      "size": 2490,
+      "modified": "2025-06-10T11:39:38.716865",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/coarse_graining_and_closure_modeling.tex"
+    },
+    "electron_structure_theory.tex": {
+      "hash": "c0a325046e35f267648538c27463d95a4e9b765f790330e64a06ec12edc04c8c",
+      "size": 1864,
+      "modified": "2025-06-10T11:39:38.716034",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/electron_structure_theory.tex"
+    },
+    "lu_factorization.tex": {
+      "hash": "a3f8bc7e19946fb5eb6c15b5153c0ae4cc102dc6a2fb8ea516733ad56028cb1c",
+      "size": 6023,
+      "modified": "2025-06-10T11:39:38.700936",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/lu_factorization.tex"
+    },
+    "ab_initio_structure_prediction.tex": {
+      "hash": "45763ca0020472b1c455d7348f9487536bccc473caa88b94bbab9dae3e26db4f",
+      "size": 1766,
+      "modified": "2025-06-10T11:39:38.720360",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/ab_initio_structure_prediction.tex"
+    },
+    "gaussian_process.tex": {
+      "hash": "3ef04937d4850308b1bbe255f17e24d0f04aab675eec8d17b600e9cfeab5f48d",
+      "size": 1362,
+      "modified": "2025-06-10T11:39:38.697721",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/gaussian_process.tex"
+    },
+    "forcebalance.tex": {
+      "hash": "f1ec51ab97218d689f7843e8630bd22ee23a7eb629254aa2cef833f7b2ddec16",
+      "size": 2062,
+      "modified": "2025-06-10T11:39:38.723467",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/forcebalance.tex"
+    },
+    "neural_cde.tex": {
+      "hash": "98831c6bb75d89fbfb1889734da24a1145997ba2c23319a7b8e6895732b419b4",
+      "size": 6572,
+      "modified": "2025-06-10T11:39:38.721782",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/neural_cde.tex"
+    },
+    "allen_cahn_message_passing.tex": {
+      "hash": "7238939bcbdf7fdc18705a84adbf6ebe69ad7ad49f7140b579aaf084b018fd5e",
+      "size": 2225,
+      "modified": "2025-06-10T11:39:38.725736",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/allen_cahn_message_passing.tex"
+    },
+    "ideal_gas.tex": {
+      "hash": "bf7a7a8406aec6b723d7bb3d9d39b2d0af689979ca1437fc38b020a6509de47d",
+      "size": 13507,
+      "modified": "2025-06-10T11:39:38.714318",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/ideal_gas.tex"
+    },
+    "ConvNets.tex": {
+      "hash": "33392f979786594eb5af6a51b839cf6eee5bc67deb9f73cbf6ad4d8312017ec3",
+      "size": 17267,
+      "modified": "2025-06-10T11:39:38.698555",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/ConvNets.tex"
+    },
+    "renormalization_group.tex": {
+      "hash": "a1e7269e8090cb9c1c44a0a092b97821add95954ce2be681610fa182f528bd74",
+      "size": 2298,
+      "modified": "2025-06-10T11:39:38.710849",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/renormalization_group.tex"
+    },
+    "behler_parinello_representations.tex": {
+      "hash": "d85972363e49b1c3872395efa9be1f404e1be43a8a4bb58a5055c5509699fac3",
+      "size": 5001,
+      "modified": "2025-06-10T11:39:38.722831",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/behler_parinello_representations.tex"
+    },
+    "lecture_59.tex": {
+      "hash": "db670c377942f1eda7f089bd8ec86c76ce61ad80365ef994f4c2ab97b5b6f83a",
+      "size": 165,
+      "modified": "2025-06-10T11:39:38.943000",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/lecture_59.tex"
+    },
+    "simple_physical_theories.tex": {
+      "hash": "6f4df3b49734e62c55b7deb68b5fd7274882c7202fbbedd3f3b6db5521b9227c",
+      "size": 17406,
+      "modified": "2025-06-10T11:39:38.707687",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/simple_physical_theories.tex"
+    },
+    "normalizing_flows.tex": {
+      "hash": "8542772bfc1d5407404a3c87d5cb8a7767212b5608c16b7c147d03283ffb694d",
+      "size": 9046,
+      "modified": "2025-06-10T11:39:38.698398",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/normalizing_flows.tex"
+    },
+    "simply_typed_lambda_calculus.tex": {
+      "hash": "847b31bfe69d91bf0411f4b34144f9026d524a6e1e18797ad57c80497c16e4af",
+      "size": 4583,
+      "modified": "2025-06-10T11:39:38.704047",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/simply_typed_lambda_calculus.tex"
+    },
+    "backupCFD_chapter_NODEs.tex": {
+      "hash": "3230584f0198b106410c773551827bc7831bebab242ff4c854954867d08714bb",
+      "size": 14407,
+      "modified": "2025-06-10T11:39:38.693221",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/backupCFD_chapter_NODEs.tex"
+    },
+    "newtons_laws.tex": {
+      "hash": "c23560e54528d105601fc8b9b349e153f8a312ffed4a73b06f7022f5417e67b1",
+      "size": 15218,
+      "modified": "2025-06-10T11:39:38.707583",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/newtons_laws.tex"
+    },
+    "dynamical_systems.tex": {
+      "hash": "ff9c1ce2f2cff441167684347c76e3a3313e2a0883fb8266c0df5b2fa5f5c699",
+      "size": 435,
+      "modified": "2025-06-10T11:39:38.694655",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/dynamical_systems.tex"
+    },
+    "quantum_circuits.tex": {
+      "hash": "25c34b74595c4449d482b032b079092afc13061c39c09b31f99174f96d3a9f21",
+      "size": 4869,
+      "modified": "2025-06-10T11:39:38.708841",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/quantum_circuits.tex"
+    },
+    "runge_kutta.tex": {
+      "hash": "e03b9e9021e37b16342923679173234aea9e8bcd05940c22c288b11599c9e4b4",
+      "size": 12002,
+      "modified": "2025-06-10T11:39:38.701984",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/runge_kutta.tex"
+    },
+    "math_basics.tex": {
+      "hash": "2957b51e460668d5ff08f3db5573928e0bff3cc16eab956029ed1ad7d9311021",
+      "size": 6409,
+      "modified": "2025-06-10T11:39:38.695864",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/math_basics.tex"
+    },
+    "coarse_grained_potentials.tex": {
+      "hash": "d19f5bd728fc9912f3af5b7013f20129b143bba01fc45732ba387a450a64fbd6",
+      "size": 2657,
+      "modified": "2025-06-10T11:39:38.723168",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/coarse_grained_potentials.tex"
+    },
+    "complex_analysis.tex": {
+      "hash": "e5cd8c4bcdadfc32d464789df41c0d16031ac682a07778ca10b6b050bee07c39",
+      "size": 2375,
+      "modified": "2025-06-10T11:39:38.694246",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/complex_analysis.tex"
+    },
+    "lecture_4.tex": {
+      "hash": "e0f5a90d822848ae0c6d84f5c8694592c27e21906269a017c4aa816a6b2d02cb",
+      "size": 855,
+      "modified": "2025-06-10T11:39:38.941754",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/lecture_4.tex"
+    },
+    "units_and_types.tex": {
+      "hash": "7165ff25ef97704ea885a8728bb6e4ac321a8797864ad51e77fac54a9ec45164",
+      "size": 3725,
+      "modified": "2025-06-10T11:39:38.707912",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/units_and_types.tex"
+    },
+    "transfer_matrix.tex": {
+      "hash": "3a1f758c73f8be0bb992b9636fbebbc91948b448990fafc5ee47ba8f0f36aa5e",
+      "size": 1742,
+      "modified": "2025-06-10T11:39:38.692769",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/transfer_matrix.tex"
+    },
+    "greens_function_laplace_equation.tex": {
+      "hash": "9f94b2d33bb7f2e1fc3ab57db24f98924011eeb9af9170d74da7d3c97153e731",
+      "size": 1705,
+      "modified": "2025-06-10T11:39:38.705557",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/greens_function_laplace_equation.tex"
+    },
+    "fiber_bundles.tex": {
+      "hash": "baed78c9d32e4b173c16a2766e47327ea054e22bab53c5bccfee7f03f59b64cf",
+      "size": 2182,
+      "modified": "2025-06-10T11:39:38.694730",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/fiber_bundles.tex"
+    },
+    "lecture_49.tex": {
+      "hash": "b1f447e6d0a8b574aed50d869043352a5701f67187952acd0260881ce328c90f",
+      "size": 494,
+      "modified": "2025-06-10T11:39:38.942341",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/lecture_49.tex"
+    },
+    "Case_Study_Materials.tex": {
+      "hash": "01961a6cfab4ce030f60bd9e30d2306483b50e9ee5b88859c6fd84ee21b8488f",
+      "size": 20518,
+      "modified": "2025-06-10T11:39:38.717703",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/Case_Study_Materials.tex"
+    },
+    "neural_spde.tex": {
+      "hash": "c2049c76f20f97a4040be4dbf829e93eb0e06795d4b16a4ba840e6b9a3afcd85",
+      "size": 2259,
+      "modified": "2025-06-10T11:39:38.722072",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/neural_spde.tex"
+    },
+    "generalized_hamiltonian_nn.tex": {
+      "hash": "6f10aff355f23a833d98ca8f7cd25b505e671d42118528c0285876a49148ece4",
+      "size": 6675,
+      "modified": "2025-06-10T11:39:38.718901",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/generalized_hamiltonian_nn.tex"
+    },
+    "method_of_images.tex": {
+      "hash": "582a21a8d4b3ec1998fb7a5f571cc8b5d942aba03dda133ca10f462045ea77fb",
+      "size": 2462,
+      "modified": "2025-06-10T11:39:38.705739",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/method_of_images.tex"
+    },
+    "PINNs_Schrodinger.tex": {
+      "hash": "a45c55f316aa6890da9a487c5149b5ea34490272f97f15521ea5b318b109adfc",
+      "size": 4960,
+      "modified": "2025-06-10T11:39:38.724477",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/PINNs_Schrodinger.tex"
+    },
+    "part_diffphys_neural_potential.tex": {
+      "hash": "bbda9f374a15bb0b3096cdc125b324175103d04a7d28e7c5516cd74897fd633e",
+      "size": 2476,
+      "modified": "2025-06-10T11:39:38.944591",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/part_diffphys_neural_potential.tex"
+    },
+    "numerical_odes.tex": {
+      "hash": "2a25461e0ca3013bdf1a9b399a67d0cb39aeb053854dc8a3a524652bdf12ef29",
+      "size": 21508,
+      "modified": "2025-06-10T11:39:38.691978",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/numerical_odes.tex"
+    },
+    "quantum_oscillators.tex": {
+      "hash": "2ea1b43a8cb315618c47b08513cfccb716d183dad69057b09c4cd5b10f534fbc",
+      "size": 7695,
+      "modified": "2025-06-10T11:39:38.712449",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/quantum_oscillators.tex"
+    },
+    "lecture_48.tex": {
+      "hash": "70f8babce327ac892e367748bd64be40c82f8f193e0412530de2e229a7efba8c",
+      "size": 429,
+      "modified": "2025-06-10T11:39:38.942279",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/lecture_48.tex"
+    },
+    "selfies.tex": {
+      "hash": "a4caf741d1ea9f1c29b5fc565c70030d49564bab2215e59b842f396507eb308f",
+      "size": 1357,
+      "modified": "2025-06-10T11:39:38.721076",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/selfies.tex"
+    },
+    "lecture_60.tex": {
+      "hash": "db670c377942f1eda7f089bd8ec86c76ce61ad80365ef994f4c2ab97b5b6f83a",
+      "size": 165,
+      "modified": "2025-06-10T11:39:38.943107",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/lecture_60.tex"
+    },
+    "neural_quantum_fields.tex": {
+      "hash": "90a591ae7f072961e17c90d325a168db653822816775daf2c52b882c6f885eb1",
+      "size": 8064,
+      "modified": "2025-06-10T11:39:38.725112",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/neural_quantum_fields.tex"
+    },
+    "lecture_5.tex": {
+      "hash": "f519e774ae87b393fbfa76e92f079c5fe70097da8505d0cdc772451cb757cb64",
+      "size": 464,
+      "modified": "2025-06-10T11:39:38.942395",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/lecture_5.tex"
+    },
+    "lattice_graph_convs.tex": {
+      "hash": "9faff90dce42935d73bf5cdc98b4bb2fc9e98cff49b6acd7f60d650dd3d46d72",
+      "size": 17750,
+      "modified": "2025-06-10T11:39:38.718249",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/lattice_graph_convs.tex"
+    },
+    "tensor_network_machine_learning.tex": {
+      "hash": "5c201fdae52a28a55af403a3bb77df706e7c143dd2d5c227c2a670085ffcb380",
+      "size": 4838,
+      "modified": "2025-06-10T11:39:38.716448",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/tensor_network_machine_learning.tex"
+    },
+    "hopfield_networks.tex": {
+      "hash": "37e6714ad55b531a7237e20495c5eaa87d7bfc0addb2f1047a441cd76ac757e4",
+      "size": 661,
+      "modified": "2025-06-10T11:39:38.699987",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/hopfield_networks.tex"
+    },
+    "regularization.tex": {
+      "hash": "d23134ef21f93ec6ce98528771aa3bb36f7dcbd2edd9b139984e22568ec2149a",
+      "size": 2744,
+      "modified": "2025-06-10T11:39:38.710774",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/regularization.tex"
+    },
+    "gaussian_integrals.tex": {
+      "hash": "46d56f688d35009da424e17f80c8a5363ba01652742184b96de647788c20f151",
+      "size": 4180,
+      "modified": "2025-06-10T11:39:38.694861",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/gaussian_integrals.tex"
+    },
+    "kernel_methods.tex": {
+      "hash": "c14c124fe7c4c1afd11192aaae87a67b5da1522f8ea93a29d76ef72ba9a4221b",
+      "size": 2249,
+      "modified": "2025-06-10T11:39:38.697832",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/kernel_methods.tex"
+    },
+    "angular_momentum.tex": {
+      "hash": "1db7a1ff39c73fd3e2c60fa5f1bf0d67e88c0ec09ad174b9d1d6ec71eb388c77",
+      "size": 1824,
+      "modified": "2025-06-10T11:39:38.706793",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/angular_momentum.tex"
+    },
+    "neural_operators.tex": {
+      "hash": "d6708976c8c727e7fde27936b7959730d6cf842dabd2643dbe688967f3b55770",
+      "size": 12411,
+      "modified": "2025-06-10T11:39:38.722003",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/neural_operators.tex"
+    },
+    "noether_networks.tex": {
+      "hash": "3756911d873ee7d5e99aa2400f59f45a77b10f20b823f67e6a447c126b5768eb",
+      "size": 2412,
+      "modified": "2025-06-10T11:39:38.719724",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/noether_networks.tex"
+    },
+    "lecture_7.tex": {
+      "hash": "f5798288e1253333f3566478921df4c159c089c190bcb984d8c2635dfb477c6d",
+      "size": 396,
+      "modified": "2025-06-10T11:39:38.943164",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/lecture_7.tex"
+    },
+    "frontmatter.tex": {
+      "hash": "473dd38eb149ecef4b95200d17b5fd9d73b7f4ae6071615b2bbd840f68d7c36a",
+      "size": 1660,
+      "modified": "2025-06-10T11:39:38.726335",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/frontmatter.tex"
+    },
+    "deep_gaussian.tex": {
+      "hash": "4e99bf1038d9ee863fb3b2d07c1bcc655e73c1fbd3cd580ff52e0129046428a4",
+      "size": 2515,
+      "modified": "2025-06-10T11:39:38.700115",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/deep_gaussian.tex"
+    },
+    "dependent_types.tex": {
+      "hash": "0d7e19a298f1e3cd54958f84206a30990ca2054a71301396a4cbdf47df192197",
+      "size": 3146,
+      "modified": "2025-06-10T11:39:38.703383",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/dependent_types.tex"
+    },
+    "the_standard_model.tex": {
+      "hash": "cf08aa7beabfac06ece0f4dce4274686bddfbce51ef36f66fe67ec534a7faa85",
+      "size": 3612,
+      "modified": "2025-06-10T11:39:38.710993",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/the_standard_model.tex"
+    },
+    "molecular_graph_convs.tex": {
+      "hash": "d819e460691384f50280e2cd474e5ee1f005e4e7081d317159212339273e0237",
+      "size": 11256,
+      "modified": "2025-06-10T11:39:38.720791",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/molecular_graph_convs.tex"
+    },
+    "special_functions.tex": {
+      "hash": "adee4eac364d474da3fd640bbe63a98b5f1c348fdd6e56df2952b39bd8d193b5",
+      "size": 7063,
+      "modified": "2025-06-10T11:39:38.697029",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/special_functions.tex"
+    },
+    "distributions.tex": {
+      "hash": "5e59a547310721602b9a9584c0dc3de5976c35286a4588e3992f2b6ff166f20a",
+      "size": 6253,
+      "modified": "2025-06-10T11:39:38.694582",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/distributions.tex"
+    },
+    "sturm_liouville_theory.tex": {
+      "hash": "92d8dcfbbf8fff51221bd6d7dd0c9891cc62515c1d0c4a7ce0a6beb6fe1c9255",
+      "size": 2808,
+      "modified": "2025-06-10T11:39:38.697252",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/sturm_liouville_theory.tex"
+    },
+    "photon_gas.tex": {
+      "hash": "fe3434b3139d3efe4c9700fc1c18b5a8f25e4475a6f5393d57ab808748bd408c",
+      "size": 11843,
+      "modified": "2025-06-10T11:39:38.715186",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/photon_gas.tex"
+    },
+    "gauss_elimination.tex": {
+      "hash": "a9aec98bf27bf6c5ea501e59301fd817b34251a6c4c0c7a6c3ecacb36140f260",
+      "size": 10125,
+      "modified": "2025-06-10T11:39:38.700670",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/gauss_elimination.tex"
+    },
+    "neural_model_recovery.tex": {
+      "hash": "53461b197a813aef83e544b202e4a5b8149d3d284bb728214385a2559595f151",
+      "size": 4302,
+      "modified": "2025-06-10T11:39:38.721891",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/neural_model_recovery.tex"
+    },
+    "ode_systems.tex": {
+      "hash": "aec3b2b70f45d11efc74422b5e8463e426455fdd70fc3d71aca2038ddfb0e41a",
+      "size": 10226,
+      "modified": "2025-06-10T11:39:38.701880",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/ode_systems.tex"
+    },
+    "part_diffphys_fluid_ml.tex": {
+      "hash": "0f02340f96a8d39dd0ed79639833cada0a4c65a5b0c1a333f0201d83661f7047",
+      "size": 1046,
+      "modified": "2025-06-10T11:39:38.944114",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/part_diffphys_fluid_ml.tex"
+    },
+    "lecture_6.tex": {
+      "hash": "2d202d41eaea978def1a75a0953a301ce2a1db53e6d074cc0c1ea27cd3659ef2",
+      "size": 386,
+      "modified": "2025-06-10T11:39:38.943053",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/lecture_6.tex"
+    },
+    "quantum_mechanics.tex": {
+      "hash": "69e6e512bbe63d856aaf68099b1661d928b17c56ff23037beef2cf6c417cce48",
+      "size": 14285,
+      "modified": "2025-06-10T11:39:38.712315",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/quantum_mechanics.tex"
+    },
+    "phase_field_methods.tex": {
+      "hash": "274597077b764cc3747c11fa447bca6b7c3145d2974cc6b8bfb8295d6fb08d83",
+      "size": 302,
+      "modified": "2025-06-10T11:39:38.704240",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/phase_field_methods.tex"
+    },
+    "book.tex": {
+      "hash": "73c9f71615417eb37353f6988c70e8c6d537cc2aeb43c9ae842a6722dd70dd5d",
+      "size": 1062,
+      "modified": "2025-06-10T11:39:38.690640",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/book.tex"
+    },
+    "lorentz_equivariant_networks.tex": {
+      "hash": "e2715ee89d1dc5c50046ff1871c591988de6913c14a2c824aaad6f7444c93dfc",
+      "size": 4694,
+      "modified": "2025-06-10T11:39:38.717567",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/lorentz_equivariant_networks.tex"
+    },
+    "greens_equations.tex": {
+      "hash": "b1b08b1366c39a8fa80067a91e12d6762b0eea335d1a05b7166fc9e0779d6915",
+      "size": 2382,
+      "modified": "2025-06-10T11:39:38.695080",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/greens_equations.tex"
+    },
+    "variational_quantum_algorithms.tex": {
+      "hash": "98ed8b12134ae371c0492b673053f0d5ff8be727c1ce21a02269936e2b033140",
+      "size": 3353,
+      "modified": "2025-06-10T11:39:38.709216",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/variational_quantum_algorithms.tex"
+    },
+    "part_diffphys_cosmology_ml.tex": {
+      "hash": "5f173bcd2787ad85e77b03fe1829705611d8240ea54588b3b7249c77048b5aac",
+      "size": 140,
+      "modified": "2025-06-10T11:39:38.943931",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/part_diffphys_cosmology_ml.tex"
+    },
+    "deep_electronic_schrodingers.tex": {
+      "hash": "4232a552a484b17826925f2993051e3958b1815ae86f3f3ee248a2c5e64242c0",
+      "size": 8520,
+      "modified": "2025-06-10T11:39:38.715869",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/deep_electronic_schrodingers.tex"
+    },
+    "fundamentals_materials_characterization.tex": {
+      "hash": "280a77a2f956ad3639353802f9e21f62002b9f0ba6843d7062d1247af42e02f1",
+      "size": 10884,
+      "modified": "2025-06-10T11:39:38.718146",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/fundamentals_materials_characterization.tex"
+    },
+    "multilayer_perceptrons.tex": {
+      "hash": "4e9d21135b06068349032d158e944f9749a0f066cea10725968becf8739aaf96",
+      "size": 4780,
+      "modified": "2025-06-10T11:39:38.697989",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/multilayer_perceptrons.tex"
+    },
+    "geometric_convolutional_networks.tex": {
+      "hash": "c3a8f5d681d620a937f24d1338820a520e73299c2e3428ad1363e67a0309a96f",
+      "size": 1997,
+      "modified": "2025-06-10T11:39:38.719414",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/geometric_convolutional_networks.tex"
+    },
+    "position_and_momentum_operators.tex": {
+      "hash": "13c06656c6d7fa9b684f678cae7cc0cf5c4c17532ead7dd8d24c4c983ff86d2e",
+      "size": 8653,
+      "modified": "2025-06-10T11:39:38.712179",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/position_and_momentum_operators.tex"
+    },
+    "lecture_52.tex": {
+      "hash": "7a44795a7bf6130349314db4c3d58dafd577cc926c30ef227ad8278a22e69f00",
+      "size": 445,
+      "modified": "2025-06-10T11:39:38.942593",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/lecture_52.tex"
+    },
+    "lecture_46.tex": {
+      "hash": "ec315b52be85893a77dfe5db079b2e009dbb6e32be78b42e7da97880de633ff3",
+      "size": 360,
+      "modified": "2025-06-10T11:39:38.942159",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/lecture_46.tex"
+    },
+    "lecture_CMU_2023_3.tex": {
+      "hash": "1875897bfe9c08f38c57d6804ccf3be0f130d8c59bdcbd1c9e803d49bb435651",
+      "size": 768,
+      "modified": "2025-06-10T11:39:38.943322",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/lecture_CMU_2023_3.tex"
+    },
+    "ordinary_differential_equations.tex": {
+      "hash": "43d26309202b98b8c8d0c14b86c400b8213bb20b8b947bd53384d562357268e2",
+      "size": 8494,
+      "modified": "2025-06-10T11:39:38.696373",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/ordinary_differential_equations.tex"
+    },
+    "energy_based_models.tex": {
+      "hash": "1185de6a8d280df3d7fb45465363ca5e14dc084267fc49b17e127eb3ec47d95e",
+      "size": 12248,
+      "modified": "2025-06-10T11:39:38.698294",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/energy_based_models.tex"
+    },
+    "ML_basics.tex": {
+      "hash": "75b1a6fa3241ba3839b47474c52b88af09deb6e50df0a9e7ca06fc8bbba4a834",
+      "size": 14996,
+      "modified": "2025-06-10T11:39:38.699772",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/ML_basics.tex"
+    },
+    "data_interpolation.tex": {
+      "hash": "6a894b8ee40f103e9e1a30fba6a3ef8cd506f2ce340bf2f82da43f769e10969f",
+      "size": 18144,
+      "modified": "2025-06-10T11:39:38.691043",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/data_interpolation.tex"
+    },
+    "type_theory.tex": {
+      "hash": "476782ee8a1c0c52e6977bb4f3d46a848b1eae3597ade38644682371ba212f94",
+      "size": 3603,
+      "modified": "2025-06-10T11:39:38.704127",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/type_theory.tex"
+    },
+    "part_diffphys_gr_ml.tex": {
+      "hash": "c98e8732592ce698d9882f5ff07f38f9431185497741b56d566a932e0efb504e",
+      "size": 353,
+      "modified": "2025-06-10T11:39:38.944169",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/part_diffphys_gr_ml.tex"
+    },
+    "lecture_47.tex": {
+      "hash": "be4746c007b1e2edaba9a75fabd05778ce7f1d873e95e5a64ee7b1cd512fd6c8",
+      "size": 473,
+      "modified": "2025-06-10T11:39:38.942217",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/lecture_47.tex"
+    },
+    "lecture_53.tex": {
+      "hash": "25522ab5364349f0285a3de85fd1b092555cf91706d7d5996bdb8b33c9da7a12",
+      "size": 633,
+      "modified": "2025-06-10T11:39:38.942657",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/lecture_53.tex"
+    },
+    "differentiable_md.tex": {
+      "hash": "4fd07f84e26f7a46d34d209c5b983a6df713576ea710d1c8eef0328a3ce21e95",
+      "size": 4412,
+      "modified": "2025-06-10T11:39:38.723403",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/differentiable_md.tex"
+    },
+    "feynman_ex1.tex": {
+      "hash": "5d2d564a0b4a3bebfeebdd66b410f8460478c7c774d33b5979cf5f0f8dfe8da1",
+      "size": 619,
+      "modified": "2025-06-10T11:39:38.777992",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/feynman_ex1.tex"
+    },
+    "linear_least_squares_cont.tex": {
+      "hash": "5be8cc04a8557919f1a78be4f6a94f30ff13fee1658e6241711f2e229da0508e",
+      "size": 8636,
+      "modified": "2025-06-10T11:39:38.691704",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/linear_least_squares_cont.tex"
+    },
+    "part_diffphys_deep_quantum.tex": {
+      "hash": "7f3a7643dbb27c7640e9cada879751686f0a23eefdec57ffd4239152301b14f9",
+      "size": 2382,
+      "modified": "2025-06-10T11:39:38.943995",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/part_diffphys_deep_quantum.tex"
+    },
+    "part_diffphys_quantum_computing_ml.tex": {
+      "hash": "dd2f4530bd298ee3a62753f55d77178e573a2dbe9a22fd9f603b1b755d90eaa8",
+      "size": 998,
+      "modified": "2025-06-10T11:39:38.944712",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/part_diffphys_quantum_computing_ml.tex"
+    },
+    "Molecular_ML.tex": {
+      "hash": "cac1381cb9d0fd523c065fa7474674487ca82510ce2a40f1bfea6fb45c2b54cf",
+      "size": 8296,
+      "modified": "2025-06-10T11:39:38.720287",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/Molecular_ML.tex"
+    },
+    "rough_draft_old.tex": {
+      "hash": "bf4030a4e6187be13f230c0fe619e1a36fb0897b659737185eb7e52aaa0353f0",
+      "size": 745,
+      "modified": "2025-06-10T11:39:38.945808",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/rough_draft_old.tex"
+    },
+    "RNNs.tex": {
+      "hash": "331038dc2b068fb02ab422db4c24b86dce0e93482de18def0fb56b346ef1baec",
+      "size": 7274,
+      "modified": "2025-06-10T11:39:38.698699",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/RNNs.tex"
+    },
+    "lecture_notes.tex": {
+      "hash": "f0441b13fee330572ce0645d60b30c792fcab5977e2d8e6ccb5a711ea4b55f28",
+      "size": 1396,
+      "modified": "2025-06-10T11:39:38.943432",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/lecture_notes.tex"
+    },
+    "part_diffphys_materials_ml.tex": {
+      "hash": "956178cbec56e8b42059db58d1f98dfc9a31b2296bb1db4f8000414261889101",
+      "size": 1200,
+      "modified": "2025-06-10T11:39:38.944283",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/part_diffphys_materials_ml.tex"
+    },
+    "lecture_8.tex": {
+      "hash": "9a7ed9bbfd0dc09921ecac5e5251655fbec2e0e59b8f7591ba7766ba027f5ee9",
+      "size": 354,
+      "modified": "2025-06-10T11:39:38.943219",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/lecture_8.tex"
+    },
+    "PINNs_backup.tex": {
+      "hash": "d3ff51686b0d93b3f0e929ec89bb29527eca8bc98e976083de889af01c89ed3f",
+      "size": 42831,
+      "modified": "2025-06-10T11:39:38.693067",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/PINNs_backup.tex"
+    },
+    "part_diffphys_meshes_and_shapes.tex": {
+      "hash": "930179a46f868afcca4e718f6d00cea511d0b7b1c3c17489e6f56454c04fc75a",
+      "size": 1147,
+      "modified": "2025-06-10T11:39:38.944405",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/part_diffphys_meshes_and_shapes.tex"
+    },
+    "lecture_45.tex": {
+      "hash": "c336f7aa9eaf17a31805765d78224721869bc998d8d3ebb677bb894d0278a60c",
+      "size": 487,
+      "modified": "2025-06-10T11:39:38.942100",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/lecture_45.tex"
+    },
+    "part_prog_NumericalMethods.tex": {
+      "hash": "b9bf6e0f5e466997037852c6589f5d8a2acd23e5e638c776f4d0490b49fd4be2",
+      "size": 249,
+      "modified": "2025-06-10T11:39:38.945650",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/part_prog_NumericalMethods.tex"
+    },
+    "autoencoders.tex": {
+      "hash": "31cb4aeb2a4e0a0ba26d669eedfebc9ce8f8cd09fbd1d17e3f3508623851228c",
+      "size": 4507,
+      "modified": "2025-06-10T11:39:38.698181",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/autoencoders.tex"
+    },
+    "imaginary_time_path_integrals.tex": {
+      "hash": "a263657c83f92f7cb075f455bb0d14e6a8e75a38488655974a6d4884f9f927a4",
+      "size": 1173,
+      "modified": "2025-06-10T11:39:38.714389",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/imaginary_time_path_integrals.tex"
+    },
+    "lecture_51.tex": {
+      "hash": "2b2e01331d4b5fb42a4e529bf8ebd6f972bab4712900c5512bfa9fc72f487c09",
+      "size": 429,
+      "modified": "2025-06-10T11:39:38.942525",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/lecture_51.tex"
+    },
+    "perturbative_correlation.tex": {
+      "hash": "24f0904f0ab715f1c3877bcf509b0b291a2f9a98a00aec76d97a3c002c66cb39",
+      "size": 5382,
+      "modified": "2025-06-10T11:39:38.710423",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/perturbative_correlation.tex"
+    },
+    "part_diffphys_neural_diff_eq.tex": {
+      "hash": "e58702ef1f3032dbc7162770d85baee8581b108a2a4e3f39dbbf8761cb2c7eeb",
+      "size": 685,
+      "modified": "2025-06-10T11:39:38.944530",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/part_diffphys_neural_diff_eq.tex"
+    },
+    "imaginary_time_quantum_mechanics.tex": {
+      "hash": "99b67c98f1c0f63481afa9ca98867c8ad64a7c3048d33293dcea377a222c8021",
+      "size": 2154,
+      "modified": "2025-06-10T11:39:38.714460",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/imaginary_time_quantum_mechanics.tex"
+    },
+    "density_functional_theory.tex": {
+      "hash": "a5361a649d071b3aed0580ff914311c4da8a80ae2252a5fdb453b708b0d33333",
+      "size": 13919,
+      "modified": "2025-06-10T11:39:38.708437",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/density_functional_theory.tex"
+    },
+    "fluid_dynamics.tex": {
+      "hash": "d003d92708c82b6055cb6b00c2e7ec534fdb151e3c0a54743455efce2d1f3fcd",
+      "size": 10192,
+      "modified": "2025-06-10T11:39:38.706211",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/fluid_dynamics.tex"
+    },
+    "part_physics_general_relativity.tex": {
+      "hash": "3242eefb5d8afb82780790a0d8bc157018aa32194ff858b826b8050472d740ed",
+      "size": 352,
+      "modified": "2025-06-10T11:39:38.945068",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/part_physics_general_relativity.tex"
+    },
+    "chgnet.tex": {
+      "hash": "4ec71800100452a36387c944064140c2a79891f8224802ffb498e39b1820bb97",
+      "size": 2096,
+      "modified": "2025-06-10T11:39:38.722946",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/chgnet.tex"
+    },
+    "lecture_50.tex": {
+      "hash": "b971e4ae169c755ac853cb73872bf7c584996f48b4f93cab79ae8924b9409e24",
+      "size": 334,
+      "modified": "2025-06-10T11:39:38.942456",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/lecture_50.tex"
+    },
+    "lecture_44.tex": {
+      "hash": "b95f69f90ba9f3a46e56c5ff08b99b075d5a18bccc06e28e43f0a77a0072095d",
+      "size": 405,
+      "modified": "2025-06-10T11:39:38.942039",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/lecture_44.tex"
+    },
+    "Case_Study_MolecularProperties.tex": {
+      "hash": "05e5fe443fdcd118e9bfc5fa1070f0044dc66f4a0c3af44df02ab9ec293d611d",
+      "size": 14236,
+      "modified": "2025-06-10T11:39:38.720124",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/Case_Study_MolecularProperties.tex"
+    },
+    "lecture_9.tex": {
+      "hash": "6cc1e07d80da5308a65129cdf4ae4c7bfe3960e72948c09e835c0237469c1b7f",
+      "size": 394,
+      "modified": "2025-06-10T11:39:38.943274",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/lecture_9.tex"
+    },
+    "quantum_advantage_ml.tex": {
+      "hash": "6f9463cbc13bf3f28e1cb298fe720db820e06c661d913eb9a3c175cfb4d01829",
+      "size": 1861,
+      "modified": "2025-06-10T11:39:38.725329",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/quantum_advantage_ml.tex"
+    },
+    "turbulent_mixing.tex": {
+      "hash": "0da412a327822f706e58c81daeaf78b53542328e9fd212ff0e84fa2b77a3b473",
+      "size": 3935,
+      "modified": "2025-06-10T11:39:38.717330",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/turbulent_mixing.tex"
+    },
+    "hindley_milner.tex": {
+      "hash": "ef71549fef8b493256c9ecad4b39efbf7b239380f6d800b528e49f44a0f566ac",
+      "size": 15264,
+      "modified": "2025-06-10T11:39:38.703736",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/hindley_milner.tex"
+    },
+    "path_integral_free_particle.tex": {
+      "hash": "f9d6037e3e008afe880a8cf5f740bba1c63efaf0b08916a6255c91b420274523",
+      "size": 1977,
+      "modified": "2025-06-10T11:39:38.711613",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/path_integral_free_particle.tex"
+    },
+    "numerical_integration.tex": {
+      "hash": "b4ca9f4dc5ec747481eb4da1a627a5602284081a34a5dff6f0e1ede33fdba497",
+      "size": 34669,
+      "modified": "2025-06-10T11:39:38.691844",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/numerical_integration.tex"
+    },
+    "lattice_qft.tex": {
+      "hash": "eb8bb7262d36a473a719434b29a672212b08483ce4ea69a34f6908f045d828ad",
+      "size": 859,
+      "modified": "2025-06-10T11:39:38.710296",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/lattice_qft.tex"
+    },
+    "a_differentiable_theory_of_phase_transition.tex": {
+      "hash": "9feab1f9377d6e0b7b25df41d119e3b7a53e4b3f08c3862210ffdc24f55ad32b",
+      "size": 14538,
+      "modified": "2025-06-10T11:39:38.725667",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/a_differentiable_theory_of_phase_transition.tex"
+    },
+    "neural_tangent_kernel.tex": {
+      "hash": "8cac2ca96a46899e1084bcda88b710aadf226af48d35174bd1e871e9ca7b8e19",
+      "size": 4383,
+      "modified": "2025-06-10T11:39:38.700246",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/neural_tangent_kernel.tex"
+    },
+    "chapter17_intro_ML_Physics_part3.tex": {
+      "hash": "a3a91cb172d52c5c13dfb1481fd4a04797aa3880a0049017df9262cc15983691",
+      "size": 16294,
+      "modified": "2025-06-10T11:39:38.693544",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/chapter17_intro_ML_Physics_part3.tex"
+    },
+    "schrodingers_equation.tex": {
+      "hash": "cc7a05bc4b6af92d884b2adddd89b5d6345036491a3b873e2eef629bf23ee2d7",
+      "size": 4512,
+      "modified": "2025-06-10T11:39:38.712794",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/schrodingers_equation.tex"
+    },
+    "lecture_40.tex": {
+      "hash": "e567628d16ede40743e2f23a4a66f2c49aa32b8ebc542ed8b4ad5a95b04e25e1",
+      "size": 403,
+      "modified": "2025-06-10T11:39:38.941815",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/lecture_40.tex"
+    },
+    "lecture_54.tex": {
+      "hash": "8ffee00732fade4d0ddadbb15508ef7b72925519ac617fd0227cb6be3686f174",
+      "size": 302,
+      "modified": "2025-06-10T11:39:38.942716",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/lecture_54.tex"
+    },
+    "high_dimensional_pde.tex": {
+      "hash": "b29b26c844e98f94e6591e39ee65863e581784cb7ae9ebeb993674204946f389",
+      "size": 6901,
+      "modified": "2025-06-10T11:39:38.721668",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/high_dimensional_pde.tex"
+    },
+    "spectroscopy.tex": {
+      "hash": "0ae15b27a6fce3fc565076cb0d0ad71beb392b34bf204fe992a86da76f4394e6",
+      "size": 7365,
+      "modified": "2025-06-10T11:39:38.704964",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/spectroscopy.tex"
+    },
+    "reynolds_number_and_turbulent_flow.tex": {
+      "hash": "184810313842076447d0c355e6109101c7ac09efb7cb595b2a10063149830c42",
+      "size": 4354,
+      "modified": "2025-06-10T11:39:38.706332",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/reynolds_number_and_turbulent_flow.tex"
+    },
+    "neural_ode.tex": {
+      "hash": "1f7984c010a510e91c07ac690a66efaa4439ed6e90f74bbc0393f3a421e2eac6",
+      "size": 17766,
+      "modified": "2025-06-10T11:39:38.700459",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/neural_ode.tex"
+    },
+    "dirac_equation.tex": {
+      "hash": "babcb06924e7732b6129145bd6eda1d193f74259f9c83c0b78045b581397a3eb",
+      "size": 3342,
+      "modified": "2025-06-10T11:39:38.711336",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/dirac_equation.tex"
+    },
+    "ensembles.tex": {
+      "hash": "38ba76072ca2ccad6a246a163e8d345be292678d2dfa6d1c50454614d7fe2fb8",
+      "size": 21246,
+      "modified": "2025-06-10T11:39:38.714074",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/ensembles.tex"
+    },
+    "robotic_simulation.tex": {
+      "hash": "94bac51b0fb5173d55e5256bab82afb3e1f099b546e3813fbeea7fc27f2a4bc3",
+      "size": 7950,
+      "modified": "2025-06-10T11:39:38.719010",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/robotic_simulation.tex"
+    },
+    "pretraining_molecules.tex": {
+      "hash": "ee8bf990e9bf18efcd66ca0358331d98268b328c7351b0cfcdef948a8f5f0f8a",
+      "size": 1471,
+      "modified": "2025-06-10T11:39:38.720916",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/pretraining_molecules.tex"
+    },
+    "ising_model.tex": {
+      "hash": "3b04cddf3f77309e2bfa0401f5cc1b14714b8346fe742dbb67cd7a0b8fd5b8b1",
+      "size": 16696,
+      "modified": "2025-06-10T11:39:38.714556",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/ising_model.tex"
+    },
+    "integration_trapezoidal.tex": {
+      "hash": "93e5aa8db5cc9f32398857cdba7fe03389ed2b1d298ae1ce66f1ef8d2f9027b8",
+      "size": 11541,
+      "modified": "2025-06-10T11:39:38.701225",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/integration_trapezoidal.tex"
+    },
+    "condensed_matter.tex": {
+      "hash": "0ddb091723ac7ee0992a462e9fd423b2032f8f0be38c04174fed6361df5f9daa",
+      "size": 35460,
+      "modified": "2025-06-10T11:39:38.692416",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/condensed_matter.tex"
+    },
+    "nonlinear_systems.tex": {
+      "hash": "cf04db07b303802039eefdcba8840925ad511e902993be8380669f56522c7ccd",
+      "size": 11173,
+      "modified": "2025-06-10T11:39:38.702772",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/nonlinear_systems.tex"
+    },
+    "lecture_55.tex": {
+      "hash": "a2c80f2f08d6cfac1c8b81bc35809fe16fbfee08101a3aba2a7c844d8ad01549",
+      "size": 431,
+      "modified": "2025-06-10T11:39:38.942770",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/lecture_55.tex"
+    },
+    "lecture_41.tex": {
+      "hash": "fa0276f2a767c4b9555e2054e52ffadb915718e46d4d0a7d9e9163fbbf4daf78",
+      "size": 481,
+      "modified": "2025-06-10T11:39:38.941875",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/lecture_41.tex"
+    },
+    "level_set_method.tex": {
+      "hash": "3ec9fb7f470d646e1deabb85d19c53a8d816b3168bbf1685a9e6ba363cb815c6",
+      "size": 300,
+      "modified": "2025-06-10T11:39:38.702539",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/level_set_method.tex"
+    },
+    "chapter17_intro_ML_Physics_part2.tex": {
+      "hash": "879358b3204a559fed4874a9eefe46be271a2f5068dd2f4189d8256c00d890c8",
+      "size": 35425,
+      "modified": "2025-06-10T11:39:38.693362",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/chapter17_intro_ML_Physics_part2.tex"
+    },
+    "soap.tex": {
+      "hash": "0d86ab577d92e98ff7de080a115d57a65a8e94c08f2726fb3f883729238dd2c2",
+      "size": 1819,
+      "modified": "2025-06-10T11:39:38.723849",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/soap.tex"
+    },
+    "effective_field_theory.tex": {
+      "hash": "72fc5dfc3570420bd149f58aced2e3b32aa7fbc3d310f0f267314e77d9933ce8",
+      "size": 1789,
+      "modified": "2025-06-10T11:39:38.725806",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/effective_field_theory.tex"
+    },
+    "phase_equilibrium.tex": {
+      "hash": "1c163d7c73e996b7f208e30e668385d1f453c89b2e32dec58f96fba7d790efd3",
+      "size": 21810,
+      "modified": "2025-06-10T11:39:38.715070",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/phase_equilibrium.tex"
+    },
+    "foo.tex": {
+      "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0,
+      "modified": "2025-06-10T11:39:38.945863",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/foo.tex"
+    },
+    "HamiltonianNNs.tex": {
+      "hash": "932a81e6781faa89de356bdcc25790866ceb1cad2aaa725ccf59f50edc2a6224",
+      "size": 3764,
+      "modified": "2025-06-10T11:39:38.718680",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/HamiltonianNNs.tex"
+    },
+    "part_diffphys_PINNs.tex": {
+      "hash": "818f153b3487c4c43205783620dbfbcdd197e0f7fa314381b6897573c8781e41",
+      "size": 426,
+      "modified": "2025-06-10T11:39:38.943800",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/part_diffphys_PINNs.tex"
+    },
+    "hopfield.tex": {
+      "hash": "5c17b0f3201e39840779eeb38cb9866640970e92c6339a57bdbbae9ffcd544d1",
+      "size": 1306,
+      "modified": "2025-06-10T11:39:38.725996",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/hopfield.tex"
+    },
+    "hartree_fock.tex": {
+      "hash": "3437497e74d358342cb7633a7e6f302dd4cc48217bcafe7d451e198c02b60938",
+      "size": 2198,
+      "modified": "2025-06-10T11:39:38.708515",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/hartree_fock.tex"
+    },
+    "lecture_57.tex": {
+      "hash": "1df6f8e68d5d35e5e2631809d4f5baff0e75cf15d5d891fb6c158f692fc7e0e2",
+      "size": 440,
+      "modified": "2025-06-10T11:39:38.942887",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/lecture_57.tex"
+    },
+    "lecture_43.tex": {
+      "hash": "ed98b6488a7bce1c5b0151129bf581051c566256394540f0be4602fb17ea4d92",
+      "size": 454,
+      "modified": "2025-06-10T11:39:38.941984",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/lecture_43.tex"
+    },
+    "angular_momentum_operator.tex": {
+      "hash": "713584296802d9f9b5246ab8ee4387f884a4a4418423e28769fe939451bfff49",
+      "size": 1920,
+      "modified": "2025-06-10T11:39:38.711186",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/angular_momentum_operator.tex"
+    },
+    "part_physics_quantum_computing.tex": {
+      "hash": "f7ba8f7adda6212fc0482a2a7267336f4479953019c6ca59063f252c61a4d71b",
+      "size": 600,
+      "modified": "2025-06-10T11:39:38.945359",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/part_physics_quantum_computing.tex"
+    },
+    "preface.tex": {
+      "hash": "950b1d2f52b3147bb8b436734813b25ee08169a6e98b2292615864710e9788fd",
+      "size": 222,
+      "modified": "2025-06-10T11:39:38.726496",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/preface.tex"
+    },
+    "differentiable_phonon_simulation.tex": {
+      "hash": "a056b4330df8266eba4b6ba9d7dc8823f5d5abfcf992d0797a246a6d66b54c03",
+      "size": 10975,
+      "modified": "2025-06-10T11:39:38.718044",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/differentiable_phonon_simulation.tex"
+    },
+    "MD_foundation_model_engine.tex": {
+      "hash": "fbc5f1540872ffca9d9126c542addb0d7312220048515e1b3ef681a3ee839f99",
+      "size": 748,
+      "modified": "2025-06-10T11:39:38.722426",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/MD_foundation_model_engine.tex"
+    },
+    "automatic_differentiation.tex": {
+      "hash": "7265464c710ecbc3d09817b97ccd5e0b76e69f0e345486baf49a3b6ef4b8531c",
+      "size": 7215,
+      "modified": "2025-06-10T11:39:38.703310",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/automatic_differentiation.tex"
+    },
+    "Case_Study_Water.tex": {
+      "hash": "ada57604e4bc195e7b735a82e4b6bdaf4bc50c3cf24ac909041ea162f2f7362d",
+      "size": 1225,
+      "modified": "2025-06-10T11:39:38.722363",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/Case_Study_Water.tex"
+    },
+    "path_integral_oscillator.tex": {
+      "hash": "1f696b655d99ae015745338e53bc020f9ce689b8cefe57d58e8a7387c750215e",
+      "size": 1473,
+      "modified": "2025-06-10T11:39:38.711689",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/path_integral_oscillator.tex"
+    },
+    "polymers.tex": {
+      "hash": "0a47f634c2d701b718e7d1b48f0d7311231209f80dbd282f58611d066f3b4187",
+      "size": 11848,
+      "modified": "2025-06-10T11:39:38.715292",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/polymers.tex"
+    },
+    "eulers_method.tex": {
+      "hash": "4fa2d853078de7fa99b2da3802f1d2dca27c3989a83cc093fb18cd6e0770bf7b",
+      "size": 12870,
+      "modified": "2025-06-10T11:39:38.701663",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/eulers_method.tex"
+    },
+    "grammars.tex": {
+      "hash": "c610e54d96ca79fb5be300270ca656e08a82c209d7ba9903dd168b4c49a698eb",
+      "size": 2440,
+      "modified": "2025-06-10T11:39:38.703592",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/grammars.tex"
+    },
+    "parabolic_interpolation.tex": {
+      "hash": "c01888926beee10e6752fac63b3d51d7258804144713859513fa62f1d45f0de5",
+      "size": 8434,
+      "modified": "2025-06-10T11:39:38.692120",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/parabolic_interpolation.tex"
+    },
+    "lecture_42.tex": {
+      "hash": "2607889faac056cf63d8a127c102f9eba80ae43b36e2c17b846e035b2359e0c8",
+      "size": 384,
+      "modified": "2025-06-10T11:39:38.941931",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/lecture_42.tex"
+    },
+    "part_physics_mechanics.tex": {
+      "hash": "7f2ff9a3a95f626fa373723337066930c1516f92d56318e74fc3433d1eae5c19",
+      "size": 763,
+      "modified": "2025-06-10T11:39:38.945126",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/part_physics_mechanics.tex"
+    },
+    "lecture_56.tex": {
+      "hash": "5ee0b4fd6c0e6361cea9274ddec5fe96787e875f5a97d3169927be242ac40edf",
+      "size": 343,
+      "modified": "2025-06-10T11:39:38.942828",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/lecture_56.tex"
+    },
+    "liquids.tex": {
+      "hash": "09b01312d90728b0b2294c1d486ca16e8376432a0aa79fa096808a64bdd062f7",
+      "size": 19591,
+      "modified": "2025-06-10T11:39:38.714674",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/liquids.tex"
+    },
+    "stat_thermo_ML.tex": {
+      "hash": "4834acd11c796425cd09e6e3d88844fcdbfe328074a43c0f3fd32282ec589a8e",
+      "size": 20795,
+      "modified": "2025-06-10T11:39:38.726172",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/stat_thermo_ML.tex"
+    },
+    "Mixtures.tex": {
+      "hash": "7a879d1dc03f06a1fd60fa3141c9a14da7a2fc8fb03ac2298c44b309c928014b",
+      "size": 8023,
+      "modified": "2025-06-10T11:39:38.725541",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/Mixtures.tex"
+    },
+    "lie_group_and_lie_algebra.tex": {
+      "hash": "3752c2e1265d4aa84baabb5209630aeb8d5fb375ad39d477e3d8e754e1533c99",
+      "size": 3091,
+      "modified": "2025-06-10T11:39:38.695405",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/lie_group_and_lie_algebra.tex"
+    },
+    "schnet.tex": {
+      "hash": "d99057d092e37ba0f7f43b8c037955509ba88d0698e744d7a6e7249d2635bc58",
+      "size": 3868,
+      "modified": "2025-06-10T11:39:38.723791",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/schnet.tex"
+    },
+    "meta_vqe.tex": {
+      "hash": "3b91c9d027628419fd3944d62a52e084960ede416fb9a916cb9795743b184436",
+      "size": 2563,
+      "modified": "2025-06-10T11:39:38.725270",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/meta_vqe.tex"
+    },
+    "hamiltonian_mechanics.tex": {
+      "hash": "9c0745cb7dd33bdcbd58c641b28bb8f8ccbe489adb97c37adfce6bc868d1a1e5",
+      "size": 3976,
+      "modified": "2025-06-10T11:39:38.706872",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/hamiltonian_mechanics.tex"
+    },
+    "differentiable_quantum_chemistry.tex": {
+      "hash": "48a2a8ba8dbfda8ba137081df1ccd29ec96c6ff2f20216c9b1a7bde164ec50ee",
+      "size": 9343,
+      "modified": "2025-06-10T11:39:38.715970",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/differentiable_quantum_chemistry.tex"
+    },
+    "differentiable_fluid_dynamics.tex": {
+      "hash": "2374c6254894527f4f5ee2353bf6980c95c974fe29a9f447b61ac425583d89e6",
+      "size": 2563,
+      "modified": "2025-06-10T11:39:38.716933",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/differentiable_fluid_dynamics.tex"
+    },
+    "part5.tex": {
+      "hash": "0ab7969a6b2e57ade9fbca5d178091ec224d4b73c171d42382633b4391d93459",
+      "size": 1589,
+      "modified": "2025-06-10T11:39:38.943647",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/part5.tex"
+    },
+    "photosynthesis.tex": {
+      "hash": "4f625134b5efd5c970fa6b6007c72fdd5da20f6ecfe9df17917cb1283726ac0d",
+      "size": 12044,
+      "modified": "2025-06-10T11:39:38.692683",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/photosynthesis.tex"
+    },
+    "lecture_19.tex": {
+      "hash": "4a014e9b7815924469dc944446ffadcdca72210569694117e72b487beb198bad",
+      "size": 265,
+      "modified": "2025-06-10T11:39:38.940477",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/lecture_19.tex"
+    },
+    "lecture_31.tex": {
+      "hash": "53b2bdd3bfd24eb24672af8e82d4fc1c9cb4684561a6fe54777a0dbad47180ed",
+      "size": 413,
+      "modified": "2025-06-10T11:39:38.941231",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/lecture_31.tex"
+    },
+    "lecture_25.tex": {
+      "hash": "71c1ded137befad2d095c27fec737a56344ebe763abc585fe9151f95b08d9b85",
+      "size": 525,
+      "modified": "2025-06-10T11:39:38.940872",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/lecture_25.tex"
+    },
+    "adsorption.tex": {
+      "hash": "e238df19b5e84bb7fd8dc292cda45d21449ecdd81b6f22cef1bf0b0ded6e498c",
+      "size": 14853,
+      "modified": "2025-06-10T11:39:38.713490",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/adsorption.tex"
+    },
+    "cluster_expansion.tex": {
+      "hash": "65c2bd958a6351de26cd55e35b128c0452fd6693f14e433d4596a51b11cfa12c",
+      "size": 7944,
+      "modified": "2025-06-10T11:39:38.723087",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/cluster_expansion.tex"
+    },
+    "lie_transformers.tex": {
+      "hash": "fa3d86048ca61daf3c6037d6a49ccccf07280493be73531371f1afac8d0e05d9",
+      "size": 2724,
+      "modified": "2025-06-10T11:39:38.719598",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/lie_transformers.tex"
+    },
+    "learning_quantum_nns_via_classical_nns.tex": {
+      "hash": "96479eb93062112a39d2fbedd6d3c944df459b4e95c1ddf216fdb46751eaf9fb",
+      "size": 3712,
+      "modified": "2025-06-10T11:39:38.725210",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/learning_quantum_nns_via_classical_nns.tex"
+    },
+    "generating_functions.tex": {
+      "hash": "ca7791509df7886bd653fb98fd79edb8a83022e247696634ec65ba84451f3e2a",
+      "size": 1573,
+      "modified": "2025-06-10T11:39:38.694991",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/generating_functions.tex"
+    },
+    "designing_superconductors.tex": {
+      "hash": "97e7b72f085d5ec41f3fa9245518987252d4976cd97e0ca1a7bd831da9957466",
+      "size": 11121,
+      "modified": "2025-06-10T11:39:38.717946",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/designing_superconductors.tex"
+    },
+    "linear_least_squares.tex": {
+      "hash": "e62cdd8f20b73c303ed1b22a6662ffd5b963f2b12438b274afb47a476319b925",
+      "size": 10167,
+      "modified": "2025-06-10T11:39:38.691591",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/linear_least_squares.tex"
+    },
+    "fermions_and_bosons.tex": {
+      "hash": "5f42fb9715a540af92aa35fb6b66d539f9f2c067dbfcb17bad1a337677c31e42",
+      "size": 1754,
+      "modified": "2025-06-10T11:39:38.704478",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/fermions_and_bosons.tex"
+    },
+    "free_energy_perturbation.tex": {
+      "hash": "9b41628a06a8903d2c7a11dd37c1e9eaf0c7c73360d1b5ba7bb24e9e4f023f8f",
+      "size": 1794,
+      "modified": "2025-06-10T11:39:38.714185",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/free_energy_perturbation.tex"
+    },
+    "chapter17_intro_ML_physics.tex": {
+      "hash": "903af72de47fe89359094e70424e71592fe259170d0cfb76fa0eb3bfd8d1a463",
+      "size": 42643,
+      "modified": "2025-06-10T11:39:38.693685",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/chapter17_intro_ML_physics.tex"
+    },
+    "mace.tex": {
+      "hash": "21df08e28aacbc42e4b481e95a655d1c438c0267f3f9661bfb912b8ab749a5b3",
+      "size": 1373,
+      "modified": "2025-06-10T11:39:38.723638",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/mace.tex"
+    },
+    "xpinns.tex": {
+      "hash": "281a10452ffc3ee5c82b6c62c1687acb2843711bcd21f1c4c97a3f70073642e3",
+      "size": 2211,
+      "modified": "2025-06-10T11:39:38.724832",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/xpinns.tex"
+    },
+    "water.tex": {
+      "hash": "ffe27bda5421df6fcfc9d4d8724c3a82332fb84d97460fe3ed8e6e8168ef03b2",
+      "size": 18564,
+      "modified": "2025-06-10T11:39:38.692874",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/water.tex"
+    },
+    "lecture_24.tex": {
+      "hash": "ed1b4c8f948df064bdba0d7645719e9b15b3a4839da166b019ab2e935b29dc89",
+      "size": 538,
+      "modified": "2025-06-10T11:39:38.940817",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/lecture_24.tex"
+    },
+    "quantum_field_theory.tex": {
+      "hash": "614e1f86cf22ffdb9806254d269e3a3d1005f081fbc928a7aaa79aae625bbad4",
+      "size": 6955,
+      "modified": "2025-06-10T11:39:38.710694",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/quantum_field_theory.tex"
+    },
+    "lecture_30.tex": {
+      "hash": "3cc18fc526d4c84a6a365d803abaf81a15fa655ed41dbe5678d04855fe69b31c",
+      "size": 445,
+      "modified": "2025-06-10T11:39:38.941183",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/lecture_30.tex"
+    },
+    "lecture_18.tex": {
+      "hash": "a6ad85d0b03e89a80b572bc61a315ce14e56206ecc730329d7d3f4965fadba28",
+      "size": 326,
+      "modified": "2025-06-10T11:39:38.940422",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/lecture_18.tex"
+    },
+    "electrostatics_and_electric_field.tex": {
+      "hash": "75f647a6b6f01f7e30a3187f6537c5af4417d421bfab2f6a9668ab3aeeba3459",
+      "size": 16204,
+      "modified": "2025-06-10T11:39:38.705489",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/electrostatics_and_electric_field.tex"
+    },
+    "maxwells_equations.tex": {
+      "hash": "2efdd987d496af704d4defcad9bca787fff87d9dabe0fa22a5c88d1854f817fd",
+      "size": 4808,
+      "modified": "2025-06-10T11:39:38.705674",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/maxwells_equations.tex"
+    },
+    "part4.tex": {
+      "hash": "5704624f38b8dbca3d655b8ed6792098b31e6c9bc6dbc83552d84eeec2c801db",
+      "size": 1982,
+      "modified": "2025-06-10T11:39:38.943596",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/part4.tex"
+    },
+    "phase_transitions_neural_networks.tex": {
+      "hash": "bf60bf816e7712c68a684f910f158ad1240e45f6fe822ad1afc90b38d2329422",
+      "size": 8200,
+      "modified": "2025-06-10T11:39:38.726089",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/phase_transitions_neural_networks.tex"
+    },
+    "perturbation_theory.tex": {
+      "hash": "3f52fafd5c1e2f6774288ce8169b6242b7d7fcae789f928dc0188c24e6d5d1e2",
+      "size": 1241,
+      "modified": "2025-06-10T11:39:38.712071",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/perturbation_theory.tex"
+    },
+    "transformers.tex": {
+      "hash": "c083b79c0d2e8c7a159acbb1009c91bb20d315d209591c9e1e6bfebde6176b47",
+      "size": 8555,
+      "modified": "2025-06-10T11:39:38.699325",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/transformers.tex"
+    },
+    "electrolytes.tex": {
+      "hash": "c9bdd429db7c0de73c15aa54c632380eee583e13a372d1bad53cad61c9197fc1",
+      "size": 14254,
+      "modified": "2025-06-10T11:39:38.713974",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/electrolytes.tex"
+    },
+    "creation_and_annihilation_operators.tex": {
+      "hash": "498d05f3492dd5d333a4bb54ae1e88574cb201a6592406b9a8fe0bd4a21a97c9",
+      "size": 2888,
+      "modified": "2025-06-10T11:39:38.711264",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/creation_and_annihilation_operators.tex"
+    },
+    "part_prog_ProgrammingLanguages.tex": {
+      "hash": "4907f8a239ddae0a00d0ae23958fcc3c7ce2e2fd63accbb41acd424b1b5a0114",
+      "size": 994,
+      "modified": "2025-06-10T11:39:38.945704",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/part_prog_ProgrammingLanguages.tex"
+    },
+    "lecture_26.tex": {
+      "hash": "2d061fd01be972856e5addab2281a4864f04e39e08706af2336c0a7646849203",
+      "size": 395,
+      "modified": "2025-06-10T11:39:38.940927",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/lecture_26.tex"
+    },
+    "lecture_32.tex": {
+      "hash": "b08009cde733ec729809517c060f9a9a8e73f6f39609bdd87efbdce63f4a5edb",
+      "size": 458,
+      "modified": "2025-06-10T11:39:38.941278",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/lecture_32.tex"
+    },
+    "stat_thermo_basics.tex": {
+      "hash": "47609cce6ddecfff088b0098b4d385b308dbe67019ada3549580158f123d7189",
+      "size": 782,
+      "modified": "2025-06-10T11:39:38.715454",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/stat_thermo_basics.tex"
+    },
+    "equivariant_dynamical_models.tex": {
+      "hash": "cc49d67170f9dccebe1001f38b8c9241ad3d9f1af2fee27be80fa04eb76b6369",
+      "size": 1992,
+      "modified": "2025-06-10T11:39:38.717002",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/equivariant_dynamical_models.tex"
+    },
+    "physics_guided_loss_functions.tex": {
+      "hash": "c5fdeb847a6a43d190f2606e75537f57f6b88d7d8f686d06b65e48fa431b0ff0",
+      "size": 2085,
+      "modified": "2025-06-10T11:39:38.722149",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/physics_guided_loss_functions.tex"
+    },
+    "differentiable_semantics.tex": {
+      "hash": "924d2a6d28d7b6a5afaa15bb102ec5269e8da6606ca0ac1251d59da6fc0c2f1e",
+      "size": 4638,
+      "modified": "2025-06-10T11:39:38.703513",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/differentiable_semantics.tex"
+    },
+    "hilbert_spaces.tex": {
+      "hash": "6ec1e7193192a366df16d308cac2202706bb734d2c1f1b3b1691217adba4ade5",
+      "size": 4048,
+      "modified": "2025-06-10T11:39:38.695171",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/hilbert_spaces.tex"
+    },
+    "mesh_free.tex": {
+      "hash": "2bbfa17428835f1c9d1a4820ba899011704f7d69e7cb30e46b1c855e23f16014",
+      "size": 550,
+      "modified": "2025-06-10T11:39:38.702094",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/mesh_free.tex"
+    },
+    "spin.tex": {
+      "hash": "d0232d4d54033c4259580ec5f0529582bc6190ea8a54e484d89c2a66d332ef43",
+      "size": 5323,
+      "modified": "2025-06-10T11:39:38.713059",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/spin.tex"
+    },
+    "qed_calculation.tex": {
+      "hash": "7c67672b03ad62fa50a943c26633299e067a7f0cb0e3b1687dda350797771e40",
+      "size": 2277,
+      "modified": "2025-06-10T11:39:38.710499",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/qed_calculation.tex"
+    },
+    "trajectory_analysis.tex": {
+      "hash": "defb45023d87c94f273e1fab3ccd1b57d4c34c938e51282309e7c0d4284d2b75",
+      "size": 6538,
+      "modified": "2025-06-10T11:39:38.723958",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/trajectory_analysis.tex"
+    },
+    "lecture_33.tex": {
+      "hash": "fce83ca93f6ba58ad3a039a96f4e9300f5a114a235d2cce511df04248ed4893f",
+      "size": 574,
+      "modified": "2025-06-10T11:39:38.941334",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/lecture_33.tex"
+    },
+    "lecture_27.tex": {
+      "hash": "e77778e7d35707ac5b7f5e4aa4555944d87569603ab117cc03b23a3d14c70f75",
+      "size": 570,
+      "modified": "2025-06-10T11:39:38.940980",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/lecture_27.tex"
+    },
+    "neural_equivariant_potentials.tex": {
+      "hash": "bdd3f9002e93db55f4d1975a3d8c5f4124177cc2168de423c02aab270102d7a6",
+      "size": 10271,
+      "modified": "2025-06-10T11:39:38.723728",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/neural_equivariant_potentials.tex"
+    },
+    "nerf.tex": {
+      "hash": "c7296d316fe2e145ebd2c62aa078d77e229caaafb84c3f1665f0de08d3201219",
+      "size": 1228,
+      "modified": "2025-06-10T11:39:38.724118",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/nerf.tex"
+    },
+    "coupled_cluster.tex": {
+      "hash": "b847b8ec587a57d92d70917e61530ea4fcb4f7c9bf908d1cba21693c83792c4d",
+      "size": 658,
+      "modified": "2025-06-10T11:39:38.708298",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/coupled_cluster.tex"
+    },
+    "equivariant.tex": {
+      "hash": "0882456e9a00f073416dcc3fc9639da21b540d527f84bb6017e7757e46919bf4",
+      "size": 8433,
+      "modified": "2025-06-10T11:39:38.698802",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/equivariant.tex"
+    },
+    "ANI.tex": {
+      "hash": "eedb118ba52c43d4daabcbc141345fecdaa38cf814ac2a0e139adb5805dd0d77",
+      "size": 3497,
+      "modified": "2025-06-10T11:39:38.722305",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/ANI.tex"
+    },
+    "critical_behavior_ising_model.tex": {
+      "hash": "62dc1013f87dbe08c76d7a9870148bdc01ab15f0c850a455704341f664b99c71",
+      "size": 13737,
+      "modified": "2025-06-10T11:39:38.713850",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/critical_behavior_ising_model.tex"
+    },
+    "main_backup.tex": {
+      "hash": "bb4d76d3d780cd040fa9f836b4744511f188c9bd13c2142d8334aebd81540c33",
+      "size": 596,
+      "modified": "2025-06-10T11:39:38.693972",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/main_backup.tex"
+    },
+    "mpnn.tex": {
+      "hash": "d35d7e897f5677c1172a3b85c562a9958ae8b1d0978fcfa524a0cc8d6a97d023",
+      "size": 3866,
+      "modified": "2025-06-10T11:39:38.720856",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/mpnn.tex"
+    },
+    "path_integrals.tex": {
+      "hash": "f59db63af6eb5949eb527b38358708a0cd637a9f1fd0f100bb3e617586270ecd",
+      "size": 4486,
+      "modified": "2025-06-10T11:39:38.711919",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/path_integrals.tex"
+    },
+    "rough_draft.tex": {
+      "hash": "dab63f677f2aa9dc0aba4dbc610ae061634c6e7e1b9382539abfd320c9e6f2cc",
+      "size": 291,
+      "modified": "2025-06-10T11:39:38.945754",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/rough_draft.tex"
+    },
+    "geometry_processing.tex": {
+      "hash": "d3fe82df868a14605f6e40bb1f7c02be237ed1c8feb5ff59685e9dbfa7ba43d8",
+      "size": 4325,
+      "modified": "2025-06-10T11:39:38.699075",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/geometry_processing.tex"
+    },
+    "schrodinger_3d.tex": {
+      "hash": "7977b632cf5fc24c1a97c42794e36c78379fac98afcec2f51f206c81f5a15521",
+      "size": 5238,
+      "modified": "2025-06-10T11:39:38.712654",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/schrodinger_3d.tex"
+    },
+    "part3.tex": {
+      "hash": "ef35f7b286431512d43b1bf52ea6ec92fdb5a3dea26b277cf2ad64be2c4d7637",
+      "size": 3446,
+      "modified": "2025-06-10T11:39:38.943542",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/part3.tex"
+    },
+    "Plasma_Physics.tex": {
+      "hash": "1a0bf5e277b73440ec4fd9bbc9cfc807853d2dc1d47578fbccac70e31cf39b3e",
+      "size": 3299,
+      "modified": "2025-06-10T11:39:38.705862",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/Plasma_Physics.tex"
+    },
+    "lecture_23.tex": {
+      "hash": "4de444c043bb33b7c7dc8a3508dfaad1dc17704b4bea53f66a1a8d689dd58cd7",
+      "size": 500,
+      "modified": "2025-06-10T11:39:38.940766",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/lecture_23.tex"
+    },
+    "lecture_37.tex": {
+      "hash": "d974cb3f08a73901cfb6e37ddba80bf53aac5b8ff31e2b43d977c0ff6c0b4106",
+      "size": 219,
+      "modified": "2025-06-10T11:39:38.941564",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/lecture_37.tex"
+    },
+    "part_diffphys_mechanics_ml.tex": {
+      "hash": "8797a00b3a1eaea24ca55cb0168b5c3370bdb1d5215c647fe7ba7e6829fe604d",
+      "size": 1164,
+      "modified": "2025-06-10T11:39:38.944345",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/part_diffphys_mechanics_ml.tex"
+    },
+    "gradient_descent.tex": {
+      "hash": "0a949b1d4d73fb500371b03d850a0c23bb36078a0adf6f24ea8a32ec4238d4d4",
+      "size": 4196,
+      "modified": "2025-06-10T11:39:38.699905",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/gradient_descent.tex"
+    },
+    "klein_gordon.tex": {
+      "hash": "bc2b7e11b3e9a8008a73ef8a79291e659031b311257718f6cab673656004f7d2",
+      "size": 5694,
+      "modified": "2025-06-10T11:39:38.710170",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/klein_gordon.tex"
+    },
+    "quantum_reinforcement_learning.tex": {
+      "hash": "f6de4f387a5615559d0dd8bcd46dc9fcbd43da328ad3eef394f72a01da5aa3af",
+      "size": 1257,
+      "modified": "2025-06-10T11:39:38.725392",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/quantum_reinforcement_learning.tex"
+    },
+    "symbolic_physics.tex": {
+      "hash": "de4d228e491ec2183cf8f0416ae6a1d706806c76767292213e1008dd6821e02b",
+      "size": 4941,
+      "modified": "2025-06-10T11:39:38.719116",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/symbolic_physics.tex"
+    },
+    "universal_pdeformer.tex": {
+      "hash": "b3bf8c701e7606963bfd5cbb1e0deafc348bf19bb1436a184a6446c60b9d53e6",
+      "size": 1220,
+      "modified": "2025-06-10T11:39:38.722212",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/universal_pdeformer.tex"
+    },
+    "shors_algorithm.tex": {
+      "hash": "23dcf53e4ce628053b12b57638f9f968191b6bad95a39afc5d13c47d877a4863",
+      "size": 781,
+      "modified": "2025-06-10T11:39:38.709136",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/shors_algorithm.tex"
+    },
+    "tensor_field_networks.tex": {
+      "hash": "7fc8eb975e843aa19a56b86f25dbc260f892605105217b0b95f2fdcf72f33bef",
+      "size": 12265,
+      "modified": "2025-06-10T11:39:38.721237",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/tensor_field_networks.tex"
+    },
+    "phonon_gas.tex": {
+      "hash": "c522ebcf41f0e69e67f3e7dd1e0ca9174c1e1dd9dbf37344515c99b568764c88",
+      "size": 13854,
+      "modified": "2025-06-10T11:39:38.704592",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/phonon_gas.tex"
+    },
+    "lecture_36.tex": {
+      "hash": "4c0d1c8d8efa3bdb13e32ffce2be526eb7ecc7a98eb0823a8920cf7abb4626a2",
+      "size": 369,
+      "modified": "2025-06-10T11:39:38.941509",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/lecture_36.tex"
+    },
+    "lecture_22.tex": {
+      "hash": "423766e914c7cff6305a0bc4f50e8ab586091db86cccc91337c046f6d259966b",
+      "size": 509,
+      "modified": "2025-06-10T11:39:38.940711",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/lecture_22.tex"
+    },
+    "differentiable_convex.tex": {
+      "hash": "6158df5237faf4be1fde5b470fa3c92db1a94d4381a9095bc5a20f1beddc2ba6",
+      "size": 3970,
+      "modified": "2025-06-10T11:39:38.699589",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/differentiable_convex.tex"
+    },
+    "symplectic_manifold.tex": {
+      "hash": "fa992d5d322abf099c6a83451e045b52564ea61a230d24869aba635358c04cab",
+      "size": 2480,
+      "modified": "2025-06-10T11:39:38.697337",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/symplectic_manifold.tex"
+    },
+    "PINNs_NS.tex": {
+      "hash": "a7ee5042adb63919ac9c92c3778ab7b2b0185762483dac06119313cfb1f951cb",
+      "size": 5249,
+      "modified": "2025-06-10T11:39:38.724366",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/PINNs_NS.tex"
+    },
+    "harmonic_oscillation.tex": {
+      "hash": "207fd5bc2dba14abc0927fc7f01b13e7a1c93fb644821ec1f8510923e9766866",
+      "size": 8756,
+      "modified": "2025-06-10T11:39:38.706965",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/harmonic_oscillation.tex"
+    },
+    "electrons_in_metals.tex": {
+      "hash": "78c972c22e8986c58d9980598b04f849249e6008b3999e704cedf6cc22b001b6",
+      "size": 10513,
+      "modified": "2025-06-10T11:39:38.704412",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/electrons_in_metals.tex"
+    },
+    "PINNs_idea.tex": {
+      "hash": "094871db102f0f57dfb3737e37ff95b3a1eee99787a3dd3ab979cddd398f4624",
+      "size": 6802,
+      "modified": "2025-06-10T11:39:38.724588",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/PINNs_idea.tex"
+    },
+    "part_physics_qft.tex": {
+      "hash": "fcb5395ba47c35ac2e1a35f9a6d4ddfb5e884f8cf25d250475d0485d31c61770",
+      "size": 1013,
+      "modified": "2025-06-10T11:39:38.945185",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/part_physics_qft.tex"
+    },
+    "renormalization_vs_rg.tex": {
+      "hash": "cf994ac8519bcd772bf192bba8b5fd3228accedf4e3d07645009911988ff9994",
+      "size": 3178,
+      "modified": "2025-06-10T11:39:38.710921",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/renormalization_vs_rg.tex"
+    },
+    "information_theory.tex": {
+      "hash": "98f68b760b0d42e33f05ea07366e04d09ae7036d2b6b217ae5a904fa075d2ec2",
+      "size": 4511,
+      "modified": "2025-06-10T11:39:38.695313",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/information_theory.tex"
+    },
+    "Fluids_HiddenFD.tex": {
+      "hash": "ba398111cc6374710ea3ad3e730123a0c09712bf87532c55b4ed4e2971219e1e",
+      "size": 7709,
+      "modified": "2025-06-10T11:39:38.716793",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/Fluids_HiddenFD.tex"
+    },
+    "part_prog_DifferentiableModels.tex": {
+      "hash": "2e53dc082c201b1c5c22601968084915303b9450c0f1357423e7ff9fd4aa6086",
+      "size": 5530,
+      "modified": "2025-06-10T11:39:38.945594",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/part_prog_DifferentiableModels.tex"
+    },
+    "classical_field_theory.tex": {
+      "hash": "4bc08930a31de1dfd77d9f4819d17b8cc91460c0fcdf5d0c2b2df0dd4184e0bc",
+      "size": 808,
+      "modified": "2025-06-10T11:39:38.705079",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/classical_field_theory.tex"
+    },
+    "golden_section.tex": {
+      "hash": "18219974946813b78853c38ff2ad1823cd7f6ac50c661187a01c860baafd8edd",
+      "size": 11329,
+      "modified": "2025-06-10T11:39:38.691354",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/golden_section.tex"
+    },
+    "differentiable_meshing.tex": {
+      "hash": "d1ca28d0d936632b902d861adabef27cf3c7972e4a3de4addf69bb446f047f62",
+      "size": 3127,
+      "modified": "2025-06-10T11:39:38.719227",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/differentiable_meshing.tex"
+    },
+    "optics.tex": {
+      "hash": "2b532f44102fa3a6011319fb13aa49d76e3b482885c15e9898b468b8301d203a",
+      "size": 2918,
+      "modified": "2025-06-10T11:39:38.708099",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/optics.tex"
+    },
+    "lecture_34.tex": {
+      "hash": "e0160e26646afe34e8380d38d4b4c41a3ad009095398296490ebff788ee77872",
+      "size": 308,
+      "modified": "2025-06-10T11:39:38.941390",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/lecture_34.tex"
+    },
+    "lecture_20.tex": {
+      "hash": "afb476c8a7d44b3c2088b4da7df68fe0282015c30d75b6cf4785b0c5ce24d518",
+      "size": 252,
+      "modified": "2025-06-10T11:39:38.940603",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/lecture_20.tex"
+    },
+    "newton_raphson.tex": {
+      "hash": "36a9494db7de2f3dbbf0fbf519ebefaf54a8abeba229cfa0287bbff03ce33489",
+      "size": 11092,
+      "modified": "2025-06-10T11:39:38.702461",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/newton_raphson.tex"
+    },
+    "deep_onet.tex": {
+      "hash": "b1df7fbf5e9051917a5bfe028c7dea6c0ea2beb460780ed2fbc2384b0b73e23e",
+      "size": 4807,
+      "modified": "2025-06-10T11:39:38.721552",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/deep_onet.tex"
+    },
+    "semiconductors.tex": {
+      "hash": "f75e22cf1d777491b5cba91a887b63db1c008170f563b62ba18bbcb94116b0e1",
+      "size": 6681,
+      "modified": "2025-06-10T11:39:38.704828",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/semiconductors.tex"
+    },
+    "correlations_and_renormalization_group_theory.tex": {
+      "hash": "1704f8bd0d255fe8628f99a7fafaea799fd63227dfdb3b48d47f7c7f3502914c",
+      "size": 14623,
+      "modified": "2025-06-10T11:39:38.713727",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/correlations_and_renormalization_group_theory.tex"
+    },
+    "partial_differential_equations.tex": {
+      "hash": "9ea867839467e2362b5839464f93ac496fb06c283ed51a5d31df0a3e0e836310",
+      "size": 5591,
+      "modified": "2025-06-10T11:39:38.696676",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/partial_differential_equations.tex"
+    },
+    "errors_and_false_position.tex": {
+      "hash": "d1d384da53470e5e497c4af168f2411109a53027ffa05905438e0a10f7de0ff4",
+      "size": 12548,
+      "modified": "2025-06-10T11:39:38.691226",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/errors_and_false_position.tex"
+    },
+    "allegro.tex": {
+      "hash": "53d3ec27373db3d28f687a289b835d249ee267e539000730dff67f2e9cdf3a33",
+      "size": 5039,
+      "modified": "2025-06-10T11:39:38.722607",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/allegro.tex"
+    },
+    "probability_and_statistics.tex": {
+      "hash": "98390267732a0ef874adfe4fe44a2905eaf5dea8763371ea6bd37c6b334e3c25",
+      "size": 11558,
+      "modified": "2025-06-10T11:39:38.696800",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/probability_and_statistics.tex"
+    },
+    "gnn_hep.tex": {
+      "hash": "a539c9f6ef358fc4b32d746292022095312bf209d860be1d5a423c008fb4a69c",
+      "size": 1783,
+      "modified": "2025-06-10T11:39:38.717446",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/gnn_hep.tex"
+    },
+    "heisenberg_formulation.tex": {
+      "hash": "c46605f396ce8120ffebf57fceee44ced5db28b2c6b9c4e3d8bff0369747f4a3",
+      "size": 1878,
+      "modified": "2025-06-10T11:39:38.711538",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/heisenberg_formulation.tex"
+    },
+    "lecture_21.tex": {
+      "hash": "c3ac3b14a2287776d7ac58985824a2f8f9471bfa17abf1467da50d5ef3dfcdc5",
+      "size": 519,
+      "modified": "2025-06-10T11:39:38.940659",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/lecture_21.tex"
+    },
+    "lecture_35.tex": {
+      "hash": "ee70b207517340d0f6d8e70908ba727b5e2e70ab94b7ec547e13f5dfe3cb36ac",
+      "size": 586,
+      "modified": "2025-06-10T11:39:38.941447",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/lecture_35.tex"
+    },
+    "lecture_appendix_1.tex": {
+      "hash": "fe5f1853b7d8639ef5befaad47e2149b2fb4e4e903ea0a501e1d6551e630d001",
+      "size": 1960,
+      "modified": "2025-06-10T11:39:38.943376",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/lecture_appendix_1.tex"
+    },
+    "openkim_colabfit.tex": {
+      "hash": "f7142a82b2ff055bcffd80aad446d375efd7f2897755bf4d760b11c1581292d0",
+      "size": 1820,
+      "modified": "2025-06-10T11:39:38.724019",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/openkim_colabfit.tex"
+    },
+    "Differentiable_Programming.tex": {
+      "hash": "04a86f4d92013a6dffc7b62f22d9c38feb2df2dfb45a750ebda811c3fd99259b",
+      "size": 2911,
+      "modified": "2025-06-10T11:39:38.702885",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/Differentiable_Programming.tex"
+    },
+    "path_integrals_2.tex": {
+      "hash": "c32d30837ee0e1ecc707c377a5731296b7bf7119c807cb952a8426dc9503de4b",
+      "size": 1784,
+      "modified": "2025-06-10T11:39:38.711993",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/path_integrals_2.tex"
+    },
+    "wave_equation.tex": {
+      "hash": "2bf0941f5fc72c3ad208bf655850efcd932089545c68ba4ccf68b183aff27d71",
+      "size": 1647,
+      "modified": "2025-06-10T11:39:38.707982",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/wave_equation.tex"
+    },
+    "E3NN.tex": {
+      "hash": "aedcce10f8f097ec7ef273c5f5ef8d8a6333691acfd38f5a73881313ea6848ae",
+      "size": 2764,
+      "modified": "2025-06-10T11:39:38.720201",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/E3NN.tex"
+    },
+    "spectroscopy_DeepReasoningNets.tex": {
+      "hash": "eaa930969700f8f89a630deeabcedbd5290a9bc6b85e6d2fd81a16e352df3a75",
+      "size": 13591,
+      "modified": "2025-06-10T11:39:38.718579",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/spectroscopy_DeepReasoningNets.tex"
+    },
+    "covariant_derivative_connection.tex": {
+      "hash": "57f7265fa77c18c4570a26fb2a9511e645bcc1221266d09c033c414fcbbb33c1",
+      "size": 1904,
+      "modified": "2025-06-10T11:39:38.694425",
+      "full_path": "/Users/jayshitre/Projects/dfs/BookWebsite2/BookWebsite/chapters/covariant_derivative_connection.tex"
+    }
+  }
+}

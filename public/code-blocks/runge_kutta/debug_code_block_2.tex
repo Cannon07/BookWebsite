@@ -1,0 +1,36 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{listings}
+\usepackage{xcolor}
+
+% Use black text on white background - we'll invert colors in image processing
+\definecolor{codebackground}{RGB}{255, 255, 255}
+\definecolor{codetext}{RGB}{0, 0, 0}
+
+\lstset{
+  basicstyle=\ttfamily\color{codetext},
+  backgroundcolor=\color{codebackground},
+  frame=none,
+  breaklines=true,
+  mathescape=true,
+  escapeinside={$}{$},
+  language=python,
+}
+
+\begin{document}
+\begin{lstlisting}
+def runge_kutta($\\gamma$ : $\mathbb{R}$, D: $\mathbb{R}$, dt: $\mathbb{R}$, $t_0$: $\mathbb{R}$, $t_e$: $\mathbb{R}$):
+  t = $t_0$
+  while t < $t_e$:
+    k1 = $\\frac{\\partial c}{\\partial t}$(C, dx, dy, D, $\\gamma$)  
+    $C_2$ =  C + dt/3*k1
+    k2 = $\\frac{\\partial c}{\\partial t}$($C_2$, dx, dy, D, $\\gamma$)
+    $C_3$ =  C + 2*dt/3*k2
+    k3 = $\\frac{\\partial c}{\\partial t}$($C_3$, dx, dy, D, $\\gamma$)
+    $C_4$ =  C + dt*k3
+    k4 = $\\frac{\\partial c}{\\partial t}$($C_4$, dx, dy, D, $\\gamma$)
+    C = C + dt*(k1 + 3*k2 + 3*k3 + k4)/8
+    C = bound_conc(C)
+    t = t + dt
+\end{lstlisting}
+\end{document}

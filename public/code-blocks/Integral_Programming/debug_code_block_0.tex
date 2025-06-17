@@ -1,0 +1,25 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{listings}
+\usepackage{xcolor}
+
+% Use black text on white background - we'll invert colors in image processing
+\definecolor{codebackground}{RGB}{255, 255, 255}
+\definecolor{codetext}{RGB}{0, 0, 0}
+
+\lstset{
+  basicstyle=\ttfamily\color{codetext},
+  backgroundcolor=\color{codebackground},
+  frame=none,
+  breaklines=true,
+  mathescape=true,
+  escapeinside={$}{$},
+  language=python,
+}
+
+\begin{document}
+\begin{lstlisting}
+def S(q: [$x_1$, $x_2$] $\to$ $\mathbb{R}$) $\to$ $\mathbb{R}$:
+  return Integrate(q, $x_1$, $x_2$, L(x, q, $\\frac{d}{dt}$(q))
+\end{lstlisting}
+\end{document}

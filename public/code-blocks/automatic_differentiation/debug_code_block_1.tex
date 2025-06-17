@@ -1,0 +1,32 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{listings}
+\usepackage{xcolor}
+
+% Use black text on white background - we'll invert colors in image processing
+\definecolor{codebackground}{RGB}{255, 255, 255}
+\definecolor{codetext}{RGB}{0, 0, 0}
+
+\lstset{
+  basicstyle=\ttfamily\color{codetext},
+  backgroundcolor=\color{codebackground},
+  frame=none,
+  breaklines=true,
+  mathescape=true,
+  escapeinside={$}{$},
+  language=python,
+}
+
+\begin{document}
+\begin{lstlisting}
+def two_layer_net(w: $\mathbb{R}$, h: $\mathbb{R}$, weights: $\mathbb{R}^6$, biases: $\mathbb{R}^3$) -> $\mathbb{R}$:
+  b1, b2, b3 = biases
+  w1, w2, w3, w4, w5, w6 = weights
+  g1 = b1 + w1*w + w2*h
+  g2 = b2 + w3*w + w4*h
+  h1 = $\\sigma$(g1)
+  h2 = $\\sigma$(g2)
+  u1 = b3 + w5*h1 + w6*h2
+  o1 = $\\sigma$(u1)
+\end{lstlisting}
+\end{document}

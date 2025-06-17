@@ -1,0 +1,33 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{listings}
+\usepackage{xcolor}
+
+% Use black text on white background - we'll invert colors in image processing
+\definecolor{codebackground}{RGB}{255, 255, 255}
+\definecolor{codetext}{RGB}{0, 0, 0}
+
+\lstset{
+  basicstyle=\ttfamily\color{codetext},
+  backgroundcolor=\color{codebackground},
+  frame=none,
+  breaklines=true,
+  mathescape=true,
+  escapeinside={$}{$},
+  language=python,
+}
+
+\begin{document}
+\begin{lstlisting}
+class PINN(equation: Expression, u: Module):
+
+  $\\mathcal{N}$ = tensorize(equation)
+  f = u + $\\mathcal{N}$(u)
+
+  def $\\lambda$(x, t):
+    return u(x, t)
+    
+  def loss(X, U):
+    return sum($\\|$u(X[i]) - U[i]$\\|^2$, i) + sum($\\|$f(X[i])$\\|^2$, i)
+\end{lstlisting}
+\end{document}

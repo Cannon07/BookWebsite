@@ -1,0 +1,45 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{listings}
+\usepackage{xcolor}
+
+% Use black text on white background - we'll invert colors in image processing
+\definecolor{codebackground}{RGB}{255, 255, 255}
+\definecolor{codetext}{RGB}{0, 0, 0}
+
+\lstset{
+  basicstyle=\ttfamily\color{codetext},
+  backgroundcolor=\color{codebackground},
+  frame=none,
+  breaklines=true,
+  mathescape=true,
+  escapeinside={$}{$},
+  language=python,
+}
+
+\begin{document}
+\begin{lstlisting}
+def f(x: $\mathbb{R}$) -> $\mathbb{R}$:                                      
+  return x**3 - 3.7*x**2 + 4.54*x - 1.848              
+                                                       
+# False Position method                                
+x_l = -100                                             
+x_u = 100                                              
+root_prev = 0                                          
+while True:                                            
+  x_root = x_u-f(x_u)*(x_l-x_u)/(f(x_l)-f(x_u))        
+  f_root = f(x_root)                                   
+  if f_root*f(x_l) < 0:                                
+     x_u = x_root                                      
+  elif f_root*f(x_u) < 0:                              
+     x_l = x_root                                      
+  root_present = x_root                                
+  # Convergence criterion                              
+  if abs((root_present-root_prev)/root_present) < 10**(-8):
+      break;                                           
+  root_prev = root_present                             
+  
+print('Root found:')                                   
+print(x_root)
+\end{lstlisting}
+\end{document}

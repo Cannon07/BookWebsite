@@ -1,0 +1,32 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{listings}
+\usepackage{xcolor}
+
+% Use black text on white background - we'll invert colors in image processing
+\definecolor{codebackground}{RGB}{255, 255, 255}
+\definecolor{codetext}{RGB}{0, 0, 0}
+
+\lstset{
+  basicstyle=\ttfamily\color{codetext},
+  backgroundcolor=\color{codebackground},
+  frame=none,
+  breaklines=true,
+  mathescape=true,
+  escapeinside={$}{$},
+  language=python,
+}
+
+\begin{document}
+\begin{lstlisting}
+class MolecularDynamics($r: \\mathbb{R}^{3N}$, $v: \\mathbb{R}^{3N}$, $\\Delta t: \\mathbb{R}$):
+
+  def $\\lambda$(N : $\mathbb{N}$): $(\\mathbb{R}^{3N}, \\mathbb{R}^{3N})$:
+    for _ in range(N):
+      $r$ = $r$ + $v \\Delta t$ + $\\frac{1}{2} \\alpha \\Delta t^2$
+      $F$ = $-\\nabla$ ForceField($r$)
+      $r$ = $r$ + ForceUpdate(F, $\\Delta t$)
+      $v$ = $v$ + VelocityUpdate(F, $\\Delta t$)
+    return (r, v)
+\end{lstlisting}
+\end{document}

@@ -1,0 +1,27 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{listings}
+\usepackage{xcolor}
+
+% Use black text on white background - we'll invert colors in image processing
+\definecolor{codebackground}{RGB}{255, 255, 255}
+\definecolor{codetext}{RGB}{0, 0, 0}
+
+\lstset{
+  basicstyle=\ttfamily\color{codetext},
+  backgroundcolor=\color{codebackground},
+  frame=none,
+  breaklines=true,
+  mathescape=true,
+  escapeinside={$}{$},
+  language=python,
+}
+
+\begin{document}
+\begin{lstlisting}
+class GraphConvolution(W: $\mathbb{R}$[d, c]):
+  def $\\lambda$(A: $\mathbb{N}$[N, N], X: $\mathbb{R}$[N, d]):
+    D = for j: sum(for i: A[i, j])
+    $\\sigma$(D$^{-1}$*A*X*W)
+\end{lstlisting}
+\end{document}

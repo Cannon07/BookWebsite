@@ -1,0 +1,30 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{listings}
+\usepackage{xcolor}
+
+% Use black text on white background - we'll invert colors in image processing
+\definecolor{codebackground}{RGB}{255, 255, 255}
+\definecolor{codetext}{RGB}{0, 0, 0}
+
+\lstset{
+  basicstyle=\ttfamily\color{codetext},
+  backgroundcolor=\color{codebackground},
+  frame=none,
+  breaklines=true,
+  mathescape=true,
+  escapeinside={$}{$},
+  language=python,
+}
+
+\begin{document}
+\begin{lstlisting}
+class GrandCanonicalEnsemble[ProbabilityDistribution]
+  def $\\Xi$(N: $\mathbb{N}$):
+    out = 0
+    for _ in N:
+      $\\mu$ = sample_microstate()
+      out += exp(-$E_\\mu$/(k_B*T) + sum(1, r, $\\mu_i N_i'$/($k_B$ T)))
+    out
+\end{lstlisting}
+\end{document}

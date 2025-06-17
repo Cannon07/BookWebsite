@@ -1,0 +1,60 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{listings}
+\usepackage{xcolor}
+
+% Use black text on white background - we'll invert colors in image processing
+\definecolor{codebackground}{RGB}{255, 255, 255}
+\definecolor{codetext}{RGB}{0, 0, 0}
+
+\lstset{
+  basicstyle=\ttfamily\color{codetext},
+  backgroundcolor=\color{codebackground},
+  frame=none,
+  breaklines=true,
+  mathescape=true,
+  escapeinside={$}{$},
+  language=python,
+}
+
+\begin{document}
+\begin{lstlisting}
+%\\packweight = 100
+%base_mass = 1500
+%mass = base_mass+packweight # kg
+%rho = 1.17
+%A_F = 5.5
+%C_D = 0.44
+%C_R = 0.0075
+%g = 9.81;
+%mile_range = 220
+%e_den_bat = 160 # Wh/kg
+%
+%dvdt =  [0;diff(v(:,2))./diff(v(:,1))] # m/s^2
+%p = v[:,1] # timevector
+%p[:,2]= 1/2*rho*C_D*A_F*v(:,2).^3+C_R*mass*g*v(:,2)+mass*v(:,2).*(dvdt) # Watt
+%Distance = 0
+%for i = 1:2:length(v)-2
+%	Distance=Distance+(v(i+2,1)-v(i,1))*(v(i,2)+4*v(i+1,2)+v(i+2,2))/6;
+%Distance_miles = Distance/1000/1.6
+%eps = 1e-3
+%while True:
+%  Energy = 0
+%  for i = 1:2:length(p)-2
+%    Energy=Energy+(p(i+2,1)-p(i,1))*(p(i,2)+4*p(i+1,2)+p(i+2,2))/6
+%
+%  Energy_kWh = Energy*2.77778e-7 # kWh
+%  Eff_Wh_mile = Energy_kWh*1000/Distance_miles
+%
+%  # pack can accomodate 220 miles
+%  packweight_new=Eff_Wh_mile*mile_range/e_den_bat;
+%  if (abs(packweight_new-packweight)<eps)
+%    break
+	%
+%  packweight=packweight_new # in kg
+%  mass=base_mass+packweight
+%  p[:,2] = 1/2*rho*C_D*A_F*v(:,2).^3+C_R*mass*g*v(:,2)+mass*v(:,2).*(dvdt) # Watt
+%
+%
+\end{lstlisting}
+\end{document}

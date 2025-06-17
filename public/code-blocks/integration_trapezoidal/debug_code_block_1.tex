@@ -1,0 +1,27 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{listings}
+\usepackage{xcolor}
+
+% Use black text on white background - we'll invert colors in image processing
+\definecolor{codebackground}{RGB}{255, 255, 255}
+\definecolor{codetext}{RGB}{0, 0, 0}
+
+\lstset{
+  basicstyle=\ttfamily\color{codetext},
+  backgroundcolor=\color{codebackground},
+  frame=none,
+  breaklines=true,
+  mathescape=true,
+  escapeinside={$}{$},
+  language=python,
+}
+
+\begin{document}
+\begin{lstlisting}
+def composite_trapezoidal_rule(f: $\mathbb{R} \\to \\mathbb{R}$, xs: $\mathbb{R}^n$) $\to$ $\mathbb{R}$:
+  b = xs[n-1], a = xs[0]
+  (b-a)*(f(xs[0]) + 2*sum(
+    [f(xs[i]) for i in range(1,n)]) + f(xs[n-1]))/(2*n)
+\end{lstlisting}
+\end{document}

@@ -1,0 +1,26 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{listings}
+\usepackage{xcolor}
+
+% Use black text on white background - we'll invert colors in image processing
+\definecolor{codebackground}{RGB}{255, 255, 255}
+\definecolor{codetext}{RGB}{0, 0, 0}
+
+\lstset{
+  basicstyle=\ttfamily\color{codetext},
+  backgroundcolor=\color{codebackground},
+  frame=none,
+  breaklines=true,
+  mathescape=true,
+  escapeinside={$}{$},
+  language=python,
+}
+
+\begin{document}
+\begin{lstlisting}
+def E(q1: $\mathbb{R}$, x1: $\mathbb{R}^3$, x: $\mathbb{R}^3$) $\to \\mathbb{R}^3$:
+  ((1 / (4 * $\\pi$ * $\epsilon_0$)) * (q1 * q2 / $\\| \\textrm{x} - \\textrm{x1} \\|^2$)) 
+           * (x - x1)/$\\| \\textrm{x} - \\textrm{x1} \\|$)
+\end{lstlisting}
+\end{document}

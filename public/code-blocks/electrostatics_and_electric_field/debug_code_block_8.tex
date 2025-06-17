@@ -1,0 +1,26 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{listings}
+\usepackage{xcolor}
+
+% Use black text on white background - we'll invert colors in image processing
+\definecolor{codebackground}{RGB}{255, 255, 255}
+\definecolor{codetext}{RGB}{0, 0, 0}
+
+\lstset{
+  basicstyle=\ttfamily\color{codetext},
+  backgroundcolor=\color{codebackground},
+  frame=none,
+  breaklines=true,
+  mathescape=true,
+  escapeinside={$}{$},
+  language=python,
+}
+
+\begin{document}
+\begin{lstlisting}
+def E($n$: $\mathbb{N}$, [$q_i$]: $\mathbb{R}^n$, [$x_i$]: $\mathbb{R}^{3n}$, x: $\mathbb{R}^3$) -> $\mathbb{R}^3$:
+  return sum([E($\epsilon_0$, qi, xi, x) 
+              for (qi, xi) in zip([$q_i$], [$x_i$])])
+\end{lstlisting}
+\end{document}

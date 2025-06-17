@@ -1,0 +1,149 @@
+name: Step 3.5 - GitHub Actions Credential Test
+
+on:
+  workflow_dispatch:
+    inputs:
+      test_type:
+        description: 'Test type to run'
+        required: true
+        default: 'basic'
+        type: choice
+        options:
+        - basic
+        - detailed
+        - credential_only
+
+jobs:
+  credential-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Basic Credential Test
+        if: github.event.inputs.test_type == 'basic' || github.event.inputs.test_type == 'detailed'
+        run: |
+          echo "🧪 STEP 3.5: GitHub Actions Credential Test"
+          echo "============================================"
+          
+          echo "🔍 Environment Check:"
+          echo "  GITHUB_ACTIONS: $GITHUB_ACTIONS"
+          echo "  Runner OS: $RUNNER_OS"
+          echo "  Git version: $(git --version)"
+          
+          echo ""
+          echo "🔑 Credential Check:"
+          echo "  Username length: ${#OVERLEAF_GIT_USERNAME}"
+          echo "  Token length: ${#OVERLEAF_GIT_TOKEN}"
+          echo "  Project ID length: ${#OVERLEAF_PROJECT_ID}"
+          echo "  Username starts with: ${OVERLEAF_GIT_USERNAME:0:4}***"
+          echo "  Token starts with: ${OVERLEAF_GIT_TOKEN:0:8}***"
+        env:
+          OVERLEAF_GIT_USERNAME: ${{ secrets.OVERLEAF_GIT_USERNAME }}
+          OVERLEAF_GIT_TOKEN: ${{ secrets.OVERLEAF_GIT_TOKEN }}
+          OVERLEAF_PROJECT_ID: ${{ secrets.OVERLEAF_PROJECT_ID }}
+      
+      - name: Network and Git Access Test
+        if: github.event.inputs.test_type == 'basic' || github.event.inputs.test_type == 'detailed'
+        run: |
+          echo ""
+          echo "🌐 Network Tests:"
+          
+          # Test 1: Can we reach git.overleaf.com?
+          echo "  Testing DNS resolution..."
+          if nslookup git.overleaf.com > /dev/null 2>&1; then
+            echo "  ✅ DNS resolution works"
+          else
+            echo "  ❌ DNS resolution failed"
+          fi
+          
+          # Test 2: Can we connect to git.overleaf.com?
+          echo "  Testing HTTPS connection..."
+          if curl -s --connect-timeout 10 https://git.overleaf.com > /dev/null 2>&1; then
+            echo "  ✅ HTTPS connection works"
+          else
+            echo "  ❌ HTTPS connection failed"
+          fi
+          
+          # Test 3: Basic git ls-remote (should fail with auth error)
+          echo "  Testing basic git access..."
+          if timeout 30 git ls-remote https://git.overleaf.com/$OVERLEAF_PROJECT_ID 2>&1 | head -5; then
+            echo "  ✅ Git access works (unexpected!)"
+          else
+            echo "  ❌ Git access failed (expected without auth)"
+          fi
+        env:
+          OVERLEAF_PROJECT_ID: ${{ secrets.OVERLEAF_PROJECT_ID }}
+      
+      - name: Credential Methods Test
+        if: github.event.inputs.test_type == 'detailed'
+        run: |
+          echo ""
+          echo "🔧 Credential Methods Test:"
+          
+          # Method 1: Credential helper
+          echo "  Method 1: Git credential helper"
+          git config --global credential.helper store
+          echo "https://$OVERLEAF_GIT_USERNAME:$OVERLEAF_GIT_TOKEN@git.overleaf.com" > ~/.git-credentials
+          chmod 600 ~/.git-credentials
+          
+          echo "    Credential file created: $(ls -la ~/.git-credentials)"
+          if timeout 30 git ls-remote https://git.overleaf.com/$OVERLEAF_PROJECT_ID 2>&1; then
+            echo "    ✅ Method 1 SUCCESS"
+          else
+            echo "    ❌ Method 1 FAILED"
+          fi
+          
+          # Method 2: Direct URL embedding
+          echo "  Method 2: Direct URL embedding"
+          DIRECT_URL="https://$OVERLEAF_GIT_USERNAME:$OVERLEAF_GIT_TOKEN@git.overleaf.com/$OVERLEAF_PROJECT_ID"
+          if timeout 30 git ls-remote "$DIRECT_URL" 2>&1; then
+            echo "    ✅ Method 2 SUCCESS"
+          else
+            echo "    ❌ Method 2 FAILED"
+          fi
+          
+          # Method 3: URL encoding
+          echo "  Method 3: URL encoded credentials"
+          ENCODED_USERNAME=$(python3 -c "import urllib.parse; print(urllib.parse.quote('$OVERLEAF_GIT_USERNAME', safe=''))")
+          ENCODED_TOKEN=$(python3 -c "import urllib.parse; print(urllib.parse.quote('$OVERLEAF_GIT_TOKEN', safe=''))")
+          ENCODED_URL="https://$ENCODED_USERNAME:$ENCODED_TOKEN@git.overleaf.com/$OVERLEAF_PROJECT_ID"
+          if timeout 30 git ls-remote "$ENCODED_URL" 2>&1; then
+            echo "    ✅ Method 3 SUCCESS"
+          else
+            echo "    ❌ Method 3 FAILED"
+          fi
+        env:
+          OVERLEAF_GIT_USERNAME: ${{ secrets.OVERLEAF_GIT_USERNAME }}
+          OVERLEAF_GIT_TOKEN: ${{ secrets.OVERLEAF_GIT_TOKEN }}
+          OVERLEAF_PROJECT_ID: ${{ secrets.OVERLEAF_PROJECT_ID }}
+      
+      - name: Credential Validation Only
+        if: github.event.inputs.test_type == 'credential_only'
+        run: |
+          echo "🔍 CREDENTIAL VALIDATION TEST"
+          echo "============================"
+          
+          # Test if credentials are valid by trying different approaches
+          echo "Testing credential validity..."
+          
+          # Try with curl first
+          echo "  Testing with curl..."
+          HTTP_CODE=$(curl -s -w "%{http_code}" -o /dev/null \
+            -u "$OVERLEAF_GIT_USERNAME:$OVERLEAF_GIT_TOKEN" \
+            "https://git.overleaf.com/$OVERLEAF_PROJECT_ID/info/refs?service=git-upload-pack")
+          
+          echo "    HTTP response code: $HTTP_CODE"
+          if [ "$HTTP_CODE" = "200" ]; then
+            echo "    ✅ Credentials are VALID"
+          elif [ "$HTTP_CODE" = "401" ]; then
+            echo "    ❌ Credentials are INVALID (401 Unauthorized)"
+          elif [ "$HTTP_CODE" = "403" ]; then
+            echo "    ❌ Credentials valid but FORBIDDEN (403)"
+          else
+            echo "    ⚠️  Unexpected response: $HTTP_CODE"
+          fi
+        env:
+          OVERLEAF_GIT_USERNAME: ${{ secrets.OVERLEAF_GIT_USERNAME }}
+          OVERLEAF_GIT_TOKEN: ${{ secrets.OVERLEAF_GIT_TOKEN }}
+          OVERLEAF_PROJECT_ID: ${{ secrets.OVERLEAF_PROJECT_ID }}

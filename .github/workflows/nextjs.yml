@@ -132,6 +132,36 @@ jobs:
       #       echo "✅ Changes committed and pushed"
       #     fi
 
+      - name: Debug Commit Condition
+        run: |
+          echo "🔍 Debugging commit step condition..."
+          echo "Raw output value: '${{ steps.pipeline.outputs.changes_detected }}'"
+          echo "Length: ${#'${{ steps.pipeline.outputs.changes_detected }}'}"
+          echo "Checking conditions:"
+    
+          if [ "${{ steps.pipeline.outputs.changes_detected }}" == "true" ]; then
+            echo "  ✅ Matches 'true'"
+          else
+            echo "  ❌ Does NOT match 'true'"
+          fi
+    
+          if [ "${{ steps.pipeline.outputs.changes_detected }}" == "True" ]; then
+            echo "  ✅ Matches 'True'"
+          else
+            echo "  ❌ Does NOT match 'True'"
+          fi
+    
+          echo "Actual value in quotes: '${{ steps.pipeline.outputs.changes_detected }}'"
+          echo "Character by character:"
+          echo "${{ steps.pipeline.outputs.changes_detected }}" | od -c
+    
+          # Test the exact condition used in commit step
+          if [[ "${{ steps.pipeline.outputs.changes_detected }}" == "true" || "${{ steps.pipeline.outputs.changes_detected }}" == "True" ]]; then
+            echo "  ✅ Combined condition would PASS"
+          else
+            echo "  ❌ Combined condition would FAIL"
+          fi
+
       - name: Commit and push changes
         if: steps.pipeline.outputs.changes_detected == 'true' || steps.pipeline.outputs.changes_detected == 'True'
         run: |

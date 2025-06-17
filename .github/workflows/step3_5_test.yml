@@ -118,88 +118,120 @@ jobs:
           OVERLEAF_GIT_TOKEN: ${{ secrets.OVERLEAF_GIT_TOKEN }}
           OVERLEAF_PROJECT_ID: ${{ secrets.OVERLEAF_PROJECT_ID }}
       
-      - name: Advanced Diagnostic Test
+      - name: Pipeline Method Verification Test
         if: github.event.inputs.test_type == 'credential_only'
         run: |
           echo ""
-          echo "🔬 ADVANCED DIAGNOSTIC TEST"
-          echo "=========================="
+          echo "🚀 PIPELINE METHOD VERIFICATION"
+          echo "==============================="
+          echo "Testing the exact method our pipeline will use..."
           
-          # Test the exact same approach that works locally
-          echo "Testing exact local method replication..."
+          # Test Method 3 with actual git clone (what our pipeline does)
+          echo "📥 Testing Method 3: URL encoded git clone"
           
-          # Create credential file exactly like local version
-          mkdir -p scripts/overleaf-monitor/data
-          echo "https://$OVERLEAF_GIT_USERNAME:$OVERLEAF_GIT_TOKEN@git.overleaf.com" > scripts/overleaf-monitor/data/.git-credentials
-          chmod 600 scripts/overleaf-monitor/data/.git-credentials
+          # Set up URL encoding exactly like our pipeline
+          ENCODED_USERNAME=$(python3 -c "import urllib.parse; print(urllib.parse.quote('$OVERLEAF_GIT_USERNAME', safe=''))")
+          ENCODED_TOKEN=$(python3 -c "import urllib.parse; print(urllib.parse.quote('$OVERLEAF_GIT_TOKEN', safe=''))")
+          AUTH_URL="https://$ENCODED_USERNAME:$ENCODED_TOKEN@git.overleaf.com/$OVERLEAF_PROJECT_ID"
           
-          # Set git config exactly like local
-          git config --global credential.helper "store --file=$(pwd)/scripts/overleaf-monitor/data/.git-credentials"
+          echo "  Encoded username: ${ENCODED_USERNAME:0:4}***"
+          echo "  Encoded token: ${ENCODED_TOKEN:0:8}***"
+          echo "  Testing shallow clone..."
           
-          echo "  Testing with local-style credential setup..."
-          if timeout 30 git ls-remote https://git.overleaf.com/$OVERLEAF_PROJECT_ID 2>&1; then
-            echo "  ✅ Local method replication SUCCESS"
+          # Test shallow clone (what pipeline does first)
+          if timeout 60 git clone --depth 1 "$AUTH_URL" test-repo-shallow 2>&1; then
+            echo "  ✅ SHALLOW CLONE SUCCESS!"
+            echo "  📊 Repository info:"
+            echo "    Files: $(find test-repo-shallow -name "*.tex" | wc -l) .tex files found"
+            echo "    Size: $(du -sh test-repo-shallow | cut -f1)"
+            rm -rf test-repo-shallow
+            SHALLOW_SUCCESS=true
           else
-            echo "  ❌ Local method replication FAILED"
+            echo "  ❌ Shallow clone failed"
+            SHALLOW_SUCCESS=false
           fi
           
-          # Test different project ID formats
           echo ""
-          echo "🔍 Project ID Analysis:"
-          echo "  Full Project ID: $OVERLEAF_PROJECT_ID"
-          echo "  Project ID length: ${#OVERLEAF_PROJECT_ID}"
-          echo "  Starts with: ${OVERLEAF_PROJECT_ID:0:8}***"
+          echo "  Testing full clone..."
           
-          # Test if it's a Git URL format issue
-          echo ""
-          echo "🧪 Testing different URL formats..."
-          
-          # Format 1: Standard
-          echo "  Format 1: Standard git.overleaf.com/PROJECT_ID"
-          TEST_URL1="https://git.overleaf.com/$OVERLEAF_PROJECT_ID"
-          if timeout 10 curl -s -I -u "$OVERLEAF_GIT_USERNAME:$OVERLEAF_GIT_TOKEN" "$TEST_URL1/info/refs?service=git-upload-pack" | head -1; then
-            echo "    Response received"
+          # Test full clone (pipeline fallback)
+          if timeout 120 git clone "$AUTH_URL" test-repo-full 2>&1; then
+            echo "  ✅ FULL CLONE SUCCESS!"
+            echo "  📊 Repository info:"
+            echo "    Files: $(find test-repo-full -name "*.tex" | wc -l) .tex files found"
+            echo "    Size: $(du -sh test-repo-full | cut -f1)"
+            echo "    Commits: $(cd test-repo-full && git log --oneline | wc -l)"
+            rm -rf test-repo-full
+            FULL_SUCCESS=true
           else
-            echo "    No response"
+            echo "  ❌ Full clone failed"
+            FULL_SUCCESS=false
           fi
           
-          # Format 2: With .git suffix
-          echo "  Format 2: With .git suffix"
-          TEST_URL2="https://git.overleaf.com/$OVERLEAF_PROJECT_ID.git"
-          if timeout 10 curl -s -I -u "$OVERLEAF_GIT_USERNAME:$OVERLEAF_GIT_TOKEN" "$TEST_URL2/info/refs?service=git-upload-pack" | head -1; then
-            echo "    Response received"
-          else
-            echo "    No response"
-          fi
-          
-          # Test character encoding issues
           echo ""
-          echo "🔤 Character Encoding Test:"
-          echo "  Username bytes: $(echo -n "$OVERLEAF_GIT_USERNAME" | wc -c)"
-          echo "  Token bytes: $(echo -n "$OVERLEAF_GIT_TOKEN" | wc -c)"
-          echo "  Username contains @: $(echo "$OVERLEAF_GIT_USERNAME" | grep -q '@' && echo 'YES' || echo 'NO')"
-          echo "  Username hex dump (first 20 chars): $(echo -n "${OVERLEAF_GIT_USERNAME:0:20}" | xxd -p)"
-          
-          # Test if there are hidden characters
-          if [ ${#OVERLEAF_GIT_USERNAME} -ne $(echo -n "$OVERLEAF_GIT_USERNAME" | wc -c) ]; then
-            echo "  ⚠️  Username contains hidden characters!"
-          fi
-          if [ ${#OVERLEAF_GIT_TOKEN} -ne $(echo -n "$OVERLEAF_GIT_TOKEN" | wc -c) ]; then
-            echo "  ⚠️  Token contains hidden characters!"
-          fi
-          
-          # Final test: Exact replication of working local command
-          echo ""
-          echo "🎯 EXACT LOCAL REPLICATION TEST:"
-          echo "Using the exact git ls-remote command that works locally..."
-          
-          # This should be the exact command that works in your local environment
-          git config --list | grep credential
-          
-          if timeout 30 git ls-remote --heads https://git.overleaf.com/$OVERLEAF_PROJECT_ID 2>&1; then
-            echo "✅ EXACT LOCAL REPLICATION WORKS!"
+          echo "🎯 PIPELINE READINESS ASSESSMENT:"
+          if [ "$SHALLOW_SUCCESS" = true ] || [ "$FULL_SUCCESS" = true ]; then
+            echo "✅ PIPELINE WILL WORK!"
+            if [ "$SHALLOW_SUCCESS" = true ]; then
+              echo "   Shallow clone works - optimal performance"
+            else
+              echo "   Full clone works - will use as fallback"
+            fi
           else
-            echo "❌ Even exact replication fails"
+            echo "❌ PIPELINE WILL FAIL"
+            echo "   Both shallow and full clone failed"
+            echo "   Need to resolve credential/permission issues"
+          fi
+          
+          # Test git pull simulation (for future runs)
+          echo ""
+          echo "📥 Testing git pull simulation..."
+          
+          # Clone first, then test pull
+          if timeout 60 git clone --depth 1 "$AUTH_URL" test-pull-repo >/dev/null 2>&1; then
+            cd test-pull-repo
+            
+            # Remove embedded credentials from remote (security)
+            git remote set-url origin "https://git.overleaf.com/$OVERLEAF_PROJECT_ID"
+            
+            # Set remote back to auth URL temporarily for pull test
+            git remote set-url origin "$AUTH_URL"
+            
+            if timeout 60 git pull origin master 2>&1; then
+              echo "  ✅ Git pull works!"
+            else
+              echo "  ❌ Git pull failed"
+            fi
+            
+            cd ..
+            rm -rf test-pull-repo
+          else
+            echo "  ⏭️  Skipping pull test (clone failed)"
+          fi
+          
+          echo ""
+          echo "🔐 Security Test:"
+          echo "Testing credential cleanup..."
+          
+          # Test that we can successfully remove credentials from git config
+          if timeout 30 git clone --depth 1 "$AUTH_URL" test-security-repo >/dev/null 2>&1; then
+            cd test-security-repo
+            
+            # This is what our pipeline does for security
+            git remote set-url origin "https://git.overleaf.com/$OVERLEAF_PROJECT_ID"
+            
+            # Verify credentials are removed
+            REMOTE_URL=$(git remote get-url origin)
+            if echo "$REMOTE_URL" | grep -q "@"; then
+              echo "  ⚠️  Credentials still in remote URL!"
+            else
+              echo "  ✅ Credentials successfully removed from git config"
+            fi
+            
+            cd ..
+            rm -rf test-security-repo
+          else
+            echo "  ⏭️  Skipping security test (clone failed)"
           fi
         env:
           OVERLEAF_GIT_USERNAME: ${{ secrets.OVERLEAF_GIT_USERNAME }}

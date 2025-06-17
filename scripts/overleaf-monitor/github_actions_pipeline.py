@@ -74,6 +74,17 @@ def load_config_from_env():
             'file_extensions': ['.tex', '.bib'],
             'exclude_dirs': ['.git', '__pycache__', 'node_modules', '.aux', '.out', '.log']
         }
+        
+        # Debug: Check if credentials are actually loaded
+        print(f"🔍 DEBUG - GitHub Actions credential check:")
+        print(f"   Username set: {'✅' if config['git_username'] else '❌'}")
+        print(f"   Token set: {'✅' if config['git_token'] else '❌'}")
+        print(f"   Project ID set: {'✅' if config['project_id'] else '❌'}")
+        if config['git_username']:
+            print(f"   Username length: {len(config['git_username'])}")
+        if config['git_token']:
+            print(f"   Token length: {len(config['git_token'])}")
+        
     else:
         # Local environment - use integrated config
         try:

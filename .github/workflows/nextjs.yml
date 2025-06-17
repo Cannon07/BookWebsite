@@ -83,7 +83,14 @@ jobs:
         id: pipeline
         run: |
           echo "🚀 Starting Overleaf Pipeline..."
-          python3 scripts/overleaf-monitor/pipeline.py
+          
+          # Set up Git credential helper using environment variables (GitHub Actions method)
+          git config --global credential.helper store
+          echo "https://${{ secrets.OVERLEAF_GIT_USERNAME }}:${{ secrets.OVERLEAF_GIT_TOKEN }}@git.overleaf.com" > ~/.git-credentials
+          chmod 600 ~/.git-credentials
+          
+          # Run the pipeline
+          python3 scripts/overleaf-monitor/final_fixed_pipeline.py
           
           # Read pipeline results
           if [ -f "pipeline_results.json" ]; then

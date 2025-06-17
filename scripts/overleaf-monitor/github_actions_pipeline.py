@@ -314,10 +314,14 @@ def automated_git_sync(config, logger):
     logger.info(f"   Project ID: {project_id}")
     logger.info(f"   Target directory: {project_dir}")
     
-    # Set up credentials first
-    if not setup_git_credential_helper(config, logger):
-        logger.error("❌ Failed to set up Git credentials")
-        return False
+    # Set up credentials only for local environment
+    # GitHub Actions will handle credential setup in the workflow
+    if config.get('environment') != 'github_actions':
+        if not setup_git_credential_helper(config, logger):
+            logger.error("❌ Failed to set up Git credentials")
+            return False
+    else:
+        logger.info("🔧 Using GitHub Actions credential setup (handled by workflow)")
     
     # Check repository health and determine action
     action = check_repository_health(project_dir, logger)

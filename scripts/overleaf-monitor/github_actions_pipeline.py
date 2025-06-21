@@ -1,12 +1,10 @@
 #!/usr/bin/env python3
 """
-Final Fixed Pipeline - GitHub Actions Compatible
-Incorporates all fixes discovered during step-by-step testing:
-- Working credential setup method
-- Proper timeout values (90s based on 40s clone time)
-- Shallow clone for better performance  
-- Robust error handling and cleanup
-- Tested configuration loading
+Fixed Pipeline Script - GitHub Actions Output Issues Resolved
+Key fixes:
+1. Fixed GITHUB_OUTPUT writing (single \n instead of \\n)
+2. Improved output formatting and debugging
+3. Better error handling for output generation
 """
 
 import os
@@ -153,7 +151,7 @@ def setup_git_credential_helper(config, logger):
         git_url_with_creds = f"https://{git_username}:{git_token}@git.overleaf.com"
         
         with open(credential_file, 'w') as f:
-            f.write(f"{git_url_with_creds}\\n")
+            f.write(f"{git_url_with_creds}\n")  # FIXED: Single \n instead of \\n
         
         # Set secure permissions
         os.chmod(credential_file, 0o600)
@@ -502,7 +500,7 @@ def run_conversion_script(config, logger):
             logger.info("✅ Chapter processing completed successfully")
             
             # Log processing summary
-            output_lines = result.stdout.strip().split('\\n')
+            output_lines = result.stdout.strip().split('\n')
             for line in output_lines:
                 if any(keyword in line.lower() for keyword in [
                     'processing complete', 'new chapters processed', 'chapters skipped', 
@@ -514,7 +512,7 @@ def run_conversion_script(config, logger):
         else:
             logger.error(f"❌ Chapter processing failed (exit code: {result.returncode})")
             if result.stderr:
-                for line in result.stderr.strip().split('\\n')[:5]:
+                for line in result.stderr.strip().split('\n')[:5]:
                     if line.strip():
                         logger.error(f"   Error: {line.strip()}")
             return False
@@ -527,7 +525,7 @@ def run_conversion_script(config, logger):
         return False
 
 def save_results_summary(results):
-    """Save pipeline results for GitHub Actions to consume"""
+    """Save pipeline results for GitHub Actions to consume - FIXED OUTPUT ISSUES"""
     summary = {
         'timestamp': datetime.now().isoformat(),
         'success': results['overall_success'],
@@ -542,17 +540,35 @@ def save_results_summary(results):
     with open('pipeline_results.json', 'w') as f:
         json.dump(summary, f, indent=2)
     
-    # Also create GitHub Actions outputs
+    # FIXED: Improved GitHub Actions outputs with proper formatting
     if os.getenv('GITHUB_ACTIONS') == 'true':
         github_output = os.getenv('GITHUB_OUTPUT')
         if github_output:
-            with open(github_output, 'a') as f:
-                f.write(f"changes_detected={str(results['files_changed']).lower()}\\n")
-                f.write(f"conversion_success={str(results['conversion']).lower()}\\n")
-                f.write(f"pipeline_success={str(results['overall_success']).lower()}\\n")
+            try:
+                # Convert boolean to lowercase string (GitHub Actions requirement)
+                changes_str = 'true' if results['files_changed'] else 'false'
+                conversion_str = 'true' if results['conversion'] else 'false'
+                success_str = 'true' if results['overall_success'] else 'false'
+                
+                print(f"🔧 Writing GitHub Actions outputs:")
+                print(f"   changes_detected={changes_str}")
+                print(f"   conversion_success={conversion_str}")
+                print(f"   pipeline_success={success_str}")
+                
+                with open(github_output, 'a') as f:
+                    f.write(f"changes_detected={changes_str}\n")  # FIXED: Single \n
+                    f.write(f"conversion_success={conversion_str}\n")  # FIXED: Single \n
+                    f.write(f"pipeline_success={success_str}\n")  # FIXED: Single \n
+                    
+                print("✅ GitHub Actions outputs written successfully")
+                
+            except Exception as e:
+                print(f"❌ Error writing GitHub Actions outputs: {e}")
+        else:
+            print("⚠️  GITHUB_OUTPUT environment variable not found")
 
 def main():
-    """Main pipeline function - All Steps Tested and Working"""
+    """Main pipeline function - All Steps Tested and Working + Output Issues Fixed"""
     # Load configuration first (before logging setup to get log file path)
     config = load_config_from_env()
     if not config:
@@ -563,7 +579,7 @@ def main():
     logger = setup_logging(config)
     
     logger.info("=" * 60)
-    logger.info("🚀 FINAL FIXED PIPELINE - All Issues Resolved")
+    logger.info("🚀 FIXED PIPELINE - GitHub Actions Output Issues Resolved")
     logger.info("=" * 60)
     
     # Log configuration info
@@ -616,7 +632,7 @@ def main():
             logger.error("❌ Conversion failed")
             results['overall_success'] = False
         
-        # Save results with logging
+        # Save results with logging (FIXED OUTPUT ISSUES)
         save_results_summary(results)
         
         # Final log message about where logs are saved

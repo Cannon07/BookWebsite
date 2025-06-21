@@ -39,7 +39,6 @@ jobs:
   # Overleaf Pipeline Job - handles sync, change detection, and chapter processing
   overleaf-pipeline:
     runs-on: ubuntu-latest
-    # FIXED: Added proper job outputs mapping
     outputs:
       changes_detected: ${{ steps.pipeline.outputs.changes_detected }}
       pipeline_success: ${{ steps.pipeline.outputs.pipeline_success }}
@@ -85,62 +84,16 @@ jobs:
         run: |
           echo "🚀 Starting Overleaf Pipeline..."
           
-          # Run the pipeline (handles its own credential setup)
+          # Run the pipeline (Python script handles GITHUB_OUTPUT directly)
           python3 scripts/overleaf-monitor/pipeline.py
           
-          # Read pipeline results
+          # FIXED: Just display the results - no redundant parsing
           if [ -f "pipeline_results.json" ]; then
             echo "📊 Pipeline results found"
             cat pipeline_results.json
-            
-            # FIXED: More robust output extraction with better error handling
-            changes_detected=$(python3 -c "
-            import json
-            import sys
-            try:
-                with open('pipeline_results.json', 'r') as f:
-                    result = json.load(f)
-                print('true' if result.get('changes_detected', False) else 'false')
-            except Exception as e:
-                print('false')
-                sys.stderr.write(f'Error reading pipeline results: {e}\n')
-            " 2>/dev/null || echo "false")
-            
-            pipeline_success=$(python3 -c "
-            import json
-            import sys
-            try:
-                with open('pipeline_results.json', 'r') as f:
-                    result = json.load(f)
-                print('true' if result.get('success', False) else 'false')
-            except Exception as e:
-                print('false')
-                sys.stderr.write(f'Error reading pipeline results: {e}\n')
-            " 2>/dev/null || echo "false")
-            
-            conversion_success=$(python3 -c "
-            import json
-            import sys
-            try:
-                with open('pipeline_results.json', 'r') as f:
-                    result = json.load(f)
-                print('true' if result.get('conversion_success', False) else 'false')
-            except Exception as e:
-                print('false')
-                sys.stderr.write(f'Error reading pipeline results: {e}\n')
-            " 2>/dev/null || echo "false")
-
-            # FIXED: Set outputs using proper format
-            echo "changes_detected=${changes_detected}" >> $GITHUB_OUTPUT
-            echo "pipeline_success=${pipeline_success}" >> $GITHUB_OUTPUT
-            echo "conversion_success=${conversion_success}" >> $GITHUB_OUTPUT 
-            
-            echo "✅ Pipeline outputs set:"
-            echo "  Changes detected: $changes_detected"
-            echo "  Pipeline success: $pipeline_success"
-            echo "  Conversion success: $conversion_success"
+            echo "✅ Pipeline outputs set by Python script"
           else
-            echo "❌ Pipeline results file not found"
+            echo "❌ Pipeline results file not found - setting default outputs"
             echo "changes_detected=false" >> $GITHUB_OUTPUT
             echo "pipeline_success=false" >> $GITHUB_OUTPUT
             echo "conversion_success=false" >> $GITHUB_OUTPUT
@@ -158,7 +111,6 @@ jobs:
           echo "  pipeline_success: '${{ steps.pipeline.outputs.pipeline_success }}'"
           echo "  conversion_success: '${{ steps.pipeline.outputs.conversion_success }}'"
           
-          # FIXED: More comprehensive condition testing
           echo "Condition testing:"
           if [[ "${{ steps.pipeline.outputs.changes_detected }}" == "true" ]]; then
             echo "  ✅ changes_detected == 'true' - COMMIT WILL RUN"
@@ -167,7 +119,6 @@ jobs:
             echo "  Actual value: '${{ steps.pipeline.outputs.changes_detected }}'"
           fi
 
-      # FIXED: Simplified condition check
       - name: Commit and push changes
         if: steps.pipeline.outputs.changes_detected == 'true'
         run: |
@@ -253,7 +204,6 @@ jobs:
           echo "  Manual trigger: '$manual_trigger'"
           echo "  Process all chapters: '$process_all'"
           
-          # FIXED: Simplified condition check
           if [ "$overleaf_changes" = "true" ] || [ "$git_changes" = "true" ] || [ "$manual_trigger" = "true" ]; then
             echo "should_build=true" >> $GITHUB_OUTPUT
             echo "✅ Build should run"
@@ -315,7 +265,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
     needs: [overleaf-pipeline, changes, pre-build]
-    # FIXED: Simplified condition check
     if: |
       always() && 
       needs.changes.outputs.should_build == 'true' &&

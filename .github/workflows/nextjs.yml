@@ -133,10 +133,16 @@ jobs:
 
           echo "Files in app/:"
           ls -la app/ | head -10 2>/dev/null || echo "app/ directory not found"
+          
+          echo "Files in contents/docs/chapters/:"
+          ls -la contents/docs/chapters/ | head -10 2>/dev/null || echo "contents/docs/chapters/ directory not found"
 
-          git add chapters/
-          git add app/
-          git add pipeline_results.json
+          # FIXED: Add all the relevant directories including processed chapters
+          git add chapters/                    # Raw .tex files from Overleaf
+          git add app/                        # App directory changes
+          git add contents/docs/chapters/     # MISSING: Processed chapter output
+          git add contents/                   # Add entire contents directory to be safe
+          git add pipeline_results.json      # Pipeline results
 
           echo "Git status after add:"
           git status
@@ -144,7 +150,10 @@ jobs:
           if git diff --staged --quiet; then
             echo "ℹ️  No changes to commit"
           else
-            git commit -m "📚 Auto-update from Overleaf: $(date '+%Y-%m-%d %H:%M:%S UTC')"
+            git commit -m "📚 Auto-update from Overleaf: $(date '+%Y-%m-%d %H:%M:%S UTC')
+
+            Raw chapters: $(find chapters/ -name '*.tex' | wc -l) files
+            Processed chapters: $(find contents/docs/chapters/ -name '*.mdx' 2>/dev/null | wc -l || echo 0) files"
             git push
             echo "✅ Changes committed and pushed"
           fi
@@ -320,13 +329,69 @@ jobs:
       - name: Build with Next.js
         run: ${{ steps.detect-package-manager.outputs.runner }} next build
       
+      # COMPREHENSIVE DEBUG: Check everything after build
+      - name: Debug build output and environment
+        run: |
+          echo "🔍 Comprehensive build debugging..."
+          echo "=== Environment Info ==="
+          echo "Node ENV: $NODE_ENV"
+          echo "Working directory: $(pwd)"
+          echo "GitHub workspace: ${{ github.workspace }}"
+          
+          echo "=== Directory Contents ==="
+          echo "Current directory contents:"
+          ls -la
+          
+          echo "=== Next.js Config Check ==="
+          echo "Checking next.config.js:"
+          cat next.config.js || echo "No next.config.js found"
+          
+          echo "=== Build Output Directories ==="
+          echo "Checking for dist/ directory (your config):"
+          if [ -d "dist" ]; then
+            echo "✅ Found dist/ directory"
+            echo "Contents of dist/:"
+            ls -la dist/ | head -10
+            echo "Total files in dist/: $(find dist -type f | wc -l)"
+            echo "Size of dist/: $(du -sh dist/)"
+          else
+            echo "❌ No dist/ directory found"
+          fi
+          
+          echo "Checking for out/ directory (Next.js default):"
+          if [ -d "out" ]; then
+            echo "✅ Found out/ directory"
+            echo "Contents of out/:"
+            ls -la out/ | head -10
+          else
+            echo "❌ No out/ directory found"
+          fi
+          
+          echo "Checking for .next/ directory:"
+          if [ -d ".next" ]; then
+            echo "✅ Found .next/ directory"
+            echo "Contents of .next/:"
+            ls -la .next/ | head -10
+          else
+            echo "❌ No .next/ directory found"
+          fi
+          
+          echo "=== File Search ==="
+          echo "Searching for HTML files:"
+          find . -name "*.html" -type f | head -10 || echo "No HTML files found"
+      
+      # FIXED: Use the correct directory from your config (dist)
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: ./dist
 
-  # Deployment job
+  # Deployment job - FIXED: Updated to use latest versions and proper setup
   deploy:
+    # FIXED: Add required permissions explicitly
+    permissions:
+      pages: write
+      id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -334,6 +399,13 @@ jobs:
     needs: [build]
     if: needs.build.result == 'success'
     steps:
+      # FIXED: Add debug step to check artifact availability
+      - name: Debug deployment prerequisites
+        run: |
+          echo "🔍 Debugging deployment prerequisites..."
+          echo "Build job result: ${{ needs.build.result }}"
+          echo "Deploy step should run: ${{ needs.build.result == 'success' }}"
+          
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4

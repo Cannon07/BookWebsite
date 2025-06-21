@@ -1,0 +1,48 @@
+\documentclass[book.tex]{subfiles}
+\begin{document}
+
+\chapter{Natural Message Passing}
+
+\label{chap:natural_message}
+\noindent\rule{11cm}{0.4pt} \\
+\textbf{Prerequisites:} \autoref{chap:mpnn} \\
+\textbf{Difficulty Level:} ** \\
+\noindent\rule{11cm}{0.4pt}
+\vspace{5mm}
+
+%"""
+%The geometric deep learning blueprint stipulates that one should build neural networks that are equivariant to the relevant symmetry groups. In this talk, I will propose two directions in which this framework is insufficient and must be generalized. (1) Some symmetries are not group structured, but instead form a groupoid of isomorphisms, like the isomorphisms of graphs. (2) Data may not only possess global symmetries, but also local symmetries – e.g. having isomorphic subgraphs. Natural Message Passing is a general framework for building networks that respect local symmetries. I will discuss how Natural Graph Networks and Gauge Equivariant Mesh CNNs are instantiations of this idea. For the Mesh CNN, I will show how they can be used in practice in medical applications for estimating blood flow.
+%"""
+
+Geometric deep learning directs that deep networks should be designed to be equivariant to relevant symmetry groups such as the translational group or the rotational group. However, it is in fact possible to build equivariant networks which obey looser symmetries than rigid group symmetries \cite{de2020gauge}, \cite{de2020natural}, \cite{suk2021mesh}. 
+
+\section{Mathematical Intuition}
+
+Some natural symmetries form a groupoid structure rather than a group structure. A groupoid is similar to a group, but lacks an inverse operation.
+
+Some systems obey local instead of global symmetries. In particular, gauge equivariances are local rather than global. %(\textcolor{red}{TODO: What is the connection between a gauge symmetry and an equivariant subgraph}).
+%\end{enumerate}
+
+Natural graph networks along with the natural message passing algorithm loosen the definition of a graph network to allow for a more general definition. This more flexible notion, based on the groupoid of graph isomorphisms, allows for easy definition of natural graph networks and gauge equivariant mesh CNNs, which respectively solve the two generalized scenarios described above.
+
+\subsection{Groupoids and groups}
+
+A groupoid a generalization of a graph in which there does not necessarily have identity or inverses.
+
+%\subsection{Natural graph networks}
+%    \item Invariance, equivariance, naturality
+
+
+
+%Groupoid of graphs. Graph isomorphisms. Group equivariance in graphs (curried)?
+
+%A graph transformation/network can be transformed along the lines of a graph isomorphism.
+
+\section{Method Design}
+Each object in a groupoid is mapped to a feature vector space. A natural transformation network maps generalized equivariant networks to groupoids. %\textcolor{red}{TODO: I dont really get the value of the idea?}
+
+Natural graph networks generalize this concept to graph networks. The core operation in a natural graph network is the natural message passing algorithm. As an example, gauge equivariant manifold CNNs can have naturality on a manifold CNN.
+
+%Gauge equivariant mesh CNN. Artery modeling application
+
+\end{document}

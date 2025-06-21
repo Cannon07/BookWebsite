@@ -1,0 +1,43 @@
+\documentclass[book.tex]{subfiles}
+
+\begin{document}
+
+\chapter{Ray Tracing}
+
+\label{chap:ray_tracking}
+\noindent\rule{11cm}{0.4pt} \\
+\textbf{Prerequisites:} \autoref{chap:optics},  \\
+\textbf{Difficulty Level:} ** \\
+\noindent\rule{11cm}{0.4pt}
+\vspace{5mm}
+
+Ray tracing is a powerful computer graphics technique for rendering visual scenes by tracking the paths of light rays across a scene and rendering its interactions with different materials. 
+
+\begin{figure}
+    \centering    \includegraphics{figures/part2b/ray_tracing/ray_tracing_diagram.png}
+    \caption{A Conceptual Representation of ray tracing }
+    \label{fig:my_label}
+\end{figure}
+% from \url{https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Ray_trace_diagram.svg/640px-Ray_trace_diagram.svg.png}. TODO: Replace with our own figure
+
+A light source here is assumed to be a point source of light located at some position $(x, y, z)$.
+
+Conceptually, the ray tracing algorithm works by tracing the path of light from the eye and then computing the intersection between the light ray and objects in the image itself. Note that computing intersection with objects in a scene can be quite complex since objects may be represented by complex geometric objects.
+
+\section{Basic Mathematical Framework}
+
+Suppose that the position of the eye is given by
+\begin{align}
+E \in \mathbb{R}^3
+\end{align}
+Let the target position be given by
+\begin{align}
+T \in \mathbb{R}^3
+\end{align}
+Let $\theta$ represent the field of view of the eye. Rays are traced from the eye through the field of view to find the object that blocks that ray of light. Ray tracing is then recursively called from the blocking position to account for reflected light sources. This recursive step can be performed for as many steps as desired.
+
+One challenge in ray tracing is that we need a way to represent object geometries. Triangulations or tesselations can be used for this purpose.
+
+%\textcolor{red}{TODO: Add formula for intersection of light ray with sphere as an example.}
+\end{document}
+

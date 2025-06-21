@@ -1,0 +1,135 @@
+\documentclass[book.tex]{subfiles}
+
+\begin{document}
+\chapter{An Introduction to Interacting Fields}
+
+\label{chap:perturbative_expansion}
+\noindent\rule{11cm}{0.4pt} \\
+\textbf{Prerequisites:} \autoref{chap:qft_basics}  \\
+\textbf{Difficulty Level:} ** \\
+\noindent\rule{11cm}{0.4pt}
+\vspace{5mm}
+
+The quantum fields we have considered till now have all been free, without interactions. In this chapter, we will study the basics of how to study interacting field theory. Mathematically, interacting field theory is considerably more complex than free field theory since the product of operator valued distributions is not defined in general. 
+
+
+
+\section{Dyson's Formula}
+
+Suppose that we have a Hamiltonian split into a free part and an interaction part
+\begin{align}
+    H &= H_0 + V_S(t)
+\end{align}
+The interaction picture of quantum mechanics defines the quantity
+\begin{align}
+    V_I(t) &= e^{iH_0(t-t_0)}V_S(t)e^{-iH_0(t-t_0)}
+\end{align}
+
+Suppose we write the update operator as
+\begin{align}
+    \psi(t) &= U(t, t_0) \psi(t_0)
+\end{align}
+This operator is called the Dyson operator. This operator satisfies a few properties
+\begin{itemize}
+    \item Identity 
+    \begin{align}
+        U(t, t) &= I
+    \end{align}
+    \item Composition
+    \begin{align}
+        U(t, t_0) &= U(t, t_1) U(t_1, t_0)
+    \end{align}
+    \item Time Reversal
+    \begin{align}
+        U^{-1}(t, t_0) &= U(t_0, t)
+    \end{align}
+    \item Unitarity
+    \begin{align}
+        U^\dagger(t, t_0) U(t, t_0) &= 1
+    \end{align}
+\end{itemize}
+We state but don't prove the fact that these properties imply the following
+\begin{align}
+    i\frac{d}{dt}U(t, t_0) \psi(t_0) &= V(t)U(t, t_0) \psi(t_0)
+\end{align}
+This defines an integral equation
+\begin{align}
+    U(t, t_0) &= 1 - i\int_{t_0}^t V(t_1) U(t_1, t_0)
+\end{align}
+This equation can be iterated to solve
+\begin{align}
+    U(t, t_0) &= 1 - i\int_{t_0}^t V(t_1) U(t_1, t_0) \\
+    &= 1 -i\int_{t_0}^t V(t_1)\left (1 - i \int_{t_0}^{t_1} V(t_2)U(t_2, t_0) \right ) \\
+     &= 1 -i\int_{t_0}^t V(t_1) - i \int_{t_0}^{t_1} \int_{t_0}^{t_2} V(t_1)V(t_2)U(t_2, t_0)  \\
+    %&= \dotsc \\
+    &= 1 -i\int_{t_0}^t V(t_1) - i \int_{t_0}^{t_1} \int_{t_0}^{t_2} V(t_1)V(t_2) - \int_{t_0}^{t_1}\int^{t_2}_{t_0} \int^{t_3}_{t_0} V(t_1)V(t_2)V(t_3) + \dotsc 
+\end{align}
+Note the condition we have that
+\begin{align}
+    t_1 > t_2 > \dotsc > t_n
+\end{align}
+We define the time ordering operator which reorders its arguments to be in descending time order. Now let us define the terms
+\begin{align}
+    U_n &= (-i)^n \int_{t_0}^{t_1} \dotsc \int_{t_0}^{t_n} \mathcal{T} V(t_1)\dotsc V(t_n)
+\end{align}
+By noting the symmetry of the system, we can simplify the integral
+\begin{align}
+    U_n &= \frac{(-i)^n}{n!} \int_{t_0}^t \dotsc \int_{t_0}^t \mathcal{T} V(t_1)\dotsc V(T_n)
+\end{align}
+We now have the expansion
+\begin{align}
+    U(t, t_0) &= \sum_{n=0}^\infty U_n \\
+    &= \mathcal{T} \exp \left ( -i \int_{t_0}^t V(\tau) \right )
+\end{align}
+This is typically referred to as Dyson's Formula.
+%\begin{align}
+%    U(t, t_0) &= \mathcal{T}\exp \left ( -i \int_{t_0}^t H_I(t') dt' \right)
+%\end{align}
+%where $T$ is the time ordering operator.
+
+\section{The $S$-Matrix}
+
+We define the $S$-matrix by the formula
+\begin{align}
+    S &= \lim_{t_2 \to \infty} \lim_{t_1 \to -\infty} U(t_2, t_1)
+\end{align}
+
+Using Dyson's formula, we can write the $S$-matrix as
+\begin{align}
+    S &= \mathcal{T} \exp \left ( -i \int_{-\infty}^\infty V(\tau) \right )
+\end{align}
+Let us call the $n$-th term of the exponential's Taylor expansion $S_n$. The Feynman diagrams can be viewed as constituent terms in $S_n$
+
+\section{Perturbative Expansion of Correlation Functions}
+In this section we will introduce perturbation theory for quantum fields. In particular, we will compute the quantity
+\begin{align}
+    \langle \Omega | \mathcal{T}\phi(x)\phi(y) | \Omega \rangle
+\end{align}
+for the $\phi^4$ interacting theory. Note that this is the simplest theory which isn't directly solvable as a Gaussian integral. Here $|\Omega\rangle$ is the ground state of the interacting theory. Recall that for the free theory, the same interaction function is simply given by
+\begin{align}
+    \langle 0 | \mathcal{T} \phi(x) \phi(y) | 0 \rangle_{\textrm{free}} &= D_F(x-y) \\
+    &= \int \frac{d^4p}{(2\pi)^4}\frac{ie^{-ip\cdot(x-y)}}{p^2-m^2+i\epsilon}
+\end{align}
+%\textcolor{red}{TODO: Add a derivation of this quantity for an earlier chapter.} 
+Recall that this is an equality of distributions and not of functions.
+
+The Hamiltonian for the $\phi^4$ theory is given by
+\begin{align}
+    H &= H_0 + H_{\textrm{int}} \\
+    &= H_{\textrm{Klein-Gordon}} + \int d^3 x \frac{\lambda}{4!} \phi^4(x) 
+\end{align}
+The basic strategy in perturbation theory is to construct a power series for the correlation function in terms of parameter $\lambda$.
+
+\section{$\varphi^4$-Theory}
+%\textcolor{red}{TODO: Cite Peskin and Schroeder}
+
+The simplest interacting field theory that we will consider is $\varphi^4$-theory which adds a quartic interaction term to the Klein-Gordon Lagrangian
+
+\begin{align}
+    \mathcal{L}(\varphi) &= \frac{1}{2}[\partial^\mu \varphi \partial \varphi - m^2 \varphi^2] - \frac{\lambda}{4!}\varphi^4
+\end{align}
+
+\section{Higher Order Interaction Terms}
+
+We can use Wick's theorem to reduce higher order interaction terms to pairwise interaction terms.
+\end{document}

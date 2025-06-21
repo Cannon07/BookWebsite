@@ -1,0 +1,57 @@
+\documentclass[book.tex]{subfiles}
+
+\begin{document}
+
+\chapter{A Brief Introduction to Optics}
+
+\label{chap:optics}
+\noindent\rule{11cm}{0.4pt} \\
+\textbf{Prerequisites:}  \autoref{chap:simple_physics}  \\
+\textbf{Difficulty Level:} * \\
+\noindent\rule{11cm}{0.4pt}
+\vspace{5mm}
+
+Optics studies the motion of light through various materials. In principle, light is an electromagnetic phenomenon and can be modeled by Maxwell's equations. In practice, this is very burdensome, and effective simple models of light's behavior in various domains exist. We will discuss some of these models in this section
+
+\section{Ray Optics}
+
+Ray optics supposes that light travels in straight lines called rays. 
+
+\subsection{Reflection}
+
+Light rays can reflect off material surfaces. Such reflection can be specular, reflecting light in one direction based on the input angle, or diffuse and reflecting inbound light in a range of different directions.
+
+
+\subsection{Refaction Snell's Law}
+
+This law provides a basic model for the behavior of the refraction of light as it passes between two surfaces
+
+\begin{align}
+\frac{\sin \theta_1}{\sin \theta_2} &= \frac{n_2}{n_1}
+\end{align}
+
+\begin{figure}
+\includegraphics[width=0.5\linewidth]{figures/Physics/optics/snells_law.png}
+\caption{An illustration of Snell's Law.}
+\end{figure}
+
+\section{Physical Optics}
+
+Physical optics models light as waves. These waves travel at the speed of light $c$ and are governed by Maxwell's equations.
+
+\subsection{The Superposition Principle}
+
+The superposition principle holds true in most simple optical systems and states that the behavior of a light wave can be understood as the superposition of plane waves (light waves with fixed frequency, polarization, and direction). This principle allow for the use of Fourier analysis in modeling optical systems.
+
+\subsection{Polarization}
+
+The light wave is made up of oscillating electric and magnetic fields. The polarization of light is given by the orientation of these oscillating fields. If the oscillation direction is fixed, the light is linearly polarized, wherease if the direction rotates, the light is circularly or elliptically polarized.
+
+
+\section{An Introduction to Nonlinear Optics}
+
+A nonlinear media is one in which the polarization density $P$ of the material responds nonlinearly to the electric field $E$. The superposition principle breaks down for these systems. Nonlinear phenomena commonly arise from applications such as lasers or harmonic generation, which seeks to create light at higher frequencies than the input frequency. Modeling nonlinear systems typically requires direct solution of Maxwell's equations rather than simpler more inexpensive approximations.
+%\textcolor{red}{TODO: Add a discussin of nonlinear optics. Add a discussion of high harmonic generation. Mention that this is a topic of high interest to chip manufacturing and lithography.}
+
+\end{document}
+

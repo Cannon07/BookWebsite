@@ -1,0 +1,102 @@
+\documentclass[book.tex]{subfiles}
+\begin{document}
+
+\chapter{Modeling the Mechanics of Trajectories}
+\label{chap:trajectory_modeling}
+\noindent\rule{11cm}{0.4pt} \\
+\textbf{Prerequisites:}  \autoref{chap:molecular_hamiltonian},   \\
+\textbf{Difficulty Level:} ** \\
+\noindent\rule{11cm}{0.4pt}
+\vspace{5mm}
+
+%"The ability to rapidly learn from high-dimensional data to make reliable predictions about the future is crucial in many contexts. This could be a fly avoiding predators, or the retina processing terabytes of data guiding complex human actions. Modern day artificial intelligence (AI) aims to mimic this fidelity and has been successful in many domains of life. It is tempting to ask if AI could also be used to understand and predict the emergent mechanisms across timescales for complex molecules with millions of atoms. In this talk I will show that certain flavors of AI can indeed help us understand generic molecular structure and dynamics, and also predict it even in situations with arbitrary long memories. However this requires close integration of AI with old and new ideas in statistical mechanics. I will talk about such methods developed by my group (1-3) using information bottleneck with VampPriors, denoising probabilistic models and long short-term memory networks, focusing on the first one or two frameworks in interest of time. I will demonstrate the methods on different problems, where we predict mechanisms at timescales much longer than milliseconds while keeping all-atom/femtosecond resolution. These include ligand dissociation from flexible protein/RNA and crystal nucleation with competing polymorphs."
+
+Molecular dynamics simulations can yield very large datasets, especially when studying large molecules with hundreds of thousands to millions of atoms across long time scales. Traditionally, extracting meaningful structural information from such large datasets has proven challenging, but new techniques inspired by ideas from information theory may prove useful. In this chapter, we study some techniques for studying such datasets: Markov State Models, VampNets,, denoising probabilistic models, and long short-term memory networks \cite{wang2021denoising}, \cite{tsai2020learning}. These methods provide powerful tools to study biophysical phenomenon from molecular dynamics simulations.
+
+\section{Markov State Models}
+
+Markov state models model the evolution of a trajectory as a Markov random walk between a collection of "metastable" states in the state space.
+
+\begin{align}
+\{X_t\}
+\end{align}
+where $X_t \in \Omega$, a state space. We suppose that there exists a feature space
+\begin{align}
+\chi(X_t) &= (\chi_0(X_t),\dotsc, \chi_N(X_t))
+\end{align}
+that extract meaningful information about the system. The full trajectory $\{X_t\}$ is clustered in this feature space to extract $K$ feature vectors
+\begin{align}
+\xi_1,\dotsc,\xi_k
+\end{align}
+that model the cluster centers. A transition matrix $K$ is estimated to model the jumps between these cluster centers.
+
+\section{Hidden Markov Models}
+
+Hidden Markov Models are similar to Markov state models but add a probabilistic interpretation of each metastable state that allows for more gradual transition between different states. This method assumes an emission process whereby a hidden state $Z_t$ controls the measured state $X_t$ at every time step. The emission probability for $X_t$ given $Z_t$ is modeled by a normal distribution
+
+\begin{align}
+X_t \sim \mathcal{N}(\mu_t, \Sigma_t)
+\end{align}
+where $\mu_t$ and $\Sigma_t$ are the emission mean and standard deviation.
+
+
+\section{VAMPNets}
+
+A VAMPNet uses a variational autoencoder to learn the feature embedding $\chi$ rather than choosing a hand-designed feature vector.
+
+\begin{figure}
+% \includegraphics[width=0.7\linewidth]{figures/Differentiable Physics/Neural Potentials/Trajectory Modeling/vampnet.png}
+\includegraphics[width=0.7\linewidth]{figures/Differentiable Physics/Neural Potentials/Trajectory Modeling/vampnet1.png}
+\caption{Architecture of a VAMPNet. $x_t$ and $x_{t+\tau}$ are molecular configurations at time $t$ and $t+\tau$ respectively. A variational score is computed to optimize the network.}
+\label{fig1}
+\end{figure}
+
+
+\section{The Information Bottleneck Principle}
+
+An alternative approach to learning the featurization $\chi$ proceeds from the infromation bottleneck principle. We seek to learn a representation $Z$ of the input data $X_t$ that is maximally predictive of some target information source $Y$. Viewed as a diagram, we write
+
+\begin{align}
+    X \to Z \to Y
+\end{align}
+
+As an optimization problem, this can be written as
+
+\begin{align}
+    \min_{Z|X, Y|Z} I(X;Z) - I(Z;Y)
+\end{align}
+where $I(x, y)$ is the mutual information function. This direct optimization problem is usually intractable, so we typically optimize a lower bound instead. This lower bound is constructed out of two quantities, the distortion and the rate. The distortion $D$ measures quality of reconstruction of the target $Y$ and the rate measure the information per sample drawn.
+
+%\begin{align}
+%    D &= E_{x \sim } ...
+%\end{align}
+
+The rate-distortion curve is a relaxation of the original optimization problem: given a suitable variational family and data distribution, there is an optimal quality to sandwich the variational inequality
+\begin{align}
+    H - D \leq I(X; Z) \leq R
+\end{align}
+where $I(X; Z)$ is the mutual information between inputs and latent state as measured by an encoder. The embedding $Z$ is the bottleneck between $X$ and $Y$. 
+
+The state-predictive information bottleneck adapts the information bottleneck into the problem of predicting the future state $y_{t+\Delta t}$ from $X_t$ and uses it to construct a suitable loss function for optimization.
+
+%Rate-Distortion-Classification surface. $func(R, D, c, S) = 0$ is a formal connection to thermodynamics from machine learning.
+%\begin{align}
+%    dR = -\lambda dD - \gamma dC - \sigma dS
+%\end{align}
+%Can move curves along the surface.
+%\begin{align}
+%    F(\lambda+ &= \min_{} \{R + \lambda D\}
+%\end{align}
+\subsection{Exercises}
+
+\begin{enumerate}
+    \item Estimate the amount of computation required to compute clusters for a protein with 100 amino acids for a molecular dynamics trajectory of one microsecond.
+\end{enumerate}
+
+%Transferring to new tasks. Can make a trajectory in task space from the source distribution to the target distribution.
+%\textcolor{red}{(TODO: There's some formal connections to manifolds here but I'm quite confused still)}
+
+
+
+
+\end{document}

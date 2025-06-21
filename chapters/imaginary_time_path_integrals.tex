@@ -1,0 +1,29 @@
+\documentclass[book.tex]{subfiles}
+
+\begin{document}
+
+\chapter{Imaginary Time Path Integrals}
+
+\label{chap:imaginary_path}
+\noindent\rule{11cm}{0.4pt} \\
+\textbf{Prerequisites:}  \autoref{chap:imaginary_qm} \\
+\textbf{Difficulty Level:} *** \\
+\noindent\rule{11cm}{0.4pt}
+\vspace{5mm}
+\textcolor{red}{TODO: Cite Shankar}
+Consider the transition probability
+\begin{align}
+    U(x, x'; \tau) &= \langle x | U(\tau) | x'\rangle
+\end{align}
+We can write this transition density
+\begin{align}
+    \langle x | U(\tau) | x' \rangle &= \int [\mathcal{D}x] \exp \left [ -\frac{1}{\hbar} \int_0^\tau  \mathcal{L}_E(x,\bar{x}) d\tau \right]
+\end{align}
+Here the path integral measure and lagrangian is given by
+\begin{align}
+    \int [ \mathcal{D}x] &= \lim_{N \to \infty} \left ( \frac{m}{2\pi\hbar \epsilon} \right )^{1/2}\prod_0^{N-1} \left ( \frac{m}{2\pi\hbar \epsilon}\right ) dx_i \\
+    \mathcal{L}_E &= \frac{m}{2}\left ( \frac{dx}{d\tau}\right )^2 + V(x)
+\end{align}
+This Lagrangian is called the Euclidean lagrangian.
+(\textcolor{red}{TODO: Explain how the Euclidean Lagrangian and the usual Lagrangian differ}). Similarly here the Euclidean action is given 
+\end{document}

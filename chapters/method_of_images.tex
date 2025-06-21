@@ -1,0 +1,52 @@
+\documentclass[book.tex]{subfiles}
+
+\begin{document}
+
+\chapter{Method of Images}
+\label{chap:method_of_images}
+\noindent\rule{11cm}{0.4pt} \\
+\textbf{Prerequisites:} \autoref{chap:electrostatics},  \\
+\textbf{Difficulty Level:} ** \\
+\noindent\rule{11cm}{0.4pt}
+\vspace{5mm}
+
+
+The method of images is a technique for solving differential equations by extending the domain of the sought function to a larger domain with simpler boundary conditions. This technique is applied most often in physics to problems in electrostatics.
+
+
+\section{Point Charge Above Infinite Plane}
+
+Consider a point above an infinite conducting plane as in Figure~\ref{fig:point_charge_plane}. A challenge with solving for the electric field in this scenario is that the point charge induces changes in the charge distribution on the conducting plane.
+
+The method of images provides a powerful trick for solving such systems. We leverage the fact that solutions to Laplace's equations are unique to construct a "mirror" system that satisfies the same boundary conditions at the plane as our original system. We claim that the system in Figure~\ref{fig:point_charge_mirrored} satisfies the same conditions.
+
+%\textcolor{red}{TODO: Complete the derivation}
+
+\begin{figure}[h]
+    \centering
+\includegraphics{figures/Physics/electromagnetism/method_of_images/point_above_sheet.png}
+    \caption{A point charge above an infinite conducting ground. }
+    \label{fig:point_charge_plane}
+\end{figure}
+% \textcolor{red}{TODO: Replace with our own figure.}
+
+\begin{figure}[h]
+    \centering
+\includegraphics{figures/Physics/electromagnetism/method_of_images/point_mirrored.png}
+    \caption{A point charge mirrored by an opposite charge below the plane. }
+    \label{fig:point_charge_mirrored}
+\end{figure}
+% \textcolor{red}{TODO: Replace with our figure.}
+
+\section{Point Charge Near a Conducting Sphere}
+
+As a next example, we consider a system with a charge near a grounded conducting sphere as in Figure~\ref{fig:point_sphere}. Unlike the flat plane, the mirror charge placed inside the sphere will not be directly symmetrically positioned to the exterior charge, but the same organizing principle holds.
+
+\begin{figure}[h]
+    \centering   \includegraphics{figures/Physics/electromagnetism/method_of_images/point_sphere.png}
+    \caption{A point charge near a conducting sphere. }
+    \label{fig:point_sphere}
+\end{figure}
+% \textcolor{red}{TODO: Replace with our own figure}
+
+\end{document}

@@ -1,0 +1,39 @@
+\documentclass[book.tex]{subfiles}
+
+\begin{document}
+\chapter{Meta Variational Quantum Eigensolver}
+\label{chap:meta_vqe}
+\noindent\rule{11cm}{0.4pt} \\
+\textbf{Prerequisites:} \autoref{chap:molecular_hamiltonian}, \autoref{chap:dft}, \autoref{chap:hartree_fock} \\
+\textbf{Difficulty Level:} ** \\
+\noindent\rule{11cm}{0.4pt}
+\vspace{5mm}
+
+Suppose we have a system of $n$ qubits along with a parameterized Hamiltonian of the form
+
+\begin{align}
+    H &= H(\vec{\lambda})
+\end{align}
+where
+\begin{align}
+\vec{\lambda} &= (\lambda_1, \dotsc, \lambda_q)
+\end{align}
+are the parameters. These are subsampled during the meta-training process. 
+
+The meta-variational quantum eigensolver\cite{cervera2020meta} aims to find the ground state energy of a parameterized Hamiltonian. The circuit is initialized as
+\begin{align}
+    |0\rangle^{\otimes n}
+\end{align}
+The circuit itself is factorized into unitary $\mathcal{S}$ which depends on $\lambda_i$ and $\Phi$. This is followed by unitary $\mathcal{U}$ that depends on $\Theta$. %(\textcolor{red}{TODO: Unify the notation here}).
+
+\begin{figure}
+\centering
+    % \includegraphics[width=1.5\textwidth]{figures/Differentiable Physics/Quantum Computing ML/meta-vqe/meta_vqe_diagram.png}
+    \includegraphics[width=1\textwidth]{figures/Differentiable Physics/Quantum Computing ML/meta-vqe/meta_vqe1.png}
+    \caption{Architectural Diagram of Meta-Variational Quantum Solver}
+    \label{fig:meta_vqe_diagram}
+\end{figure}
+
+%"Alba will present the meta-VQE, an algorithm capable to learn the ground state energy profile of a parametrized Hamiltonian. By training the meta-VQE with a few data points, it delivers an initial circuit parametrization that can be used to compute the ground state energy of any parametrization of the Hamiltonian within a certain trust region. This algorithm is  tested with a XXZ spin chain, an electronic H4 Hamiltonian and a single-transmon quantum simulation. In all cases, the meta-VQE is able to learn the shape of the energy functional and, in some cases, resulted in improved accuracy in comparison to individual VQE optimization. The meta-VQE algorithm introduces both a gain in efficiency for parametrized Hamiltonians, in terms of the number of optimizations, and a good starting point for the quantum circuit parameters for individual optimizations. The proposed algorithm proposal can be readily mixed with other improvements in the field of variational algorithms to shorten the distance between the current state-of-the-art and applications with quantum advantage."
+
+\end{document}

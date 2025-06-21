@@ -1,0 +1,108 @@
+\documentclass[book.tex]{subfiles}
+
+\begin{document}
+
+\chapter{Spherical Convolutions}
+
+\label{chap:spherical_cnn}
+\noindent\rule{11cm}{0.4pt} \\
+\textbf{Prerequisites:}  \autoref{chap:convnets} \\
+\textbf{Difficulty Level:} *** \\
+\noindent\rule{11cm}{0.4pt}
+\vspace{5mm}
+
+%"""
+%Learning equivariant representations is a promising way to reduce sample and model complexity and improve the generalization performance of deep neural networks. Spherical CNNs are successful examples, producing SO(3)-equivariant representations of spherical inputs. There are two main types of spherical CNNs. The first type lifts the inputs to functions on the rotation group SO(3) and applies convolutions on the group, while the second type applies convolutions directly on the sphere. In this talk, we first review the theory behind these types of spherical CNNs and discuss their advantages and disadvantages. Then, we present the spin-weighted spherical CNNs, which aim to generalize and overcome limitations of both previous types. Finally, we introduce a recently released JAX library with a flexible and efficient distributed spin-weighted spherical CNN implementation.
+%"""
+
+Equivariant representations hold out the promise of reducing sample and model complexity and allowing for the construction of more generalizable deep architectures. Spherical convolutional networks are constructed to be $SO(3)$-equivariant. There are two common variants of spherical convolutional networks. The first variant maps input quantities onto $SO(3)$, and applies convolutions directly on the group. The second directly performs convolutions upon the sphere. In this chapter, we introduce this first variant of convoluion. %We also consider a newly designed variant, the spin-weighted spherical convolution \cite{esteves2020spin}, \cite{esteves2018learning}, which aims to generalize both these variants.
+
+\section{A Refresher on Group Representations}
+
+Computing group convolutions can get tricky. Recall that a group representation is a map 
+\begin{align}
+    \rho: G \mapsto \mathrm{GL}(V)
+\end{align}
+For example consider the circle, represented as a the group of angles $e^{i\theta}$ in the complex sphere. We can represent this group on $GL(\mathbb{R}^2)$ through the transformation
+\begin{align}
+    \rho(e^{i\theta}) &= \begin{pmatrix}
+    \cos \theta & \sin \theta \\
+    -\sin \theta & \cos \theta\\
+    \end{pmatrix}
+\end{align}
+It is possible to compute a Fourier transformation on the circle
+\begin{align}
+    \hat{f}(m) &= \frac{1}{2\pi} \int_{-\pi}^{\pi}f(\theta) e^{-im\theta}d \theta \\
+    f(\theta) &= \sum_{m} e^{im\theta} f(\theta)
+\end{align}
+More generally, there exists a convolution operation on groups
+\begin{align}
+    \widehat{(f\star k)(\theta)} &= \hat{f}(\theta)\hat{k}(\theta)
+\end{align}
+We can use the general formula for a group convolution below and apply it to obtain $SO(3)$ group convolutions
+\begin{align}
+    f*k &= \int_{g\in SO(3)}f(gv)k(g^{-1}v) dg. 
+\end{align}
+%Homogenous spaces. You can introduce fourier series and convolution on homogenous spaces. %\textcolor{red}{TODO: There is something about sparsity patterns here. The idea is that there is a sparse spectrum?}
+$v$ is typically chosen to be some canonical element in the domain of $f$. For three dimensional spherical convolutions, $v$ can be chosen to be the north pole of the sphere. In practice this integral cannot be computed exactly, but it can be numerically approximated. To implement this approximation, we have to sample points on the surface of the sphere (we can index an arbitrary transformation in $SO(3)$ by the position that it maps the north pole reference point).
+
+A simple strategy to do this may be to sample at constant latitudes and longitudes. Another strategy would be to draw uniformly random points on the sphere. However, either such sampling creates non-uniform cells on the sphere which worsens numerical estimates. A better strategy will instead be to take the Fourier transform and perform the convolution in Fourier space. On the sphere, we can compute the Fourier transform by using spherical harmonics
+\begin{align}
+\hat{f}^\ell_m &= \int_{S^2} f(x) \overline{Y^\ell_m} dx \\
+f &= \sum_{0 \leq \ell \leq b} \sum_{|m| \leq b} \hat{f}^{\ell}_m Y^\ell_m \\
+\end{align}
+
+Here $b$ is a quantity referred to as the bandwidth of the signal $f$ and is the number of nonzero Fourier modes. $Y^\ell_m$ are spherical harmonics. These two transformations are respectively referred to as the spherical fourier transform and its inverse.
+
+The integral for the Fourier transform can't be computed exactly, but it can be numerically approximated by drawing equiangular samples on the sphere $S^2$. Computing this numerical sum can still be quite expensive. Once the transformation is performed, the group convolution can then be computed by direct multiplication in the Fourier space by the spherical convolution theorem
+
+\begin{align}
+\hat{(f*k)}_m &= 2 \pi \sqrt{\frac{4 \pi}{2 \ell + 1}} \hat{f}^\ell_m \hat{h}^\ell_m
+\end{align}
+
+The inverse spherical Fourier transform can then be used to recover the signal $f*k$.
+
+\section{Implementing the Spherical Convolution}
+
+The spherical Fourier is implemented in practice using equiangular samples on the sphere.
+
+\begin{align}
+\hat{f}^\ell_m &= \frac{\sqrt{2 \pi}}{2b} \sum_{j=0}^{2b-1} \sum_{k=0}^{2b-1} a^{(b)}_j f(\theta_j, \phi_k) \overline{Y^\ell_m}(\theta_j, \phi_k)
+\end{align}
+Here the $\theta_j, \phi_k$ are equiangular sample points 
+\begin{align}
+    \theta_j &= \frac{\pi j}{2 b} \\
+    \phi_k &= \frac{\pi k}{b},
+\end{align}
+
+The values $\overline{Y^\ell_m}$ are precomputed at these points. The $a^{(b)}_j$ are sample weights. This formula can be directly implemented in a differentiable programming language.
+
+We can implement the spherical convolution using the spherical fourier transform as a primitive.
+
+\begin{lstlisting}[language=python]
+class SphericalConvolution(w: $\mathbb{R}[|m]$):
+  def $\lambda$(X: $\mathbb{R}[m]$) -> $\mathbb{R}[|G|]$:
+    X$'$ = SphericalFourierTransform(X)
+    w$'$ = SphericalFourierTransform(w)
+    return InverseSphericalFourierTransform($2 \pi \sqrt{\frac{4 \pi}{2 \ell + 1}}$ X$'$ * w$'$)
+\end{lstlisting}
+
+The spherical fourier transform itself can be implemented using the equiangular sampling we have just introduced.
+
+%\section{Spin Weighted Convolutions}
+
+%The Wigner-D matrices are defined as
+%\begin{align}
+%D^\ell_{m, 0}(\alpha, \beta, \gamma) &= \sqrt{\frac{4\pi}{2\ell + 1}} \bar{Y^\ell_m(\beta, \alpha)}
+%\end{align}
+
+%The functions $D^\ell$ are group representations of $SO(3)$. We want an efficient spherical CNN that can represent more complex functions on the sphere. Spin weighted spherical waves were first introduced for GR 
+%\begin{align}
+%    \ _s f(\theta, \phi) &= \sum_{\ell \in \mathbb{N}} \sum l
+%\end{align}
+%Spins are related to the columns of the $SO(3)$ representations (the Wigner-D matrices).
+%\begin{align}
+%    D^{\ell}_{n,-s} &= 
+%\end{align}
+%Now features are combinations of spin waves. These spin waves allow for anisotropic features.
+\end{document}

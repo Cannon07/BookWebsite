@@ -1,0 +1,111 @@
+\documentclass[book.tex]{subfiles}
+
+\begin{document}
+\chapter{Geometry Processing}
+\label{chap:geometry_processing}
+\noindent\rule{11cm}{0.4pt} \\
+\textbf{Prerequisites:}  \autoref{chap:ml_basics}, \autoref{chap:probability}  \\
+\textbf{Difficulty Level:} ** \\
+\noindent\rule{11cm}{0.4pt}
+\vspace{5mm}
+\textcolor{red}{TODO: This is  sciml talk notes from talk by Yu Wang}
+The shape analysis community in graps has a long history of building group transformation invariant algorithms.
+
+\section{Shape Analysis}
+
+\textcolor{red}{TODO: Look at shape analysis review article with Yu Wang and Justin Solomon}
+
+Two tasks
+\begin{itemize}
+    \item Distance
+    \item Segmentation
+    \item Shape Description
+    \item Correspondance: Given two shapes, find 1-1 mapping.
+\end{itemize}
+
+Shape analysis is the generalization of image analysis to 3D. It's something of a 2.5D problem since the boundary of the image is what ends up really matters.
+
+
+\section{Operator Approach to Shape Analysis}
+
+For example, consider a mesh representation of a shape. There are many possible meshes you can use. 
+
+We define a shape as the discretization of a continuous operator on a surface (\textcolor{red}{TODO: I'm not entirely sure how this works.}) You use the Laplacian operator
+
+\begin{align}
+    \mathbb{R}^2: \Delta^2: \frac{\partial^2}{\partial x^2} + \frac{\partial^2}{\partial y^2}
+\end{align}
+
+The Laplace-Beltrami operator is a linear operator defined on a manifold. You can use the finite element method to discretize the operator. This will result in the derivation of a "cotangent" Laplacian.
+
+\begin{align}
+    \Delta_M: \frac{1}{\sqrt{|det g|} \partial_i(\sqrt{|det g|})g^{ij}...
+\end{align}
+
+Some you have some discretized geometry operator $S: \mathbb{R}^{n \times n}$. This type of analysis is called spectral analysis.
+
+\textcolor{red}{TODO: How does this relate to the rest of the book?}
+
+The goal here is to create an innvariance to the representation of the mesh.
+
+ShapeDNA advocates using Laplacian eigenvalues as vector representation for shape retrieval.
+
+Operator spectrum provides a shape2vector approach. Shape -> eigenvalues -> semantics. Map from eigenvalues to semantics can be learned.
+
+Why does a operator representation have robustness to noise? The lower eigenvalues are more stable to perturbation
+
+Heat kernel signatures. Here $k_t$ is also known as a Green's funciton.
+
+\begin{align}
+    h_t(x) &= k_t(x, x) \\
+    k_t(x, y) &= \sum_{i=0}^\infty e^{-\lambda_i t} \phi_i(x) \phi_j(y) 
+\end{align}
+
+$h_t(x)$ is a function for each point on the surface. 
+
+Wave kernel signature contains a filter signature other than $f(\lambda) = e^{-\lambda t}$. Optimal spectral decompositions consider a differetn filter.
+\section{Intrinsic and Extrinsic Operators}
+
+Extrinsic geometry care about the embedding of a shape in $\mathbb{R}^3$. Intrinsic shapes are invariant to isometry. An isometry is length preserving. The Laplacian operator is invariant to isometries.
+
+An intrinsic geometry is any origami equivalent to a flat piece of paper.
+
+People usually work with intrinsic operators but extrinsic operators are starting to become popular.
+
+
+\section{Operators for Geometric Analysis}
+\subsection{Dirichlet to Neumann Operators $\mathcal{S}$}
+
+Consider a volume $\Omega$ bounded $\Gamma = \partial \Omega$. The neumann data is 
+\begin{align}
+    g_n &= \frac{\partial}{\partial n} u(\Gamma)
+\end{align}
+DtN operator is
+\begin{align}
+    g \mapsto g_n
+\end{align}
+Also called the Stekhov-Poincare operator. $\mathcal{S}$ can be written as a composition of 4 operators, boundary operators. This can be generalized to open surface.
+
+The operator $\mathcal{V}$ the single layer potential is defined as
+\begin{align}
+    [V\phi](x) &= \int_\Gamma G(x, y) \phi(y) dy
+\end{align}
+\begin{align}
+    v(x, y) &= \frac{1}{|x-y|}
+\end{align}
+is an inverse distance operator. The operator $\mathcal{S}$ encodes the extrinsic geometry of the system.
+
+Level sets of Steklov eigenfunctions conform to mean curvatures.
+
+\subsection{Dirac Operators}
+
+\begin{align}
+    D = \sqrt{\Delta}
+\end{align}
+\textcolor{red}{TODO: Look at "Surface Networks" paper. Also look up extrinsic dirac operators paper}
+
+\section{Learnable Operators}
+
+\textcolor{red}{TODO: Look up HodgeNet, DiffusionNet, PD-MeshNet, MeshCNN and others}
+
+\end{document}

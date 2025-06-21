@@ -1,0 +1,172 @@
+\documentclass[book.tex]{subfiles}
+\begin{document}
+
+\chapter{Phase Transitions of Learning in Neural Networks}
+\label{chap:phase_neural}
+\noindent\rule{11cm}{0.4pt} \\
+\textbf{Prerequisites:}  \autoref{chap:molecular_hamiltonian},   \\
+\textbf{Difficulty Level:} ** \\
+\noindent\rule{11cm}{0.4pt}
+\vspace{5mm}
+
+When studying the theory of neural networks, it is often useful to begin with the asymptotic limit of infinite hidden units. As the number of hidden neurons approaches $\infty$, a neural network approaches a Gaussian process. The resulting system can be studied with the methodology of kernel machines, leading to the neural tangent kernel. However, the connection between asymptotic limit and the finite realm breaks down as the learning rate increases. In particular, empirical studies offer evidence that large early learning rates during training can improve performance. There is some evidence that a phase transition occurs between different regions of the learning process. In this chapter we study the behavior of this phase transition \cite{bahri2020statistical}, \cite{lee2017deep}, \cite{lewkowycz2020large}. In particular, we learn about the theorized lazy, catapult, and divergent phases.
+
+%"The study of deep neural networks whose hidden layer widths are large has been fruitful in helping build theoretical foundations for deep learning. I will begin with some background on prior results along these lines, connecting wide neural networks with Gaussian processes, kernel methods, and linear models. Nonetheless, these connections break down, even for wide neural networks, above a critical value of the learning rate used in gradient descent optimization. I will present empirical evidence suggesting a phase transition occurs above this critical value to a different, nonlinear regime with universal features across architectures and datasets. I will discuss our theoretical understanding of this phase transition through the study of a class of simple dynamical systems dictated by neural network evolution in function space."
+
+
+
+\section{Phase Transitions and Coupling Method}
+
+%Does this theory describe everything for NNs that are wide and with fixed depth? We will focus on the setting of squared loss. 
+There can be sharp differences in model training behavior based on the choice of learning rate. There is a condition on when behavior modeled by the neural tangent kernel (NTK) sets in, whereby you need the learning rate to be below some critical threshold. 
+Empirically there is a phase transition in the behavior of gradient descent as a function of learning rate where width \begin{align}n \to \infty\end{align} 
+This behavior is matched by evidence on the numerical side.
+
+The three phases are the Neural Tangent Kernel phase, the catapult phase, and the divergent phase.
+
+\subsection{The Lazy or Neural Tangent Kernel Phase}
+
+$\lambda_0$ is the top eigenvalue of the NTK kernel. On the width $n \to \infty$, we effectively approach a convex learning problem with a quadratic loss. There the NTK is the Hessian, and there is a maximum learning rate that naturally arises. 
+
+\begin{align}
+\Theta_{\mathcal{D}_x, \mathcal{D}_{x'}} \to \lambda_0
+\end{align}
+
+When we have the condition that learning rate $\eta$ satisfies
+
+\begin{align}
+    \eta < \frac{2}{\lambda_0},
+\end{align}
+we say that we are in the lazy phase.
+%For a finite width neural network, there is a maximum learning rate you can train the model up until it diverges. For th
+
+
+\subsection{The Catapult Phase}
+
+We define the catapult phase of learning as the regimen in which
+\begin{align}
+    \frac{2}{\lambda_0} < \eta < \eta_{\mathrm{max}}
+\end{align}
+
+Here $\eta_{\mathrm{max}}$ is the maximum learning rate supported by the model. One empirical observation, is that in the catapult phase the loss can diverge at first before it comes down stably. 
+
+\subsection{The Divergent Phase}
+
+The divergent phase is characterized by
+\begin{align}
+    \eta_{\mathrm{max}} < \eta
+\end{align}
+
+In this phase, the model fails to learn entirely, unlike the catapult phase in which the model training eventually stabilizes.
+
+
+\section{A Simplified Mathematical Model}
+Suppose that we have a neural network
+\begin{align}
+    f: \mathbb{R}^d \mapsto \mathbb{R}
+\end{align}
+Suppose that we have a training dataset
+\begin{align}
+\{(x_i, y_i)\}_{i=1}^M
+\end{align}
+Assume that we have a $p$ dimensional set of parameters
+\begin{align}
+    \theta \in \mathbb{R}^p
+\end{align}
+The mean-squared-error loss is given by
+\begin{align}
+    \mathcal{L} &= \frac{1}{2m} \sum_{i=1}^m \| f(x_{i}) -y_i \|^2
+\end{align}
+The neural tangent kernel is defined by
+\begin{align}
+    \Theta(x, x') &= \frac{1}{M} \sum_{\mu=1}^p \frac{\partial f(x)}{\partial \theta_\mu} \frac{\partial f(x')}{\partial \theta_\mu} 
+\end{align}
+$\Theta$ is consequently a matrix of shape $\mathbb{R}^{d \times d}$ where
+\begin{align}
+    x_i \in \mathbb{R}^d
+\end{align}
+Let $\lambda$ denote the maximum eigenvalue of this kernel.
+%\begin{align}
+%    \eta_{ext} &= \frac{2}{\lambda_0}
+%%\end{align}
+Here $\eta$ is the learning rate. %The dynamics are
+%\begin{align}
+%    \theta_{\mu,t+1} &= \theta_{\mu,t}  + ...
+%\end{align}
+%Look at the dynamics in function space and not the dynamics in parameter space
+%\begin{align}
+%\frac{df(x)}{dt} &= ... \\
+%\frac{d \Theta_t(x, x')}{dt} &= ... \\
+%\frac{d \mathcal{O}_3(x, x', x'')}{dt} &= ...
+%\end{align}
+%We get a system of coupled differential equations
+
+%Define the standard NTK. Look at a toy neural network with no nonlinearities
+%\begin{align}
+%    \Theta(x, x') &= \frac{1}{m} \sum_{\mu=1}^p \frac{\partial f(x) }{\partial \theta_\mu} \frac{\partial f(x')}{\partial \theta_\mu}
+%\end{align}
+
+\subsection{A One Dimensional Linear Model}
+
+The simplest case we can analyze is when $x$ is one dimensional 
+
+\begin{align}
+f(x) &= \frac{1}{\sqrt{n}}v^T u x
+\end{align}
+Suppose we one training example
+\begin{align}
+    (x, y) &= (1, 0)
+\end{align}
+In this case, the loss is simply
+\begin{align}
+    \mathcal{L} &= \frac{f^2}{2} \\
+    f &= \frac{v^tu}{\sqrt{n}}
+\end{align}
+We can turn gradient descent updates for the parameters into gradient descent updates for the functions.
+\begin{align}
+    f_{t+1} &= (1 - \eta \lambda_t + \frac{\eta^2 f_t^2}{n} ) f_t \\
+    \lambda_{t+1} &= \lambda_t + \frac{\eta \lambda_t^2}{n}(\eta \lambda_t -4) 
+\end{align}
+The catapult phase occurs at 
+\begin{align}
+    2/\lambda_0 < \eta < 4/\lambda_0
+\end{align}
+
+\subsection{Full Model}
+We can then derive full updates on the parameters $u$ and $v$ and on the NTK $\Theta$. These parameter space updates can be converted into function space updates. We define the notation
+\begin{align}
+    f_i &= f(x_i) \\
+    \tilde{f}_i &= f(x_i) - y_i \\
+    \Theta_{ij} &= \Theta(x_i, x_j)
+\end{align}
+With this notation, we can write
+\begin{align}
+    \tilde{f}_{i}^{t+1} &= \sum_j (\delta_{i j} - \eta \Theta_{i j}) \tilde{f}_j + \frac{\eta^2}{NM} (x^T_i \zeta)(f^T\tilde{f})
+\end{align}
+Here we define
+\begin{align}
+    \zeta &= \frac{1}{M} \sum_i \tilde{f}_i x_i
+\end{align}
+
+We can look at a projected function update which looks more understandable
+\begin{align}
+    \tilde{f}^T \Theta \tilde{f} &= \tilde{f}^T \Theta \tilde{f} + \frac{\eta}{N} \zeta^T \zeta (\eta \tilde{f}^T \Theta \tilde{f} - 4 f^T \tilde{f})
+\end{align}
+
+However we lose something by looking at this projected version since some details are lost. There's a series expansion
+\begin{align}
+    f_t = f_t^0 + \frac{1}{n} f_t^1 + \dotsc 
+\end{align}
+There is a breakdown in this series expansion where all terms become of the same size and then the finite-width perturbation series expansion breaks down. When the curvature scale drops though, this expansion works and the perturbation theory works again.
+
+The model can provide predictions on when we enter the catapult phase. The wider the network, the greater the "control." We can consequently get a robust empirical explanation for the catapult phase.
+
+
+%\textcolor{red}{(TODO: Add a section on critical exponents in phase transitions and their non-analyticity in part 2)}.
+
+ %\textcolor{red}{(TODO: I think that means the closer it gets to the NTK which means it is well behaved)}. 
+
+
+
+
+\end{document}

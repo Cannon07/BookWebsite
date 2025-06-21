@@ -1,0 +1,47 @@
+\documentclass[book.tex]{subfiles}
+\begin{document}
+\chapter{Approximately Modeling Maxwell's Equations}
+
+\label{chap:pinns_maxwell}
+\noindent\rule{11cm}{0.4pt} \\
+\textbf{Prerequisites:} \autoref{chap:qft_basics}  \\
+\textbf{Difficulty Level:} ** \\
+\noindent\rule{11cm}{0.4pt}
+\vspace{5mm}
+
+Maxwell's equations provide a classical model for complex interacting electric and magnetic fields. Often times, simpler approximations to Maxwell's equations suffice for modeling physical systems, but at times the full detail of the equations may be required.
+
+In particular, modeling complex optical systems design problems can require solving Maxwell's equations directly which can be extremely expensive. We can instead train a neural network to directly predict the electric field and penalize deviations from Maxwell's equations as a physics guided loss function \cite{lim2022maxwellnet}.
+
+%"""
+%Maxwell's equations govern light propagation and its interaction with matter. Therefore, the solution of Maxwell's equations using computational electromagnetic simulations plays a critical role in understanding light-matter interaction and designing optical elements. Such simulations are often time-consuming and recent activities have been described to replace or supplement them with trained deep neural networks (DNNs). Such DNNs typically require extensive, computationally demanding simulations using conventional electromagnetic solvers to compose the training dataset. In this paper, we present a novel scheme to train a DNN that solves Maxwell's equations speedily and accurately without relying on other computational electromagnetic solvers. Our approach is to train a DNN using the residual of Maxwell's equations as the physics-driven loss function for a network that finds the electric field given the spatial distribution of the material property. We demonstrate it by training a single network that simultaneously finds multiple solutions of various aspheric micro-lenses. Furthermore, we exploit the speed of this network in a novel inverse design scheme to design a micro-lens that maximizes a desired merit function. We believe that our approach opens up a novel way for light simulation and optical design of photonics devices.
+%"""
+
+\section{A Simplified Loss Function}
+
+For non-magnetic isotropic materials without electric or magnetic current, we can consider the simplifed version of Maxwell's equations given by
+
+\begin{align}
+\nabla \times \nabla \times E(r) - \kappa_0^2 \varepsilon_r(r) E(r) &= 0
+\end{align}
+Here $E$ is the electric field, $\varepsilon_r$ is the relative electric permittivity distribution and $k_0$ is defined by
+\begin{align}
+k_0 &= \frac{2 \pi}{\lambda}
+\end{align}
+where $\lambda$ is the wavelength of light we consider.
+
+Assume that we have a neural network that can predict the electric field directly from an input geometry $x$
+\begin{align}
+f_\theta(r) \approx E(r)
+\end{align}
+
+This can be turned into a loss function
+
+\begin{align}
+\mathcal{L} &= | \nabla \times \nabla \times E(r) - \kappa_0^2 \varepsilon_r(r) E(r)|^2
+\end{align}
+
+We can then directly train $f_\theta$ to minimize this loss. The input electric field can be represented by a discretized grid, in which case $f_\theta$ can be a convolutional network.
+
+%\textcolor{red}{TODO: Put a bit more here to actually flesh out the idea with basics.}
+\end{document}

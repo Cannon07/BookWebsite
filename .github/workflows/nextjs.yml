@@ -143,6 +143,7 @@ jobs:
           git add contents/docs/chapters/     # MISSING: Processed chapter output
           git add contents/                   # Add entire contents directory to be safe
           git add pipeline_results.json      # Pipeline results
+          git add public/                    # Converted figures
 
           echo "Git status after add:"
           git status

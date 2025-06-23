@@ -124,37 +124,49 @@ jobs:
         run: |
           echo "📝 Committing Overleaf changes..."
           echo "🔍 Debug: Checking what changes exist..."
-
+  
           echo "Git status:"
           git status
-
+  
           echo "Files in chapters/:"
           ls -la chapters/ | head -10
-
+  
           echo "Files in app/:"
           ls -la app/ | head -10 2>/dev/null || echo "app/ directory not found"
           
           echo "Files in contents/docs/chapters/:"
           ls -la contents/docs/chapters/ | head -10 2>/dev/null || echo "contents/docs/chapters/ directory not found"
-
-          # FIXED: Add all the relevant directories including processed chapters
+          
+          echo "Files in public/ (generated images):"
+          ls -la public/ | head -10 2>/dev/null || echo "public/ directory not found"
+          
+          echo "Image files in public/:"
+          find public/ -type f \( -name "*.png" -o -name "*.jpg" -o -name "*.jpeg" -o -name "*.svg" -o -name "*.gif" -o -name "*.webp" \) 2>/dev/null | head -10 || echo "No image files found in public/"
+  
+          # FIXED: Add all the relevant directories including processed chapters AND generated images
           git add chapters/                    # Raw .tex files from Overleaf
           git add app/                        # App directory changes
-          git add contents/docs/chapters/     # MISSING: Processed chapter output
+          git add contents/docs/chapters/     # Processed chapter output
           git add contents/                   # Add entire contents directory to be safe
+          git add public/                     # ADDED: Generated images and assets
           git add pipeline_results.json      # Pipeline results
-          git add public/                    # Converted figures
-
+  
           echo "Git status after add:"
           git status
-
+  
           if git diff --staged --quiet; then
             echo "ℹ️  No changes to commit"
           else
+            # Count different types of files for detailed commit message
+            tex_count=$(find chapters/ -name '*.tex' 2>/dev/null | wc -l || echo 0)
+            mdx_count=$(find contents/docs/chapters/ -name '*.mdx' 2>/dev/null | wc -l || echo 0)
+            image_count=$(find public/ -type f \( -name "*.png" -o -name "*.jpg" -o -name "*.jpeg" -o -name "*.svg" -o -name "*.gif" -o -name "*.webp" \) 2>/dev/null | wc -l || echo 0)
+            
             git commit -m "📚 Auto-update from Overleaf: $(date '+%Y-%m-%d %H:%M:%S UTC')
-
-            Raw chapters: $(find chapters/ -name '*.tex' | wc -l) files
-            Processed chapters: $(find contents/docs/chapters/ -name '*.mdx' 2>/dev/null | wc -l || echo 0) files"
+  
+            📄 Raw chapters: ${tex_count} files
+            🔄 Processed chapters: ${mdx_count} files  
+            🖼️  Generated images: ${image_count} files"
             git push
             echo "✅ Changes committed and pushed"
           fi

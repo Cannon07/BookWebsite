@@ -1,0 +1,39 @@
+\documentclass[book.tex]{subfiles}
+\begin{document}
+
+\chapter{Sampling from Molecular Space}
+\label{chap:graph_generation}
+\noindent\rule{11cm}{0.4pt} \\
+\textbf{Prerequisites:} \autoref{chap:graphconvs}, \autoref{chap:equivariant_networks}, \autoref{chap:molecular_dynamics},  \autoref{chap:dft} \\
+\textbf{Difficulty Level:} ** \\
+\noindent\rule{11cm}{0.4pt}
+\vspace{5mm}
+
+The distribution of all possible molecules is very complex. Studies have indicated that the number of possible "small" molecules is astronomically large. As a result, mathematical studies of such a space have been very limited until recent years. Differentiable programming methods have enabled new approaches to systematically sample from this distribution. In this chapter, we review a few techniques for sampling from molecular distributions.
+
+\section{String Generation Methods}
+
+As we learned previously, molecular formulas can be represented as string structures (in SMILES or SELFIES formats). Early methods for sampling molecular space adapt methods from natural language processing to directly generate samples of the underlying string space. One limitation of these approaches was that many syntactically valid SMILES strings did not correspond to chemically valid molecules. New approaches focus on learning to decode within the semantically constrained SELFIES langauge which bypasses the problem by guaranteeing that syntactically valid strings correspond to chemically viable compounds.
+
+\section{Graph Generation Methods}
+
+A popular family of methods uses algorithmic methods to assemble molecular graphs piece by piece. Some techniques perform direct assembly by modifying simple building blocks on the molecule. However, such techniques tend to have limited capacity to construct more complex molecules. Newer approaches utilize hierarchical methods to use larger graph motifs within construction.
+
+\begin{lstlisting}[language=python]
+class MolecularNormalizingFlow(NormalizingFlow):
+  
+  
+  def $\lambda$(X: String[N]):
+    onehot = OneHotEncode(X)
+    return nf(onehot)
+\end{lstlisting}
+
+%\textcolor{red}{TODO: Give the hierarchical variational autoencoder.}
+
+%"Graph generation techniques are increasingly being adopted for drug discovery. Previous graph generation approaches have utilized relatively small molecular building blocks such as atoms or simple cycles, limiting their effectiveness to smaller molecules. Indeed, as we demonstrate, their performance degrades significantly for larger molecules. In this paper, we propose a new hierarchical graph encoder-decoder that employs significantly larger and more flexible graph motifs as basic building blocks. Our encoder produces a multi-resolution representation for each molecule in a fine-to-coarse fashion, from atoms to connected motifs. Each level integrates the encoding of constituents below with the graph at that level. Our autoregressive coarse-to-fine decoder adds one motif at a time, interleaving the decision of selecting a new motif with the process of resolving its attachments to the emerging molecule. We evaluate our model on multiple molecule generation tasks, including polymers, and show that our model significantly outperforms previous state-ofthe-art baselines." Reference \cite{jin2020hierarchical}
+
+%"Drug discovery aims to find novel compounds with specified chemical property profiles. In terms of generative modeling, the goal is to learn to sample molecules in the intersection of multiple property constraints. This task becomes increasingly challenging when there are many property constraints. We propose to offset this complexity by composing molecules from a vocabulary of substructures that we call molecular rationales. These rationales are identified from molecules as substructures that are likely responsible for each property of interest. We then learn to expand rationales into a full molecule using graph generative models. Our final generative model composes molecules as mixtures of multiple rationale completions, and this mixture is fine-tuned to preserve the properties of interest. We evaluate our model on various drug design tasks and demonstrate significant improvements over state-of-the-art baselines in terms of accuracy, diversity, and novelty of generated compounds."
+%Reference \cite{jin2020multi}
+
+
+\end{document}

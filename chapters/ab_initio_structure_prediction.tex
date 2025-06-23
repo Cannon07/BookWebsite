@@ -1,0 +1,18 @@
+\documentclass[book.tex]{subfiles}
+\begin{document}
+
+\chapter{Ab Initio Structure Prediction}
+\label{chap:cormorant}
+\noindent\rule{11cm}{0.4pt} \\
+\textbf{Prerequisites:} \autoref{chap:graphconvs}, \autoref{chap:equivariant_networks}, \autoref{chap:molecular_dynamics},  \autoref{chap:dft} \\
+\textbf{Difficulty Level:} ** \\
+\noindent\rule{11cm}{0.4pt}
+\vspace{5mm}
+
+"""
+The computational prediction of atomistic structure is a long-standing problem in physics, chemistry, materials, and biology. Within conventional force-field or ab initio calculations, structure is determined through energy minimization, which is either approximate or computationally demanding. Alas, the accuracy-cost trade-off prohibits the generation of synthetic big data records with meaningful energy based conformational search and structure relaxation output.  In this talk, Graph-To-Structure (G2S [1]), a graph-based kernel ridge regression model for structure prediction, will be presented.  Exploiting implicit correlations among relaxed structures, G2s generalizes across chemical compound space,  enabling direct predictions of relaxed structures for out-of-sample compounds, and effectively bypassing the energy optimization task. Examples of G2S applicability include closed shell (QM9 [2]) and open shell (QMSpin [3]) molecules, transition states (QMrxn20 [4]) and solids (Elpasolites [5]). Moreover, the usefulness of G2S will be shown as an improved initial guess to subsequent ab initio based relaxation, as well as an input for structure based quantum machine learning models [6].
+"""
+
+References \cite{christensen2020fchl}, \cite{faber2016machine}, \cite{von2020thousands}, \cite{schwilk2020large}, \cite{ramakrishnan2014quantum}, \cite{lemm2021machine} 
+
+\end{document}

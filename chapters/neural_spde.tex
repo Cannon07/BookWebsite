@@ -1,0 +1,33 @@
+\documentclass[book.tex]{subfiles}
+%\usepackage{amsmath}
+%\usepackage{bm}
+
+
+\begin{document}
+% Based on 
+\chapter{Neural Stochastic Partial Differential Equations}
+
+\label{chap:neural_spde}
+\noindent\rule{11cm}{0.4pt} \\
+\textbf{Prerequisites:}  \autoref{chap:pde}, \autoref{chap:numerical_pde}, \autoref{chap:neural_pde}  \\
+\textbf{Difficulty Level:} ** \\
+\noindent\rule{11cm}{0.4pt}
+\vspace{5mm}
+%\url{https://arxiv.org/pdf/2012.01194.pdf}
+
+Stochastic partial differential equations add a driving noise force to a partial differential equation and allow for modeling processes such as surface growth. By using a deep network to model the driving noise behind the SPDE, we can approximately solve the SPDE \cite{beck2020deep}.
+%"""
+%In this article we introduce and study a deep learning based approximation algorithm for solutions of stochastic partial differential equations (SPDEs). In the proposed approximation algorithm we employ a deep neural network for every realization of the driving noise process of the SPDE to approximate the solution process of the SPDE under consideration. We test the performance of the proposed approximation algorithm in the case of stochastic heat equations with additive noise, stochastic heat equations with multiplicative noise, stochastic Black–Scholes equations with multiplicative noise, and Zakai equations from nonlinear filtering. In each of these SPDEs the proposed approximation algorithm produces accurate results with short run times in up to 50 space dimensions.
+%"""
+
+\section{Mathematical Setup}
+
+Let $T \in \mathbb{R}^+$, $d \in \mathbb{N}$. Let $\varphi: \mathbb{R}^d \to \mathbb{R}$ be a continuous function. Let $(\Omega, \mathcal{F}, \mathbb{P})$ be a probability space where $\mathcal{F}$ is a normal filtration. %TODO: Finish
+
+\begin{align}
+    X_t(x) &= \varphi(x) + \int_0^t f(x, X_s(x),(\nabla X_s)(x)) ds + \int_0^t b(x, X_s(x), (\nabla X_s)(x)) dZ_s(x) + \\ & \int_0^t \left [ \frac{1}{2} \mathrm{Trace}(\sigma(x)\sigma^*(x)(\mathrm{Hess} X_s)(x)) + \langle \mu(x), (\nabla X_s)(x) \rangle_{\mathbb{R}^d} \right] ds
+\end{align}
+
+We can model $\varphi$ by a suitable fully connected network and train the system empirically with numerical integration and sampled randomness.
+
+\end{document}

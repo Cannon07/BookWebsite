@@ -1,0 +1,139 @@
+\documentclass[book.tex]{subfiles}
+
+\begin{document}
+\chapter{Machine Learning Basics}
+\label{ch:background}
+
+\label{chap:ml_basics}
+\noindent\rule{11cm}{0.4pt} \\
+\textbf{Prerequisites:} \autoref{chap:optimization}, \autoref{chap:probability}, 
+\autoref{chap:calculus} \\
+\textbf{Difficulty Level:} ** \\
+\noindent\rule{11cm}{0.4pt}
+\vspace{5mm}
+
+This chapter introduces some fundamentals of modern machine learning and establishes common mathematical language used in the remainder of this book.
+
+
+\section{Introduction to Machine Learning}
+
+Machine learning theory can be framed in terms of datasets and losses. Let $X \in \mathbb{R}^{N\times M}$ be a matrix. Let $y \in \mathbb{R^N}$ be a vector. We say that $X$ is the data matrix and consists of $N$ datapoints. That is, each $x_i \in \mathbb{R}^M$ is a vector of dimension $M$. Then we say that $y$ is the set of labels associated with these datapoints. $y_i \in \mathbb{R}$ is the label associated with data point $x_i$. To a simplified approximation, the act of learning is to find a function $f$ which maps inputs $x_i$ to labels $y_i$. For example, we could construct the mathematical optimization problem.
+
+\begin{align}
+f := \argmin_{g \in \mathcal{G}} \sum_{i=1}^N |g(x_i) - y_i|^2 
+\end{align}
+
+Here, $\mathcal{G}$ is some subset of the functions mapping $\mathbb{R}^M \to \mathbb{R}$. We use the squared error to penalize mismatches between $g(x_i)$ and $y_i$. Then $f$ is the solution to the optimization problem
+\begin{align}
+\argmin_{g \in \mathcal{G}} \sum_{i=1}^N |g(x_i) - y_i|^2,
+\end{align}
+of finding the function $g \in \mathcal{G}$ which minimizes the prediction error mapping datapoints $x_i$ to labels $y_i$. We introduce an additional piece of terminology. The loss function $\mathcal{L}(g, X, y)$ is the function which determines how far a given function $g$ is from mapping all the datapoints in matrix $X$ to labels $y$. In our case, we have
+
+\begin{align}
+\mathcal{L}(g, X, y) &= \sum_{i=1}^N |g(x_i) - y_i|^2 
+\end{align}
+
+
+When learning, we seek a function $g$ that minimizes loss $\mathcal{L}$ for given $X$ and $y$. However, underneath this definition there lies considerable complexity. What is the function space we are optimizing over? If we allow arbitrary non-continuous functions, the "optimal" function we find could be a lookup table:
+
+\begin{align}
+f(x) = \begin{cases}
+y_i & x = x_i \\
+0 & \textrm{otherwise} \\
+\end{cases}
+\end{align}
+
+We have to be more restrictive in our choice of function somehow. We need a way to mathematically model the intuition that the learned function shouldn't just be a lookup table. One common framework for handling this is that of data distributions. Mathematically, we say that $\mathcal{D}$ is a data distribution if it's a probability distribution which samples data points from $\mathbb{R}^M$ and labels from $\mathbb{R}$. Then we can view each data point, label pair as being sampled from the data distribution as $(x_i, y_i) \sim \mathcal{D}$. We won't be too formal with the definition of $\mathcal{D}$, but the basic idea is that we have some probability density function $p_{\mathcal{D}}$ over $\mathbb{R}^M \times \mathbb{R}$ which lets us sample data points at random. Then our original dataset $(X, y)$ is just a set of $N$ samples drawn from $\mathbb{D}$. What's the optimization problem we're trying to solve then? 
+
+\begin{align} 
+f := \argmin_{g \in \mathcal{G}} \mathbb{E}_{(x, y) \sim \mathcal{D}} \left [\mathcal{L}(g, x, y) \right] 
+\end{align}
+
+This definition captures our intuition that $f$ must be a general solution. Note that the lookup table we defined above would not be the minimum of this new function (assuming that the data distribution $\mathcal{D}$ is realistic). 
+
+The challenge of course is that this optimization problem isn't actually solvable in the real world. We often don't have access to the true distribution $\mathcal{D}$ (for scientific applications, $\mathcal{D}$ could be some complex measured property that must be experimentally gathered). Rather, we only have the finite dataset $X, y \in \mathbb{R}^{N\times M} \times \mathbb{R}^N$ with $N$ data points. And if we try to directly minimize the loss on our dataset, we usually run into the \textit{phenomenon} of overfitting again, and run the risk of getting a lookup function instead of something that captures the true data distribution $\mathcal{D}$. Empirically, the common solution people take is to split our dataset into subsets for \textit{training} and \textit{validation}. We might choose say 80\% of our $N$ data points to minimize the loss on. Then we evaluate the goodness of fit of our model by measuring the loss on the validation set. In actual practice, people often go further and split into training, validation, and test sets, where the validation set is used for experimentation and the test set is only viewed at the end of model development. 
+
+We've still left one question open here: what's the space $\mathcal{G}$. A mathematically elegant answer might be to consider something like $C(\mathbb{R}^M, \mathbb{R})$, the space of all continuous functions. However, we run into a wall of infinities here. $C(\mathbb{R}^M, \mathbb{R})$ is an enormous space and there will be all sorts of functions in there. At the end of the day, we have to wrestle with the problem of \textit{algorithmic complexity}. That is, we need to come up with solutions that can reasonably run on actual computers. This suggests we need to consider a smaller space $\mathcal{G}$ that is more feasible to work with. If you're a mathematician, you might point to the Stone-Weierstrass theorem and suggest a space of polynomials. Or perhaps sums of trigonometric functions if you're a fan of Fourier analysis. And there is indeed considerable work learning with these classes of function. But interestingly, most of modern machine learning focuses instead on \textit{parametric function classes}.
+
+What do we mean by a parametric class of functions? Well let's start with a simple example. Suppose that we have a vector $W \in \mathbb{R}^{M}$ and a scalar $b \in \mathbb{R}$. Then for each such tuple $(w, b)$ we can define a function $g[w,b]: \mathbb{R}^M \to \mathbb{R}$ as follows
+
+\[g[w,b](x) = w^T x + b \]
+
+That is, the space of functions we consider is the space of linear functions from $\mathbb{R}^M\to \mathbb{R}$. With a bit of creativity, you should be able to see how we could specify a parameteric space of the set of polynomials of degree $\leq n$ or a similar space of parameteric sinusoidal summations. However, as we shall see in the next few sections, there are other classes of functions less explored by classical mathematics that prove exceedingly interesting to the machine learner. Let's introduce some Physika code to pair with this definition.
+
+\begin{lstlisting}[language=python]
+class g(w : $\mathbb{R}^M$, b : $\mathbb{R}$):
+  def $\lambda$(x: $\mathbb{R}^M$) $\to \mathbb{R}$:
+    return w$^T$ x + b
+\end{lstlisting}
+
+This is a parameterized class definition that parameterizes \lstinline{g} with parameters \lstinline{w, b}.
+
+\subsection{Data Requirements}
+
+The space of distributions over $\mathbb{R}^M \times \mathbb{R}$ is a large space and $N$ samples may not be sufficient to learn the true distribution $\mathcal{D}$. This is the \textit{low data problem}. In applications of learning techniques to the internet or consumer technologies, it's possible to gather very large datasets with millions, billions, or even trillions of datapoints. This means that the true distribution $\mathcal{D}$ can often be understood quite well. However, our data points must be drawn ultimately from physical experiments. For complex systems, we may consequently have$N$ in the dozens, hundreds, or low thousands. In subsequent chapters we will discuss various techniques for wrestling with low data. For example, classical simulators can be leveraged to generate cheap additional training data. Another common idea is to place additional restrictions on the function class $\mathcal{G}$ to enable learning of correct functions with fewer samples.
+
+
+\section{Linear Models}
+
+A linear model is a learning system where we restrict the parametetric class $\mathcal{G}$ to be the space of linear functions. As before, each $g$ is parameterized by $(w, b) \in \mathbb{R}^M \times \mathbb{R}$ and
+
+\[ g[w,b](x) = w^T x + b \]
+
+For a given dataset $X, y$, the loss function is then
+
+\begin{align}
+\mathcal{L}\left (g[w,b], X, y \right) &= \sum_{i=1}^N |w^T x + b - y|^2 \end{align}
+
+In practice though, minimizing this loss leads to \textit{overfitting}. That is, we find a function which is spiritually akin to our lookup-table and fails to fit the true data distribution $\mathcal{D}$ well. One technique that helps this problem is \textit{regularization}. The core idea of regularization is that the loss function $\mathcal{L}$ is modified to penalize excessive complexity in the learned function. The idea here is that simpler functions are more likely to generalize well. One type of regularization is called \textit{ridge regression} or \textit{Tikhonov regularization} and consists of adding a $L^2$ loss term to the loss
+
+\begin{align}
+\mathcal{L}\left (g[w,b], X, y\right ) &= \sum_{i=1}^N |w^T x + b - y|^2  + \alpha \left (\sum_{i=1}^N w_i^2 + b^2 \right) 
+\end{align}
+
+Here $\alpha$ is a hyperparameter that controls the amount of weight penalization. The idea here is  straightforward. Values of $w_i$ or $b$ that get too large will increase the loss. Then any learning algorithm that seeks to minimize the loss will avoid solutions with large $w$ or $b$. An alternative regularization uses the $L^1$ loss instead of the $L^2$. This technique is commonly referred to as LASSO (least absolute shrinkage and selection operator).
+
+\begin{align}
+\mathcal{L}\left (g[w,b], X, y\right ) = \sum_{i=1}^N |w^T x + b - y|^2  + \lambda \left (\sum_{i=1}^N |w_i| + |b| \right)    
+\end{align} 
+
+We can transform this loss into Physika code
+
+\begin{lstlisting}[language=python]
+def L(g: $(\mathbb{R}^M \to \mathbb{R})[\mathbb{R}^M, \mathbb{R}]$, X: $\mathbb{R}$[N, M], y: $\mathbb{R}$[N], $\lambda$: $\mathbb{R}$) $\to$ $\mathbb{R}$:
+  sum = 0
+  for i: sum += (g(X[i]) - y[i])$^2$
+  for j: sum += $\lambda$ * |g.w[j]|
+  sum += $\lambda$ * |b|
+  sum
+\end{lstlisting}
+
+
+
+
+
+\clearpage
+
+%\section*{Appendix}
+%\subsection*{Stochastic Maximum Likelihood}
+%\hspace{9pt} A different strategy that resolves many of the problems with CD is to initialize the Markov chains at each gradient step with their states from the previous gradient step. This approach was first discovered under the name stochastic maximum likelihood (SML) in the applied mathematics and statistics community which is also sometimes also referred to as persistent contrastive divergence (PCD, or PCD-k to indicate the use of k Gibbs steps per update). The basic idea of this approach is that, so long as the steps taken by the stochastic gradient algorithm are small, then the model from the previous step will be similar to the model from the current step. It follows that the samples from the previous model\textquotesingle s distribution will be very close to being fair samples from the current model\textquotesingle s distribution, so a Markov chain initialized with these samples will not require much time to mix.\\
+%\indent Because each Markov chain is continually updated throughout the learning process, rather than restarted at each gradient step, the chains are free to wander far enough to find all of the model\textquotesingle s modes. SML is thus considerably more resistant to forming models with spurious modes than CD is. Moreover, because it is possible to store the state of all of the sampled variables, whether visible or latent, SML provides an initialization point for both the hidden and visible units. CD is only able to provide an initialization for the visible units, and therefore requires burn-in for deep models. SML is able to train deep models efficiently. SML results in the best test set log likelihood for an RBM, and that if the RBM\textquotesingle s hidden units are used as features for an SVM classifier, SML results in the best classification accuracy.\\
+%\indent SML is vulnerable to becoming inaccurate if the stochastic gradient algorithm can move the model faster than the Markov chain can mix between steps. This can happen if k is too small or $\epsilon$ is too large. The permissible range of values is unfortunately highly problem-dependent. There is no known way to test formally whether the chain is successfully mixing between steps. Subjectively, if the learning rate is too high for the number of Gibbs steps, the human operator will be able to observe that there is much more variance in the negative phase samples across gradient steps rather than across different Markov chains. For example, a model trained on MNIST might sample exclusively 7s on one step. The learning process will then push down strongly on the mode corresponding to 7s, and the model might sample exclusively 9s on the next step. The algorithm is as follows:
+%\begin{enumerate}
+%    \item Set $\epsilon$, the step size, to a small positive number
+%    \item Set k, the number of Gibbs steps, high enough to allow a Markov %chain sampling from $p(x;\theta+\epsilon g)$ to burn in, starting from %samples from $p(x;\theta)$. For a RBM on a small image patch, 1 could be %used
+%    \item Initialize a set of m samples %$\{\Tilde{x}^{(1)},..,\Tilde{x}^{(m)}\}$ to random values (i.e. from a %uniform or normal distribution, or possibly a distribution with marginals %matched to the model \textquotesingle s marginals).
+%    \item While not converged:
+%    \begin{enumerate}
+%        \item Sample a minibatch of m examples $\{x^{(1)},..,x^{(m)}\}$ %from the training set
+%        \item $g = \frac{1}{m}\sum_{i=1}^m \nabla_\theta log\ \Tilde{p}(x^{(i)};\theta)$
+%        \item for i = 1 to k \{for j = 1 to m \{$\Tilde{x}^{(j)}=gibbs\ update(\Tilde{x}^{(j)})$\}\}
+%        \item $g = g - \frac{1}{m}\sum_{i=1}^m \nabla_\theta log\ \Tilde{p}(\Tilde{x}^{(i)};\theta)$
+%        \item $\theta = \theta + \epsilon g$
+%    \end{enumerate}
+%\end{enumerate}
+%\indent Care must be taken when evaluating the samples from a model trained with SML. It is necessary to draw the samples starting from a fresh Markov chain initialized from a random starting point after the model is done training. The samples present in the persistent negative chains used for training have been influenced by several recent versions of the model, and thus can make the model appear to have greater capacity than it actually does.\\
+%\indent Comparing CD and SML, CD proves to have lower variance than the estimator based on exact sampling while SML has higher variance. Since both of these methods rely on MCMC to draw samples from the model, almost any variant of MCMC can be used and the overall algorithms can be improved through enhancements to the MCMC portion such as tempering.
+
+
+\end{document}

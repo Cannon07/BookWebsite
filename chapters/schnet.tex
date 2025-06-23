@@ -1,0 +1,99 @@
+\documentclass[book.tex]{subfiles}
+\begin{document}
+
+\chapter{SchNet}
+
+\label{chap:schnet}
+\noindent\rule{11cm}{0.4pt} \\
+\textbf{Prerequisites:} \autoref{chap:dft} \\
+\textbf{Difficulty Level:} ** \\
+\noindent\rule{11cm}{0.4pt}
+\vspace{5mm}
+
+SchNet aims to develop continuous filter convolutional layers that generalize the notion of convolution to point clouds. The goal of designing SchNet is to enable accurate computation of forces for molecular dynamics simulations and other applications. In particular, these models must be capable of modeling multiple conformations of a given small molecule.
+
+\section{Basic Formulation}
+
+Suppose we have $n$ objects 
+\begin{align}
+X &= (x_1,\dotsc, x_n)
+\end{align}
+with $x_i \in \mathbb{R}^F$. Each object is paired with position $r_i \in \mathbb{R}^D$. The SchNet network features a series of interaction rules which update the featurization for each atom, without changing its dimensionality. SchNet does not add or remove atoms.
+
+
+\section{Components of SchNet}
+
+The core SchNet architecture consists of a series of interaction blocks which exchange information between atoms followed per atom-wise update blocks. Interactions between atoms are gated by nonlinear functions of the distance between the two atoms.
+
+\begin{figure}
+    \centering
+    \includegraphics{figures/Differentiable Physics/Neural Potentials/Schnet/schnet_diagram.png}
+    \caption{Schnet Architecture Diagram}
+    \label{fig:schnet_diagram}
+\end{figure}
+\subsection{Molecular Representation}
+SchNet does not allow for modifying the feature dimension of atoms within its continuous convolutions. For this reason, atoms must be initialized with random vectors of the appropriate shape at the start. Initializations are shared across atom type.
+
+\begin{align}
+x_i^0 &= a_{Z_i}
+\end{align}
+
+\subsection{Atom-wise Layers}
+
+Atom-wise layers update each atom in isolation through a learnable linear layer.
+
+\begin{align}
+x^{\ell + 1}_i &= W^{\ell+1}x^\ell_i + b^\ell
+\end{align}
+
+\subsection{Interaction}
+
+Interaction layers feature residual blocks that help preserve the original atomic featurizations by adding them onto the new interaction featurizations.
+
+\begin{align}
+x^{\ell + 1}_i &= x^\ell_i + v^\ell_i
+\end{align}
+
+The interaction terms are given by the output of a convolutional layer. This network computes terms by the following update
+\begin{align}
+x^{\ell+1}_{i} &= \sum_j x_j \circ W^\ell(r_i - r_j)
+\end{align}
+where $a \circ b$ represents elementwise multiplication and $W^\ell$ is a filter generating network. The filter generating network has type
+\begin{align}
+W^\ell: \mathbb{R}^D \to \mathbb{R}^F
+\end{align}
+
+\subsection{Filter Generating Networks}
+A filter generating network constructs the filter $W^\ell$ that we need to implement a continuous convolution. This network starts by computing pairwise distances between atoms.
+\begin{align}
+d_{ij} &= \|r_i - r_j\|
+\end{align}
+
+\begin{align}
+e_k(r_i - r_j) &= \exp(-\gamma \|d_{ij} - \mu_k\|^2)
+\end{align}
+
+This function is expanded for different values of $\mu$ from 0 to 30 angstroms and $\gamma$ is set to 10 angstroms. The output feature vector is fed through two dense layers which use the $\textrm{ssp}$ (shifted softplus) activation.
+
+\begin{align}
+\textrm{ssp}(x) &= \ln ( 0.5 e^x + 0.5 )
+\end{align}
+
+The expanded feature space allows for design of different filters that emphasize different distance ranges.
+
+
+\section{Training Against Forces}
+
+Models are trained with a combination of energies and forces. This joint training helps ensure that the models learn physically accurate energies.
+\begin{align}
+\mathcal{L}(\hat{E}, (E, F_1,\dotsc,F_n)) &= \rho \|E - \hat{E}\|^2 + \frac{1}{n} \sum_{i=0}^n \|F_i  - \left ( \frac{\partial \hat{E}}{\partial R_i} \right )^2 \|^2 
+\end{align}
+
+\section{Exercises}
+
+\begin{enumerate}
+    \item 
+\end{enumerate}
+\end{document}
+
+

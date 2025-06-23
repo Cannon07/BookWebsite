@@ -1,0 +1,156 @@
+
+<style jsx global>{`
+  .code-block-container {
+    display: block;
+    margin: 1.5rem 0;
+    padding: 0;
+  }
+  .code-block-image {
+    display: block;
+    width: auto;
+    max-width: 100%;
+    height: auto;
+    filter: drop-shadow(0 0 0 transparent); /* Force transparency rendering in some browsers */
+  }
+  /* Other styles... */
+`}</style>
+# Differentiable Physics 
+
+In this part of the book, we will introduce the tools of differentiable
+physics. As a brief summary, differentiable physics exploits the
+universal approximation capability of neural networks to model aspects
+of physical theories.
+
+For example, one of the first techniques we will study, Physics Informed
+Neural Networks (PINNs), use a neural representation to model the
+solution to an arbitrary partial differential equation. We shall soon
+find though, that the universal approximation theorem is not a panacea,
+since the amount of data needed to learn an arbitrary approximation may
+be quite high. To lower data requirements, we shall need to leveral
+inductive physical biases. In particular, we will leverage physical
+symmetries in the form of equivariances to simplify the learning task
+for complex physical systems. We shall also leverage ideas from computer
+science to construct modular intermediate \"representations\" of
+physical objects such as molecules or materials to facilitate learning
+of sophisticated functions.
+
+### Making Complex Physical Systems Accessible
+
+One of the most powerful pedagogical aspects of differentiable physics
+is that it provides a tool to make previously complex physical
+quantities simple. Until recently, computing molecular or materials
+properties from the molecular formula or the unit cell was an extremely
+complex problem accessible only to experts. Differentiable
+representations have made out-of-box representations that have made
+these physical systems accessible to undergraduate or even high school
+students.
+
+To provide another example, physics provides many examples of very
+complex probability distributions that are almost infeasible to sample
+classically. For example, the space of chemically viable molecules, or
+the space of stable materials. Differentiable physics methods enable
+effective sampling from these and other very complex distributions.
+
+We orient our study of physics in this Part towards simplicity. At
+times, the classical physics definition is simpler so we lead with that.
+At others, the differentiable physics viewpoint is simpler so we start
+from there. Our view is that differentiable physics can aid pedagogy in
+physics by helping make very complex objects (such as gauge theories)
+accessible to simple computational analysis.
+
+### Foundational Open Problems in Differentiable Physics
+
+From a physical perspective, work in differentiable physics is motivated
+by a few foundational physical problems
+
+1.  **The $N$-body Problem**: Solving for the evolution of $N$ bodies
+    under pairwise forces is an arbitrarily complex challenge. Learning
+    a stable scaled approximation could enable solution of complex
+    systems.
+
+2.  **The Force Field Problem**: Force fields construct a classical
+    approximation to complex $N$-body systems using only particle
+    positions and atom types. Constructing a true force field that
+    achieves quantum accuracy would enable breakthrough modeling of very
+    complex physical systems.
+
+3.  **The Jastrow Factor Problem**: The Jastrow factor is an approximate
+    term used to correct the Hartree-Fock approximation to Schrodinger's
+    equation. Solving for the true Jastrow Factor would enable
+    Hartree-Fock approximations to approach the accuracy of the true
+    solution to Schrodinger's eqiuation.
+
+4.  **The Exchange Correlation Problem**: Learning the true exchange
+    correlation functional would enable density functional theoretic
+    methods to be as accurate as vastly more expensive direct solutions
+    to Schrodinger's equation.
+
+5.  **The Fluid Closure Problem**: Solving for the true state of a fluid
+    can involve higher and higher moments. Classically, such fluid
+    closure techniques required approximate truncation methods. The
+    correct fluid closure function would enable solution of arbitrarily
+    complex fluid system.
+
+6.  **Scaled Numerical Relativity**: The Einstein field equations yield
+    a complex set of coupled partial differentiable quations. Numerical
+    relativity methods allow for partial solutions of these systems in
+    low dimensions but do not allow for scaled solution of complex
+    gravities.
+
+7.  **Solid Mechanics**: Writing down the stress-strain relationship for
+    complex geometries is a challenging problem amenable to
+    differentiable physics.
+
+8.  **Parton, Hadron Dynamics**: Solving complex systems from quantum
+    chromodynamics is currently beyond the capabilities of lattice
+    quantum chromodynamic solvers.
+
+9.  **Magnetohydrodynamic Field Solutions:** Magnetohydrodynamic systems
+    combine the equations of the magnetic field and the fluid field.
+    Solving complex magnetohydrodynamic geometries will prove crucial
+    for applications in fusion
+
+10. **Learnable Phase Field Functionals:** Modeling interactions at the
+    interface of two systems is often done by introducing an auxiliary
+    "phase field." Functionals on the phase field are constructed to
+    predict meaningful properties. These functionals can potentially be
+    modeled effectively by differentiable physics.
+
+Researchers have already achieved partial solutions to some of these
+foundational problems as we will learn in this Part, but many of these
+problems are still open. We hope that some of you will be inspired to
+solve these foundational problems in modern physics after finishing this
+Part.
+
+### From Incomplete to Complete Physics
+
+One of the grand driving forces in modern physics is unification. The
+triumphs of theoretical physics of the last centuries have unified
+mechanics and optics with electromagnetism, electromagnetism with
+general relativity, relativity with the strong and weak nuclear forces.
+The remaining grand challenge is unifying general relativity with
+quantum mechanics.
+
+In a parallel trend, as computers have become more capable, we have seen
+a parallel push towards ever more efficient algorithms to simulate
+larger and larger physical systems. Intriguingly, these algorithms often
+work through de-unification and approximation. For example, quantum
+effects are mostly disregarded in molecular dynamics, relativistic
+effects are mostly disregarded in mechanics simulators, and multibody
+effects are disregarded in molecular simulations. Often, these
+approximations are harmless and necessary, but at other times,
+approximations render computational tools incapable of achieving
+predictive accuracy due to a buildup of errors.
+
+The dream of the differentiable physics approach is to enable us to
+build efficient and unified physical simulators for systems. If we could
+enable accurate accounting of complex, quantum, many body effects in
+simple simulations, we could potentially study the world through a
+powerful and accurate new computational lens and achieve new insights.
+
+What problems might be amenable to differentiable physics approaches?
+Any time we combine two fields of physics into a joint theory we gain a
+more complete theory, but which likely has additional computational
+costs. This is potentially a place where we can use differentiable
+physics to achieve the accuracy of the joint theory with the efficiency
+of the single incomplete theories.

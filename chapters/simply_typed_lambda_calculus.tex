@@ -1,0 +1,103 @@
+\documentclass[book.tex]{subfiles}
+
+\begin{document}
+
+\chapter{Simply Typed Lambda Calculus}
+\label{chap:stlc}
+\noindent\rule{11cm}{0.4pt} \\
+\textbf{Prerequisites:}  \autoref{chap:type_theory}, \autoref{chap:grammar}   \\
+\textbf{Difficulty Level:} ** \\
+\noindent\rule{11cm}{0.4pt}
+\vspace{5mm}
+
+The simply typed lambda calculus is the simplest typed programming language. In programming language theory, $\lambda$ is used to denote a function. As we shall shortly see, the simply typed lambda calculus uses functions as the building block for a language. The languages we will learn in future chapters, and Physika itself, build upon the primitives from the simply typed lambda calcluus.
+
+\section{Grammars for Types and Expressions}
+
+We start by defining a set of atomic types $B$. For example, we could have a set of atomic types
+\begin{align}
+B = \{ Int, Bool\}
+\end{align} 
+The syntax for types is then given by
+\begin{align}
+\tau ::= \tau \to \tau | T, \quad T \in B
+\end{align}
+That is, the only types available are the atomic types and functions mapping between the atomic types. No lists or other constructions are available. The grammar for expressions is similarly simple
+\begin{align}
+e ::= x | \lambda x: \tau . e | e e | c
+\end{align}
+Here $c$ denotes constants and $x$ denotes a variable. The notation
+\begin{align}
+\lambda x: \tau. e
+\end{align}
+might be unfamiliar to those without a background in type theory. $\lambda$ is a function creator. The function above accepts one argument $x$, which must have type $\tau$ and returns expression $e$. The term $e e$ is used to denote a function application. Let's look at some examples. 
+Here are some examples of expressions which are valid in the simply typed lambda calculus
+\begin{lstlisting}
+4
+$\lambda$x:Bool . x
+\end{lstlisting}
+Constructing more complicated programs in the simply typed lambda calculus can get onerous since the standard tools of programming languages aren't available to use.
+
+\section{Typing Rules}
+The typing rules for the simply typed lambda calculus are given by the following expressions.
+\begin{alignat*}{2}
+    &\inference[1.]
+    {
+     x: \sigma \in \Gamma
+    }
+    {
+    \Gamma \vdash x : \sigma
+    } &&\qquad
+    \inference[2.]
+    {
+     c : T
+    }
+    {
+     \Gamma \vdash c : T 
+    } \\
+    &\inference[3.]
+    {
+     \Gamma, x: \sigma \vdash e : \tau
+    }
+    {
+     \Gamma \vdash (\lambda x: \sigma . e) : (\sigma \to \tau)
+    }
+    &&\qquad 
+    \inference[4.]
+    { 
+     \Gamma \vdash e_1: \sigma \to \tau, \quad \Gamma \vdash e_2 : \sigma
+    }
+    {
+     \Gamma \vdash e_1 e_2 : \tau
+    }
+    \\
+\end{alignat*}
+
+Processing a collection of typing rules like this can be challenging upon first encounter. Let's start by translating the above statements into English.
+\begin{enumerate}
+    \item \textbf{Variable typing}: If variable $x$ has type $\sigma$ in the environment $\Gamma$, then we can conclude $x$ has type $\sigma$.
+    \item \textbf{Constant typing}: If constant $c$ has type $T$, we can conclude that $c$ has type $T$. Note that constants must have the same type across all environments.
+    \item \textbf{Function typing}: Let $\Gamma$ be an environment that doesn't have a type for $x$. If by adding a statement that $x$ has type $\sigma$ to $\Gamma$, we can conclude that $e$ has type $\tau$, then the environment $\Gamma$ implies that the expression $\lambda x: \sigma . e$ has type $\sigma \to \tau$.
+    \item \textbf{Function Application Typing}: If $e_1$ has type $\sigma \to \tau$ and $e_2$ has type $\sigma$ both in environment $\Gamma$, then $e_1 e_2$ has type $\tau$ in environment $\Gamma$.
+\end{enumerate}
+The first two rules for variable typing and constant typing explains how typing works for variables and constants. The last two rules explain how to determine the type of functions and the types of function applications.
+
+\section{Free and Bound Type Variables}
+
+A bound variable is one that appear within a $\lambda$ statement. For example in
+\begin{lstlisting}
+$\lambda x : \tau . e$
+\end{lstlisting}
+The variable $x$ is bound within expression $e$. On the other hand the plain variable
+\begin{lstlisting}
+$x$
+\end{lstlisting}
+is free. In programming languages, arguments to functions are passed in as bound variables that can be used within the body of the function.
+
+\section{Exercises}
+\begin{enumerate}
+    \item Use the simply typed lambda calculus to define a function that returns another function upon being evaluated.
+    \item Define a function that accepts another function as an argument.
+\end{enumerate}
+
+\end{document}

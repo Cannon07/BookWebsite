@@ -1,0 +1,93 @@
+\documentclass[book.tex]{subfiles}
+\begin{document}
+\chapter{Approximating the Schr\"{o}dinger Equation}
+
+\label{chap:schrodinger_pinns}
+\noindent\rule{11cm}{0.4pt} \\
+\textbf{Prerequisites:}  \autoref{chap:pinns}, \autoref{chap:heat_pinns} \\
+\textbf{Difficulty Level:} ** \\
+\noindent\rule{11cm}{0.4pt}
+\vspace{5mm}
+
+In this chapter, we apply physics informed neural networks (PINNs) to model Schr\"{o}dinger's equation and test the ability of PINNs to handle periodic boundary conditions, complex-valued solutions, and different  nonlinearities in the governing partial differential equations. The nonlinear Schr$\mathrm{\ddot{o}}$dinger equation along with periodic boundary conditions is given by
+
+\begin{align}
+    i\hbar \frac{\partial}{\partial t} \psi &= \left[ -\frac{\hbar^2}{2m} \frac{\partial^2}{\partial x^2} + V(x) \right ] \psi
+\end{align}
+Let $h$ denote the solution wave function. Then we write:
+\begin{align}
+    i\hbar \frac{\partial}{\partial t} h &= -\frac{\hbar^2}{2m} \frac{\partial^2}{\partial x^2} h + V(x) h 
+\end{align}
+
+Moving terms over to the other side we get
+\begin{align}
+    i \hbar \frac{\partial}{\partial t} h + \frac{\hbar^2}{2m} \frac{\partial^2}{\partial x^2}  - V(x) h &= 0 \\
+    i \frac{\partial}{\partial t} h + \frac{\hbar}{2m} \frac{\partial^2}{\partial x^2} h - \frac{V(x)}{\hbar} h &= 0 \\
+\end{align}
+
+To solve Schrodinger's equation with approximate methods, we need to specify a domain and initial conditions. Let $x \in [-5, 5]$, and $t \in [0,\pi/2]$. We impose initial conditions
+
+\begin{align}
+h(0,x) &= 2 \mathrm{sech}(x)\\
+h(t,-5) &= h(t, 5)\\
+\frac{\partial}{\partial x} h(t,-5) &= \frac{\partial}{\partial x} h(t, 5)
+\end{align}
+
+The final equation is 
+
+\begin{align}
+i \frac{\partial}{\partial t} h + \frac{1}{2} \frac{\partial^2}{\partial x^2} h + |h|^2 h &= 0\quad x \in [-5, 5],\quad t \in [0, \pi/2]
+\end{align}
+
+where $h(t,x)$ is the complex-valued solution. Let us define $f(t,x)$ to be given by
+
+\begin{align}
+f &= i \frac{\partial}{\partial t} h + \frac{1}{2} \frac{\partial^2}{\partial x^2} h + |h|^2 h,
+\end{align}
+
+and proceed by placing a complex-valued neural network prior on $h(t,x)$. In fact, if $u$ denotes the real part of $h$ and $v$ is the imaginary part, we are placing a multi-output neural network prior on 
+\begin{align}
+h(t,x) = \begin{bmatrix} u(t,x) & v(t,x)
+\end{bmatrix}
+\end{align}
+This prior will result in the complex-valued (multi-output) physics informed neural network $f(t,x)$. The shared parameters of the neural networks $h(t,x)$ and $f(t,x)$ can be learned by minimizing the mean squared error loss
+
+\begin{align}
+    \textrm{MSE} = \textrm{MSE}_0 + \textrm{MSE}_b + \textrm{MSE}_f    
+\end{align}
+where
+\begin{align}
+\textrm{MSE}_0 &= \frac{1}{N_0}\sum_{i=1}^{N_0} |h(0,x_0^i) - h^i_0|^2\\
+\textrm{MSE}_b &= \frac{1}{N_b}\sum_{i=1}^{N_b} \left(|h(t^i_b,-5) - h(t^i_b,5)|^2 + |h_x(t^i_b,-5) - h_x(t^i_b,5)|^2\right)\\ 
+\textrm{MSE}_f &= \frac{1}{N_f}\sum_{i=1}^{N_f}|f(t_f^i,x_f^i)|^2.    
+\end{align}
+
+Here, $\{x_0^i, h^i_0\}_{i=1}^{N_0}$ denotes the initial data, and $\{t^i_b\}_{i=1}^{N_b}$ corresponds to the collocation points on the boundary, and $\{t_f^i,x_f^i\}_{i=1}^{N_f}$ represents the collocation points on $f(t,x)$. Consequently, $\textrm{MSE}_0$ corresponds to the loss on the initial data, $\textrm{MSE}_b$ enforces the periodic boundary conditions, and $\textrm{MSE}_f$ penalizes the Schr$\mathrm{\ddot{o}}$dinger equation not being satisfied on the collocation points.
+
+
+
+% \end{example}
+% The following figure summarizes the results of The experiment.
+
+
+One potential limitation of the continuous time neural network models considered so far stems from the need to use a large number of collocation points $N_f$ in order to enforce physics informed constraints in the entire spatio-temporal domain. Although this poses no significant issues for problems in one or two spatial dimensions, it may introduce a severe bottleneck in higher dimensional problems, as the total number of collocation points needed to globally enforce a physics informed constrain (i.e., in this case a partial differential equation) will increase exponentially. In a later chapter, we introduce a different approach that circumvents the need for collocation points by introducing a more structured neural network representation leveraging classical Runge-Kutta time-stepping schemes.
+
+
+%%%%%%%%%
+%\section{Discrete-time PINNs for Schr\"{o}dinger's Equation}
+
+
+
+%\begin{figure}
+%    \centering
+%    \includegraphics{figures/NLS_bookl.png}
+%    \caption{Schrödinger equation: \textbf{Top:} Predicted
+%solution along with the initial and boundary training data. In addition
+%we are using 20,000 collocation points generated using a Latin Hypercube
+%Sampling strategy. \textbf{Bottom:} Comparison of the predicted and
+%exact solutions corresponding to the three temporal snapshots depicted
+%by the dashed vertical lines in the top panel.}
+%\end{figure}
+
+
+\end{document}

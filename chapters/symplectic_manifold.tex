@@ -1,0 +1,71 @@
+\documentclass[book.tex]{subfiles}
+
+\begin{document}
+
+\chapter{Poisson Brackets and Symplectic Manifolds}
+\label{chap:poisson_bracket}
+\noindent\rule{11cm}{0.4pt} \\
+\textbf{Prerequisites:} \autoref{chap:manifold} \\
+\textbf{Difficulty Level:} *** \\
+\noindent\rule{11cm}{0.4pt}
+\vspace{5mm}
+
+Symplectic manifolds arise in classical mechanics as a useful model of the phase space of the system.
+
+\section{Mathematical Definitions}
+A symplectic manifold is a smooth manifold $M$ that has a closed non-degenerate differential 2-form $\omega$. Formally, a 2-form is a function from the manifold to the second exterior power of the cotangent space for the manifold.
+\begin{align}
+\omega: M \to \wedge^2 T_p^* M
+\end{align}
+
+
+Non-degenerate means that if there exists $X \in T_p M$ such that $\omega(X, Y) = 0$ for all $Y \in T_p M$ then $X = 0$.
+
+%\textcolor{red}{TODO: Add an explanation of differential forms to the manifolds chapter.}
+
+Let $M$ be a smooth manifold of dimension $n$. Consider the cotangent bundle $T^*M$. Then the canonical symplectic form is given by
+\begin{align}
+\omega = \sum_{i=1}^n dp_i \wedge dq^i
+\end{align}
+Here $(q^1,\dotsc,q^n)$ are local coordinates on $M$ and $(p_1,\dotsc,p_n)$ are fiberwise coordinates with respect to cotangent vectors $dq^1,\dotsc,dq^n$.
+
+%\textcolor{red}{TODO: This explanation needs to be fleshed out.}
+
+%\section{Darboux Coordinates}
+
+%TODO: Explain this. Darboux coordinates are the "right" way of getting the canonical $p$, $q$ coordinates
+
+\section{Poisson Bracket}
+A Poisson Bracket is a function, typically denoted by $\{\cdot, \cdot \}$ that satisfies the following properties.
+
+\begin{itemize}
+\item Anticommutativity: 
+\begin{align}
+\{f, f\} &= - \{g, f\}
+\end{align}
+\item Bilinearity: For $a, b \in \mathbb{R}$
+\begin{align}
+\{af + bg, h\} &= a\{f, h\} + b \{g, h\}\\
+\{h, af + bg\} &= a\{h, f\} + b \{h, g\}
+\end{align}
+\item Leibniz's Rule
+\begin{align}
+\{fg, h\} &= \{f, h\}g + f\{g, h\} 
+\end{align}
+\item Jacobi Identity:
+\begin{align}
+\{f, \{g, h\}\} + \{g, \{h, f\}\} + \{h, \{f, g\}\} &= 0
+\end{align}
+\end{itemize}
+
+%In Darboux coordinates, the Poisson bracket 
+In canonical coordinates, the Poisson bracket takes the form
+\begin{align}
+\{f, g\} &= \sum_{i=1}^N \left ( \frac{\partial f}{\partial q_i}\frac{\partial g}{\partial p_i} - \frac{\partial f}{\partial p_i} \frac{\partial g}{\partial q_i} \right )
+\end{align}
+%\section{Exercises}
+%\begin{enumerate}
+%    \item TODO
+%\end{enumerate}
+
+\end{document}

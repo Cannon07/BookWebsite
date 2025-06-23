@@ -1,0 +1,199 @@
+\documentclass[book.tex]{subfiles}
+
+\begin{document}
+\chapter{An Introduction to Feynman Diagrams}
+
+\label{chap:feynman_diagrams}
+\noindent\rule{11cm}{0.4pt} \\
+\textbf{Prerequisites:} \autoref{chap:qft_basics}  \\
+\textbf{Difficulty Level:} ** \\
+\noindent\rule{11cm}{0.4pt}
+\vspace{5mm}
+
+In this chapter, we introduce the basics of Feynman diagrams, a powerful technology for modeling relativistic quantum processes. Feynman diagrams provide conceptual models for complex interacting quantum processes. In this chapter we introduce the basic theory of Feynman diagrams and Feynman rules as a mathematical technique for evaluating integrals before briefly explaining how these techniques can be used for more complex physical systems.
+
+
+\section{Feynman Diagrams for Evaluating Integrals}
+
+In this section, we use Feynman diagrams to evaluate an integral. %We follow the presentation in (\textcolor{red}{QFT in a Nutshell, TODO, cite})
+
+\begin{align}
+    Z = \int_{-\infty}^{\infty} e^{a q^2 + b q^4 + cq} dq
+\end{align}
+
+The presence of the quartic term means that we can't directly evaluate this integral using techniques we've developed for evaluating Gaussian integrals. One possibility for removing the quartic term is to expand it out as a Taylor series:
+
+\begin{align}
+    e^{bq^4} &= 1 + bq^4 + \frac{b^2q^8}{2!} + \frac{b^2q^{12}}{3!} + \dotsc
+\end{align}
+
+Plugging this expansion back into the earlier expression yield
+
+\begin{align}
+    \int_{-\infty}^{\infty} e^{a q^2 + b q^4 + cq} dq
+    &= \int_{-\infty}^{\infty} e^{a q^2 + cq} \left [ \sum_{n=0}^\infty \frac{b^n q^{4n}}{n!} \right ] dq \\
+    &= \sum_{n=0}^{\infty} \frac{b^n}{n!} \int_{-\infty}^{\infty} q^{4n} e^{aq^2 + cq} dq
+\end{align}
+We note that
+\begin{align}
+    \frac{d}{dc} e^{aq^2 + cq} &= q e^{aq^2 + cq}
+\end{align}
+Repeating the derivative, we obtain
+\begin{align}
+    \frac{d^2}{dc} d^{aq^2 + cq} &= \frac{d}{dc} (qe^{aq^2 + cq}) \\
+    &= q \frac{d}{dc} (e^{aq^2 + cq}) \\
+    &= q^2 e^{aq^2 + cq} 
+\end{align}
+We see now that we can iterate as many times as desired to obtain
+\begin{align}
+    \frac{d^{4n}}{dc^{4n}} e^{aq^2 + cq} &= q^{4n} e^{aq^2 + cq}
+\end{align}
+We can then differentiate through the integral sign %(\textcolor{red}{TODO: Add differentiating through integral to math preliminaries})
+\begin{align}
+    \int_{-\infty}^{\infty} q^{4n}e^{aq^2 + cq} dq &= \frac{d^{4n}}{dc^{4n}} \int_{-\infty}^{\infty} e^{aq^2 + cq} dq
+\end{align}
+
+Returning to the expression above, we obtain that
+\begin{align}
+    \int_{-\infty}^{\infty} e^{aq^2 + bq^4 + cq} dq &= \sum_{n=0}^{\infty} \frac{b^n}{n!} \frac{d^{4n}}{dc^{4n}} \int_{-\infty}^{\infty} e^{aq^2 + cq} dq \\
+    &= \left [ \sum_{n=0}^\infty \frac{b^n}{n!}\left ( \frac{d^4}{dc^4}\right )^n\right ] \int_{-\infty}^{\infty} e^{aq^2 + cq} dq \\
+    &= e^{b \frac{d^4}{dc^4}} \int_{-\infty}^{\infty} e^{aq^2 + cq} dq
+\end{align}
+
+Note that above, we are treating $\frac{d^4}{dc^4}$ as an linear operator and taking its exponential. To tackle the inner integral, we complete the square in the exponential.
+\begin{align}
+    \int_{-\infty}^{\infty} e^{aq^2 + cq} dq &= \int_{-\infty}^{\infty} e^{a\left (q^2 + \frac{c}{a}q + \frac{c^2}{4a^2}\right ) - \frac{c^2}{4a}} dq \\
+    &= e^{-\frac{c^2}{4a}}\int_{-\infty}^\infty e^{a\left (q + \frac{c}{2a}\right )^2 } dq
+\end{align}
+We apply the change of variable $r = q + \frac{c}{2a}$. Note then that $dr = dq$
+\begin{align}
+    \int_{-\infty}^{\infty} e^{aq^2 + cq} dq &=
+    e^{-\frac{c^2}{4a}} \int_{-\infty}^{\infty} e^{ar^2} dr
+\end{align}
+Applying the formula for the Gaussian integral we obtain
+\begin{align}
+    \int_{-\infty}^{\infty} e^{ar^2} dr &= \sqrt{-\frac{\pi}{a}}
+\end{align}
+%\textcolor{red}{(TODO: Maybe simplify this by assuming that $a$ is negative up front)}
+It follows that
+\begin{align}
+    \int_{-\infty}^{\infty} e^{aq^2 + cq} dq &= e^{-\frac{c^2}{4a}} \sqrt{-\frac{\pi}{a}}
+\end{align}
+We then substitute this expression into the earlier operator evaluation
+\begin{align}
+    Z &= e^{b \frac{d^4}{dc^4}} \int_{-\infty}^{\infty} e^{aq^2 + cq} dq \\
+    &= \sqrt{-\frac{\pi}{a}} e^{b \frac{d^4}{dc^4}} \left [ e^{-\frac{c^2}{4a}}  \right ]
+\end{align}
+Let's pause here and take stock of what we've achieved. We've rewritten our original integral as the application of a linear operator in $c$, \begin{align}
+\sqrt{-\frac{\pi}{a}}e^{b\frac{d^4}{dc^4}},
+\end{align} to a function in $c$, $e^{-\frac{c^2}{4a}}$. What's the advantage of this representation? Computing this quantity outright isn't straightforward. However, we have two exponential quantities, and we can expand both as power series to obtain a representation of $Z$ as a power series in two indices $n$, $m$
+\begin{align}
+    Z &= \sqrt{-\frac{\pi}{a}} \left [ \sum_{n=0}^{\infty} \frac{b^n}{n!} \left ( \frac{d^4}{dc^4} \right )^n \right ] \left [
+     \sum_{m=0}^\infty \frac{\left(-\frac{c^2}{4a} \right )^m}{m!} \right ] \\
+     &= \sqrt{-\frac{\pi}{a}} \sum_{n=0}^\infty \sum_{m=0}^\infty \frac{b^n(-1)^m}{n!m!(4a)^m} \left ( \frac{d^4}{dc^4}\right )^n c^{2m} \\
+     &= \sqrt{-\frac{\pi}{a}} \sum_{n=0}^{\infty} \sum_{m=0}^{\infty} Z_{n,m}
+\end{align}
+Here we define intermediate quantities
+\begin{align}
+    Z_{n, m} &= \frac{b^n(-1)^m}{n!m!(4a)^m} \left ( \frac{d^4}{dc^4}\right )^n c^{2m} 
+\end{align}
+Note that these $Z_{n,m}$ are no longer functions and are numbers! For example, we take
+\begin{align}
+    Z_{3, 2} &= \frac{b^3}{3!2!(4a)^2} \frac{d^{12}}{dc^{12}} c^4 \\
+    &= \frac{b^3}{3!2!4^2 a^2} (4\cdot 3 \cdot 2 \cdot \dotsc \cdot -8) \frac{1}{c^8}
+\end{align}
+While we don't have an analytical expression for $Z$, we can evaluate any $Z_{n,m}$ term. We can then do a series expansion out to any $N$, $M$ we desire as follows:
+\begin{align}
+    \tilde{Z} &= \sqrt{-\frac{\pi}{a}}\sum_{n=0}^N \sum_{m=0}^M Z_{n,m}
+\end{align}
+
+Each $Z_{n, m}$ can be viewed as a combinatorial object in its own right. To understand what this means, consider the manipulations 
+
+\begin{align}
+    Z_{1, 4} &= \frac{b(-1)^4}{4!4^4a^4} \frac{d^4}{dc^4} c^8 \\ 
+    &= \frac{b(-1)^4}{4!4^4a^4} (8 \cdot 7 \cdot 6 \cdot 5) c^4 \\
+    &= \frac{8\cdot 7 \cdot 6 \cdot 5}{4!4^4} \frac{(-1)^4bc^4}{a^4} \\
+    &= \binom{8}{4} \frac{(-1)^4bc^4}{4^4a^4 }
+\end{align}
+The presence of the choose operation suggests that there are discrete objects underlying $Z_{n,m}$. What could these objects be? Let's start by looking at the coefficients for $a$, $b$, $c$. Note that $Z_{1,4}$ contains $b$, $\frac{1}{a^4}$, $c^4$ as its coefficient powers. Can we construct a discrete object that contains these coefficients? For example, consider the following diagram. \\
+
+\begin{tikzpicture}
+  \begin{feynman}
+    \vertex (a) {\(c\)};
+    \vertex [below right=of a] (c) {\(b\)};
+    \vertex [below left=of c] (b) {\(c\)};
+    \vertex [above right=of c] (d) {\(c\)};
+    \vertex [below right=of c] (e) {\(c\)};
+
+    \diagram* {
+      (a) -- [edge label=\(\frac{1}{a}\)] (c),
+      (b) -- [edge label=\(\frac{1}{a}\)] (c),
+      (c) -- [edge label=\(\frac{1}{a}\)] (d),
+      (c) -- [edge label=\(\frac{1}{a}\)] (e),
+    };
+  \end{feynman}
+\end{tikzpicture}
+
+Here we have two lines intersecting at a vertex. The inputs to the lines are labeled with $c$ coefficients. The vertex is labeled with $b$ coefficients and the line segments with $\frac{1}{a}$ coefficients. If we multiply all these coefficients, we can consider them as contributing a term $\frac{bc^4}{a^4}$. More abstractly, we can think of $Z_{1,4}$ as counting contributions from all diagrams which are made of 4 lines and one vertex. For example, consider this alternative diagram where there is a loop at the vertex and one line as an unconnected component. Note that this diagram contributes the same term $\frac{bc^4}{a^4}$. \\
+\begin{tikzpicture}
+  \begin{feynman}
+    \vertex (a) {\(c\)};
+    \vertex [below=of a] (b) ;
+    \vertex [below=of b] (c) {\(c\)};
+    \vertex [right=of a] (d) {\(c\)};
+    \vertex [below=of d] (e) {\(b\)} ;
+    \vertex [right=of e] (e2) ;
+    \vertex [below=of e] (f) {\(c\)};
+
+    \diagram* {
+      (a) -- [edge label=\(\frac{1}{a}\)] (c),
+      (d) -- [edge label=\(\frac{1}{a}\)] (e),
+      (e) -- [edge label=\(\frac{1}{a} \), half left, looseness=1.5] (e2) -- [half left, looseness=1.5] (e),
+      (e) -- [edge label=\(\frac{1}{a}\)] (f),
+    };
+  \end{feynman}
+\end{tikzpicture}
+
+We can view these simple diagrams as simple Feynman diagrams for our system. By enumerating all the diagrams that provide a term $\frac{bc^4}{a^4}$ according to our rules, we could obtain the coefficient for this term in our power series. We know from the calculation above that the coefficient is
+\begin{align}
+    {8 \choose 4}\frac{(-1)^4}{4^4}
+\end{align}
+We leave as an exercise for the reader how to obtain this coefficient from the two diagrams above.
+
+%\textcolor{red}{TODO: Add vertex on zero lines case}
+
+%\textcolor{red}{TODO: Explain how the 4 diagrams for this case}
+
+%\textcolor{red}{TODO: Add a formal explanation of the Feynman rules for this case.}
+
+%\textcolor{red}{TODO: Is there a consistent way to explain the combinatorics here? Seems really gnarly}
+%\section{Physical Processes}
+%\begin{tikzpicture}
+%  \begin{feynman}
+%    \vertex (a) {\(\mu^{-}\)};
+%    \vertex [right=of a] (b);
+%    \vertex [above right=of b] (f1) {\(\nu_{\mu}\)};
+%    \vertex [below right=of b] (c);
+%    \vertex [above right=of c] (f2) {\(\overline \nu_{e}\)};
+%    \vertex [below right=of c] (f3) {\(e^{-}\)};
+
+%   \diagram* {
+%      (a) -- (b) --  (f1),
+%      (b) -- [boson, edge label'=\(W^{-}\)] (c),
+%      (c) -- [anti fermion] (f2),
+%      (c) -- [fermion] (f3),
+%    };
+%  \end{feynman}
+%\end{tikzpicture}
+
+\section{Exercises}
+\begin{enumerate}
+    
+\item Evaluate the term $Z_{4, 3}$ for $a=-3$, $b=2$, $c=1$.
+\item Derive a double series expansion for the integral 
+\begin{align}
+    Z = \int_{-\infty}^{\infty} e^{-aq^2 + bq^7 + cq} dq
+\end{align}
+\end{enumerate}
+
+\end{document}

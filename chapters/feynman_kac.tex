@@ -1,0 +1,97 @@
+\documentclass[book.tex]{subfiles}
+
+\begin{document}
+
+\chapter{Feynman-Kac Formula}
+
+\label{chap:perturbation_theory}
+\noindent\rule{11cm}{0.4pt} \\
+\textbf{Prerequisites:} \autoref{chap:schrodinger} \\
+\textbf{Difficulty Level:} ** \\
+\noindent\rule{11cm}{0.4pt}
+\vspace{5mm}
+%\textcolor{red}{TODO: Cite Wipf path integrals}
+%\url{https://www.scribd.com/document/525224183/A-Wipf-Path-Integrals}
+The Feynman-Kac formula provides a powerful bridge between solutions to certain classes of PDEs and solutions to stochastic differential equations. In practice, the formula can provide a powerful formula to resolve certain classes of intractable PDEs.
+
+\section{Statement}
+
+Suppose that we have a parabolic PDE given by
+
+\begin{align}
+\frac{\partial u}{\partial t}(x, t) + \mu(x, t)\frac{\partial u}{\partial x}(x, t) + \frac{1}{2}\sigma^2(x, t)\frac{\partial^2 u}{\partial x^2}(x, t) - V(x, t)u(x, t) + f(x, t) &= 0
+\end{align}
+where $\mu, \sigma, V, f$ are known functions. Here we also impose a boundary condition that
+\begin{align}
+u(x, T) &= \psi(x)
+\end{align}
+where $\psi$ is another known function. The Feynman-Kac formula states that the solution to this PDE is given by the conditional expectiation
+
+\begin{align}
+u(x, t) &= E\left [ \int_t^T e^{-\int_t^r V(X_\tau, \tau) d \tau } f(X_\tau, r) dr + e^{- \int_t^T V(X_\tau, \tau) d \tau \psi(X_T)}  \right ]
+\end{align}
+Here, we have that $X_\tau$ is an It\^{o} process given by the equation
+\begin{align}
+d X_t \mu(X, T) dt + \sigma(X, t) dW_t
+\end{align}
+where $W$ is Wiener noise.
+\section{Derivation}
+
+Let us start by considering one particular instantiation of this formula and performing a derivation. Consider $K$ to be the poropagator of Schrodinger's equation. Note that Schrodinger's equation is a parabolic PDE, so we can use the Feynman-Kac formula. We start by using the Trotter formula
+\begin{align}
+    e^{A+B} &= \lim_{n\to\infty} (e^{A/n}e^{B/n})^n
+\end{align}
+%\textcolor{red}{TODO: Wipf uses a proof with a telescoping expansion. Perhaps re-use or use an alternative framing}
+Here $A$ and $B$ are matrices. The Trotter product formula can be extended to the case $A$ and $B$ are self-adjoint operators and $A+B$ is self-adjoint on the intersection of the domains of $A$ and $B$.
+
+\begin{align}
+    e^{-it(A+B)} &= s - \lim_{n\to\infty} \left (e^{-itA/n}e^{-itB/n}\right )^n
+\end{align}
+Consider the unitary time evolution kernel
+\begin{align}
+    K(t, q, q') &= \langle q | e^{-itH}|q'\rangle 
+\end{align}
+Suppose that the Hamiltonian has form $H_0 + V$. Then
+we split up the evolution into $n$ steps  by using the Trotter formula.
+\begin{align}
+    K(t, q, q') &= \lim_{n\to\infty} \langle q | \left (e^{-itH_0}e^{-itV} \right )^n|q'\rangle 
+\end{align}
+We insert the decomposition of identity given below $n$ times between the factors
+\begin{align}
+    I &= \int dw_j |w_j\rangle \langle w_j |
+\end{align}
+And we obtain
+\begin{align}
+    K(t,q,q') &= \lim_{n\to\infty} \int dw_1 \dotsc dw_n \prod_{j=0}^{n-1} \langle w_{n+1} | e^{-itH_0/n}e^{-itV/n}|w_j\rangle
+\end{align}
+We note that the potential is diagonal in the coordinate representation since it directly multiplies by a constant value at each point in position space. Thus we can write
+\begin{align}
+    \langle w_{n+1} | e^{-itH_0/n}e^{-itV/n}|w_j\rangle &= \langle w_{n+1} | e^{-itH_0/n}|w_j\rangle e^{-itV(w_j)/n}
+\end{align}
+Note that the free propagator is given by
+\begin{align}
+    K_0(t, q, q') &= \langle q' | e^{-itH} q \rangle \\
+    &= \left(\sqrt{\frac{m}{2\pi i \hbar t}}\right)^d e^{im(q-q')^2/2\hbar t} \\
+    &= A_t^d e^{im(q-q')^2/2\hbar t}
+\end{align}
+where
+\begin{align}
+    A_t &= \sqrt{\frac{m}{2\pi i \hbar t}}
+\end{align}
+Plugging this all together we obtain
+\begin{align}
+    K(t, q, q') &= \lim_{n\to\infty} A_{\epsilon}^n \int dw_1 \dotsc dw_{n-1}e^{iS^{(n)}(w)/\hbar} \\
+    S^{(n)}(w) &= \frac{m}{2}\sum_{j=0}^{n-1}\epsilon \left ( \frac{w_{j+1} - w_j}{\epsilon}\right) - \sum_{j=0}^{n-1} \epsilon V(w_j)
+\end{align}
+This last quantity is a Riemann sum approximation to the action of a particle moving along the specified path
+\begin{align}
+    S^{(n)}(w) &\to \int_0^t ds (\frac{m}{2}\dot{w}^2 - V(w)) \\
+    &= S(w)
+\end{align}
+This formula is often written thematically as
+\begin{align}
+K(t, q, q') &= \int_{w(0)=q}^{w(t) =q'} \mathcal{D}w e^{iS[w]/\hbar}
+\end{align}
+where the integral is taken over all possible paths.
+%\textcolor{red}{TODO: Why is the $A_\epsilon^n$ quantity which diverges as $n\to\infty$ safe? Wipf says its fine by why?}
+\end{document}

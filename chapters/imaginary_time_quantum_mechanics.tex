@@ -1,0 +1,41 @@
+\documentclass[book.tex]{subfiles}
+\begin{document}
+
+\chapter{Imaginary Time Quantum Mechanics}
+\label{chap:imaginary_qm}
+\noindent\rule{11cm}{0.4pt} \\
+\textbf{Prerequisites:} \autoref{chap:quantum_mechanics},   \\
+\textbf{Difficulty Level:} ** \\
+\noindent\rule{11cm}{0.4pt}
+\vspace{5mm}
+\textcolor{red}{TODO: Cite Shankar}
+Quantum mechanics has built up a rich body of mathematical techniques. Can we adapt these techniques to solve problems in statistical mechanics? It turns out that a simple mathematical transformation can do the trick
+\begin{align}
+    t &= -i\tau
+\end{align}
+That is, we allow time to become a complex variable in the equations of quantum mechanics rather than a real valued variable. Applying this transformation to Schrodinger's equation, we get the imaginary-time Schrodinger equation
+\begin{align}
+-\hbar \frac{d|\psi(\tau)\rangle}{d\tau} &= H|\psi(\tau)\rangle
+\end{align}
+This operation is also commonly referred to as a "rotation" to the imaginary axis (\textcolor{red}{TODO: Insert picture of the complex plane.})
+The propagator for this system is then
+\begin{align}
+    U(\tau) &= e^{-\frac{H}{\hbar}\tau}
+\end{align}
+Note that the propagator is a Hermitian operator and not a unitary operator. Let $|n\rangle$ be the eigenstates of the Hamiltonian
+\begin{align}
+    H|n\rangle &= E_n|n\rangle
+\end{align}
+We can expand the propagator in terms of these eigenstates
+\begin{align}
+    U(\tau) &= \sum |n\rangle \langle n | e^{-\frac{1}{\hbar}E_n\tau}
+\end{align}
+For the case of the harmonic oscillator, we can simply insert $t &= -i\tau$ in the closed form expression for the propagator to obtain (\textcolor{red}{TODO: Flesh out the derivation})
+\begin{align}
+    U(x,x';\tau) &= \frac{m\omega}{2\pi \hbar \sinh \omega \tau} \exp \left [ -\frac{m\omega}{2\hbar \sing \omega \tau}((x^2 + x'^2)\cosh \omega \tau - 2xx' \right ]
+\end{align}
+The Heisenberg operators $\Omega(\tau)$ can then be defined in terms of SChrodinger operator $\Omega$ (\textcolor{red}{TODO: Which Schrodinger operator is this?})
+\begin{align}
+    \Omega(\tau) &= e^{\frac{H}{\hbar} \tau} \Omega e^{-\frac{H}{\hbar} \tau}
+\end{align}
+\end{document}

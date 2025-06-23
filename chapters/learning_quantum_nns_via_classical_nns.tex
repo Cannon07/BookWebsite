@@ -1,0 +1,49 @@
+\documentclass[book.tex]{subfiles}
+
+\begin{document}
+\chapter{Learning Quantum Neural Networks through Classical Neural Networks}
+\label{chap:learn_quantum_nn}
+\noindent\rule{11cm}{0.4pt} \\
+\textbf{Prerequisites:} \autoref{chap:molecular_hamiltonian}, \autoref{chap:dft} \\
+\textbf{Difficulty Level:} ** \\
+\noindent\rule{11cm}{0.4pt}
+\vspace{5mm}
+
+%"""
+%"Michael will introduce TensorFlow Quantum (TFQ), an open source library for the rapid prototyping of hybrid quantum-classical models for classical or quantum data. This framework offers high-level abstractions for the design and training of both discriminative and generative quantum models under TensorFlow and supports high-performance quantum circuit simulators. He will provide an overview of the software architecture and building blocks through several examples and review the theory of hybrid quantum-classical neural networks. Michael will illustrate TFQ functionalities via several basic applications including supervised learning for quantum classification, quantum control, and quantum approximate optimization. Moreover, he will demonstrate how one can apply TFQ to tackle advanced quantum learning tasks including meta-learning, Hamiltonian learning, and sampling thermal states. We hope this framework provides the necessary tools for the quantum computing and machine learning research communities to explore models of both natural and artificial quantum systems, and ultimately discover new quantum algorithms which could potentially yield a quantum advantage."
+%"""
+
+Combining quantum computing with machine learning methods holds out the promise of powerful hybrid \cite{verdon2019learning}. The core idea is to construct a parameterized quantum circuit
+\begin{align}
+    Y = Q_{\theta}(X)
+\end{align}
+Parameters $\theta$ are optimized with respect to a loss function $L$. Another challenge in this space is designing methods to initialize parameters with initial guesses $\theta_0$. The function we seek to optimize is the expectation value of a Hamiltonian $\hat{H}$
+\begin{align}
+    f(\theta) &= \langle H \rangle_\theta \\
+    &=\langle \psi_\theta | \hat{H} | \psi_\theta \rangle
+\end{align}
+This function is referred to as the cost function or the expectation value of the Hamiltonian and must be estimated through many runs of the underlying quantum circuit. The classical optimization task is to identify
+\begin{align}
+    \theta^* &= \arg\min_{\theta} f(\theta)
+\end{align}
+
+In the case that the classical optimization algorithm is given by an RNN, we can write
+
+\begin{align}
+    h_{t+1}, \theta_{t+1} &= \textrm{RNN}_{\varphi}(h_t, \theta_t, y_t)
+\end{align}
+
+\begin{figure}
+    \centering
+    % \includegraphics{figures/Differentiable Physics/Quantum Computing ML/tensorflow_quantum/quantum_classical_hybrid.png}
+    \includegraphics{figures/Differentiable Physics/Quantum Computing ML/tensorflow_quantum/quantum_classical1.png}
+    \caption{The hybrid quantum-classical computation graph} %\textcolor{red}{TODO: Replace}}
+    \label{fig:hybrid_computation_graph}
+\end{figure}
+
+
+\section{Combining with Machine Learning Framework Libraries}
+
+As we have seen earlier in the book, one of the most powerful drivers for the growth of differentiable programming techniques has been the advent of powerful automatic differentiation libraries like TensorFlow and PyTorch. One advantage of a combined framework for quantum computing and machine learning is the possibility of constructing a powerful automatic framework for hybrid quantum-classical systems. Frameworks like TensorFlow Quantum \cite{verdon2019learning} attempt to cross this boundary and have found early uses for quantum control and other use cases.
+
+\end{document}

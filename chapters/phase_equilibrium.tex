@@ -1,0 +1,319 @@
+\documentclass[book.tex]{subfiles}
+
+\begin{document}
+
+\chapter{Phase Equilibrium and Thermodynamic Stability}
+\label{chap:phase_equilibrium}
+\noindent\rule{11cm}{0.4pt} \\
+\textbf{Prerequisites:} \autoref{chap:classical_thermo}, \autoref{chap:stat_thermo}  \\
+\textbf{Difficulty Level:} ** \\
+\noindent\rule{11cm}{0.4pt}
+\vspace{5mm}
+
+Having reviewed classical thermodynamics, we now venture into the concept of thermodynamic stability. We learned that a system reaches equilibrium when any small variation of the thermodynamic potential is zero, \textit{i.e.} $\delta U = 0$ for a closed isolated system. However, the second law imposes an additional condition: \textit{a closed isolated system is in equilibrium when the entropy has reached its global maximum}. This is directly related with the concept of thermodynamic stability and fluctuations, meaning that even when microscopically the system is under constant change, it will remain stable to small variation from equilibrium. Using \textit{Maxwell Relations}, we will derive explicit expressions to analyze the stability of a system. In the last part of this module, we will use these expression to derive the conditions for phase equilibrium.
+
+\section{Maxwell Relations}
+
+We learned that macroscopic system can be studied under the perspective of different ensembles, each one having a thermodynamic potential, and three control variables. Thus, a closed isolated system is represented by the control variables $U,V,N$ and the thermodynamic potential $S$, or similarly, with the control variables $S,V,N$, and the thermodynamic potential $U$. Also, from the statement that the control variables are extensive, we derived an explicit expression for internal energy through the \textit{Euler Equation}. 
+
+The functional form of a closed isolated system, together with the use of \textit{Legendre Transformations}, allow us to derive a number of new ensembles and their respective thermodynamic potentials. The following list considers the most used thermodynamic potentials, and their differential forms:
+\\
+\textbf{Internal Energy: $U(S,V,N)$}
+\begin{align}
+U = TS - pV	+ \sum^r_{i=1}\mu_i{N}_i \rightarrow dU = TdS - pdV	+ \sum^r_{i=1}\mu_i{dN}_i \notag
+\end{align}
+\textbf{Enthalpy: $H(S,p,N)$} 
+\begin{align}
+H = TS	+ \sum^r_{i=1}\mu_i{N}_i \rightarrow dH = TdS + Vdp	+ \sum^r_{i=1}\mu_i{dN}_i \notag
+\end{align}
+\textbf{Helmholtz Free Energy}: $F(T,V,N)$
+\begin{align}
+F = -pV	+ \sum^r_{i=1}\mu_i{N}_i \rightarrow dF = -SdT - pdV	+ \sum^r_{i=1}\mu_i{dN}_i \notag
+\end{align}
+\textbf{Gibbs Free Energy}: $G(T,p,N)$
+\begin{align}
+G = \sum^r_{i=1}\mu_i{N}_i \rightarrow dG = -SdT + Vdp	+ \sum^r_{i=1}\mu_i{dN}_i \notag
+\end{align}
+\textbf{Landau Potential}: $\Phi(T,V,\mu)$
+\begin{align}
+\Phi = -pV \rightarrow d\Phi = -SdT - pdV	- \sum^r_{i=1}{N}_id\mu_i \notag
+\end{align}
+
+The second-order partial derivatives with respect to these potentials do not depend on the order that you perform the derivative (state variables). For example, we have $\left(\frac{\partial^2 U}{\partial V \partial S}\right) = \left(\frac{\partial^2 U}{\partial S \partial V}\right)$, from where we find:
+
+\begin{align}\label{T-prelation}
+{\left(\frac{\partial T}{\partial V}\right)}_{S,N} =  
+-{\left(\frac{\partial p}{\partial S}\right)}_{V,N}
+\end{align}
+
+Such second-derivative equalities are called Maxwell relations. The Maxwell relations involving $T$, $S$, $p$ and $V$ are:
+
+\begin{align}
+{\left(\frac{\partial T}{\partial V}\right)}_{S,N} =  
+-{\left(\frac{\partial p}{\partial V}\right)}_{V,N} \hspace{1.0cm} {\left(\frac{\partial T}{\partial p}\right)}_{S,N} =  
+{\left(\frac{\partial V}{\partial S}\right)}_{p,N} \notag \\
+{\left(\frac{\partial S}{\partial V}\right)}_{T,N} =  
+{\left(\frac{\partial p}{\partial T}\right)}_{V,N} \hspace{1.0cm} {\left(\frac{\partial S}{\partial p}\right)}_{T,N} =  
+-{\left(\frac{\partial V}{\partial T}\right)}_{p,N} \notag
+\end{align}
+
+In addition to these Maxwell relations, there exist partial derivatives involving the chemical potential of the \textit{i}th species $\mu_i$. For example, the Maxwell relation:
+
+\begin{equation}
+{\left(\frac{\partial p}{\partial N_i}\right)}_{T,V,N_{j\neq i}} =  
+-{\left(\frac{\partial \mu_i}{\partial V}\right)}_{T,N}
+\end{equation}
+
+\noindent is derived from the second derivative of the Helmholtz free energy $\left(\frac{\partial^2 F}{\partial N_i \partial V}\right) = \left(\frac{\partial^2 F}{\partial V \partial N_i}\right)$.
+
+The Maxwell relations are useful for relating difficult to find thermodynamic quantities to quantities that are more easily determined. In particular, changes in entropy are difficult to find, so it's easier to relate this to a change in $p$ or $V$ with respect to $T$.
+
+\section{Thermodynamic Stability}
+
+We discussed the conditions for thermodynamic equilibrium in a closed, isolated system with subsystems 1 and 2. Specifically, we found the following criterion for equilibrium:
+
+\begin{itemize}
+\item Thermal equilibrium occurs when $T^{(1)} = T^{(2)}$.
+\item Mechanical equilibrium occurs when $p^{(1)} = p^{(2)}$.
+\item Chemical equilibrium occurs when $\mu_i^{(1)} = \mu_i^{(2)}$, for all species $i=1,2...,r$.
+\end{itemize}
+
+These criterion were derived by finding conditions where $(\delta S)_{U,V,N} = 0$ (first variation of the entropy).
+
+\begin{marginfigure}%
+\includegraphics[width=\linewidth]{figures/part2a/statistical_mechanics/phase_equilibrium/Fig1.png}
+\caption{Closed, Isolated System containing two subsystem that exchange heat}
+\label{fig:isolatedsystem}
+\end{marginfigure}
+ 
+According to the second law of thermodynamics, the equilibrium condition means also that the entropy has reached a maximum. However, the maximum entropy condition requires that the curvature is negative, \textit{i.e.} the second variation of the entropy satisfies $(\delta^2 S)_{U,V,N} < 0$. Thus, conditions where $(\delta^2 S)_{U,V,N} = 0$, mark the point where the equilibrium point is unstable (limit of stability).
+
+Consider a closed, isolated system that is at equilibrium. Within the system are two subsystems that are separated by a rigid, impenetrable barrier that conducts heat (Fig.~\ref{fig:isolatedsystem}). A small fluctuation in heat across the boundary causes a small perturbation in the internal energy of the subsystems ($\delta U^{(1)} = -\delta U^{(2)}$). Since the boundary is rigid and impenetrable, the volumes and particle numbers remain fixed (\textit{i.e.} $\delta V^{(1)} = \delta V^{(2)}=\delta N^{(1)} = \delta N^{(2)}=0$). However, there will be a perturbation to the entropy of the system, from where we can determine whether the system remains stable.
+
+Since the entropy is an extensive quantity ($S^{(1)}+S^{(2)} = S)$, we can express a change in the entropy of the system be:
+\begin{align} \label{deltaS}
+\Delta S &= S^{(1)} \left( U^{(1)}+\delta U^{(1)},V^{(1)},N^{(1)}\right) +S^{(2)} \left( U^{(2)}+\delta U^{(2)},V^{(2)},N^{(2)}\right) 
+\notag\\  
+& \hspace{0.5cm} -S^{(1)} \left( U^{(1)},V^{(1)},N^{(1)}\right) -S^{(2)} \left( U^{(2)},V^{(2)},N^{(2)}\right) 
+\notag\\
+&=\left[{\left(\frac{\partial S}{\partial U}\right)}_{V,N}^{(1)}-{\left(\frac{\partial S}{\partial U}\right)}_{V,N}^{(2)}\right]\delta U^{(1)} 
+\notag\\  
+& \hspace{0.5cm} + \frac{1}{2}\left[{\left(\frac{\partial^2 S}{\partial^2 U}\right)}_{V,N}^{(1)}+{\left(\frac{\partial^2 S}{\partial^2 U}\right)}_{V,N}^{(2)}\right]{\left(\delta U^{(1)}\right)}^2
+\end{align}
+
+\noindent up to quadratic order in the perturbation $\delta U^{(1)}$.
+
+The linear-order term is the first variation of the entropy $\left(\partial S\right)_{U,V,N}$ , and the quadratic-order term is the second variation $\left(\partial^2 S\right)_{U,V,N}$. 
+Since we begin at equilibrium, $T^{(1)}=T^{(2)}=T$,  and noting that ${\left(\frac{\partial S}{\partial U}\right)}_{V,N}=\frac{1}{T}$, the first term at the right of Eq.~\ref{deltaS}. is zero. For the second term, we use the thermodynamic relations:
+
+\begin{equation}
+{\left(\frac{\partial^2 S}{\partial^2 U}\right)}_{V,N} = \left(\frac{\delta (1/T)}{\delta U}\right)_{V,N} = -\frac{1}{T^2C_v}
+\end{equation}
+
+\noindent where $C_v$ is the heat capacity $C_v=\left(\frac{\partial U}{\partial T}\right)_{V,N}=T\left(\frac{\partial S}{\partial T}\right)_{V,N}$
+
+Therefore, we have that change in entropy associated with the spontaneous perturbation $\delta U^{(1)}$ is:
+
+\begin{equation}
+\Delta S = -\frac{1}{2T^2}\left(\frac{1}{C_v^{(1)}}+\frac{1}{C_v^{(2)}}\right)\left(\delta U^{(1)}\right)^2
+\end{equation}
+
+For the system to remain stable, we must have a negative change in entropy [$\Delta S <0$ or $\left(\delta^2 S\right)_{U,V,N}<0$]. This implies that:
+\begin{equation}\label{Eq6}
+\frac{1}{T^2}\left(\frac{1}{C_v^{(1)}}+\frac{1}{C_v^{(2)}}\right)>0
+\end{equation}
+
+The subsystem sizes are arbitrary, thus to ensure stability, both
+contributions must independently satisfy this inequality. This leaves the stability criteria for a thermodynamic system to remain stable with respect to a
+spontaneous energy fluctuation:
+
+\begin{equation}\label{Eq7}
+\frac{1}{T^2C_v}>0 \hspace{1.0cm} \text{or} \hspace{1.0cm} C_v>0
+\end{equation}
+
+Now consider a closed, isothermal system at equilibrium, whose two subsystems are separated by a sliding, impenetrable barrier (Fig.~\ref{fig:2}). A small fluctuation in the boundary position causes a small perturbation in the volume of the subsystems ($\delta V^{(1)} = -\delta V^{(2)}$). Since the boundary is impenetrable, the particle numbers remain fixed (\textit{i.e.} $\delta N^{(1)} = \delta N^{(2)}=0$).
+
+\begin{marginfigure}%
+\includegraphics[width=\linewidth]{figures/part2a/statistical_mechanics/phase_equilibrium/Fig2.png}
+\caption{Closed, Isolated System containing two subsystem separated by a sliding, impenetrable barrier}
+\label{fig:2}
+\end{marginfigure}
+
+The closed, isothermal ensemble is governed by the Helmholtz free energy $F=F(T,V,N)$. The response of the Helmholtz free energy to this perturbation determines whether the system remains stable.
+
+Following a similar line of reasoning as before, we write the
+fluctuation in the free energy as:
+
+\begin{align} \label{Eq8}
+\Delta F &=\left[{\left(\frac{\partial F}{\partial V}\right)}_{T,N}^{(1)}-{\left(\frac{\partial F}{\partial V}\right)}_{T,N}^{(2)}\right]\delta V^{(1)} 
+\notag\\  
+& \hspace{0.5cm} + \frac{1}{2}\left[{\left(\frac{\partial^2 F}{\partial^2 V}\right)}_{T,N}^{(1)}+{\left(\frac{\partial^2 F}{\partial^2 V}\right)}_{T,N}^{(2)}\right]{\left(\delta V^{(1)}\right)}^2
+\end{align}
+
+\noindent where first and second term on the right side correspond to the first [$\left(\delta F\right)_{T,V,N}$] and second [$\left(\delta^2 F\right)_{T,V,N}$] variations of the Helmholtz free energy, respectively. 
+
+Since the system begins at equilibrium, the first variation is zero. The second law of thermodynamics implies that the free energy is minimized at equilibrium, thus the system is stable if $\Delta F>0$. Using the thermodynamic relation $\left(\frac{\partial^2 F}{\partial^2 V}\right)_{T,N} = -\left(\frac{\delta p}{\delta V}\right)_{T,N}$, we get:
+
+\begin{equation}\label{Eq9}
+-\left[\left(\frac{\partial p}{\partial V}\right)_{T,N}^{(1)}+\left(\frac{\partial p}{\partial V}\right)_{T,N}^{(2)}\right] >0
+\end{equation}
+
+Therefore, we have $\kappa_T=-\frac{1}{V}\left(\frac{\partial V}{\partial p}\right)_{T,N}>0$ for stability against spontaneous volume (or density) fluctuations.
+
+\begin{marginfigure}%
+\includegraphics[width=\linewidth]{figures/part2a/statistical_mechanics/phase_equilibrium/Fig3.png}
+\caption{Lake turnover in the spring is caused by flows induced
+by free convection. In the spring, surface ice ($0^{\circ}C$) melts and becomes denser when it warms to 4oC, and then sinks. This sinking, along with spring winds, causes mixing of water until all the water becomes $4^{\circ}C$. This is Spring Turnover, which results in mixing the $O_2$-rich upper waters with nutrient-rich lower waters. This encourages bacteria and plankton throughout, called the spring bloom. Water in the range 0$^oC$ to 4$^oC$ has $\left(\frac{\partial V}{\partial T}\right)_{p,N}<0$, which is an uncommon property, but does not violate the second law of thermodynamics}
+\label{fig:3}
+\end{marginfigure}
+
+In general $\left(\frac{\partial T}{\partial S}\right)_{V,N}>0$, $-\left(\frac{\partial p}{\partial V}\right)_{T,N}>0$ or $\left(\frac{\partial \mu_i}{\partial N_i}\right)_{T,V,N_{j \neq i}}>0$, represent a set of stability criteria against spontaneous energy , volume (or density), or matter flow of species \textit{i} fluctuations, respectively. These criterion always involve derivatives of intensive properties with respect to their conjugate extensive properties. However, these stability concepts, which derive from the second law of thermodynamics, say nothing about the sign of:
+
+\begin{equation}\label{Eq10}
+\left(\frac{\partial p}{\partial T}\right)_{V,N} \hspace{1.0cm} \text{and} \hspace{1.0cm} \left(\frac{\partial \mu_i}{\partial N_k}\right)_{T,V,N_{j \neq k}}
+\end{equation}
+
+\noindent since the variables are not conjugate to each other (Fig~\ref{fig:3}).
+
+\section{Phase Equilibrium}
+
+In order to describe the phase equilibrium we need a model that property describes the vapor and the liquid phases. One popular model is the Van der Waals equation of state given by:
+
+\begin{align} \label{Eq11}
+p = \frac{NRT}{V-Nb}-\frac{aN^2}{V^2}= \frac{RT}{v-b}-\frac{a}{v^2}
+\end{align}
+
+\begin{marginfigure}
+\includegraphics[width=\linewidth]{figures/part2a/statistical_mechanics/phase_equilibrium/Fig4.png}
+\caption{Closed, isothermal system containing a van der Waals fluid in vapor-liquid equilibrium}
+\label{fig:4}
+\end{marginfigure}
+
+\noindent where $v=V/N$ is the molar volume.
+
+Although $a$ and $b$ are considered empirical constant, there are
+microscopic justifications for the van der Waals constants:
+
+\begin{itemize}
+\item The constant $b$ represents the hard-core excluded volume of
+the molecules in the system.
+\item The constant $a$ determines the strength of the two-body attractive
+interaction between molecules in the system
+\end{itemize}
+
+For simplicity, we write the dimensionless equation of state:
+
+\begin{align}\label{Eq12}
+\tilde{p} = \frac{1}{\tilde{v} - 1} - \frac{\tilde{a}}{{\tilde{v}}^2}
+\end{align}
+
+\noindent where $\tilde{p}=\frac{pb}{RT}$, $\tilde{v}=\frac{v}{b}$, and $\tilde{a}=\frac{a}{bRT}$, thus reducing the number of parameters to just $\tilde{a}$ to capture the temperature dependence.
+
+Consider the closed, isothermal system containing a van der Waals fluid in vapor-liquid equilibrium (Fig.~\ref{fig:4}). Our goals are to find the limits of stability of each phase, the conditions where the phases coexist, and the properties of the two phases in coexistence. The simple example of phase coexistence demonstrates the essential issues at work in more complex, multi-component, multiphase systems.
+
+\begin{marginfigure}
+\includegraphics[width=\linewidth]{figures/part2a/statistical_mechanics/phase_equilibrium/Fig5.png}
+\caption{Plot of $\tilde{p}$ versus $\tilde{v}$ for $\tilde{a}=3.679$. The Maxwell construction for coexistence states that vapor-liquid coexistence occurs when the
+areas $A_1 = A_2$. The dashed segment of curve indicates conditions
+where a single phase is unstable}
+\label{fig:5}
+\end{marginfigure}
+
+From the plot of the pressure as a function of volume for a given $\tilde{a}$ (Fig. \ref{fig:5}), we can observe a region of large volume which is the vapor phase, a region of liquid phase with low volumes, and a region in between. This region in between is in violation of thermodynamic stability, which requires that $\kappa_T=-\frac{1}{v}\left(\frac{\partial v}{\partial p}\right)_{T}>0$. 
+
+The \textbf{limit of stability} of a single pure phase occurs when:
+
+\begin{equation}
+\left(\frac{\partial \tilde{p}}{\partial \tilde{v}}\right)_{\tilde{a}} = -\frac{1}{(\tilde{v}-1)^2}+\frac{2\tilde{a}}{{\tilde{v}}^3}=0 \notag
+\end{equation}
+
+This gives the cubic equation:
+\begin{equation}
+-{\tilde{v}}^3+2\tilde{a}\left({\tilde{v}}^2-2\tilde{v}+1\right)=0 \notag
+\end{equation}
+
+Equation~(\ref{Eq12}) has three solutions:
+
+\begin{itemize}
+\item The first solution is less than one ($\tilde{v}<1$) and is unphysical since
+the pressure $\tilde{p}$ diverges as $\tilde{v}\rightarrow1_+$.
+\item The two solutions greater than $\tilde{v}=1$ identify the limits of stability of the vapor and liquid phases.
+\end{itemize}
+
+The two solutions are approach each other with decreasing $\tilde{a}$, until that meet at the critical point:
+
+\begin{equation}
+\tilde{v}_c=3 \hspace{1.0cm} \text{and} \hspace{1.0cm} \tilde{a}_c=\frac{27}{8} \notag
+\end{equation}
+
+In order to avoid this violation of thermodynamic equilibrium, the system undergoes to a state of \textbf{phase coexistence}. In order to find the properties of this coexisting phase we consider the equilibrium conditions $\mu^{(v)}=\mu^{(l)}$ and $p^{(v)}=p^{(l)}=p_{coex}$. 
+
+The molar Helmholtz free energy is written as:
+\begin{align}\label{Eq13}
+\tilde{f}&=\frac{F}{NRT}=\int\left(\frac{\partial \tilde{f}}{\partial \tilde{v}}\right)_{\tilde{a}}d\tilde{v} + \tilde{f}_0 \notag \\ 
+&=-\int \tilde{p}d\tilde{v} + \tilde{f}_0
+\end{align}
+
+\noindent where $\tilde{f_0}$ is an unspecified constant of integration (reference state).
+
+On the other hand, we can derive an expression for the chemical potential from the Gibbs free energy. The Euler equation for a one-component system is:
+\begin{equation}
+N\mu = U-ST +pV = F+pV=G \notag
+\end{equation}
+
+\begin{marginfigure}
+\includegraphics[width=\linewidth]{figures/part2a/statistical_mechanics/phase_equilibrium/Fig6.png}
+\caption{Plot of $\tilde{f}$ versus $\tilde{v}$ for $\tilde{a} = 3.679$. The common-tangent construction for coexistence states that vapor-liquid coexistence occurs when a single line is simultaneously tangent to two points on the $\tilde{v}-\tilde{f}$ curve. The dashed segment of curve indicates conditions where a single phase is unstable}
+\label{fig:6}
+\end{marginfigure}
+
+\begin{marginfigure}
+\includegraphics[width=\linewidth]{figures/part2a/statistical_mechanics/phase_equilibrium/Fig9.png}
+\caption{Plot of $\tilde{\mu}$ versus $\tilde{v}$ for $\tilde{a} = 3.375=\frac{27}{8}$ (critical point, blue), $\tilde{a} = 3.527$, $\tilde{a} = 3.679$, $\tilde{a} = 3.831$, and $\tilde{a} = 3.982$ (red). The dashed segments indicate conditions where a single phase is unstable.}
+\label{fig:9}
+\end{marginfigure}
+
+\noindent or in dimensionless form, we have:
+\begin{equation}\label{Eq14}
+\tilde{\mu} = \frac{\mu}{RT}= \tilde{f}+\tilde{p}\tilde{v}
+\end{equation}
+
+%=\tilde{f}_0+\frac{\tilde{v}}{\tilde{v}-1}-log(\tilde{v}-1)-\frac{2\tilde{a}}{\tilde{v}}
+
+Since the system is in equilibrium the chemical potential of the vapor and liquid phases must be equal (${\tilde{\mu}}^{(v)}={\tilde{\mu}}^{(l)}$), which according to (\ref{Eq13}) and (\ref{Eq14}) is equivalent to:
+\begin{equation}\label{Eq31}
+\int_{{\tilde{v}}^{(l)}}^{{\tilde{v}}^{(v)}}\tilde{p}(\tilde{v})d\tilde{v} = \tilde{p}_{coex}\left({\tilde{v}}^{(v)}-{\tilde{v}}^{(l)}\right)
+\end{equation}
+
+As written, this leads us to the Maxwell construction for vapor-liquid phase coexistence, which provides a graphical method of identifying phase coexistence.
+
+A second way to view the coexistence condition is to note:
+\begin{align}\label{Eq33}
+&\tilde{\mu}^{(v)} = \tilde{\mu}^{(l)} \rightarrow \tilde{f}^{(v)} -\frac{\partial \tilde{f}^{(v)}}{\partial \tilde{v}}\tilde{v}^{(v)}= \rightarrow \tilde{f}^{(l)} -\frac{\partial \tilde{f}^{(l)}}{\partial \tilde{v}}\tilde{v}^{(l)} \notag\\
+&\tilde{p}^{(v)} = \tilde{p}^{(l)} \rightarrow \frac{\partial \tilde{f}^{(v)}}{\partial \tilde{v}} = \frac{\partial \tilde{f}^{(l)}}{\partial \tilde{v}}
+\end{align}
+This development gives the common-tangent construction (Fig.~\ref{fig:6}, \ref{fig:9}).
+
+The most direct method of visualizing the coexistence condition is plot $\tilde{\mu}$ versus $\tilde{p}$. Numerically calculating the equilibrium conditions is easiest using the plot of $\tilde{\mu}$ versus $\tilde{p}$, since the conditions involve a single point of crossing (Fig.~\ref{fig:7}, \ref{fig:8}).
+
+\begin{marginfigure}
+\includegraphics[width=\linewidth]{figures/part2a/statistical_mechanics/phase_equilibrium/Fig7.png}
+\caption{Plot of $\tilde{\mu}$ versus $\tilde{p}$ for $\tilde{a} = 3.679$. Coexistence conditions are determined by the point where the curve crosses itself along the vapor and liquid branches. The dashed segment of curve indicates conditions where a single phase is unstable.}
+\label{fig:7}
+\end{marginfigure}
+
+\begin{marginfigure}
+\includegraphics[width=\linewidth]{figures/part2a/statistical_mechanics/phase_equilibrium/Fig8.png}
+\caption{Plot of $\tilde{\mu}$ versus $\tilde{p}$ for $\tilde{a} = 3.375=\frac{27}{8}$ (critical point, blue), $\tilde{a} = 3.527$, $\tilde{a} = 3.679$, $\tilde{a} = 3.831$, and $\tilde{a} = 3.982$ (red). The dashed segments indicate conditions where a single phase is unstable.}
+\label{fig:8}
+\end{marginfigure}
+
+\begin{marginfigure}
+\includegraphics[width=\linewidth]{figures/part2a/statistical_mechanics/phase_equilibrium/Fig10.png}
+\caption{Plot of $\tilde{p}$ versus $\tilde{v}$ for $\tilde{a} = 3.375=\frac{27}{8}$ (critical point, blue), $\tilde{a} = 3.527$, $\tilde{a} = 3.679$, $\tilde{a} = 3.831$, and $\tilde{a} = 3.982$ (red). The solid black curves are the binodal curves (coexistence), and the dashed black curves are the spinodal curves (limit of metastability).}
+\label{fig:10}
+\end{marginfigure}
+
+The conditions on the $\tilde{v}-\tilde{p}$ plane that correspond to the coexistence points form the binodal curves. The limit of stability of the pure vapor and pure liquid phases form the spinodal curves. These curve form the phase diagram, which predicts the conditions of coexistence of the vapor and liquid phases (Fig.~\ref{fig:10}).
+
+\end{document}

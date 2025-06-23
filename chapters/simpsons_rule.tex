@@ -1,0 +1,260 @@
+\documentclass[book.tex]{subfiles}
+\begin{document}
+
+\chapter{Simpson's Rule}
+\label{chap:simpsons}
+\noindent\rule{11cm}{0.4pt} \\
+\textbf{Prerequisites:} \autoref{chap:calculus} \\
+\textbf{Difficulty Level:} * \\
+\noindent\rule{11cm}{0.4pt}
+\vspace{5mm}
+
+In this chapter, we study how to implement the single and composite application Newton-Cotes formulas using Simpson's Rule. We recognize that even-segment odd-point formulas like Simpson's 1/3 rule achieve higher than expected accuracy.
+\section{Simpson's Rule}
+\begin{marginfigure}[\baselineskip] 
+	\centering
+	% \includegraphics[width = 2.7in]{figures/part1b/simpsons_rule/polynomials.PNG}
+ \includegraphics[width = 2.7in]{figures/part1b/simpsons_rule/polynomials01.png}
+	\centering
+	\caption{Graphical depiction of the Simpson's Rule. (a) Area under a parabola. (b) Area under a cubic}
+	\label{fig:1}
+\end{marginfigure}
+To obtain a more accurate estimate of an integral (instead of finer segmentation of the trapezoidal rule) is to use higher-order polynomials to connect the points. For example, if there is an extra point midway between $f(a)$ and $f(b)$, the three points can be connected with a parabola (Fig \ref{fig:1}a). If there are two points equally spaced between $f(a)$ and $f(b)$, the four points can be connected with a third-order polynomial (Fig \ref{fig:1}b). The formulas that result from taking the integrals under these polynomials are called Simpson's rules. These formulas take inspiration from the Taylor series expansion, as in approximating the function with a higher order polynomial (rather than a linear function) for more accurate representation.
+
+The Simpson's 1/3 rule is the second of the Newton-Cotes closed integration formulas. It corresponds to the case where the polynomial is second-order. It is given as follows:
+
+\begin{align}
+I = \int_{x_0}^{x_2} & [\dfrac{(x-x_1)(x-x_2)}{(x_0-x_1)(x_0-x_2)}f(x_0) + \dfrac{(x-x_0)(x-x_2)}{(x_1-x_0)(x_1-x_2)}f(x_1) \\
+&  + \dfrac{(x-x_0)(x-x_1)}{(x_2-x_0)(x_2-x_1)}f(x_2)] dx
+\end{align}
+The result of integration is is given as
+\begin{align}
+I = \frac{h}{3}[f(x_0) + 4f(x_1) + f(x_2)]
+\end{align}
+
+where $a$ and $b$ are designated as $x_0$ and $x_2$, respectively. In this case $h = (b-a)/2$. This equation is known as Simpson's 1/3 rule. The label 1/3 stems from the fact that h is divided by 3 in the above equation.
+
+Simpson's 1/3 rule can also be expressed using the format of the below equation.
+\begin{align}
+I =\text{width} \times \text{weighted height} = (b-a) \times \dfrac{[f(x_0)+4f(x_1)+f(x_2)]}{6}
+\end{align}
+
+where $a$ = $x_0$, $b$ = $x_2$, and $x_1$ = the point midway between $a$ and $b$, which is given by $(a + b)/2$. Notice that, according to the above equation, the middle point is given more weight (two-thirds) and the two end points are weighted by one-sixth. We can convert this formula directly into Physika.
+
+\begin{lstlisting}[language=python]
+def simpsons_1_3_rule(f: $\mathbb{R} \to \mathbb{R}$, a: $\mathbb{R}$, b: $\mathbb{R}$) $\to$ $\mathbb{R}$:
+  (b - a) * (f(a) + 4*f((a+b)/2) + f(b))/6
+\end{lstlisting}
+
+\subsection{Error of the Simpson's rule} 
+It can be shown that a single-segment application of Simpson's 1/3 rule has a truncation error of
+\begin{align}
+E_t = -\dfrac{1}{90}h^5f^{(4)}(\xi)
+\end{align}
+or, because $h$ = $(b-a)/2$
+
+\begin{align}
+E_t = -\dfrac{(b-a)^5}{2880}f^{(4)}(\xi)
+\end{align}
+
+where $\xi$ lies somewhere in the interval from $a$ to $b$. Thus, Simpson's 1/3 rule is more accurate than the trapezoidal rule. However, in comparison with the error term from trapezoidal rule indicates that it is more accurate than expected. Rather than being proportional to the third derivative, the error is proportional to the fourth derivative. Consequently, Simpson's 1/3 rule is third-order accurate even though it is based on only three points. In other words, it yields exact results for cubic polynomials even though it is derived from a parabola.
+
+\subsection{Derivation of the Truncation Error}
+
+Since Simpson's 1/3 rule approximates the function $f(x)$ as a quadratic through $x_0$,$x_1$ and $x_2$. The integral of $f(x)$ is approximated using Taylor Series about $x=x_1$ as
+
+\begin{align}
+I = \int_{x_0}^{x_2}f(x)dx = \int_{x_0}^{x_2}[f(x_{1}) + (x-x_1)f'(x_1) + \dfrac{1}{2}(x-x_1)^2f^{(2)}(x_1) + \\
+\dfrac{1}{6}(x-x_1)^3f^{(3)}(x_1) + \dfrac{1}{24}(x-x_1)^4f^{(4)}(x_1)]dx
+\end{align}
+
+Making a change of variables such that
+\begin{align}
+s = \dfrac{2(x-x_1)}{x_2-x_0} = \dfrac{x-x_1}{h}
+\end{align}
+
+\begin{align}
+\int_{x_0}^{x_2}f(x)dx =  \int_{-1}^{1}&[hf(x_{1}) + h^2sf'(x_1) + \frac{h^3}{2}s^2f^{(2)}(x_1) + \\
+&\frac{h^4}{6}s^3f^{(3)}(x_1) + \frac{h^5}{24}s^4f^{(4)}(x_1)]ds 
+\end{align}
+
+Simplifying the above expression(integrals of all odd functions are zero) as
+\begin{align}
+\int_{x_0}^{x_2}f(x)dx = hsf(x_{1}) + \frac{1}{2}h^2s^2f'(x_1) +  \frac{1}{6}h^3s^3f^{(2)}(x_1) + \frac{1}{24}h^4s^4f^{(3)}(x_1) + \frac{1}{120}h^5s^5f^{(4)}(x_1)\rvert_{s=-1}^{s=1}
+\end{align}
+
+Substituting the second order accurate approximation of the second derivative as 
+\begin{align}
+f^{(2)}(x_1) = \dfrac{f(x_0) - 2f(x_1) + 2f(x_2)}{h^2} - \frac{h^2}{12}f^{(4)}(x_1)
+\end{align}
+
+The integral of $f(x)$ is simplified as
+\begin{align}
+\int_{x_0}^{x_2}f(x)dx =  \frac{h}{3}[f(x_0) + 4f(x_1) + f(x_2)] - \underbrace{\frac{1}{90}h^5f^{(4)}(x_1)}_{\text{Truncation Error}}
+\end{align}
+
+\section{The Composite Simpson's 1/3 Rule}
+Just as with the trapezoidal rule, Simpson's rule can be improved by dividing the integration interval into a number of segments of equal width. The total integral can be represented as
+
+\begin{equation*}
+I = \int_{x_0}^{x_2} f(x) dx + \int_{x_2}^{x_4} f(x) dx + ... + \int_{x_{n-2}}^{x_n} f(x) dx
+\end{equation*}
+
+Substituting Simpson's 1/3 rule for each integral and grouping yields
+\begin{align}
+I& = 2h\dfrac{f(x_0) + 4f(x_1) + f(x_2)}{6} + 2h\dfrac{f(x_2) + 4f(x_3) + f(x_4)}{6} + \\
+&... + 2h\dfrac{f(x_{n-2}) + 4f(x_{n-1}) + f(x_n)}{6}\\
+I &= (b-a)\dfrac{f(x_0) + 4\sum_{i=1,3,5}^{n-1}f(x_i) + 2\sum_{j=2,4,6}^{n-2}f(x_j) + f(x_n)}{2n}
+\end{align}
+
+It should be noted that, an even number of segments must be utilized to implement the method. In addition, the coefficients $4$ and $2$ in the above equation might
+seem peculiar at first glance. However, they follow naturally from Simpson's 1/3 rule.
+
+An error estimate for the composite Simpson's rule is obtained in the same fashion as for the trapezoidal rule by summing the individual errors for the segments and averaging the derivative to yield
+
+\begin{align}
+E_a = -\dfrac{(b-a)^5}{180n^4}\bar{f^{(4)}}
+\end{align}
+where $\bar{f^{(4)}}$ is the average fourth derivative for the interval.
+
+%\begin{example} The force exerted on a vehicle, moving on any terrain is given by the following equation.
+
+\begin{marginfigure}[\baselineskip] 
+	\centering
+	% \includegraphics[width = 2.7in]{figures/part1b/simpsons_rule/composite.png}
+     \includegraphics[width = 2.7in]{figures/part1b/simpsons_rule/composite_simpsons_.png}
+	\centering
+	\caption{Graphical representation of the relative weights used in the Composite Simpson's 1/3 rule}
+	\label{fig:2}
+\end{marginfigure}
+%\begin{align}
+%F_{total} = F_{drag}+F_{friction}+F_{inertial}+F_{gradient}
+%\end{align}
+%By measuring the velocity profile $v(t)$ of the vehicle, the load power on the vehicle can be calculated as
+%\begin{align}
+%P(t) &= F_{total}.v(t) \\
+%&= \frac{1}{2}\rho C_dA v(t)^3 + C_{rr}mg v(t) + mv \frac{dv}{dt} + mgZ v(t)
+%\end{align}
+%where $P(t)$ is the load power, $\rho$ is the density of air, $C_d$ is the coefficient of drag, $A$ is the frontal area of the vehicle, $v(t)$ is the instantaneous velocity, $C_{rr}$ is the coefficient of rolling resistance, $m$ is the total mass of the vehicle, $g$ is acceleration due to gravity, and $Z$ is the gradient in road elevation. It can be noted that, the elevation of the road can be accounted by increasing the mass of the vehicle. Under this assumption, the gradient term can be neglected.
+
+%Using the velocity profile of a car driven on a highway, estimate the packweight given the velocity profile of a real car using the Composite Simpson's 1/3 Rule. (Hint: Start with an initial guess for your packweight and improve on it till it converges) Note that, $\text{Energy Expended} = \int_{t=0}^{t=t}P(t)dt$ and
+%and 
+%\begin{align}
+%\begin{gathered}
+%\text{Packweight} = \dfrac{\text{Effective Wh/mile}\times \text{mile range}}{\text{Energy density of battery}}
+%\end{gathered}
+%\end{align}
+
+%\begin{lstlisting}[language=python]
+%\packweight = 100
+%base_mass = 1500
+%mass = base_mass+packweight # kg
+%rho = 1.17
+%A_F = 5.5
+%C_D = 0.44
+%C_R = 0.0075
+%g = 9.81;
+%mile_range = 220
+%e_den_bat = 160 # Wh/kg
+%
+%dvdt =  [0;diff(v(:,2))./diff(v(:,1))] # m/s^2
+%p = v[:,1] # timevector
+%p[:,2]= 1/2*rho*C_D*A_F*v(:,2).^3+C_R*mass*g*v(:,2)+mass*v(:,2).*(dvdt) # Watt
+%Distance = 0
+%for i = 1:2:length(v)-2
+%	Distance=Distance+(v(i+2,1)-v(i,1))*(v(i,2)+4*v(i+1,2)+v(i+2,2))/6;
+%Distance_miles = Distance/1000/1.6
+%eps = 1e-3
+%while True:
+%  Energy = 0
+%  for i = 1:2:length(p)-2
+%    Energy=Energy+(p(i+2,1)-p(i,1))*(p(i,2)+4*p(i+1,2)+p(i+2,2))/6
+%
+%  Energy_kWh = Energy*2.77778e-7 # kWh
+%  Eff_Wh_mile = Energy_kWh*1000/Distance_miles
+%
+%  # pack can accomodate 220 miles
+%  packweight_new=Eff_Wh_mile*mile_range/e_den_bat;
+%  if (abs(packweight_new-packweight)<eps)
+%    break
+	%
+%  packweight=packweight_new # in kg
+%  mass=base_mass+packweight
+%  p[:,2] = 1/2*rho*C_D*A_F*v(:,2).^3+C_R*mass*g*v(:,2)+mass*v(:,2).*(dvdt) # Watt
+%
+%\end{lstlisting}
+%\begin{marginfigure}[-25\baselineskip]
+%	\textbf{Output}:
+%	\begin{verbatim}
+%	 Iteration Packweight (kg)   Kerb Weight (kg)
+%     0         100.0000        1600
+%     1         678.9875        2178.9875
+%     2         707.6067        2207.6067
+%     3         709.0213        2209.0213
+%     4         709.0913        2209.0913
+%     5         709.0947        2209.0947
+%	\end{verbatim}
+%\end{marginfigure}
+%\end{document}
+%\end{example}
+
+\section{Simpson's 3/8 Rule}
+In a similar manner to the derivation of the trapezoidal and Simpson's 1/3 rule, a third-order Lagrange polynomial can be fit to four points and integrated to yield
+\begin{align}
+I = \frac{3h}{8}[f(x_0) + 3f(x_1) + 3f(x_2) + f(x_3)]
+\end{align}
+
+where $h = (b-a)/3$. This equation is known as Simpson's 3/8 rule because $h$ is multiplied by 3/8. It is the third Newton-Cotes closed integration formula. The 3/8 rule can also be expressed as
+\begin{align}
+I = (b-a) \times \dfrac{[f(x_0) + 3f(x_1) + 3f(x_2) + f(x_3)]}{8}
+\end{align}
+
+Thus, the two interior points are given weights of three-eighths, whereas the end points are weighted with one-eighth. We can express this rule in Physika as follows:
+
+\begin{lstlisting}[language=python]
+def simpsons_3_8_rule(f: $\mathbb{R} \to \mathbb{R}$, a: $\mathbb{R}$, b: $\mathbb{R}$) $\to$ $\mathbb{R}$:
+  (b - a) * (f(a) + 3*f((a+b)/3) + 3*f(2*(a+b)/3) + f(b))/8
+\end{lstlisting}
+
+Simpson's 3/8 rule has an error of
+
+\begin{align}
+E_t = -\dfrac{3}{80}h^5f^{(4)}(\xi)
+\end{align}
+or, because $h$ = $(b-a)/3$
+\begin{align}
+E_t = -\dfrac{(b-a)^5}{6480}f^{(4)}(\xi)
+\end{align}
+
+Since the denominator of the $E_t$ for 3/8 rule is larger than that for 1/3 rule, the 3/8 rule is somewhat more accurate than the 1/3 rule.
+
+\begin{marginfigure}[\baselineskip] 
+	\centering
+	% \includegraphics[width = 2.4in]{figures/part1b/simpsons_rule/simpsonsodd.png}
+ \includegraphics[width = 2.4in]{figures/part1b/simpsons_rule/simpsonsodd01.png}
+	\centering
+	\caption{Applying Simpson's 1/3 and 3/8 rules in tandem to handle odd number of intervals}
+	\label{fig:3}
+\end{marginfigure}
+
+Simpson's 1/3 rule is usually the method of preference because it attains third-order accuracy with three points rather than the four points required for the 3/8 version. However, the 3/8 rule has utility when the number of segments is odd. Suppose that you desired an estimate for five segments. One option would be to use a composite version of the trapezoidal rule. This may not be advisable, however,
+because of the large truncation error associated with this method. An alternative would be to apply Simpson's 1/3 rule to the first two segments and Simpson's 3/8 rule to the last three as represented in Figure \ref{fig:3}. In this way, we could obtain an estimate with third-order accuracy across the entire interval.
+
+\subsection{Derivation of the Truncation Error}
+Since Simpson's 3/8 rule approximates the function $f(x)$ as a quartic through $x_0$,$x_1$,$x_2$ and $x_3$. The integral of $f(x)$ is approximated using Taylor Series about $x$=$x_{1.5}$ as	
+
+\begin{align}
+I &= \int_{x_0}^{x_2}f(x)dx = \int_{x_0}^{x_2}[f(x_{1.5}) + (x-x_{1.5})f'(x_{1.5}) + \dfrac{1}{2}(x-x_{1.5})^2f^{(2)}(x_{1.5}) \\
+& + \dfrac{1}{6}(x-x_{1.5})^3f^{(3)}(x_{1.5}) + \dfrac{1}{24}(x-x_{1.5})^4f^{(4)}(x_{1.5}) + O(5)]dx
+\end{align}
+
+Integrating this function in a similar manner to that used for the 1/3 rule yields
+
+\begin{align}
+\int_{x_0}^{x_2}f(x)dx &=  \frac{3h}{8}[f(x_0) + 3f(x_1) + 3f(x_2) + f(x_3)] - \underbrace{\frac{3}{80}h^5f^{(4)}(x_1)}_{\text{Truncation Error}}
+\end{align}
+%\section{Exercises}
+%\begin{enumerate}
+%    \item TODO
+%\end{enumerate}
+\end{document}

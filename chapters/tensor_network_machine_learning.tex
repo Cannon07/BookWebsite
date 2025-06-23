@@ -1,0 +1,56 @@
+\documentclass[book.tex]{subfiles}
+
+\begin{document}
+\chapter{Tensor Network Machine Learning}
+\label{chap:quantum_rl}
+\noindent\rule{11cm}{0.4pt} \\
+\textbf{Prerequisites:} \autoref{chap:molecular_hamiltonian}, \autoref{chap:dft}, \autoref{chap:hartree_fock} \\
+\textbf{Difficulty Level:} ** \\
+\noindent\rule{11cm}{0.4pt}
+\vspace{5mm}
+
+Tensor networks offer a framework for representing high dimensional tensors effectively. These techniques have found traction in quantum many-body physics where they are used to represent composite states in a computationally efficient representation. The techniques of tensor networks can also be used to define architectures suitable for broader machine learning. In effect, these methods provide a structured method for constructing a very large feature space that can be coupled with a downstream classification architecture \cite{stoudenmire2016supervised}, \cite{convy2021mutual}
+
+% https://tensornetwork.org/mps/
+
+%"Across many disciplines, the tensor network has proven itself to be an invaluable tool in situations where we wish to represent big things as collections of smaller things. In quantum many-body physics, tensor networks have long been used to represent composite quantum states in a form that is computationally tractable and convenient for performing variational optimization. In this talk, I will provide an introduction to the emerging field of tensor network machine learning, which takes inspiration from the work done in quantum physics but applies it to a much broader variety of data. At their core, these new algorithms perform linear regression on a massively expanded feature space whose size scales exponentially with the number of original features. Using a tensor network representation we are able to decompose the weight matrix into a set of manageable pieces which can then be collectively optimized toward a given target. After providing an overview of these methods, the talk will conclude by covering recent work that analyzes correlation structures within image datasets in order to determine which type of tensor network architecture would be most appropriate for performing classification."
+
+
+\section{Mathematical Foundations}
+
+A linear model can be represented abstractly by the equation
+
+\begin{align}
+    f(x) &= W \cdot \Phi(x)
+\end{align}
+where $\Phi(x)$ is a feature vector. For many of the differentiable programming applications we have seen in the book, $\Phi$ is a fully connected neural network. We have leveraged the universal appproximation capabilities of neural networks for a variety of applications, and in particular for providing rich ansatzes for quantum calculations.
+
+In a separate line of work, physicists have spent decades developing complex ansatzes for multibody quantum systems. In particular, tensor networks provide a family of functions that have proven useful decompositions of wave functions. A simple tensor network computes a per-coordinate breakdown of the wave function. A very simple example of a tensor network (with no interactions) is given below:
+
+\begin{align}
+    \Phi^{s_1\dotsc s_N}(x) &= \phi^{s_1}(x_1)\dotsc \phi^{s_N}(x_N)
+\end{align}
+
+\begin{figure}
+    \centering
+    % \includegraphics{figures/Differentiable Physics/Deep Quantum/Tensor Network Machine Learning/mps.png}
+    \includegraphics{figures/Differentiable Physics/Deep Quantum/Tensor Network Machine Learning/MPS Decomposition.png}
+    \caption{The Matrix Product State Decomposition}
+    \label{fig:enter-label}
+\end{figure}
+
+% See https://proceedings.neurips.cc/paper_files/paper/2016/file/5314b9674c86e3f9d1ba25ef9bb32895-Paper.pdf
+
+%\textcolor{red}{TODO: Add example of image decomposition using tensor network.}
+More complex interaction structures can be computed systematically for larger tensor networks. Recent work has realized that the physical notion of tensor network can feedback into machine learning applications. Tensor networks provide a rich mathematical structure for feature extraction from arbitrary data thatt can prove useful in different contexts.
+
+\section{Choice of Network Structure}
+
+The choice of network decomposition can dramatically influence the effectiveness of a tensor network algorithm. The matrix product state (MPS) approximation provides one standard ansatz for efficiently representing a tensor decomposition. 
+
+%\textcolor{red}{TODO: I think roughly the MSP decomposition is roughly something like a graph convolutional decomposition into local messages where you limit the length range of the local interactions so there isn't an exponential blow-up in the description complexity.}
+
+Other anzatses included the projected entangled pair states (PEPS) and the multiscale entanglement renormalization ansatz (MERA). 
+
+%\textcolor{red}{TODO: Explain mutual information relationship here.}
+\end{document}

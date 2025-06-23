@@ -1,0 +1,43 @@
+\documentclass[book.tex]{subfiles}
+\begin{document}
+
+
+\chapter{Numerical Solution of Partial Differential Equations}
+
+\label{chap:numerical_pde}
+\noindent\rule{11cm}{0.4pt} \\
+\textbf{Prerequisites:} \autoref{chap:pde} \\
+\textbf{Difficulty Level:} ** \\
+\noindent\rule{11cm}{0.4pt}
+\vspace{5mm}
+
+In this chapter, we briefly review techniques for solving partial differential equations numerically.
+
+\section{Finite Element Methods}
+
+Finite element methods divide up the solution space into a finite mesh. Mathematically, a mesh is a collection of points
+\begin{align}
+\mathcal{M} &= \{ (x_i,y_i,z_i,\dotsc) \}
+\end{align}
+which closely tile an input shape or space. Mesh elements are typically connected to their nearest neighbors to induce a graph structure. A finite element method can be rougly broken down into the recipe
+
+\begin{enumerate}
+    \item Generate mesh for domain
+    \item Do iterated updates of discretized versions of the original PDE equations on the mesh
+\end{enumerate}
+
+A broad range of methods exists to compute mesh discretizations of suitable shapes. These methods can work well in lower dimensional problems but can struggle at high dimensions.
+
+\section{Mesh Free Methods}
+
+A newer class of numerical methods to solve PDEs use mesh-free representations for solutions \cite{fasshauer2006meshfree}. Simple mesh-free methods represent the value of a solution globally by reference to a set of control points
+
+\begin{align}
+u(x,t) &= \sum_i m_i u_i W(x, (x_i,\dotsc))
+\end{align}
+where $u_i$ is the value at the $i$-th control point, and $W$ is a distance kernel function. This representation is adapted by many differentiable PDE solver approaches.
+
+
+
+
+\end{document}

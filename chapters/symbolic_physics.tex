@@ -1,0 +1,69 @@
+\documentclass[book.tex]{subfiles}
+\begin{document}
+
+\chapter{Neurosymbolic Learning for Dynamical Systems}
+\label{chap:symbolic_physics}
+\noindent\rule{11cm}{0.4pt} \\
+\textbf{Prerequisites:} \autoref{chap:hamiltonians_and_langrangians} \\
+\textbf{Difficulty Level:} ** \\
+\noindent\rule{11cm}{0.4pt}
+\vspace{5mm}
+
+%"We develop a general approach to distill symbolic representations of a learned deep model by introducing strong inductive biases. We focus on Graph Neural Networks (GNNs). The technique works as follows: we first encourage sparse latent representations when we train a GNN in a supervised setting, then we apply symbolic regression to components of the learned model to extract explicit physical relations. We find the correct known equations, including force laws and Hamiltonians, can be extracted from the neural network. We then apply our method to a non-trivial cosmology example: a detailed dark matter simulation, and discover a new analytic formula which can predict the concentration of dark matter from the mass distribution of nearby cosmic structures. The symbolic expressions extracted from the GNN using our technique also generalized to out-of-distribution data better than the GNN itself. Our approach offers alternative directions for interpreting neural networks and discovering novel physical principles from the representations they learn.
+%"
+Deep representations of physical systems can be difficult to interpret and tie to back to classical physical theories. A line of research has investigated methods to extract classical symbolic formulas from deep architectures. These methods can proceed by using sparsity constraints to extract exact physical formulas, or alternatively by using genetic algorithms or other generative approaches to propose formulas and then test their goodness of fit. These simple formulas can potentially generalize more broadly than complex deep representations due to the pruning of spurious degrees of freedom \cite{cranmer2019learning}, \cite{cranmer2020discovering}, \cite{cranmer2020lagrangian}.
+
+\section{AI Poincar\'e}
+
+This technique provides a numerical way of extracting equations from given observational data. We start from differential equations for a dynamic system. Manifold learning extracts conservation laws.
+
+\begin{align}
+ \frac{dz}{dt} &= f(z)
+\end{align}
+A conserved quantity is a scalar $H(z)$ which remains constant along the trajectory given by the differential equation.
+\begin{align}
+    \frac{d H}{dt} &= \nabla H \cdot \frac{dz}{dt} \\
+    &= \nabla H \cdot f(z) \\
+    &= 0
+\end{align}
+Thus $H \cdot f(z)$ is a conserved quantity. The goal is to discover the conserved quantities of neural networks.
+
+We find conserved quantities by minimizing the following objective for $H$.
+\begin{align}
+\mathcal{L}(\theta) &= \frac{1}{P} \sum_{i=1}^P |\hat{f}(z^{(i)}) - \hat{\nabla H}(z^i, \theta)|^2
+\end{align}
+Each learned neural network $H$ represents a conserved quantity. How can we learn multiple conserved quantities? Training multiple networks just learns correlated quantities so we need to use an alternative approach to learn multiple conserved quantities.
+
+\begin{align}
+\hat{R}(\theta_1, \theta_2) &= \frac{1}{P} \sum_{i=1}^P |\hat{\nabla H_1}(z^i, \theta_1) \cdot \hat{\nabla H_2}(z^i, \theta_2)|^2\\
+\mathcal{L} &= \frac{1}{n} \sum_{i=1}^n \mathcal{L}(\theta_1) + \lambda \sum_{i,j} R(\theta_i, \theta_j)
+\end{align}
+
+Minimizing the inner product encourages maximum orthogonality. We want to encourage functional independence
+
+\begin{align}
+    f(H_1(\theta),\dotsc, H_n(\theta)) &= 0
+\end{align}
+We want to count the number of independent quantities. We define a matrix
+\begin{align}
+    \begin{bmatrix}
+    H_1(z^1) & \dotsc & H_n(z^1) \\
+    \dotsc & \dotsc & \dotsc \\
+    H_n(z^P) & \dotsc & H_n(z^P)
+    \end{bmatrix}
+\end{align}
+We find the rank of this matrix to find the linearly conserved quantities using SVD.
+
+We can do an enumeration over a series of formulas using a genetic algorithm, generative model, or other procedure for constructing sample formulas. %(\textcolor{red}{TODO: Add in}). 
+One popular approach, the AI-Feynman algorithm, recursively tries symbolic expressions of state variables. The system uses a fast rejection check. We select $n_p$ test examples and evaluate
+\begin{align}
+    |f(z_p) \cdot \nabla H| = e_p
+\end{align}
+Formulas that survive fast rejection are tried numerically on the full dataset. 
+
+%Test on Kepler, 2D isotropic harmonic oscillator, 2D anisotropic harmonic oscillator, and 3 body problem. System recovers known equations but misses some conserved quantities still.
+
+\section{Potential Limitations}
+It is not yet clear whether this approach can work for noisy datasets. Future work will need to extend the robustness of the recovery to make the methods have larger impact.
+%\textcolor{red}{It's not clear yet how this works with noisy data. Would it find the same law?}
+\end{document}

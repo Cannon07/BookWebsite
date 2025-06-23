@@ -1,0 +1,117 @@
+\documentclass[book.tex]{subfiles}
+
+\begin{document}
+\chapter{The Green's Function for the Klein-Gordon Equation}
+
+\label{chap:klein_gordon_greenns}
+\noindent\rule{11cm}{0.4pt} \\
+\textbf{Prerequisites:} \autoref{chap:qft_basics}  \\
+\textbf{Difficulty Level:} ** \\
+\noindent\rule{11cm}{0.4pt}
+\vspace{5mm}
+
+In the previous chapter, we learned how to solve the Klein-Gordon equation for simple free fields. Solving the Klein-Gordon equation for more complex fields with potentials requires additional mathematical infrastructure. In particular, we will make use of the Green's function.
+
+\section{Defining the Green's Function}
+
+The Green's function for the Klein-Gordon equation is also commonly called the propagator in quantum field theory. The Green's function is defined as the solution to the following equation
+
+\begin{align}
+    -(\partial^2 + m^2)D(x) &= \delta^{(4)}(x)
+\end{align}
+
+Recall that the Klein-Gordon equation is defined on Minkowski space, where we define 
+
+\begin{align}
+    \partial^2 = \frac{\partial^2}{\partial t^2} - \frac{\partial^2}{\partial x_1^2} - \frac{\partial^2}{\partial x_2^2} - \frac{\partial^2}{\partial x_3^2}
+\end{align}
+
+\noindent $m \in \mathbb{R}$ is an arbitrary real number. Recall that the general form of Green's functions is as distributions and not as functions so we expect $D(x)$ to define a distribution and not a function. To solve the equation above, we use the Fourier representation of the Dirac delta function
+
+\begin{align}
+    \delta^{(4)}(x) = \frac{1}{(2\pi)^4} \int e^{ikx} d^4 k
+\end{align}
+
+%\textcolor{red}{(TODO: Make sure the definitions here align with the math chapter on the Dirac delta)}
+
+As a first note, recall that $k,x  \in \mathbb{R}^{1,3}$ are elements of Minkowski space. So the notation above is actually shorthand for
+
+\begin{align}
+    kx \equiv k_0 t - k_1 x_1 - k_2 x_2 - k_3 x_3
+\end{align}
+
+Recall that the dirac delta $\delta^{(4)}(x)$ defines a functional and is a distribution and not a function. So the integral on the right hand side above should be read as defining a mapping
+
+\begin{align}
+    g(x) \mapsto \frac{1}{(2\pi)^4} \int e^{ikx} g(x) d^4 k
+\end{align}
+
+%\textcolor{red}{(TODO: Should the integral above actually be a convolution? Make sure to check definitions)}
+
+To find a solution, as is often the case with differential equations, we turn to exponential functions. Let's compute
+
+\begin{align}
+-(\partial^2 + m^2 ) e^{ikx} &= -\left (\frac{\partial^2}{\partial t^2} - \frac{\partial^2}{\partial x_1^2} - \frac{\partial^2}{\partial x_2^2} - \frac{\partial^2}{\partial x_3^2}  + m^2 \right ) e^{i(k_0t - k_1x_1 - k_2x_2 - k_3x_3)}  \\
+&= -\left ((ik_0)^2e^{ikx} - (-ik_1)^2e^{ikx} - (-ik_2)^2 e^{ikx} - (-ik_3)^2 e^{ikx} + m^2 e^{ikx}\right ) \\
+&= -((ik_0)^2 - (-ik_1)^2 - (-ik_2)^2  - (-ik_3)^2 +m^2)e^{ikx} \\
+&= -(-k_0^2 + k_1^2 + k_2^2  + k_3^2 + m^2)e^{ikx} \\
+&= -(-k^2 + m^2)e^{ikx} \\
+&= (k^2 - m^2)e^{ikx} 
+\end{align}
+That is, $e^{ikx}$ is an eigenfunction of the operator $-(\partial^2 + m^2)$. We could then hypothesize that the Green's function of the Klein-Gordon operator would be given by the following "function".
+
+\begin{align}
+    \frac{1}{(2\pi)^4} \int \frac{e^{ikx}}{k^2-m^2} d^4 k
+\end{align}
+Then, by applying the Klein-Gordon operator, we would obtain, by differentiating through the integral
+\begin{align}
+    (-\partial^2 + m^2) \left [ \frac{1}{(2\pi)^4} \int \frac{e^{ikx}}{k^2 - m^2} d^4 k \right ] &= \frac{1}{(2\pi)^4} \int \frac{-(\partial^2 +m^2) e^{ikx}}{k^2 - m^2} d^4 k \\
+    &= \frac{1}{(2\pi)^4} \int \frac{(k^2-m^2)e^{ikx}}{k^2-m^2} d^4 k  \\
+    &= \frac{1}{(2\pi)^4} \int e^{ikx} d^4 k \\
+    &= \delta^{(4)}(x)
+\end{align}
+This calculation works almost everywhere. The exception is at those points where $k^2 = m^2$. Expanding out the equation, this is the surface of points
+\begin{align}
+    k_0^2 - k_1^2 - k_2^2 - k_3^3 = m^2
+\end{align}
+Such a surface is vanishingly small compared to the entirety of $\mathbb{R}^{1,3}$. We know that for point singularities, it is sometimes possible to complete the function by taking a limit. The limit completion technique used for this function is called the $(i\varepsilon)$ prescription. The idea is to prevent the singularity on the surface $k^2 = m^2$ by adding a small nonzero value, the $i\varepsilon$. That is, we define the distribution
+\begin{align}
+    \frac{1}{(2\pi)^4} \int \frac{e^{ikx}}{k^2-m^2 + i\epsilon} d^4 k
+\end{align}
+How are we to interpret this expression? It's easiest to concretely represent the expression as a mapping
+\begin{align}
+    g(x) \mapsto \frac{1}{(2\pi)^4} \lim_{\varepsilon \to 0} \int \frac{e^{ikx}}{k^2 - m^2 + i \epsilon} g(x) d^4 k
+\end{align}
+Let us now apply the Klein-Gordon operator to this distribution by differentiating through the integral sign and through the limit
+\begin{align}
+    &= (-\partial^2 + m^2) \left [ \frac{1}{(2\pi)^4} \lim_{\varepsilon \to 0} \int \frac{e^{ikx}}{k^2 - m^2 + i \varepsilon} g(x) d^4k\right ] \\
+    &= \frac{1}{(2\pi)^4} \lim_{\varepsilon \to 0} \int \frac{(-\partial^2 + m^2)e^{ikx}}{k^2 - m^2 + i\varepsilon} g(x) d^4 k \\
+    &= \frac{1}{(2\pi)^4} \lim_{\varepsilon \to 0} \int \frac{(k^2 - m^2)e^{ikx}}{k^2 - m^2 + i\varepsilon} g(x) d^4 k \\
+\end{align}
+We claim that 
+\begin{align}
+    \lim_{\varepsilon \to 0} \int \frac{(k^2-m^2)e^{ikx}}{k^2-m^2+i\varepsilon} g(x) d^4k &= \int e^{ikx} g(x) d^4k
+\end{align}
+
+It then follows that
+\begin{align}
+\frac{1}{(2\pi)^4} \lim_{\varepsilon \to 0} \int \frac{(k^2-m^2) e^{ikx}}{k^2-m^2+i\varepsilon} d^4 k = \frac{1}{(2\pi)^4} \int e^{ikx} d^4 k = \delta^{(4)}(x)
+\end{align}
+holds as an equality of distributions.
+
+We see in these manipulations, the $g(x)$ term is just carried around. From now on, when performing manipulations with distributions, we will often not show the "test function" $g(x)$ and the limit explicitly, but will just perform manipulations directly. If you are confused about how an operation is valid, write out the test function and limit in full detail to convince yourself.
+
+\section{Exercises}
+\begin{enumerate}
+    \item For a given test function $g$, prove that
+    \begin{align}
+    \lim_{\varepsilon \to 0} \int \frac{(k^2-m^2)e^{ikx}}{k^2-m^2+i\varepsilon} g(x) d^4k &= \int e^{ikx} g(x) d^4k
+    \end{align}
+    State the assumptions about $g$ that you make to prove this statement.
+    \item Prove that \begin{align}
+    \frac{1}{(2\pi)^4} \lim_{\varepsilon \to 0} \int \frac{(k^2-m^2) e^{ikx}}{k^2-m^2+i\varepsilon} d^4 k = \frac{1}{(2\pi)^4} \int e^{ikx} g(x) d^4 k = \delta^{(4)}(x)
+    \end{align}
+    holds as a limit in the topology of distributions.
+\end{enumerate}
+\end{document}
+% 

@@ -1,0 +1,155 @@
+\documentclass[book.tex]{subfiles}
+
+\begin{document}
+
+\chapter{Graph Convolutional Neural Networks}
+
+\label{chap:graphconvs}
+\noindent\rule{11cm}{0.4pt} \\
+\textbf{Prerequisites:}  \autoref{chap:ml_basics}, \autoref{chap:grad_descent}, \autoref{chap:convnets}  \\
+\textbf{Difficulty Level:} ** \\
+\noindent\rule{11cm}{0.4pt}
+\vspace{5mm}
+
+Graph convolutional neural networks are one of the most foundational machine learning tools for modeling physical systems. The core reason for this is that graphs map naturally onto many physical systems. For example, a molecule can be converted into a graph by taking atoms as nodes and bonds as edges. Crystals can be converted into periodic graphs the same way.
+
+The graph neural network starts with some initial representation for each node (often each atom) in the system. This representation is updated iteratively by combining information across edges (chemical bonds). After multiple rounds of message passing, the training reaches learned node feature vectors (atomic feature vectors) which are subsequently combined to create a system-level embedding vector.
+
+Graph neural networks also have a number of connections to fundamental theory. RNNs, convolutional neural networks and transformers can all be viewed as special instances of the more generic framework of graph neural networks, providing a hint at their general capabilities.
+
+\begin{figure}
+    \centering
+    % \includegraphics{figures/Differentiable Models/gcns/gcn.png}
+    \includegraphics{figures/Differentiable Models/gcns/Graph_convolutional_network.png}
+    
+    \caption{Graph Convolutional Networks repeatedly update feature vectors at each node (and/or edge) of the graph, and take readouts at the final layer.}
+    \label{fig:gcn_image}
+\end{figure}
+
+\section{The Type of a Graph}
+
+A graph is made up of a collection of nodes and edges. Each node and each edge has associated with it a local feature descriptor. Each node has a set of neighbors. The neighborhood structure of the graph is encoded implicitly by the collection of its edges. 
+
+\begin{lstlisting}[language=python]
+class Node(feat: $\mathbb{R}^N$)
+class Edge(u: Node, v: Node, feat: $\mathbb{R}^M$)
+class Graph(nodes: Node[K], edges: Edge[M])
+\end{lstlisting}
+
+It can often be useful to construct an explicit "adjacency" matrix $A$ which encodes at position $A_{i,j}$ whether there is an edge between $i$ and $j$. We leave it as an exercise for the reader to transform the representation of a graph specified above into an adjacency matrix.
+
+\section{Graph Convolutional Layers}
+
+We can represent a graph convolutional layer by the equation
+
+%\url{https://pytorch-geometric.readthedocs.io/en/latest/modules/nn.html#torch_geometric.nn.conv.GCNConv}
+%\url{https://towardsdatascience.com/how-to-do-deep-learning-on-graphs-with-graph-convolutional-networks-7d2250723780}
+
+\begin{align}
+    f(H_i, A) &= \sigma(AH_i W_i)
+\end{align}
+
+Here $W_i$ is the weight matrix for this layer and $\sigma$ is a nonlinear activation function. $A$ is the adjacency matrix. $H_i$ is the current feature representation for the graph. For $i=0$, $H_i = X$, the matrix of input features.
+
+Note that if $X$ is a feature matrix, $A X$ sums feature representation across the neighbors of the node. Self-links are usually added to a adjacency matrix $A$ to allow the original feature vector for a node to be retained.
+\begin{align}
+    \hat{A} &= A + I
+\end{align}
+
+Another challenge with this basic computation is that nodes with many neighbors will rapidly build larger feature representations. To correct for this effect, we will need to normalize feature representations by the node degree. To control for node degree, we need to divide each node through by its degree. Let $D$ be the degree matrix which has the degree of each node on its diagonal. Note that $D$ consists of the row sums of $A$ 
+
+\begin{align}
+    D_{ii} &= \sum_j A_{ij}
+\end{align}
+
+
+Then we consider the updated rule
+
+\begin{align}
+    f(X, A) &= \sigma(D^{-1}AXW)
+\end{align}
+%\begin{align}
+%    X' &= \hat{D}^{-1/2}\hat{A}\hat{D}^{-1/2}X \Theta
+%\end{align}
+%with 
+%\begin{align}
+%    \hat{A}&= A + I
+%\end{align}
+%where $A$ is the adjacency matrix and
+%\begin{align}
+%    \hat{D}_{ii} &= \sum_{j=0} \hat{A}_{ij}
+%\end{align}
+%At a node-wise level, the graph convolution is given by
+%\begin{align}
+%    x'_i &= \Theta^T \sum_{j\in\mathcal{N}(v)\cup \{i\}} %\frac{e_{j,i}}{\sqrt{\hat{d}_j \hat{d}_i}} x_j
+%\end{align}
+%Here 
+%\begin{align}
+%    \hat{d}_i &= 1 + \sum_{j\in %\mathcal{N}(i)} e_{j,i}
+%\end{align}
+%with $e_{j,i}$ the edge weight
+
+%# Get the adjacency matrix
+%A = G.to_adjacency_matrix(weighted=False)
+
+%# Add self-connections
+%A_t = A + sp.diags(np.ones(A.shape[0]) - A.diagonal())
+
+%# Degree matrix to the power of -1/2
+%D_t = sp.diags(np.power(np.array(A.sum(1)), -0.5).flatten(), 0)
+
+%# Normalise the Adjacency matrix
+%A_norm = A.dot(D_t).transpose().dot(D_t).todense().
+
+%\url{https://antonsruberts.github.io/graph/gcn/}
+%\url{https://towardsdatascience.com/how-to-do-deep-learning-on-graphs-with-graph-convolutional-networks-7d2250723780}
+%\textcolor{red}{TODO: Simplify}
+\begin{lstlisting}[language=python]
+
+class GraphConvolution(W: $\mathbb{R}$[d, c]):
+  def $\lambda$(A: $\mathbb{N}$[N, N], X: $\mathbb{R}$[N, d]):
+    D = for j: sum(for i: A[i, j])
+    $\sigma$(D$^{-1}$*A*X*W)
+    
+\end{lstlisting}
+
+%zkc = sample_graph()
+%def gcn_layer($\hat{A}$, $\hat{D}$, X, W):
+%    return relu($\hat{D}^-1$ * $\hat{A}$ * X * W)'
+
+%order = sorted(list(zkc.nodes()))
+%A = to_matrix(zkc, nodelist=order)
+%I = np.eye(zkc.number_of_nodes())
+%A_hat = A + I
+%D_hat = array(sum(A_hat, axis=0))[0]
+%D_hat = matrix(diag(D_hat))
+
+%W_1 = Gaussian(
+ %   $\mu$=0, $\sigma$=1, (zkc.number_of_nodes(), 4))
+%W_2 = Gaussian(
+ %   $\mu$=0, (W_1.shape[1], 2))
+    
+%H_1 = GraphConvolution($\hat{A}$, $\hat{D}$, I, W_1)
+%H_2 = GraphConvolution($\hat{A}$, $\hat{D}$, H_1, W_2)
+%output = H_2
+%
+%feature_representations = {
+%    node: array(output)[node] 
+%    for node in zkc.nodes()}
+%
+%\begin{lstlisting}[language=python]
+%\end{lstlisting}
+
+%\url{https://towardsdatascience.com/how-to-do-deep-learning-on-graphs-with-graph-convolutional-networks-62acf5b143d0}
+
+\section{Graph Attention}
+
+Let $1,\dotsc,n$ be the nodes in the graph. Let $\mathcal{N}_i$ be the set of neighbors of node $i$. A graph attention mechanism can be written as 
+
+\begin{align}
+    y_i = \frac{1}{\mathcal{C}(\{f_j \in \mathcal{N}_i\})} \sum_{j \in \mathcal{N}_i} w(f_i, f_j) h(f_j)
+\end{align}
+
+Here $h, w$ are neural networks, and $\mathcal{C}$ normalizes the sum of local features in neighborhood $\mathcal{N}_i$. Graph attention architectures may prove more useful in certain learning problems than plain graph convolutions.
+
+\end{document}

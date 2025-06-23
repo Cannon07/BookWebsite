@@ -1,0 +1,382 @@
+\documentclass[book.tex]{subfiles}
+
+\begin{document}
+
+\chapter{Hindley-Milner Type System}
+
+\label{chap:hindley_milner}
+\noindent\rule{11cm}{0.4pt} \\
+\textbf{Prerequisites:}  \autoref{chap:type_theory}, \autoref{chap:stlc}   \\
+\textbf{Difficulty Level:} ** \\
+\noindent\rule{11cm}{0.4pt}
+\vspace{5mm}
+
+The simply typed lambda calculus suffices to write simple functions, but has no notion of generic functions. For example consider the following Physika function.
+
+\begin{lstlisting}[language=python]
+def append(lst : [a], elt: a) $\to$ [a]:
+  return lst + [elt]
+\end{lstlisting}
+
+This function takes in a list of any type and appends a value to it. Note that $a$ is a \textit{free type variable}. For this reason, we say that append is a polymorphic function. The Hindley-Milner type system provides an extension to the simply tped lambda calculus that handles polymorphic functions. 
+
+\section{The Syntax of Hindley-Milner}
+
+Expressions in Hindley-Milner languages take on the following syntactic forms. We start with the grammar for expressions 
+
+\begin{alignat*}{2}
+    e &:= x \quad &&\textrm{variable} \\
+    &\ |\ \ e_1 e_2 \quad &&\textrm{application} \\
+    &\ |\ \ \lambda x . e \quad &&\textrm{abstraction} \\
+    &\ |\ \ \textrm{let } x = e_1\textrm{ in }e_2 \quad &&\textrm{binding}
+\end{alignat*}
+
+We introduce here the \lstinline{let} clause which binds a variable within a local context. The \lstinline{let} is a useful construct for building more complex programs. Here is the grammar for types, both non-polymorphic and polymorphic.
+
+\begin{alignat*}{2}
+    \tau &:= \alpha \quad &&\textrm{variable} \\
+    &\ |\ \ C \tau \dotsc \tau \quad &&\textrm{application} \\
+    &\ |\ \ \tau \to \tau \quad &&\textrm{abstraction} \\
+    \sigma &:= \tau  \\
+    &\ |\ \ \forall \alpha . \sigma \quad &&\textrm{quantifier} \\
+\end{alignat*}
+
+This grammar defines the different types present in Hindley-Milner languages. To provide a few examples, here are some valid Hindley-Milner programs (we assume for simplicity arithmetic operations are defined)
+\begin{lstlisting}
+($\lambda$ y. y +1) 5
+\end{lstlisting}
+\begin{lstlisting}
+let f = $\lambda y. y + 1$ in
+  f 3  
+\end{lstlisting}
+
+\section{Typing Rules}
+
+In order to determine the types of a Hindley-Milner program, we have to have suitable typing rules. These typing rules explain how to evaluate the types introduced by various Hindley-Milner syntax.
+
+\begin{alignat*}{2}
+    &\inference[1.]
+    {
+     x: \sigma \in \Gamma
+    }
+    {
+    \Gamma \vdash x : \sigma
+    } \ \textrm{[Var]} &&\qquad
+    \inference[2.]
+    {
+     c : T
+    }
+    {
+     \Gamma \vdash c : T 
+    } \ \textrm{[Cons]} \\
+    &\inference[3.]
+    {
+     \Gamma, x: \sigma \vdash e : \tau
+    }
+    {
+     \Gamma \vdash (\lambda x: \sigma . e) : (\sigma \to \tau)
+    } \ \textrm{[Abs]}
+    &&\qquad 
+    \inference[4.]
+    { 
+     \Gamma \vdash e_1: \sigma \to \tau, \quad \Gamma \vdash e_2 : \sigma
+    }
+    {
+     \Gamma \vdash e_1 e_2 : \tau
+    } \ \textrm{[App]}
+    \\
+    &\inference[5.]
+    {
+     \Gamma \vdash e_0 : \sigma, \quad \Gamma, x: \sigma \vdash e_1 : \tau 
+    }
+    {
+     \Gamma \vdash \textrm{let } x = e_0 \textrm{ in } e_1 : \tau 
+    } \ \textrm{[Let]}
+    &&\qquad 
+    \inference[6.]
+    {
+     \Gamma \vdash e : \sigma', \quad \sigma' \sqsubseteq \sigma  
+    }
+    {
+     \Gamma \vdash e : \sigma 
+    } \ \textrm{[Inst]}
+    \\
+    &\inference[7.]
+    {
+     \Gamma \vdash e : \sigma, \quad \alpha \not\in \textrm{free}(\Gamma)  
+    }
+    {
+     \Gamma \vdash e : \forall \alpha . \sigma 
+    } \ \textrm{[Gen]}
+\end{alignat*}
+
+The notation $\sigma' \sqsubseteq \sigma$ means that $\sigma'$ is a more general instantiation of type $\sigma$. For example, the type \lstinline{$\forall$ $\alpha$. $\alpha$ -> $\alpha$} is more general than \lstinline{Int -> Int}. The terminology $\textrm{free}$ indicates the free variables in a given expression.
+
+\section{Type Inference}
+
+Type inference is the algorithm that defines a type to a given expression in our language. Type inference is solvable for Hindley-Milner systems but not for more complex programming languages as we will see in later chapters.
+
+%\textcolor{red}{TODO: Do I want to talk about Algorithm J versus Algorithm W? Is that going to be too much detail for the reader?}
+%\url{https://eli.thegreenplace.net/2018/type-inference/}
+%\url{https://eli.thegreenplace.net/2018/unification/}
+
+The union-find algorithm provides a method to solve for the types in a given Hindley-Milner program. We define a recursive procedure \lstinline{unify} that is called repeatedly to unify type expressions. This algorithm starts by assigning symbolic types ($\tau_1$, $\tau_2$, etc) to all subexpressions. Using the typing rules, the algorithm constructs type equations in terms of type names. We solve type equations with the unification algorithm. In the code examples below, we make use of types
+\begin{lstlisting}[language=python]
+    Var, App, Name, Term
+\end{lstlisting}
+which encode language terms as types. Here \lstinline{App} represents a function evaluation which has arguments as attributes. Similarly \lstinline{Var} has a name attribute.
+%\begin{enumerate}
+%    \item Type rules are effectively run in reverse as the "trick."
+%    \item Unify is generalized pattern matching. 
+%\end{enumerate}
+
+%Subexpressing type assignment can probably be done on AST for system. 
+
+%\textcolor{red}{TODO: This is from website above. Need to adapt code}
+%\url{https://github.com/eliben/code-for-blog/blob/master/2018/type-inference/typing.py}
+
+\begin{lstlisting}[language=python]
+class Term
+class App[Term](fname, args)
+class Var[Term](name)
+class Const[Term](value)
+\end{lstlisting}
+
+The unification algorithm \lstinline{unify} returns an environment $\Gamma$ (map of name to term) that unifies \lstinline{x} and \lstinline{y}, or \lstinline{None} if they can't be unified. The pseudocode below provides a partial implementation of the unification method (that leaves out some details).
+\begin{lstlisting}[language=python]
+def unify(x: Var | App, y: Var | App, $\Gamma$: Optional[Name $\to$ Term]) -> Optional[Name $\to$ Term]:
+  if $\Gamma$ is None: None
+  elif x == y: $\Gamma$
+  elif x : Var: unify_variable(x, y, $\Gamma$)
+  elif y : Var: unify_variable(y, x, $\Gamma$)
+  elif x : App and y : App:
+    if len(x.args) != len(y.args): None
+    else:
+      for i in len(x.args):
+        unify(x.args[i], y.args[i], $\Gamma$)
+  else: None
+\end{lstlisting}
+The \lstinline{unify_variable} algorithm solves the special case where \lstinline{v} is known to be a variable
+\begin{lstlisting}[language=python]
+def unify_variable(v: Var, x: Var | App, $\Gamma$: Optional[Name $\to$ Term]):
+  if v.name in $\Gamma$: unify($\Gamma$[v.name], x, $\Gamma$)
+  elif x: Var and x.name in $\Gamma$: unify(v, $\Gamma$[x.name], $\Gamma$)
+  elif occurs(v, x, $\Gamma$): None
+  else:
+    # v is not yet in $\Gamma$ and can't simplify x. Extend $\Gamma$.
+    $\Gamma$ + {v.name: x}
+\end{lstlisting}
+The helper method \lstinline{occurs} checks whether the specified variable appears in the given term.
+
+\begin{lstlisting}[language=python]
+def occurs(v: Var, term: Term, $\Gamma$: Optional[Name $\to$ Term]) $\to$ Bool:
+  if v == term: True
+  elif term : Var and term.name in $\Gamma$: occurs(v, $\Gamma$[term.name], $\Gamma$)
+  elif term : App:
+    any(occurs(v, arg, $\Gamma$) for arg in term.args)
+  else: False
+\end{lstlisting}
+
+%\url{https://github.com/eliben/code-for-blog/tree/master/2018/type-inference}
+%# Subclasses of Type represent types for micro-ML.
+%class Type:
+%    pass
+
+We next define representations of the core types in the Physika language. In particular, we define types for integers, booleans, type variables
+
+\begin{lstlisting}[language=python]
+class IntType[Type]
+class BoolType[Type]
+class FuncType[Type](argtypes: [Type], rettype: Type):
+class TypeVar[Type](name)
+\end{lstlisting}
+% class TypingError(Exception)
+
+The raw syntax for a program is processed into an abstract syntax tree, a data structure which represents the expression structure of a program. An auxiliary datastructure, the symbol table, is used to map symbols to types throughout the type inference process. Consider the code example
+\begin{lstlisting}[language=python]
+b = 8
+c = 9
+def foo(a):
+  if a == 0 then b else c
+\end{lstlisting}
+
+The type inference procedure follows these steps
+
+\begin{enumerate}
+\item Visit the abstract syntax tree and assign types to all nodes. Known types are assigned to constant nodes  
+and fresh type variables to all other nodes. 
+\item Visit the abstract syntax tree again, and apply type inference rules to generate equations between types. The output is a list of type equations which must be satisfied.
+\item Solve these equations using the unification algorithm.
+\end{enumerate}
+We can define the core nodes in our abstract syntax tree as follows.
+\begin{lstlisting}[language=python]
+class Expr(type: Type, children: [Expr])
+class AST[Expr]
+class LambdaExpr[Expr](name)
+class Identifier[Expr](name)
+class OpExpr[Expr](name)
+class IfExpr[Expr]
+class AppExpr[Expr]
+class IntConstant[Expr]
+class BoolConstant[Expr]
+\end{lstlisting}
+
+% TODO: Need to rework further so it's not copied from the source comments
+Our next function assigns type names to the given abstract syntax subtree and all its children. We track the initial symbol table $\Gamma$ to query for identifiers found through the subtree. All identifiers in the subtree must be bound either in $\Gamma$ or in lambda expressions contained in the subtree.
+\begin{lstlisting}[language=python]
+def assign(node: Expr, $\Gamma$={}):
+    if node: Identifier:
+        if node.name in $\Gamma$:
+            node.type = $\Gamma$[node.name]
+    elif node : LambdaExpr:
+        node.type = TypeVar(fresh_typename())
+        local = {}
+        for argname in node.argnames:
+            typename = fresh_typename()
+            local[argname] = TypeVar(typename)
+        node.arg_types = local
+        assign(node.expr, $\Gamma$ + local)
+    elif node : OpExpr:
+        node.type = TypeVar(fresh_typename())
+        map($\lambda$ c: assign(c, $\Gamma$), node.children)
+    elif node : IfExpr:
+        node.type = TypeVar(fresh_typename())
+        map($\lambda$ c: assign(c, $\Gamma$), node.children)
+    elif node : AppExpr:
+        node.type = TypeVar(fresh_typename())
+        map($\lambda$ c: assign(c, $\Gamma$), node.children)
+    elif node : IntConstant:
+        node.type = IntType
+    elif node : BoolConstant:
+        node.type = BoolType
+    else:
+        raise TypingError('unknown node')
+\end{lstlisting}
+
+%
+%    def __str__(self):
+%        return '{} :: {} [from {}]'.format(self.left,
+%                                           self.right, self.orig_node)
+The \lstinline{TypeEqn} type captures the type of an equation relating equality between two different types.
+\begin{lstlisting}[language=python]
+class TypeEqn(left, right)
+\end{lstlisting}
+The following helper methods generate type equations from abstract syntax tree nodes.
+
+\begin{lstlisting}[language=python]
+def generate_equations(node : Expr, equations : [TypeEqn]): 
+    left, right, type, children = node.left, node.right, node.type, node.children
+    if node : IntConstant:
+        equations += [TypeEqn(type, IntType)]
+    elif node : BoolConstant:
+        equations += [TypeEqn(type, BoolType)]
+    elif node : Identifier:
+        # Identifier references add no equations.
+        pass
+    elif node : OpExpr:
+        map($\lambda$ c: generate_equations(c, equations), children)
+        # All op arguments are integers.
+        equations += [TypeEqn(left.type, IntType), 
+                      TypeEqn(right.type, IntType)]
+        # Some ops return boolean, and some return integer.
+        if node.op in {'!=', '==', '>=', '<=', '>', '<'}:
+            equations += [TypeEqn(type, BoolType)]
+        else:
+            equations += [TypeEqn(type, IntType)]
+    elif node : AppExpr:
+        map($\lambda$ c: generate_equations(c, equations), chilren)
+        argtypes = [arg.type for arg in node.args]
+        # An application forces its function's type.
+        equations += [TypeEqn(node.func.type, FuncType(argtypes, type))]
+    elif node : IfExpr:
+        map($\lambda$ c: generate_equations(c, equations), children)
+        equations += [TypeEqn(node.ifexpr.type, BoolType),
+                      TypeEqn(type, node.thenexpr.type),
+                      TypeEqn(type, node.elseexpr.type)]
+    elif node : LambdaExpr:
+        map($\lambda$ c: generate_equations(c, equations), children)
+        argtypes = [node.arg_types[name] for name in node.argnames]
+        equations += [TypeEqn(type,
+                         FuncType(argtypes, node.expr.type))]
+    else:
+        raise TypingError
+\end{lstlisting}
+%# Global counter to produce unique type names.
+%_typecounter = itertools.count(start=0)
+%%
+%def fresh_typename():
+%    """Creates a fresh typename that will be unique throughout the program."""
+%    return 't{}'.format(next(_typecounter))
+
+%# This function is useful for determinism in tests.
+%def reset_type_counter():
+%    global _typecounter
+%    _typecounter = itertools.count(start=0)
+
+
+
+%def show_type_assignment(node):
+%    """Show a type assignment for the given subtree, as a table.
+%    Returns a string that shows the assigmnent.
+%    """
+%    lines = []
+%
+%    def show_rec(node):
+%        lines.append('{:60} {}'.format(str(node), node.type))
+%        node.visit_children(show_rec)
+%
+%    show_rec(node)
+%    return '\n'.join(lines)
+
+
+\begin{lstlisting}[language=python]
+def unify_all_equations(ast: AST):
+  """Unifies all type equations in the sequence eqs.    """
+  eqs = generate_equations(ast)
+  $\Gamma$ = {}
+  for eq in eqs:
+    $\Gamma$ = unify(eq.left, eq.right, $\Gamma$)
+    if $\Gamma$ is None:
+      break
+  $\Gamma$
+\end{lstlisting}
+Here we use a helper method \lstinline{generate_equations} which computes the type equations for a given program.
+
+%\begin{lstlisting}[language=python]
+%def apply_unifier(typ, $\Gamma$):
+%  """Applies the unifier $\Gamma$ to typ.
+%  Returns a type where all occurrences of variables bound in $\Gamma$
+%  were replaced (recursively); on failure returns None.
+%  """
+%  if $\Gamma$ is None: None
+%  elif len($\Gamma$) == 0: typ
+%  elif typ : (BoolType, IntType)): typ
+%  elif typ : TypeVar:
+%    if typ.name in $\Gamma$: apply_unifier($\Gamma$[typ.name], $\Gamma$)
+%    else: typ
+%    elif typ : FuncType:
+%      newargtypes = [apply_unifier(arg, $\Gamma$) for arg in typ.argtypes]
+%      return FuncType(newargtypes, apply_unifier(typ.rettype, $\Gamma$))
+%    else: None    
+%\end{lstlisting}
+
+%\begin{lstlisting}%[language=python]
+%def get_expression_type(expr, $\Gamma$, rename_types=False):
+%  """Finds the type of the expression given a substitution."""
+%  typ = apply_unifier(expr, $\Gamma$)
+%  return typ     
+%\end{lstlisting}
+
+\section{Exercises}
+
+\begin{enumerate}
+    \item Use the typing rules to determine the type of the following expression.
+\begin{lstlisting}
+  let x = 5 in
+    $\lambda$ y . x + y
+\end{lstlisting}
+    \item Implement the language term types \lstinline{Var, App}, etc. to complete the pseudocode for the unification algorithm.
+    \item Implement the \lstinline{occurs} helper method.
+\end{enumerate}
+
+\end{document}

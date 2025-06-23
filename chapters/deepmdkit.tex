@@ -1,0 +1,145 @@
+\documentclass[book.tex]{subfiles}
+\begin{document}
+
+\chapter{Generating Training Data with Active Learning Methods}
+\label{chap:neural_potential}
+\noindent\rule{11cm}{0.4pt} \\
+\textbf{Prerequisites:}  \autoref{chap:molecular_hamiltonian},   \\
+\textbf{Difficulty Level:} ** \\
+\noindent\rule{11cm}{0.4pt}
+\vspace{5mm}
+
+%""""
+%In this talk, I will present several theories, methods, and engineering efforts that integrate physical models with machine learning and high-performance supercomputers. Particular attention will be paid to Deep Potential, a deep learning-based interatomic potential energy model. Next, I will present our efforts on developing related open-source software packages (DeePMD-kit, DP-GEN, RiD-kit, etc.) and high-performance computing schemes, which have now been widely used worldwide by experts and practitioners in the molecular and materials simulation community. Finally, I will walkthrough the codes with the audience.
+%"""
+
+%There exists a range of computational simulation methods for molecules from quantum calculations up to continuum mechanics. However, adjusting the tradeoff between computation time and accuracy remains challenging. In this chapter, we discuss Deep Potential  \cite{zhang2018end}, \cite{chen2020deepks}, \cite{zhang2018deepcg}, \cite{zhang2018reinforced}, \cite{jia2020pushing}, a family of deep learning based interatomic potential energy models which uses machine learning techniques to bridge these different scales
+
+One of the major challenges facing deep potential methods is constructing suitable training datasets that allow for a neural potential to achieve sufficient accuracy \cite{zhang2020dp}. 
+
+Concurrent learning methods monitor the error of the current version of an approximate force field on sampled datapoints. Those points which have high error are sent to a more expensive computational process which generates a higher quality label. This higher quality label is used to retrain the model to achieve higher accuracy. This procedure holds out the hope of automatically generating high quality force fields given sufficient access to compute.
+
+Let $\mathcal{R}$ denote the atomic positions of the system. Let $E_\theta(\mathcal{R})$ denote the current potential energy surface where $\theta$ is the current set of parameters. The generative training process constructs a sequence of models
+\begin{align}
+    E_{\theta_0} \to E_{\theta_1} \to \dotsc \to E_{\theta_n}
+\end{align}
+that progressively become more accurate as training proceeds.
+
+Exploration of the configuration space is driven by a sampler function $\varphi_t$ that updates the current set of atomic configurations to a new set through the update rule
+\begin{align}
+    \mathcal{R}_t &= \varphi_t(\mathcal{R}_0, E_{\theta})
+\end{align}
+
+\begin{lstlisting}[language=python]
+
+def generate_new_training_set($E_{\theta}$ : $\mathbb{R}^{Nd}$): $\mathbb{R}^{Nd}$:
+  R_t = $\varphi_t$(R_0, $E_{\theta}$)
+  return R_t
+\end{lstlisting}
+
+%\begin{figure}
+%    \centering
+%    \includegraphics{figures/part3/neural_potential/linfeng_modeling.png}
+%    \caption{There exist a hierarchy of modeling methods for molllecular systems}
+%    \label{fig:my_label}
+%\end{figure}
+
+
+%\begin{figure}
+%    \centering
+%    \includegraphics{figures/part3/neural_potential/linfeng_cp_lj.png}
+%    \caption{Car-Parinelllo scheme in DFT and Lennnard-Jones}
+%    \label{fig:my_label}
+%\end{figure}
+
+%\begin{figure}
+%    \centering
+%    \includegraphics{figures/part3/neural_potential/linfeng_quantities.png}
+%    \caption{Quantites between QM and MM}
+%    \label{fig:my_label}
+%\end{figure}
+
+%\begin{figure}
+%    \centering
+%    \includegraphics{figures/part3/neural_potential/linfeng_tensorial.png}
+%    \caption{Caption}
+%    \label{fig:my_label}
+%\end{figure}
+
+%\begin{figure}
+%    \centering
+%    \includegraphics{figures/part3/neural_potential/linfeng_deep_potential.png}
+%    \caption{Caption}
+%    \label{fig:my_label}
+%\end{figure}
+
+%\textcolor{red}{TODO: What is the relationship between neural potentials and DFT formally.}\\
+
+%DFT serves as a data generator that generates data for the neural potential.
+
+%\begin{figure}
+%    \centering
+%    \includegraphics{figures/part3/neural_potential/linfeng_water.png}
+%    \caption{Caption}
+%    \label{fig:my_label}
+%\end{figure}
+%\begin{figure}
+%    \centering
+%    \includegraphics{figures/part3/neural_potential/linfeng_water_phase.png}
+%    \caption{Caption}
+%    \label{fig:my_label}
+%\end{figure}
+
+%\begin{figure}
+%    \centering
+%    \includegraphics{figures/part3/neural_potential/linfeng_coarse_water.png}
+%    \caption{Caption}
+%    \label{fig:my_label}
+%\end{figure}
+
+%\begin{figure}
+%    \centering
+%    \includegraphics{figures/part3/neural_potential/linfeng_qm_to_dft.png}
+%    \caption{Caption}
+%    \label{fig:my_label}
+%\end{figure}
+
+%\textcolor{red}{TODO: Deep Post Hartree-Fock and Deep Kohn-Sham seem really interesting}
+
+%\begin{figure}
+%    \centering
+%    \includegraphics{figures/part3/neural_potential/linfeng_nn_schrodinger.png}
+%    \caption{Caption}
+%    \label{fig:my_label}
+%\end{figure}
+
+
+%\begin{figure}
+%    \centering
+%    \includegraphics{figures/part3/neural_potential/linfeng_eelt.png}
+%    \caption{Caption}
+%    \label{fig:my_label}
+%\end{figure}
+
+%\begin{figure}
+%    \centering
+%    \includegraphics{figures/part3/neural_potential/linfeng_dpgen.png}
+%    \caption{Caption}
+%    \label{fig:my_label}
+%\end{figure}
+
+%\begin{figure}
+%    \centering
+%    \includegraphics{figures/part3/neural_potential/linfeng_reinforced.png}
+%    \caption{Caption}
+%    \label{fig:my_label}
+%\end{figure}
+
+%\begin{figure}
+%    \centering
+%    \includegraphics{figures/part3/neural_potential/linfeng_open_source.png}
+%    \caption{Caption}
+%    \label{fig:my_label}
+%\end{figure}
+
+\end{document}

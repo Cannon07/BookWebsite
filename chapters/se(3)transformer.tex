@@ -1,0 +1,100 @@
+\documentclass[book.tex]{subfiles}
+\begin{document}
+
+\chapter{SE(3) Transformer}
+\label{chap:se3_transformer}
+\noindent\rule{11cm}{0.4pt} \\
+\textbf{Prerequisites:}  \autoref{chap:transformer},   \\
+\textbf{Difficulty Level:} ** \\
+\noindent\rule{11cm}{0.4pt}
+\vspace{5mm}
+
+
+%"""
+%We introduce the SE(3)-Transformer, a variant of the self-attention module for 3D point clouds and graphs, which is equivariant under continuous 3D rototranslations. Equivariance is important to ensure stable and predictable performance in the presence of nuisance transformations of the data input. A positive corollary of equivariance is increased weight-tying within the model. The SE(3)Transformer leverages the benefits of self-attention to operate on large point clouds and graphs with varying number of points, while guaranteeing SE(3)-equivariance for robustness. We evaluate our model on a toy N-body particle simulation dataset, showcasing the robustness of the predictions under rotations of the input. We further achieve competitive performance on two real-world datasets, ScanObjectNN and QM9. In all cases, our model outperforms a strong, non-equivariant attention baseline and an equivariant model without attention.
+%"""
+
+%"""
+%Machine learning has enabled the prediction of quantum chemical properties with high accuracy and efficiency, allowing to bypass computationally costly ab initio calculations. Instead of training on a fixed set of properties, more recent approaches attempt to learn the electronic wavefunction (or density) as a central quantity of atomistic systems, from which all other observables can be derived. This is complicated by the fact that wavefunctions transform non-trivially under molecular rotations, which makes them a challenging prediction target. To solve this issue, we introduce general SE(3)-equivariant operations and building blocks for constructing deep learning architectures for geometric point cloud data and apply them to reconstruct wavefunctions of atomistic systems with unprecedented accuracy. Our model achieves speedups of over three orders of magnitude compared to ab initio methods and reduces prediction errors by up to two orders of magnitude compared to the previous state-of-the-art. This accuracy makes it possible to derive properties such as energies and forces directly from the wavefunction in an end-to-end manner. We demonstrate the potential of our approach in a transfer learning application, where a model trained on low accuracy reference wavefunctions implicitly learns to correct for electronic many-body interactions from observables computed at a higher level of theory. Such machine-learned wavefunction surrogates pave the way towards novel semi-empirical methods, offering resolution at an electronic level while drastically decreasing computational cost. Additionally, the predicted wavefunctions can serve as initial guess in conventional ab initio methods, decreasing the number of iterations required to arrive at a converged solution, thus leading to significant speedups without any loss of accuracy or robustness. While we focus on physics applications in this contribution, the proposed equivariant framework for deep learning on point clouds is promising also beyond, say, in computer vision or graphics."""
+
+
+
+The $SE(3)$-Transformer \cite{fuchs2020se}, \cite{unke2021se} is a version of the transformer which introduces a self-attention mechanism which is equivariant to $SE(3)$. This mechanism allows for modeling of larger atomic point clouds in a fashion equivariant to rotations and translations. Each layer of the SE(3)-transformer converts a point cloud to a point cloud. 
+
+\begin{figure}
+    \centering
+    \includegraphics{figures/Differentiable Physics/Molecular ML/SE3 Transformer/point_cloud.png}
+    \caption{\url{https://arxiv.org/pdf/2006.10503.pdf}}
+    \label{fig:my_label}
+\end{figure}
+
+\section{$SO(3)$ Representations}
+
+To design the $SE(3)$ transformer, we use a few useful facts about representations of $SO(3)$. In particular, all representations $\rho$ of $SO(3)$ can be written in the form
+
+\begin{align}
+\rho(g) &= Q^T \left [ \bigoplus_\ell D_\ell(g) \right ]Q
+\end{align}
+Here $D_\ell$ is the Wigner-D matrix of order $\ell$ and $Q$ is an orthogonal change of basis matrix. The Wigner-D matrices provide irreducible representations of $SO(3)$ and all other representations can be decomposed in terms of these representations.
+
+\section{Mathematical Framework}
+
+As with the tensor field network, we specify that the input is given by a point cloud
+\begin{align}
+f(x) &= \sum_{j=1}^N f_j \delta(x - x_j)
+\end{align}
+Here $f_j$ are local point features. Each such vector is decomposed into subvectors of different types
+\begin{align}
+f_j &= \oplus_\ell f^\ell_j
+\end{align}
+The type here corresponds to the order of the Wigner-D matrices we saw earlier. Local point features may include local atomic features computed by a heuristic molecular featurization algorithm.
+
+We write a tensor field network layer as $\textrm{TFN}$. The output of a point cloud after passing through a tensor field network layer can be written as
+\begin{align}
+\textrm{TFN}(f)^\ell &= \sum_{k\geq 0} \sum_{j=1}^n W^{\ell k}(x_j - x_i) f^k_{j}
+\end{align}
+Here, we have written the output portion of order $\ell$. The weight kernel $W^{\ell k}$ is of type
+\begin{align}
+W^{\ell k}: \mathbb{R}^3 \mapsto \mathbb{R}^{(2\ell + 1) (2 k + 1)}
+\end{align}
+and maps the vector $x_j - x_i \in \mathbb{R}^3$ to transformation matrix. Note that this equation fits into the broader messsage passing framework we learned about earlier. To make this update more closely match the transformer update equations, we can split out the self-interaction term and rewrite the update rule as
+\begin{align}
+f^\ell_i &= w^{\ell \ell} f^\ell_i + \sum_{k \geq 0} \sum_{i \neq j} W^{\ell k}(x_j - x_i) f^k_j
+\end{align}
+Note that the tensor field network message updates by construction are $SE(3)$ equivariant.
+
+\section{$SE(3)$ Transformer Design}
+
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.8\textwidth]{figures/Differentiable Physics/Molecular ML/SE3 Transformer/message_passing.png}
+    \caption{\url{https://arxiv.org/pdf/2006.10503.pdf}}
+    \label{fig:my_label}
+\end{figure}
+
+The $SE(3)$ transformer modifies the tensor field network by adding on attention weights, $\alpha_{ij}$ on the update rule. These weights have to be constructed to be $SE(3)$ invariant. We also specify that messages are only passed in local neighborhoods (atoms that are within some distance cutoff of other atoms for example) instead of global updates. Mathematically, the $SE(3)$ transformer update rule is given by the equation
+\begin{align}
+\mathrm{SE3Transformer}(f_i)^\ell &= W^{\ell \ell} + \sum_{k \geq 0} \sum_{j \in \mathcal{N}_i \setminus i} \alpha_{ij} W^{\ell k}(x_j - x_i) f^k_j
+\end{align}
+Note that the main difference between the $SE(3)$ transformer and the tensor field network is the addition of self-attention weights.
+
+We need to make the weights equivariant to $SE(3)$. We do so by the following update rule
+\begin{align}
+\alpha_{ij} &= \frac{\exp(q^T_i k_{ij})}{\sum_{j' \in \mathcal{N}_i \setminus i} \exp (q_i^T k_{ij'})}
+\end{align}
+where the queries $q_i$ and keys $k_{ii}$ are given by
+\begin{align}
+q_i &= \bigoplus_{\ell \geq 0} \sum_{k \geq 0} W^{\ell k}_Q(x_j - x_i) f^k_i \\
+k_{ij} &= \bigoplus_{\ell \geq 0} \sum_{k \geq 0} W^{\ell k}_K (x_j - x_i) f^k_j
+\end{align}
+Here we use the different subscripts $W^{\ell k}_K, W^{\ell k}_Q$ to emphasize that these are different learned matrices or tensor field network filters. It can be proven that this update rule constructs a $SE(3)$ equivariant attention since we inherit the $SE(3)$ equivariance of the tensor field networks.
+
+The $SE(3)$ transformer uses one additional technical trick. It replaces the scalar self attention $w^{\ell \ell}$ with a learned update
+\begin{align}
+w^{\ell \ell}_{c' c} &= MLP\left ( \bigoplus_{c c'}(f^\ell_{i c'})^T f^\ell_{i, c} \right )
+\end{align}
+Here $c, c'$ are channels (the update equations above have to be extended to allow for learning multiple channels in the natural fashion). This update rule constructs a learnable self-attention that blends feature information across multiple channels.
+
+
+\end{document}

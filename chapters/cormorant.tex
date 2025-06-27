@@ -1,0 +1,233 @@
+\documentclass[book.tex]{subfiles}
+\begin{document}
+
+\chapter{Covariant Molecular Networks}
+
+%\url{https://scholar.google.com/citations?user=iF01q24AAAAJ&hl=en&oi=sra}
+\label{chap:cormorant}
+\noindent\rule{11cm}{0.4pt} \\
+\textbf{Prerequisites:} \autoref{chap:graphconvs}, \autoref{chap:equivariant_networks}, \autoref{chap:molecular_dynamics},  \autoref{chap:dft} \\
+\textbf{Difficulty Level:} ** \\
+\noindent\rule{11cm}{0.4pt}
+\vspace{5mm}
+
+Cormorant\cite{anderson2019cormorant} (COvaRiant MOleculaR Artificial Neural neTworks) is a rotationally covariant (here covariant is a synonym for equivariant) neural network architecture for learning the behavior and properties of complex many-body physical systems. These networks are typically applied to molecular systems with the goal of learning ground-state properties of molecules calculated by DFT. Another typical goal is learning atomic potential energy surfaces for use in molecular dynamics simulations. 
+
+Two key features of the cormorant architecture are that each neuron explicitly corresponds to a subset of atoms, as with other molecular graph convolutions, and that the activation of each neuron is equivariant to rotations, ensuring that overall the network is fully rotationally invariant. The non-linearity in the network is based upon tensor products and the Clebsch-Gordan decomposition, allowing the network to operate entirely in Fourier space. Cormorant is related conceptually to the spherical convolutions we saw in an earlier chapter, with the key difference that Cormorant must scale to the higher dimensional systems required for molecular applications.
+
+\section{Machine Learned Potentials}
+
+Machine learned potentials map the coordinates of a material to a learned feature space that describes the local environment of each atom in the material. This featurization can then be fed to a neural network that can be trained on \textit{ab initio} energy and force data for the material. The  goal is to achieve computational evaluation costs similar to classical molecular dynamics, with accuracy approaching that of the underlying quantum mechanical \textit{ab initio} data on which the machine learning potential was trained. 
+
+When training these models, the underlying symmetries of the physics and of the material must be preserved, including permutation of atom labels, rotation, and translation of the entire material. The first step in realizing a machine learning architecture that obeys these symmetries is to develop featurizations of the material that are invariant to these symmetries and transformations. 
+
+%Previous architectures utilizing symmetry invariant descriptors are have shown to be too restrictive and may lose information and mischaracterize two truly distinct atomic environments as similar. Additionally, the selection of hyperparamters within these symmetry preserving features remain challenging to perform in a rigourous, deductive manor. 
+ 
+In particular, we seek an algorithm that can learn the featurization of materials by having an architecture that can describe bonds, bond angles, and long range interactions all while preserving the known symmetries of the material and of physics. Toward this goal, we seek to design a class of symmetric equivariant (covariant) neural network \cite{anderson2019cormorant}. 
+
+Suppose $f(x)$ is a function that maps the an input vector $x$ of coordinates and chemical identities of the atoms in a material to feature space, and $T_g$ is some transformation of the material, such as a translation or rotation that will yield the same energy of the material, then the featurization is covariant (equivariant) if 
+\begin{align}
+f(T_g  x) = T_g  f(x)
+\end{align}
+
+Convolutional Neural Networks (CNNs) for the use of image recognition demonstrate this concept. Within CNN models, an input image is represented as an array with red, green, and blue (RGB) channels in each pixel. Learned convolutions convolve a collection of pixels in order to pick out patterns in the image and learn the "pixel environment" of an image. The convolutions are translationally equivariant (ignoring boundary effects). 
+
+Unfortunately, CNNs are not equivariant to rotations. To extend this concept, Spherical CNNs transform inputs to a generalized Fourier Space in which the features and transformation are decomposed in terms of the irreducible representation of the group of transformations to which the architecture is covariant  \cite{kondor2018clebsch}. Spherical CNNs however face scalability challenges which prevent them from being applied to high dimensional molecular systems.
+
+%Additionally, the permutation invariance of the atom labelings has been well studied in the context of learning material properties in mesage passing graph networks. 
+
+\section{Spherical Tensors and Physical Motivation}
+
+The Cormorant architectural design is motivated by the the multipole expansion from electrostatics. Let's consider the multipole moments. The simplest interaction in a molecular system is given by the Coulomb interaction.
+
+\begin{align}
+    V_C &= -\frac{1}{4 \pi \epsilon_0} \frac{q_A q_B}{|r_{AB}|}
+\end{align}
+
+Here $q_A$, $q_B$ are charges associated with point particles $A$ and $B$ located at positions $r_A$ and $r_B$. The vector $r_{AB}$ is defined as the distance between these two points
+\begin{align}
+    r_{AB} &= r_A - r_B
+\end{align}
+
+We can next consider the first moment of a collection of point charges 
+
+\begin{align}
+\mu &= \sum_{i=1}^N q_i(r_i - r)
+\end{align}
+
+The dipole-dipole interaction is given by
+
+\begin{align}
+V_{d/d} &= \frac{1}{4 \pi \epsilon_0} \left [ \frac{\mu_A \cdot \mu_B}{|r_{AB}|^3} - 3 \frac{(\mu_A \cdot r_{AB}) (\mu_B \cdot r_{AB})}{ |r_{AB}|^5} \right ]
+\end{align}
+where $\mu_A$, $\mu_B$ are the first moments of collections of charges $A$ and $B$ (note that that $A$ and $B$ are no longer single point charges). $r_{AB}$ is the vector between Center of masses of the two point charge clouds. Dipole interactions are useful for describing molecular interactions since polar bonds form natural dipoles.
+
+The quadrupole moment is given by 
+\begin{align}
+    \Theta &= \sum_{i=1}^N q_i (3r_i r_i^T - |r_i|^2 I)
+\end{align}
+Quadrupoles are useful for describing molecular interactions such as $\pi$-stacking, where two benzene rings interact and stack. 
+
+\subsection{Representation Theory}
+
+These physical moments transform under rotation $R$ according to the following rules
+
+\begin{align}
+    q &\mapsto q \\
+    \mu &\mapsto R \mu \\
+    \Theta &\mapsto R \Theta R^T \\
+    r_{AB} &\mapsto R r_{AB}
+\end{align}
+
+The quadrupole transformation takes a different form than the other transformations. To align the representation, we can flatten the quadrupole moment into
+
+\begin{align}
+    \overline{\Theta} \in \mathbb{R}^9
+\end{align}
+The transformation rule for quadrupole moments can then be written as
+\begin{align}
+    \overline{\Theta} \mapsto (R \otimes R)\overline{\Theta}
+\end{align}
+A higher order moment tensor can be flattened as
+\begin{align}
+    T^{(k)} \in \mathbb{R}^{3 \times \dotsc \times 3} \mapsto \overline{T}^{(k)} \in \mathbb{R}^{3k}
+\end{align}
+The transformation of a higher order moment tensor can be written as
+\begin{align}
+    \overline{T}^{(k)} \mapsto (R\otimes \dotsc \otimes R) \overline{T}^{(k)}
+\end{align}
+
+We can write this tensored matrix as a unitary transformation of a sum of irreducible representations
+\begin{align}
+    R \otimes \dotsc \otimes R  &=  C^{(k)}\left [ \bigoplus_\ell \bigoplus_{i=1}^{\tau_\ell} D^{\ell}(R) \right ] C^{(k)^\dagger}
+\end{align}
+
+We define the spherical moment of the charge as
+
+\begin{align}
+    [Q_\ell]_m &= \sqrt{\frac{4\pi}{2 \ell + 1} } \sum_{i=1}^N q_i (r_i)^\ell Y^m_\ell(\theta_i, \phi_i)
+\end{align}
+
+\subsection{Defining Spherical Tensors}
+
+Any quantity that transforms under rotations as
+
+\begin{align}
+    U \mapsto D^{\ell}(R) U 
+\end{align}
+
+in physics is called a $\ell$-th order spherical tensor. 
+
+\subsection{Expressivity of Iterated Clebsch-Gordon Products}
+
+As motivation for the design of the Cormorant architecture, we note the fact from electrostatics that the electrostatic potential between two sets of charges $A$ and $B$ can be expressed as
+\begin{align}
+V_{AB} &= \frac{1}{4 \pi \epsilon_0} \sum_{\ell = 0}^\infty \sum_{\ell' = 0}^\infty \sqrt{\binom{2 \ell + 2 \ell'}{\ell}} \sqrt{\frac{4 \pi}{2 \ell + 2 \ell' + 1}} r^{-(\ell + \ell' + 1)} Y_{\ell + \ell'}(\theta, \phi) C_{\ell_1, \ell_2, \ell + \ell'} (Q^A_\ell \otimes Q^B_{\ell'})
+\end{align}
+where $(r, \theta, \phi)$ is a vector between the two sets of charges. 
+
+
+\section{Cormorant Architecture}
+
+We seek to design an architecture that unifies translation, rotation, and permutation invariance while requiring minimal hand picking of features. To start, we can use the spherical tensor objects of Clebsh-Gordon nets. These tensor object can be connected and manipulated by conventional CNN and message passing graph neural networks with two distinct activation types. The first are vertex activations, 
+\begin{align}
+F_{i}
+\end{align} 
+that resemble conventional convolutional neural networks where each vertex in the CNN first represents a single atom. As we move higher in the architecture, the vertex represents a collection of atom in a neighborhood, until the last level a single vertex represents all atoms in the material. The second kind of activation is an edge type, 
+\begin{align}
+G_{ij}
+\end{align}
+which represents a weighted graph connecting all vertices of the CNN. The weights of this graph and therefore the value of $G_{ij}$, depends on on the values of the vertex activations. With the inclusion of rotation invariance, the network can encode the relative positions of atoms and angles of interactions as well as distances and chemical identities. Rotational invariance is maintained by expanding  activations to spherical tensors as 
+
+\begin{align}
+F_{i}=\left(F_{i}^{0},\ldots,F_{i}^{\ell_{{\rm max}}}\right)
+\end{align}
+and 
+\begin{align}
+G_{ij}=\left(G_{ij}^{0},\ldots,G_{ij}^{\ell_{{\rm max}}}\right)
+\end{align}
+where $F_{i}^{\ell}\in\mathbb{C}^{\left(2\ell+1\right)\times n_{\ell}}$ is a spherical tensor of order $\ell$, and $n_{\ell}$ is the multiplicity (number of channels) of the tensor. 
+
+As with Clebsh Gordon nets, covariance is maintained with a carefully chosen non-linearity. that is dictated by the structure and algebraic concepts of the ration group and thus the Clebsch-Gordan product (CG product), $\otimes_{{\rm cg}}$, of two tensors is chosen and defined as 
+
+\begin{align}
+\left[A_{\ell_{1}}\otimes_{{\rm cg}}B_{\ell_{2}}\right]_{\ell} &=\bigoplus_{\ell=\left|\ell_{1}-\ell_{2}\right|}^{\ell_{1}+\ell_{2}}C_{\ell_{1}\ell_{2}\ell}\left(A_{\ell_{1}}\otimes B_{\ell_{2}}\right)
+\end{align}
+where $\otimes$ denotes a Kronecker product, and $C_{\ell_{1}\ell_{2}\ell}$ are the Clebsch-Gordan coefficients. The activations $F_{i}^{s}$ at level $s$ are chosen to be
+
+\begin{align}
+F_{i}^{s}=\Big[F_{i}^{s-1}\oplus\big(F_{i}^{s-1}\otimes_{{\rm cg}}F_{i}^{s-1}\big)\oplus\Big(\sum_{j}G_{ij}^{s}\otimes_{{\rm cg}}F_{j}^{s-1}\Big)\Big]\cdot W_{s,\ell}^{\text{vertex}}
+\end{align}
+where $\oplus$ denotes concatenation and $W_{s,\ell}^{\text{vertex}}$
+is a linear mixing layer that acts on the multiplicity index. 
+
+The edge activations are chosen to have the form of 
+\begin{align}
+G_{i,j}^{s,\ell} &=g_{ij}^{s,\ell}\times Y^{\ell}\left(\hat{\mathbf{r}}_{ij}\right)
+\end{align}
+
+where $\mathbf{r}_{ij}$ is the relative position vector pointing from atom $i$ to atom $j$. The scalar-valued edge terms are then given by
+
+\begin{align}
+g_{ij}^{s,\ell} &= \mu^{s}\left(r_{ij}\right)\left[\left(g_{ij}^{s-1,\ell}\oplus\left(F_{i}^{s-1}\cdot F_{j}^{s-1}\right)\oplus\eta^{s,\ell}\left(r_{ij}\right)\right)\cdot W_{s,\ell}^{\text{edge}}\right]
+\end{align}
+with $\mu^{s}\left(r_{ij}\right)$ a learnable mask function, 
+\begin{align}
+\eta^{s,\ell}\left(r_{ij}\right)
+\end{align}
+a learnable set of radial basis functions, and $W_{s,\ell}^{\text{edge}}$ a linear layer along the multiplicity index.
+
+The architecture is iterated for $s=0,\ldots,s_{{\rm max}}$. Finally, at the last layer of Cormorant, the $\ell=0$ component of the output, which represents a rotationally invariant quantity is used to predict the energy of the material. The force on an atom is also predicted as the negative of the analytical gradient of the predicted energy with respect to the position of that atom. 
+
+\section{Implementing the Algorithm}
+
+Let's put the pieces together and construct a Physika implementation for the Cormorant algorithm. We start by defining the feature space
+
+\begin{lstlisting}[language=python]
+$\overline{V}$ : $\mathbb{R}^d$
+\end{lstlisting}
+where $d$ is the dimensionality of the atomic feature vector. We can then define the input transformation that transforms each atom into its atomic feature representation.
+\begin{lstlisting}[language=python]
+def Input([($Z_i$, $r_i$)]: $\mathbb{Z}^N \times \mathbb{R}^{N \times 3}$) $\to$ ($\overline{V}$)$^N$:
+  return [featurize($Z_i$, $r_i$)]
+\end{lstlisting}
+Here $Z_i$ is the atom type and $r_i$ is the location of the atom in $\mathbb{R}^3$.
+
+\begin{lstlisting}[language=python]
+def CGNet([$F_i$]: ($\overline{V}$)$^N$, [$r_i$]: $\mathbb{R}^{N \times 3}$) $\to$ $\bigoplus_{s=0}^S (V^s)^N$:
+\end{lstlisting}
+
+
+Here $V^s$ represents the features space after the $s$-th layer. The final output of \lstinline{CGNet} is formed by concatenating the feature representations at every intermediate layer. The \lstinline{CGNet} is formed out of $S$ iterations of the \lstinline{CGLayer}.
+
+\begin{lstlisting}[language=python]
+def CGLayer($g^s_{ij}$: $(V^s_{\textrm{edge}})^N$, $F^s_i$: $(V^s)^N$, $r_i$: $\mathbb{R}^{N \times N \times 3}$) $\to$ $(V^{s+1}_{\textrm{edge}})^{N \times N} \times (V^{s+1})^N$  
+\end{lstlisting}
+The \lstinline{CGLayer} is built out of three simpler primitives: \lstinline{EdgeNetwork}, \lstinline{EdgeToVertex}, and \lstinline{VertexNetwork}. The edge network is a small modification of the MPNN architecture we saw in a previous chapter
+
+\begin{lstlisting}[language=python]
+def EdgeNetwork($g^s_{ij}$, $r_{ij}$, $F^s_i$)
+\end{lstlisting}
+
+\begin{lstlisting}[language=python]
+def EdgeToVertex($g^{s+1}_{ij}$, $Y^\ell(\hat{r}_{ij})$)
+\end{lstlisting}
+
+\begin{lstlisting}[language=python]
+def VertexNetwork($F^{s+1}_{ij}$, $F^s_i$)
+\end{lstlisting}
+
+The output transformation combines the learned feature representations from all the layers into a scalar prediction
+\begin{lstlisting}[language=python]
+def Output($\mathlarger{\oplus}_{s=0}^S (V^s)^N$) $\to$ $\mathbb{R}$
+\end{lstlisting}
+
+
+The final Cormorant architecture is simple to write given this setup: perform the input transformation, apply \lstinline{CGNet}, and then perform the output transformation.
+
+\begin{lstlisting}[language=python]
+def Cormorant([($Z_i$, $r_i$)]: $\mathbb{Z}^N \times \mathbb{R}^{N \times 3}$) $\to$ $\mathbb{R}$:
+  return Output(CGNet(Input([($Z_i$, $r_i$)])))
+\end{lstlisting}
+
+\end{document}

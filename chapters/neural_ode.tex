@@ -1,0 +1,264 @@
+\documentclass[book.tex]{subfiles}
+\begin{document}
+% Let's break down this chapter into 2-3 independent ones
+\chapter{Neural Ordinary Differential Equations}
+\label{chap:neural_ode}
+\noindent\rule{11cm}{0.4pt} \\
+\textbf{Prerequisites:} 
+\autoref{chap:ode}, \autoref{chap:systems_ode}, \autoref{chap:ml_basics}  \\
+\textbf{Difficulty Level:} ** \\
+\noindent\rule{11cm}{0.4pt}
+\vspace{5mm}
+
+Deep learning techniques provide a powerful new method of understanding dynamical systems. This chapter describes how residual networks can be interpreted as a discretization of a dynamic system. This formulation suggests that a differential equation can be interpreted as a neural network of "continuous depth." We introduce the foundations of neural ordinary differential equations \cite{chen2018neural} which explore these ideas in more depth. Neural ODEs provide powerful tools for both standard classification and regression problems in addition to domains such as time series modeling or density estimation.
+
+\section{Residual Networks}
+
+Residual networks are described by the following update rule \cite{weinan2017proposal}:
+\begin{align}
+y_l &= h(x_l)+f(x_l,W_l) \\
+x_{l+1} &= g(y_l)
+\end{align}
+
+where $x_l$ and $x_{l+1}$ are the input and output of the l-th layer, $y_l$ is an auxiliary variable for the l-th layer, $h$ and $g$ are some mappings which could possibly be nonlinear.  An important result through numerical experiments \cite{he2016identity} is that for deep networks, training is easiest if both $g$ and $h$ are the identity function. 
+
+Let $G$ be the inverse map of $g$, and then we can then write the above dynamical system as
+\begin{align}
+x_{l+1} = G(h(x_l)+f(x_l,W_l))
+\end{align}
+
+Assuming $f$ is a small perturbation, we can expand this as
+
+\begin{align}
+x_{l+1} = G(h(x_l))+\nabla G f(x_l,W_l))
+\end{align}
+
+The stability of this system is governed by the $G(h)$.  It turns out that flexibility in choosing $g$ and $h$ does not provide much improvement.  Let us assume that both $g$ and $h$ are identify functions, we get
+
+\begin{align}
+x_{l+1} = x_l+ f(x_l,W_l)
+\end{align}
+
+This can be viewed as the Euler discretization of the dynamical system:
+
+\begin{align}
+\frac{dx}{dt} = f(x,W(t)).
+\end{align}
+
+In this analogy, the Euler discretization would be:
+
+\begin{align}
+x_{l+1} = x_l+ \Delta t_l f(x_l,W_l)).
+\end{align}
+
+where $\Delta t_l$ is the step size at the $l$-th time step.
+
+An important property, known from numerical methods for ordinary differential equations is that the efficiency and stability of the algorithm can be improved by adaptively choosing the time step.  Take large steps when $f$ is small and small steps when $f$ is large.  This could now be viewed as a continous depth neural network.
+
+\section{Continous Depth Neural Networks}
+
+Now, extending this, we can construct other kind of continous depth neural networks using more complex ODE solvers.  The simplest next version is the second order Runge-Kutta method, given by \cite{wang1998runge}
+
+\begin{align}
+x_{l+1} = x_l+ \Delta t_l  \left(\frac{f(x_l,W_l)+f(x_l+\Delta t_l f(x_l,W_l)),W_{l+\Delta t_l})}{2}\right)
+\end{align}
+
+% Add chapter on NODE?
+%In the next lecture, we will generalize the idea to derive neural ordinary differential equations that allows us to exploit the full suite of ODE solvers.
+
+We will continue to build on the connection between ordinary differential equations and neural networks. %The discussion here follows the presentation of Chen et al.\citep{chen2018neural} 
+
+Starting from the initial value, $h(0)$, we evaluate the solution to some time $t=T$, $h(T)$.  This problem can be solved with any traditional ordinary differential equation solver.  This evaluates the hidden state dynamics, $f$ wherever necessary to get sufficient accuracy.  These models have several advantages:
+
+%\begin{marginfigure}
+%\includegraphics[width=0.45\textwidth, clip, trim=4mm 4mm 4mm 4mm]{resnet_0_viz.pdf} 
+%\includegraphics[width=0.45\textwidth, clip, trim=4mm 4mm 4mm 4mm]{odenet_0_viz.pdf}
+%\caption{Comparision of Residual Network vs ODE Networks.  From Chen et al.\citep{chen2018neural}}
+%\end{marginfigure}
+
+\begin{itemize}
+    \item \textbf{Memory Efficiency:} Gradients can be taken without having to backpropagate through the operations of the solver.  As a result, there is no need to store all the intermediate quantities in the forward pass.
+    \item \textbf{Principled trade-off between accuracy and number of evaluations:} The state-of-the-art in ODE solvers can be directly used to develop a principled approach to trade-off accuracy and number of evaluations.  
+    \item \textbf{Continuous dynamics:} Given the formulation, due to continuously-defined dynamics, we can naturally incorporate data arriving at arbitrary times, unlike recurrent neural networks.
+\end{itemize}
+
+\section{Back-propagating through the ODE}
+
+If we treat an ODE solver as a black box, then we can compute gradients using the adjoint sensitivity method. This approach computes gradients by solving a second, augmented ODE backwards in time, and is applicable to all ODE solvers. 
+
+Let us consider optimizing a scalar-valued loss function $\mathcal{L}$, whose input is the result of an ODE solver, i.e.
+
+\begin{align}
+\mathcal{L}(h(t_1)) &= \mathcal{L}\left(h(t_0) + \int^{t_1}_{t_0} f(h(t),t,\theta)dt\right) \\
+&= \mathcal{L}(\textrm{ODESolve}(h(t_0),f,[t_0,t_1],\theta)
+\end{align}
+
+To optimize the loss function, $\mathcal{L}$, we need to take gradients with respect to $\theta$.  The first step is to take gradients with respect to the dynamics of the hidden state, $h(t)$.  This quantity is known as the adjoint, 
+\begin{align}
+a(t) = \frac{\partial \mathcal{L}}{\partial h(t)}
+\end{align}  
+The dynamics of the adjoint is given by the following ODE:
+
+\begin{align}
+    \frac{da(t)}{dt} = - a(t)^T \frac{\partial f(h(t),\theta,t)}{\partial h} 
+\end{align}
+
+%\begin{marginfigure}
+%	\includegraphics[width=\textwidth]{AdjointFig_w_L.pdf}
+%	\caption{Reverse-mode differentiation of an ODE solution. The adjoint sensitivity method solves an augmented ODE backwards in time. From Chen et. al.\citep{chen2018neural}}
+%	\label{fig:AdjointFig}
+%\end{marginfigure}
+
+We can compute $\frac{\partial \mathcal{L}}{\partial h(t_0)}$ by calling the
+ODE solver. This solver must run backwards,
+starting from the initial value of $\frac{\partial \mathcal{L}}{\partial h(t_1)}$.  Solving the ODE requires knowing the value of $h(t)$ along its entire trajectory.  This can be recomputed by solving $h(t)$ backwards in time together with the adjoint, starting from its final value $h(t_1)$.
+
+Computing the gradients with respect to the parameters $\theta$ requires evaluating a third integral, which depends on both $h(t)$ and $a(t)$:
+
+\begin{align}
+    \frac{d\mathcal{L}}{d\theta} = - \int_{t_1}^{t_0} a(t)^T \frac{\partial f(h(t),\theta,t)}{\partial \theta} 
+\end{align}
+
+It turns out that the vector-Jacobian products 
+\begin{align}
+a(t)^T \frac{\partial f(h(t),\theta,t)}{\partial h}, \qquad a(t)^T \frac{\partial f(h(t),\theta,t)}{\partial \theta}
+\end{align}
+can be efficiently evaluated by automatic differentiation, at a time cost similar to that of evaluating $f$.  All integrals for solving $h, a(t)$ and $\frac{\partial \mathcal{L}}{\partial \theta}$ can be computed in a single call to an ODE solver, which concatenates the original state, the adjoint, and the other partial derivatives into a single vector. The algorithm below shows how to construct the necessary dynamics, and call an ODE solver to compute all gradients at once.
+%# dynamics parameters $\theta$
+%# start time $t_0$
+%# stop time $t_1$
+%# final state $h(t_1)$
+%# loss gradient $\frac{\partial L}{\partial h(t_1)}$
+\begin{lstlisting}
+def reverse_derivative_ode($\theta$: $\mathbb{R}$, $(t_0, t_1): \mathbb{R}^2$, h(t$_1$), $\mathcal{L}$(h(t$_1$))):
+  # Define initial augmented state
+  $s_0 = [h(t_1), \frac{\partial L}{\partial h(t_1)}, {0}_{|\theta|}]$ 
+  # Define dynamics on augmented state
+  def aug_dynamics($[h(t), a(t), \cdot], t, \theta$):
+    # Compute vector-Jacobian products
+    return $[f(h(t), t, \theta), -a(t)^T   \frac{\partial f}{\partial h}, -a(t)^T \frac{\partial f}{\partial \theta}]$ 
+  #Solve reverse-time ODE
+  [h($t_0$), $\frac{\partial L}{\partial h(t_0)}$, $\frac{\partial L}{\partial \theta}$] = ODESolve($s_0$, aug_dynamics, $t_1$, $t_0$, $\theta$)
+
+\end{lstlisting}
+%\end{algorithm}
+
+Most ODE solvers have the option to output the state $h(t)$ at multiple times. When the loss depends on these intermediate states, the reverse-mode derivative must be broken into a sequence of separate solves, one between each consecutive pair of output times. %(Figure~\ref{fig:AdjointFig}).
+At each observation, the adjoint must be adjusted in the direction of the corresponding partial derivative $\frac{\partial \mathcal{L}}{\partial h(t_i)}$.
+
+
+\section{Neural Ordinary Differential Equations} 
+We can use ODEs to map input data $x \in \mathbb{R}^d$ to a set of features or representations $\phi(x) \in \mathbb{R}^d$. Typically, we are often interested in learning functions from many inputs, $\mathbb{R}^d$, to one or few outputs, $\mathbb{R}$, e.g. for regression or classification. We define the NODE $g : \mathbb{R}^d \to \mathbb{R}$ as 
+\begin{align}
+g(x) = L(\phi(x))
+\end{align} 
+where $L : \mathbb{R}^d \to \mathbb{R}$ is a linear map and $\phi: \mathbb{R}^d \to \mathbb{R}^d$ is the mapping from data to features. As shown in Fig. \ref{neural-ode-sketch}, this is a simple model architecture: an ODE layer, followed by a linear layer.
+
+\begin{figure}
+    % \includegraphics[width=\textwidth]{figures/Differentiable Models/neural_ode/neural_ode_sketch.png}
+    \includegraphics[width=\textwidth]{figures/Differentiable Models/neural_ode/Neural ODE Artchitecture.png}
+  \caption{Diagram of Neural ODE architecture.}
+  \label{neural-ode-sketch}
+\end{figure}
+
+\subsection{Error Control in ODE-Nets}
+ODE solvers can approximately ensure that the output is within a given tolerance of the true solution.
+Changing this tolerance changes the behavior of the network.
+%It was shown by Chen et al. that error can indeed be controlled in Figure \ref{fig:odenet-plots}. 
+Tuning the tolerance gives us a trade-off between accuracy and computational cost.  One could train with high accuracy, but switch to a lower accuracy at test time.
+
+%\begin{figure}
+%    \includegraphics[width=0.48\textwidth, trim=10px 10px 0 0, clip]{1_nfe_vs_err.png}
+%    \includegraphics[width=0.48\textwidth, trim=7px 10px 0 0, clip]{3_nfe_vs_bwnfe.png}
+%
+%	\caption{Accuracy vs number of function evaluations trade-off and forward vs backward efficiency.  From Chen et al.\citep{chen2018neural}}
+%	\label{fig:odenet-plots}
+%\end{figure}
+
+%\begin{table}
+%	\label{tab:odenet}
+%		\begin{tabular}{lcccc}
+%			\toprule
+%			\multicolumn{1}{l}{} & Test Error & \# Params \\ 
+%			\midrule
+%			\multicolumn{1}{l}{ResNet} & 0.41\% & 0.60 M \\
+%			\multicolumn{1}{l}{RK-Net} & 0.47\% & 0.22 M \\
+%			\multicolumn{1}{l}{ODE-Net} & 0.42\% & 0.22 M \\
+%			\bottomrule
+%		\end{tabular}
+%			\caption{Performance on MNIST. From Chen et al.}
+%\end{table}
+
+\section{Applying Neural ODEs to Time Series}
+Applying neural networks to irregularly-sampled experimental data is difficult. Neural ODEs can be used to create a continuous-time, generative approach to modeling time series. The model represents each time series by a latent trajectory. Each trajectory is determined from a local initial state, $h_{t_0}$, and a global set of latent dynamics shared across all time series.
+Given observation times $t_0, t_1, \dots, t_N$ and an initial state $h_{t_0}$, an ODE solver produces $h_{t_1},  \dots,h_{t_N}$, which describe the latent state at each observation.  %Chen et al. define a generative model formally through a sampling procedure.  %The work flow is shown in Figure \ref{fig:time_series_workflow}.
+
+%\begin{marginfigure}
+%\centering
+%\includegraphics[width=\textwidth, trim={0.5cm 10cm 0 5.0cm}, clip]{workflow}
+%\caption{Computation graph of the latent ODE model.}
+%\label{fig:time_series_workflow}
+%\end{marginfigure}
+
+\section{Limitations of Neural ODEs}
+The basic model of ODE flows introduced above cannot represent some classes of functions. Let 
+\begin{align}
+g_{1\text{d}} : \mathbb{R} \to \mathbb{R}
+\end{align}
+be a function such that 
+\begin{align}
+g_{1\text{d}}(-1) &= 1\\\
+g_{1\text{d}}(1) &= -1
+\end{align}
+The dynamics of an ODE cannot represent $g_{1\text{d}}(x)$.
+
+The intuition behind this is simple; the trajectories mapping $-1$ to $1$ and $1$ to $-1$ must intersect each other. However, ODE trajectories cannot cross each other, so the flow of an ODE cannot represent $g_{1\text{d}}(x)$. This simple observation is at the core of many of the limitations of neural ODEs.
+
+%\subsection{Experiments} 
+%Dupont et al. verify this behavior experimentally by training an ODE flow on the identity mapping and on $g_{1\text{d}}(x)$. The resulting flows are shown in Fig. \ref{1d-experiments}. As can be seen, the model easily learns the identity mapping but cannot represent $g_{1\text{d}}(x)$. Indeed, since the trajectories cannot cross, the model maps all input points to zero to minimize the mean squared error.
+
+\subsection{ResNets vs NODEs} 
+NODEs can be interpreted as continuous equivalents of ResNets, so it is interesting to consider why ResNets can represent $g_{1\text{d}}(x)$ but NODEs cannot. The reason for this is because ResNets are a discretization of the ODE, allowing trajectories to make discrete jumps to cross each other. %(see Fig. \ref{1d-experiments}).
+Ironically, the error arising when taking discrete steps allows the ResNet trajectories to cross. In this way, ResNets can be interpreted as ODE solutions with large errors, with these errors allowing them to represent more functions.
+
+%\begin{figure}
+%\includegraphics[width=0.48\textwidth,trim={0.35cm 0.25cm 1.3cm 1.2cm},clip]{1d_counter_example.png}
+%\includegraphics[width=0.48\textwidth,trim={0.35cm 0.25cm 1.3cm 1.2cm},clip]{discretized-vs-continous_formatted.png}
+%\includegraphics[width=0.48\textwidth,trim={0.35cm 0.25cm 1.3cm 0.8cm},clip]{vec_field_easy_formatted.png}
+%\includegraphics[width=0.48\textwidth,trim={0.35cm 0.25cm 1.3cm 0.8cm},clip]{vec_field_hard_formatted.png}
+%\caption{(Top left) Continuous trajectories mapping $-1$ to $1$ (red) and $1$ to $-1$ (blue) must intersect each other, which is not possible for an ODE. (Top right) Solutions of the ODE are shown in solid lines and solutions using the Euler method (which corresponds to ResNets) are shown in dashed lines. As can be seen, the discretization error allows the trajectories to cross. (Bottom) Resulting vector fields and trajectories from training on the identity function (left) and $g_{1\text{d}}(x)$ (right).  From Dupont et al.\citep{dupont2019augmented}}
+%\label{1d-experiments}
+%\end{figure}
+
+\section{Augmented Neural ODEs}
+
+An extension of the Neural ODE model, Augmented Neural ODEs (ANODEs) provide a simple solution to the problems of neural ODEs (NODEs). These methods augment the space on which we learn and solve the ODE from 
+\begin{align}
+\mathbb{R}^d \mapsto \mathbb{R}^{d+p}
+\end{align}
+allowing the ODE flow to lift points into the additional dimensions to avoid trajectories intersecting each other (similar in spirit to Hamiltonian Monte Carlo). Letting $p(t) \in \mathbb{R}^p$ denote a point in the augmented part of the space, we can formulate the augmented ODE problem as
+
+\begin{align}
+\frac{\mathrm{d}}{\mathrm{d}t} \begin{bmatrix} h(t) \\ p(t) \end{bmatrix} = f \left (\begin{bmatrix} h(t) \\ 
+p(t) \end{bmatrix}, t\right ), \qquad \begin{bmatrix} h(0) \\ 
+p(0) \end{bmatrix} &= \begin{bmatrix} x \\ 0 \end{bmatrix}
+\end{align}
+
+We concatenate every data point $x$ with a vector of zeros and solve the ODE on this augmented space. We hypothesize that this will also make the learned (augmented) $f$ smoother, giving rise to simpler flows that the ODE solver can compute in fewer steps. %In the following sections, we verify this behavior experimentally and show both on toy and image datasets that ANODEs achieve lower losses, better generalization and lower computational cost than regular NODEs.
+
+%\begin{marginfigure}
+%\includegraphics[width=\textwidth]{mnist_acc_vs_nfe.png}
+%\caption{Accuracy vs NFE of NODE and ANODE for the MNIST dataset.}
+%\label{acc}
+%\end{marginfigure}
+
+%\section{Image Experiments} \label{image-exp-section}
+%We perform experiments on image datasets using convolutional architectures for $\mathbf{f}(\mathbf{h}(t), t)$. As the input $\mathbf{x}$ is an image, the hidden state $\mathbf{h}(t)$ is now in $\mathbb{R}^{c \times h \times w}$ where $c$ is the number of channels and $h$ and $w$ are the height and width respectively. In the case where $\mathbf{h}(t) \in \mathbb{R}^{d}$ we augmented the space as $\mathbf{h}(t) \in \mathbb{R}^{d + p}$. For images we augment the space as $\mathbb{R}^{c \times h \times w} \to \mathbb{R}^{(c + p) \times h \times w}$, i.e. we add $p$ channels of zeros to the input image. While there are other ways to augment the space, Dupont et al. found that increasing the number of channels works well in practice and use this method for all experiments. 
+
+%Results for models trained with and without augmentation show that ANODEs train faster and obtain lower losses at a smaller computational cost than NODEs. On MNIST for example, ANODEs with 10 augmented channels achieve the same loss in roughly 10 times fewer iterations. Perhaps most interestingly, we can plot the NFEs against the loss to understand roughly how complex a flow (i.e. how many NFEs) are required to model a function that achieves a certain loss.
+
+%There may be other simpler ways to overcome the non-intersecting problem, for e.g. just by adding noise.
+
+
+
+\end{document}

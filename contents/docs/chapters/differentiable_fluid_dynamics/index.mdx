@@ -1,0 +1,54 @@
+
+<style jsx global>{`
+  .code-block-container {
+    display: block;
+    margin: 1.5rem 0;
+    padding: 0;
+  }
+  .code-block-image {
+    display: block;
+    width: auto;
+    max-width: 100%;
+    height: auto;
+    filter: drop-shadow(0 0 0 transparent); /* Force transparency rendering in some browsers */
+  }
+  /* Other styles... */
+`}</style>
+# Differentiable Fluid Dynamics Solvers 
+
+[]\
+
+------------------------------------------------------------------------
+
+**Difficulty Level:** **
+
+
+
+------------------------------------------------------------------------
+
+The Navier-Stokes equations can be directly differentiated through to
+facilitate approximate solution of fluid systems. These methods can be
+applied for both direct numerical simulation approaches and large eddy
+simulation approaches. The central idea is to use a much coarser grid
+than is usually admissible for simulations, but to use a machine-learned
+component to adapt for the loss of resolution[@kochkov2021machine].
+
+## Learned Solver
+
+The core idea is to implement a differentiable finite volume solver. The
+full model is trained simply with $L^2$ loss between predictions and
+ground truth data obtained from DNS solution.
+
+## Evaluations
+
+The energy spectrum $$\begin\{aligned\}
+E(k) &= \frac\{1\}\{2\}|u(k)|^2
+\end\{aligned\}$$ can be computed and compared to the energy spectrum of
+DNS data. Models can also be tested on conditions not originally
+considered. The scaling of this coarse grained approach is roughly given
+by $$\begin\{aligned\}
+T \sim (C_\{ML\} + C_\{Physics\})\left ( \frac\{N\}\{k\} \right )^\{d+1\}
+\end\{aligned\}$$ where $N$ is the size of the discretized grid, and
+$C_\{ML\}$ and $C_\{Physics\}$ are the costs of the machined-learned and
+physical updates. The ML updates are for now much slower than the
+physical updates.

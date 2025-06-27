@@ -1,0 +1,24 @@
+\documentclass[book.tex]{subfiles}
+
+\begin{document}
+
+\chapter{Numerical Relativity}
+\label{chap:numerical_relativity}
+\noindent\rule{11cm}{0.4pt} \\
+\textbf{Prerequisites:} \autoref{chap:gr}  \\
+\textbf{Difficulty Level:} *** \\
+\noindent\rule{11cm}{0.4pt}
+\vspace{5mm}
+
+Numerical relativity methods study general relavistic spacetimes which cannot be solved exactly with known methods. Numerical relativity has recently risen to prominence (at time of writing) due to its role in helping facilitate the detection of gravitational waves.
+
+\section{Basic Formulation}
+%\url{https://arxiv.org/pdf/2008.12931.pdf}
+One basic but tricky challenge in numerical relativity is that space-time is a unified entity that doesn't directly split into space and time as with other PDE systems in physics. For this reason, we must first perform a foliation of the space we consider into spacelike and timelike components to split them out.
+\section{Solution Methods}
+
+The method of lines is a technique for decoupling treatment of space and time. Runge-kutta methods can be used to integrate from there.
+
+Filtering operators and dissipation operators provide more sophisticated spectral methods of simulation which can be crucial for larger systems.
+
+\end{document}

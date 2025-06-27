@@ -1,0 +1,56 @@
+
+<style jsx global>{`
+  .code-block-container {
+    display: block;
+    margin: 1.5rem 0;
+    padding: 0;
+  }
+  .code-block-image {
+    display: block;
+    width: auto;
+    max-width: 100%;
+    height: auto;
+    filter: drop-shadow(0 0 0 transparent); /* Force transparency rendering in some browsers */
+  }
+  /* Other styles... */
+`}</style>
+# Graph Networks in High Energy Physics 
+
+------------------------------------------------------------------------
+
+**Difficulty Level:** **
+
+
+
+------------------------------------------------------------------------
+
+Graph neural networks can be used for the tasks of reconstruction,
+tagging, generation, and end-to-end analysis.
+
+In particular, graph neural networks have found a niche in analyzing
+particle accelerator data to perform useful tasks like identifying jets.
+Architectures for this task need to consider useful physical properties
+of jets which may be used to narrow down those phenomena which merit
+deeper consideration.
+
+## Reconstruction and Identification
+
+Raw data from particle accelerators can take the form of a point cloud.
+A graph of relationships between these events has to be reconstructed.
+Traditionally this is done with heuristic methods, but this can be done
+with graph networks.
+
+Reconstruction approaches often build on a clustering task and may
+follow the form of edge strength prediction which predicts the weight of
+a node to node edge. Calorimeter applications focus on segmentation,
+with tasks like partial assignment of hits to showers.
+
+Identification tasks focus on graph classification or segmentation. A
+common task is jet classification, which seeks to identify the particle
+that triggered a jet. Graph networks have proven useful in identifying
+jets and reconstructing their dynamics from the raw data.
+
+## Generative Modeling
+
+Generative models are useful for creating simulated data since running
+lattice cluster simulations can be very expensive.

@@ -1,0 +1,165 @@
+\documentclass[book.tex]{subfiles}
+
+\begin{document}
+
+\chapter{Harmonic Oscillation}
+\label{chap:harmonic}
+\noindent\rule{11cm}{0.4pt} \\
+\textbf{Prerequisites:} \autoref{chap:newtons_laws} \\
+\textbf{Difficulty Level:} * \\
+\noindent\rule{11cm}{0.4pt}
+\vspace{5mm}
+
+Harmonic oscillators model systems that move back and forth. You can roughly think of a harmonic oscillator as a simple weight on a spring. 
+
+\begin{figure}
+   \centering 
+   % \includegraphics[width=\linewidth]{figures/Physics/mechanics/harmonic_oscillation/classical_oscillator.png}
+   \includegraphics[width=0.3\linewidth]{figures/Physics/mechanics/harmonic_oscillation/Simple spring_oscillator.png}
+   \caption{A simple spring oscillator.} %TODO: This figure is sourced from \url{https://www.feynmanlectures.caltech.edu/I_21.html}, Example 1. Replace with our own illustration.}
+\label{fig:classical_oscillator}
+\end{figure}
+
+Imagine in your head pulling on the weight and letting it go. You'd imagine that the weight moves up and down and eventually stops with time. In this chapter, we will learn how to mathematically model such a harmonic oscillator and convert it into a differentiable program. This exercise will be particularly important since harmonic oscillators will appear repeatedly in our study of physical systems.
+
+\section{Hooke's Law}
+
+To model these systems correctly, we will have to introduce one more concept, \textit{Hooke's Law}. This law states that the force needed to expand or compress a spring scales linearly with the distance from the neutral state of the spring. If this distance is $x$, then the force is given by.
+\begin{align}
+    F(x) = -k x
+\end{align}
+Where $k$ is the spring stiffness constant, and the negative sign indicates that the direction of the force is towards the spring's neutral position, which we will assume is at $x = 0$. Note that here we're modelling the spring as a 1 dimensional system. The potential energy stored in a spring is given by
+\begin{align}
+    V(x) = \frac{1}{2}kx^2
+\end{align}
+What is the type of $k$? We can apply the dimensional type analysis we learned about in the previous equation to solve
+\begin{lstlisting}
+[F] = [-k][x]
+[M][L][T]$^{-2}$ = [k][L]
+[k] = [M][T]$^{-2}$
+\end{lstlisting}
+
+
+\section{A Physical Theory for a Weight on a Spring}
+
+We've done the exercise of putting together a physical theory a few times now so hopefully the process should be starting to feel more instinctual. Let's start first by specifying our state space. As we mentioned previously, this system is one dimensional, so it stands to reason that we would model our position space by $\mathbb{R}$. Velocity and acceleration would also be scalars then and should also live in $\mathbb{R}$ so our state space would be
+
+\begin{align}
+    \mathcal{S} = \mathbb{R} \times \mathbb{R} \times \mathbb{R}
+\end{align}
+
+Let's go now to symmetries. As before we will dictate energy conservation for this system. Energy will be the sum of the kinetic energy and the spring potential energy from Hooke's law.
+
+\begin{align}
+    E = \frac{1}{2}mv^2 + \frac{1}{2}k x^2
+\end{align}
+
+Let's now consider how we can solve for the time evolution of this system. We know the force on the weight at any position $x$, so we use Newton's laws to solve for the time evolution of the system.
+
+\begin{align}
+    F &= - k x \\
+    m a &= -k x \\
+    m \frac{d^2x}{dx^2} &= - k x
+\end{align}
+
+You learned in Part 1 how to solve second order differential equations. Let's give this one a try by assuming that the solution takes on the following form
+
+\begin{align}
+    x(t) &= e^{ct}
+\end{align}
+where $c \in \mathbb{C}$ is a complex number. The reason for this is that the complex exponential $e^{ix}$ satisfies the equation
+\begin{align}
+    e^{ix} &= \cos(x) + i \sin(x)
+\end{align}
+We expect there to be oscillatory motion, suggesting a sine or cosine, but by using the complex exponential form, we are able to retain the simplicity of differentiating exponential functions rather than having to mess around with complicated trigonometry. This "complexification" trick is a standard tool in mathematical physics and one that we shall encounter again later in the book. Let's return now to our actual equation and plug in our proposal
+\begin{align}
+    mc^2 e^{ct} &= -k e^{ct} \\
+    (mc^2 + k)e^{ct} &= 0 
+\end{align}
+Since the term $e^{ct}$ is never 0, we can solve for $c$ to obtain
+\begin{align}
+    mc^2 + k &= 0 \\
+    c &= \pm i\sqrt{\frac{k}{m}}
+\end{align}
+Since our differential equation is of second order, we can write the general solution as a linear combination
+\begin{align}
+    x(t) = a e^{i\sqrt{\frac{k}{m}}t} + b e^{-i\sqrt{\frac{k}{m}}t}
+\end{align}
+
+This is the general form of all solutions to our Newton's law equation, but how do we find the specific time evolution rule for a given spring system? The basic idea is that we need to specify the initial conditions of the system, $x_0, v_0$ and use them to solve for $a$ and $b$.
+\begin{align}
+    x(0) &= x_0 \\
+    v(0) = \frac{dx}{dt}(0) &= v_0
+\end{align}
+If $k$ and $m$ are known, this is a linear system of equations. The harmonic oscillator is an interesting system since it's more challenging to model than the simpler systems we've seen thus far. How can we write down the time evolution rule? We've explained in words so we can just proceed to specifying the time evolution operator as a simple differentiable program.
+
+\begin{lstlisting}[language=python]
+def U(k: $\mathbb{R}$, m: $\mathbb{R}$, t: $\mathbb{R}$):
+  $x_0$, $a$, $b$, $v_0$: Symbol
+  eq1 = `$x_0 = a + b$`
+  eq2 = `$v_0 = a i \sqrt{k/m} - bi\sqrt{k/m}$`
+  $a$, $b$ = solve(eq2, eq2)
+  return $a \exp(it\sqrt{k/m}) + b  \exp(-it\sqrt{k/m})$
+\end{lstlisting}
+
+The parameters for this system are given by $\mathcal{W} = \{m, k, x_0\}$ where $m$ is the mass of the box, $k$ the spring constant, and $x_0$ is the initial position of the weight. The domain of applicability is
+    \begin{align}\mathcal{C} = \{x < L\}\end{align}
+
+where $L$ where $L$ is a constant that describes how far the spring can stretch. We also assume that $\|v_1\|, \|v_2\| < C$ where $C$ is some constant. As usual, this is done to avoid relativistic effects. Hyperparameters are given by $\mathcal{H} = \{L, C, \epsilon \}$
+
+Observables aregiven by $\mathcal{B} = \{f\}$ where $f(x, v) = x + \mathcal{N}(0, \epsilon)$ is a noisy observation function for the current position. (We use shorthand notation $x + \mathcal{N}(0, 1)$ to indicate the addition of Gaussian noise.) 
+
+\begin{center}
+\begin{tabular}{|c|c|}
+    \hline
+    States & $\mathcal{S} = \mathbb{R} \times \mathbb{R} \times \mathbb{R}$ \\
+    \hline
+    Symmetries & $\mathcal{G} = \{E = \frac{1}{2}mv^2 + \frac{1}{2}kx^2\}$  \\
+    \hline
+    Operators & $\mathcal{O} = \{U(t) = ae^{i\sqrt{\frac{k}{m}}t} + b e^{-i\sqrt{\frac{k}{m}} t}$ \}\\
+    \hline
+    Parameters & $\mathcal{W} = \{m, \vec{x_0}, \vec{v_0}\}$. \\
+    \hline
+    Constraints & $\mathcal{C} = \vec{v} \ll c$ \\
+    \hline
+    Hyperparameters & $\mathcal{HP} = {M_{\textrm{min}} \ll m \ll M_{\textrm{max}}}$  \\
+    \hline
+    Observables & $\mathcal{B} = \{f(x, v) = x + \mathcal{N}(0, 1) \}$  \\
+    \hline
+\end{tabular}
+\label{phs:theory:spring}
+\end{center}
+
+\section{A Simple Pendulum}
+
+In this section, we study a slightly more complex oscillating system, the pendulum.
+
+\begin{figure}
+   \centering
+  
+    % \includegraphics[width=0.3\linewidth]{figures/Physics/mechanics/harmonic_oscillation/pendulum.png}
+     \includegraphics[width=0.3\linewidth]{figures/Physics/mechanics/harmonic_oscillation/pendulum0.png}
+   \caption{A simple pendulumm.} %TODO: This figure is sourced from \url{https://www.damtp.cam.ac.uk/user/tong/relativity/two.pdf}, Example 1. Replace with our own illustration.}
+\label{fig:simple_pendulum}
+\end{figure}
+
+As shown in Figure~\ref{fig:simple_pendulum}, there are two forces acting on the pendulum: the tension $T$ from the string and gravity $mg$. The pendulum is a slightly more complex harmonic oscillator with motion in two dimensions rather than just one. We can then write down the $x,y$ coordinates in terms of $\theta$ and $l$
+\begin{align}
+    x &= l \sin \theta \\
+    y &= l \cos \theta
+\end{align}
+We can then compute that the forces in the $x$ and $y$ directions are given respectively by
+\begin{align}
+    -T \sin \theta, T\cos \theta - mg
+\end{align}
+We can then directly write down Newton's equations
+\begin{align}
+    -T \sin \theta &= m \ddot{x}  \\
+    T \cos \theta - mg &= m \ddot{y}
+\end{align}
+Solving the general differential equation for the pendulum's motion is tricky, so the sytem is often solved with a small angle approximation which assumes that the angle of rotation is small
+\begin{align}
+    \theta < 15^\circ
+\end{align}
+
+\end{document}

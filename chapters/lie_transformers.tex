@@ -1,0 +1,24 @@
+\documentclass[book.tex]{subfiles}
+
+\begin{document}
+
+\chapter{Lie Transformers}
+
+\label{chap:lie_transformers}
+\noindent\rule{11cm}{0.4pt} \\
+\textbf{Prerequisites:}  \autoref{chap:convnets} \\
+\textbf{Difficulty Level:} *** \\
+\noindent\rule{11cm}{0.4pt}
+\vspace{5mm}
+
+Equivariant architectures are often constructed to be equivariant to given groups such as the Euclidean group or the Lorentz group. However, it is possible to construct architectures that are equivariant to any given Lie group. This methodology depends on exploiting the structure of the group exponential and logarithm maps \cite{hutchinson2021lietransformer}, \cite{finzi2020generalizing}. There is often an efficiency loss from the general construction, but there is a powerful gain in generality and ease of experimentation.
+%"""
+%Group equivariant neural networks are used as building blocks of group invariant neural networks, which have been shown to improve generalisation performance and data efficiency through principled parameter sharing. Such works have mostly focused on group equivariant convolutions, building on the result that group equivariant linear maps are necessarily convolutions. In this work, we extend the scope of the literature to selfattention, that is emerging as a prominent building block of deep learning models. We propose the LieTransformer, an architecture composed of LieSelfAttention layers that are equivariant to arbitrary Lie groups and their discrete subgroups. We demonstrate the generality of our approach by showing experimental results that are competitive to baseline methods on a wide range of tasks: shape counting on point clouds, molecular property regression and modelling particle trajectories under Hamiltonian dynamics.
+%"""
+
+%"""
+%The translation equivariance of convolutional layers enables convolutional neural networks to generalize well on image problems. While translation equivariance provides a powerful inductive bias for images, we often additionally desire equivariance to other transformations, such as rotations, especially for non-image data. We propose a general method to construct a convolutional layer that is equivariant to transformations from any specified Lie group with a surjective exponential map. Incorporating equivariance to a new group requires implementing only the group exponential and logarithm maps, enabling rapid prototyping. Showcasing the simplicity and generality of our method, we apply the same model architecture to images, ball-and-stick molecular data, and Hamiltonian dynamical systems. For Hamiltonian systems, the equivariance of our models is especially impactful, leading to exact conservation of linear and angular momentum.
+%"""
+
+
+\end{document}

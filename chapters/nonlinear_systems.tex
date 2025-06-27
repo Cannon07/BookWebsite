@@ -1,0 +1,242 @@
+\documentclass[book.tex]{subfiles}
+\graphicspath{figures/}
+\begin{document}
+
+\chapter{Approaching Nonlinear Systems with Newton's Method}
+
+\label{chap:nonlinear_newton}
+\noindent\rule{11cm}{0.4pt} \\
+\textbf{Prerequisites:} \autoref{chap:linear_systems}, \autoref{chap:matrix_calculus} \\ 
+\textbf{Difficulty Level:} ** \\
+\noindent\rule{11cm}{0.4pt}
+\vspace{5mm}
+
+In this chapter we understand how non-linear systems are different from linear systems. We then compute the Jacobian matrix for a multi-variable system of equations and solve non-linear systems of equations with Newton's Method.
+
+\section{Introduction}
+Previously, we have seen how to solve a system of linear equations using the Gaussian Elimination and LU Factorization techniques. These techniques can be used, when the system of equations can be represented as 
+\begin{align}
+Ax = b
+\end{align}
+where $A$ is the matrix of coefficients, $b$ is the column vector of constants and $x$ is the column vector of unknowns.
+
+Also, we focused on solving nonlinear equations involving only a single variable using the root-finding techniques. These techniques include - Bisection, Newton's method, Secant method and False Position method. However, these problems only focused on solving nonlinear equations with only one variable, rather than nonlinear equations with several variables. 
+
+The goal of this chapter is to examine numerical methods that are used to solve systems of nonlinear equations in several variables. The first method we will look at is Newton's method. This is a straightforward extension to the Newton-Raphson method of root-finding we have seen before. 
+
+%\end{document}
+
+\section{Nonlinear System of Equations}
+A system of nonlinear equations is a system in which at least one of the equations is nonlinear. We will be using the Taylor series approximation to reduce the system of nonlinear equations to a linear one. 
+
+\begin{align}
+F(X_i + \delta X)  \cong F(X_i) + J(X_i)\delta X
+\end{align}
+
+where $J$ is the analogous of the first derivative for multi-dimensional system. The Jacobian matrix for a n-dimensional with n equations is given as
+
+\begin{align}
+ J(X_i) = \begin{bmatrix}
+ \frac{\partial f_1}{\partial x_1} & \frac{\partial f_1}{\partial x_2} & \frac{\partial f_1}{\partial x_3} & \dots  & \frac{\partial f_1}{\partial x_n} \\
+ \frac{\partial f_2}{\partial x_1} & \frac{\partial f_2}{\partial x_2} & \frac{\partial f_2}{\partial x_3} & \dots  & \frac{\partial f_2}{\partial x_n} \\
+ \vdots & \vdots & \vdots & \ddots & \vdots \\
+ \frac{\partial f_n}{\partial x_1} & \frac{\partial f_n}{\partial x_2} & \frac{\partial f_n}{\partial x_3} & \dots  & \frac{\partial f_n}{\partial x_n} \\
+ \end{bmatrix}
+\end{align}
+
+
+\section{Newton's Method}
+ The Newton's method is a straight-forward extension to the Newton-Raphson method of root finding. To recap, the Newton-Raphson update for a root estimate is given as follows:
+ 
+ \begin{align}
+ x_{i+1} = x_i - \dfrac{f(x_i)}{f'(x_i)}
+ \end{align}
+ 
+The method starts with an initial guess of the root at $x_i$ and the tangent to the function is drawn at the point $[x_i,f(x_i)]$. The point where this tangent crosses the x-axis usually represents an improved estimate of the root.
+ 
+A similar update rule can be defined for the multi-dimensional system of equations 
+ 
+\begin{align}
+  X_{i+1} =X_{i} - J(X_{i})^{-1}F(X_{i})
+\end{align}
+
+where $i$ denotes the iteration number, $F$ denotes the non-linear functions, $X_i$ denotes the solution estimate to the non-linear system at $i^{th}$ iteration and $J(X_{i})$ denotes the Jacobian of $F$ evaluated at $X_{i}$ (this is analogous to the first derivative evaluated at $x_i$ in the case of a single-variable function).
+
+The above update rule can be re-written as 
+
+\begin{align}
+X_{i+1} =X_{i} + \delta X_i 
+\end{align}
+
+with
+
+\begin{align}
+\delta X_i =  - J(X_{i})^{-1}F(X_{i})
+\end{align}
+
+This can be re-written as 
+\begin{align}
+J(X_{i})\delta X_i =  - F(X_{i})
+\end{align}
+ 
+Now, this becomes a linear-system of equations with $\delta X_i$ as unknown variables, which we can solve using Gaussian-elimination or LU factorization. This trick enables us to compute the updated solution without computing the inverse. Thus, at every iteration, we are updating the solution estimate by $\delta X_i$, which is obtained by solving a linear system of equations.
+
+\subsection{Robotic Arm Modeling}
+Consider the following planar robotic arm as shown in the figure. Given the lengths of the links, how can we find the joint angles to reach a specific target in the workspace by the end-effector of the robot using the Newton's method? Let's start with an initial guess of 0.1 rad for both the joint angles. 
+ 
+\begin{marginfigure}
+	\centering
+	% \includegraphics[width = 2.6in]{figures/part1b/nonlinear_systems/RobotArm.PNG}
+ \includegraphics[width = 2.6in]{figures/part1b/nonlinear_systems/RobotArm_0.png}
+	\centering
+	\caption{Planar Robotic arm with 2 actuators}
+	\label{fig:1}
+\end{marginfigure}
+
+Let's assume $\theta_1$ and $\theta_2$  to be the joint angles of the links which are required to be determined. Let $(x_t,y_t)$ be the co-ordinate in the workspace to be reached by the end-effector.
+
+Using the link-lengths, it can be observed that the end-effector position can be represented in terms of joint angles as
+\begin{align}
+x_t = l_1 \cos(\theta_1) + l_2 \cos(\theta_1 + \theta_2)\\
+y_t = l_1 \sin(\theta_1) + l_2 \sin(\theta_1 + \theta_2)
+\end{align}
+These can be re-written as a system of non-linear equations as: 
+\begin{align}
+l_1 \cos(\theta_1) + l_2 \cos(\theta_1 + \theta_2) - x_t = 0\\
+l_1 \sin(\theta_1) + l_2 \sin(\theta_1 + \theta_2) - y_t = 0
+\end{align}
+
+The Jacobian matrix of the above system of equations can be written as:
+\begin{align}
+J(\theta) = 
+\begin{bmatrix}
+\dfrac{\partial x_t}{\partial \theta_1} & \dfrac{\partial x_t}{\partial \theta_2} \\
+\\
+\dfrac{\partial y_t}{\partial \theta_1} & \dfrac{\partial y_t}{\partial \theta_2}\\
+\end{bmatrix}
+\end{align}
+
+with 
+
+\begin{align}
+\dfrac{\partial x_t}{\partial \theta_1} &= -l_1 \sin(\theta_1) - l_2 \sin(\theta_1 + \theta_2)\\
+\dfrac{\partial x_t}{\partial \theta_2} &= -l_2 \sin(\theta_1 + \theta_2) \\
+\dfrac{\partial y_t}{\partial \theta_1} &= l_1 \cos(\theta_1) + l_2 \cos(\theta_1 + \theta_2)\\
+\dfrac{\partial y_t}{\partial \theta_2} &= l_2 \cos(\theta_1 + \theta_2)
+\end{align}
+
+Using the following equations, the guess of our joint angles is continuously updated.
+\begin{align}
+\theta_{i+1} =\theta_{i} + \delta\theta_i 
+\end{align}
+with 
+\begin{align}
+\delta\theta_i =  - J(\theta_{i})^{-1}F(\theta_{i})
+\end{align}
+
+% def J($\theta_1$,$\theta_2$):
+%  return [-l1*sin($\theta_1$) - l2*sin($\theta_1$ + $\theta_2$),
+%          -l2*sin($\theta_1
+%+ \theta_2$);
+%          l1*cos($\theta_1$) + l2*cos($\theta_1 + \theta_2$),
+%          l2*cos($\theta_1 + \theta_2$);]
+\begin{lstlisting}[language=python]
+l1 = 1, l2 = 1 # Link Lengths
+xt = 1, yt = 1 # Target Position
+
+# Non-linear function
+def f($\theta_1$: $\mathbb{R}$, $\theta_2$: $\mathbb{R}$) $\to$ $\mathbb{R}^2$:
+  return [l1*cos($\theta_1$) + l2*cos($\theta_1$ + $\theta_2$) - xt; 
+          l1*sin($\theta_1$) + l2*sin($\theta_1$ + $\theta_2$) - yt]
+
+# Jacobian of the system of equations
+def J($\theta_1$: $\mathbb{R}$,$\theta_2$: $\mathbb{R}$):
+  return $\nabla$(f, [$\theta_1$, $\theta_2$])
+\end{lstlisting}
+
+We now define a Newton's method and apply it to this system.
+
+\begin{lstlisting}[language=python]
+def newtons_method(f: $\mathbb{R}^N \to \mathbb{R}$, J: $\mathbb{R}[N, N]$, guess:$\mathbb{R}^N$, error: $\mathbb{R}$, tol: $\mathbb{R}$):
+  while (error > tol):
+    dGuess = -J(guess)$^{-1}$*f(guess) 
+    guess = guess + dGuess
+    # Wrap radians to [-$\pi$, $\pi$]
+    guess = wrapToPi(guess)
+    error = $\|$f(guess))$\|$
+\end{lstlisting}
+
+\section{Quasi-Newton Methods}
+Quasi-Newton methods are very similar to Newton's method. The general form of these methods is given by:
+ 
+\begin{align}
+X_{i+1} = X_{i} - B_i^{-1}F(X_{i})
+\end{align}
+  
+These methods avoid the necessity of computing the derivatives (or) solving a full linear system per iteration (or) both.
+ 
+The most-simplest Quasi-Newton method is the \textit{Stationary Newton Method}, where $B_i = J(X_0)$ for all iterations $i$. In other words, in this method, the derivatives are computed at the initial point and we need the LU decomposition for only  $J(X_0)$. 
+
+A variation of this method is the \textit{Stationary Newton Method with restarts}, where $B_i = J(X_i)$ if $i$ is a multiple of a fixed integer $n$. If $i$ is not a multiple of $n$, $B_i$ = $B_{i-1}$. The number of iterations used by this method tends to increase with $n$, but the average computation time per iteration decreases.
+
+Broyden's method is also one such quasi-Newton method, which we will look in detail.
+
+%An obvious drawback of these stationary Newton methods is that, except when ($i \% n == 0$), $B_i$ does not incorporate information about $X_i$ and $F(X}_{i})$. Therefore, the adequacy of the model to the real function decrease rapidly as $i$ grows.
+
+\subsection{Broyden's Method}
+Newton's method for solving $f(x) = 0$ uses the Jacobian matrix at every iteration. However, computing this Jacobian is a difficult and expensive operation. The idea behind Broyden's method is to compute the whole Jacobian only at the first iteration, and to do a rank-one update at the other iterations.
+	
+Earlier, we have seen that in secant method, the derivative can be approximated by a backward finite divided difference:
+\begin{align}
+f'(x_i) \cong \dfrac{f(x_{i-1}) - f(x_{i})}{x_{i-1} - x_{i}}
+\end{align}
+	
+which can be re-written as 
+\begin{align}
+f'(x_i) (x_{i-1} - x_{i}) \cong f(x_{i-1}) - f(x_{i})
+\end{align}
+	
+Using the same intuition, we can approximate the Jacobian in the Secant method as
+\begin{align}
+J(X_{i})(X_{i} - X_{i-1}) \cong F(X_{i}) - F(X_{i-1})
+\end{align}
+	
+However, this is an under-determined system with $n^2$ unknown variables and $n$ equations. 
+	
+Broyden's method uses the Newton's method update rule for the first iteration and comes up with one feasible solution for updating the Jacobian at every iteration.
+	
+To recap, Newton's method for $i^{th}$ iteration can be re-written as
+	
+\begin{align}
+J(X_{i-1})(X_{i} - X_{i-1}) \cong - F(X_{i-1})
+\end{align}
+		
+Subtracting the Secant method update and the Newton's method update, we get
+	
+\begin{align}
+(J(X_{i}) - 	J(X_{i-1}))(X_{i} - X_{i-1}) \cong F(X_{i})
+\end{align}
+
+It can be observed that, one possible solution for the difference in Jacobians between the two-iterations (given by Broyden) is 
+	
+\begin{align}
+J(X_{i}) - J(X_{i-1}) = \dfrac{F(X_i)(X_{i} - X_{i-1})^T}{||X_{i} - X_{i-1}||_2}
+\end{align}
+	
+This is used for updating the Jacobian iteratively using the Broyden's method, without computing it explicitly.
+	
+\begin{align}
+J(X_{i})  = J(X_{i-1}) + 	\dfrac{F(X_{i})(X_{i} - X_{i-1})^T}{||X_{i} - X_{i-1}||_2}
+\end{align}
+	
+Now, Gauss-Newton (or) LU Decomposition can be used to solve the following equation to obtain the iterative solution. 
+
+\begin{align}
+J(X_{i})\delta X_i =  - F(X_{i})
+\end{align}
+	 
+%\section{Exercises}
+%\begin{enumerate}
+%    \item TODO
+%\end{enumerate}
+\end{document}

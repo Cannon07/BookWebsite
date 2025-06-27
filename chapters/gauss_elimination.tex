@@ -1,0 +1,239 @@
+\documentclass[book.tex]{subfiles}
+\begin{document}
+
+\chapter{Gaussian Elimination and Matrix Norms}
+\label{chap:linear_gaussian}
+\noindent\rule{11cm}{0.4pt} \\
+\textbf{Prerequisites:} \autoref{chap:linear_systems} \\
+\textbf{Difficulty Level:} * \\
+\noindent\rule{11cm}{0.4pt}
+\vspace{5mm}
+
+In this chapter we learn how to implement forward elimination and back substitution as in Gaussian elimination. We also introduce the concept of vector and matrix norms and the conception of ill-conditioning of a matrix. We then explain how partial pivoting is implemented and difference from the naive method.
+
+\section{Gauss Elimination}
+
+This basic approach of Cramer's method can be extended to large sets of equations by developing a systematic scheme or algorithm to eliminate unknowns and to back-substitute. One of such methods is Gauss Elimination.
+
+As was the case with the solution of three equations, the technique for $n$ equations consists
+of two phases: elimination of unknowns and solution through back substitution. The two phases are depicted in the Figure \ref{fig:1} for a set of \textit{3} linear equations given as
+
+\begin{align}
+a_{11}x_1 + a_{12}x_2 + a_{13}x_3 &= b_1\\
+a_{21}x_1 + a_{22}x_2 + a_{23}x_3 &= b_2\\
+a_{31}x_1 + a_{32}x_2 + a_{33}x_3 &= b_3
+\end{align}
+
+\begin{marginfigure}
+	\centering
+	% \includegraphics[width = 2.6in]{figures/part1b/gauss_elimination/gausselim.PNG}
+ \includegraphics[width = 2.6in]{figures/part1b/gauss_elimination/gausselim_0.png}
+	\centering
+	\caption{The two phases of Gauss elimination: (a) forward elimination and (b) back substitution}
+	\label{fig:1}
+\end{marginfigure}
+
+\subsection{Forward Elimination of Unknowns}
+The first phase is designed to reduce the set of equations to an upper triangular system. The initial step will be to eliminate the first unknown $x_1$ from the second through the \textit{3}rd equations. Let's see how it is done for the first unknown $x_1$. Multiply the first equation by $\dfrac{a_{21}}{a_{11}}$ and subtract this from the second equation. Similarly, multiply the first equation by $\dfrac{a_{31}}{a_{11}}$ and subtract this from the third equation. These steps result in
+
+\begin{align}
+ 	a_{11}x_1 + a_{12}x_2 + a_{13}x_3 = b_1\\
+ 	a_{22}'x_2 + a_{23}'x_3 = b_2'\\
+ 	a_{32}'x_2 + a_{33}'x_3 = b_3'
+\end{align}
+
+For the foregoing steps, the first equation is called the \textit{pivot equation} and $a_{11}$ is called the \textit{pivot element}. Note that the process of multiplying the first row by $\dfrac{a_{21}}{a_{11}}$ is equivalent to dividing it by $a_{11}$ and multiplying it by $a_{21}$. Sometimes the division operation is referred to as \textit{normalization}. We make this distinction because a zero pivot element can interfere with normalization by causing a division by zero. We will return to this important issue after we complete our description of naive Gauss elimination. The above steps are repeated till an upper triangular matrix is obtained.
+
+\subsection{Back Substitution}
+
+After the forward elimination, the last equation can be directly solved for the obtained upper triangular matrix. Now, the equation to the top of the last equation can be solved by \textit{back substituting} the obtained variable. This procedure is repeated till all the unknown variables are solved.
+\begin{margintable}
+\begin{verbatim}
+Aug =
+
+8    -5     0     5
+-5    10    -3     0
+0    -3    11    -3
+
+Iteration 1
+Aug =
+
+8   -5.0000         0    5.0000
+0    6.8750   -3.0000    3.1250
+0   -3.0000   11.0000   -3.0000
+
+Iteration 2
+Aug =
+
+8   -5.0000         0    5.0000
+0    6.8750   -3.0000    3.1250
+0         0    9.6909   -1.6364
+
+x =
+
+0.8630
+0.3809
+-0.1689
+\end{verbatim}	
+\end{margintable}
+
+\begin{lstlisting}[language=python]
+def naive_gaussian_elimination(A : $\mathbb{R}^{N\times N}$, B: $\mathbb{R}^N$):
+  x = zeros(N)
+  Aug = [A B]
+  for i = 0:N-1, j = i+1:N
+    ratio = Aug[j,i]/Aug[i,i]
+    Aug[j,i:N+1] = Aug[j,i:N+1]-ratio*Aug[i,i:N+1]
+  x[N-1] = Aug[N-1,N]/Aug[N-1,N-1]
+  for i = N-2:-1:0
+    x[i] = (Aug[i,N+1]-Aug[i,i+1:N]*x[i+1:N])/Aug[i,i]
+  x
+\end{lstlisting}
+
+The above method is called \textit{naive Gauss elimination} because it does not avoid the problem of avoiding the division by zero. Not just zero, dividing by values close to zero leads to ill-conditioned matrices. \textit{Gauss elimination with Pivoting} is designed to solve this problem.
+
+\section{Matrix Conditioning}
+
+There are three direct methods to evaluate if a system is ill-conditioned.
+
+\begin{enumerate}
+	\item Scale the matrix of coefficients $A$ so that the largest element in each row is 1. Invert the scaled matrix and if there are elements of $A^{-1}$ that are several orders of magnitude greater than one, it is likely that the system is ill-conditioned.
+	\item Multiply the inverse by the original coefficient matrix and assess whether the result is close to the identity matrix. If not, it indicates ill-conditioning.
+	\item Invert the inverted matrix and assess whether the result is sufficiently close to the original coefficient matrix. If not, it again indicates that the system is ill-conditioned.
+\end{enumerate}
+
+Although these methods can indicate ill-conditioning, it would be preferable to obtain a single number that could serve as an indicator of the problem. Attempts to formulate such a matrix condition number are based on the mathematical concept of the norm.
+
+\textbf{\section{Vector and Matrix Norms}}
+A norm is a real-valued function that provides a measure of the size or length of multicomponent mathematical entities such as \textit{vectors} and \textit{matrices}. For an n-dimensional vector $[X]$ = $[x_1$ $x_2$ $...$ $x_n]$, a \textit{Euclidian norm} is computed by
+
+\begin{marginfigure}
+	\centering
+	% \includegraphics[width = 2.6in]{figures/part1b/gauss_elimination/norm.png}
+ \includegraphics[width = 2.6in]{figures/part1b/gauss_elimination/norm_0.png}
+	\centering
+	\caption{Graphical depiction of a vector in Euclidean space}
+	\label{fig:2}
+\end{marginfigure}
+
+\begin{align}
+	||X||_e = \sqrt{\sum_{i=1}^n x_i^2} 
+\end{align}
+
+The concept can be extended further to a matrix $[A]$, as in
+
+\begin{align}
+||A||_f = \sqrt{\sum_{i=1}^n \sum_{j=1}^n a_{i,j}^2}
+\end{align}
+
+which is given a special name the \textit{Frobenius norm}.
+
+It should be noted that there are alternatives to the Euclidean and Frobenius norms. For
+vectors, there are alternatives called p norms that can be represented generally by
+
+\begin{align}
+||X||_p = \sqrt[p]{\sum_{i=1}^n |x_i|^p} 
+\end{align}
+
+For a vector, 1-norm ($p$ = 1) and infinity norm ($p$ = $\infty$) are given by
+
+\begin{align}
+||X||_1 &= \sum_{i=1}^n |x_i| \\
+||X||_\infty &= \max_{1 \leq j \leq n} |x_i| 
+\end{align}
+
+For matrices, 1-norm ($p$ = 1) is called the \textit{column-sum norm} and infinity norm ($p$ = $\infty$) is called the \textit{row-sum norm}. These are given by
+
+\begin{align}
+||A||_1 = \max_{1\leq j\leq n }\sum_{i=1}^n |a_{ij}|  \hspace{30pt} ||A||_\infty = \max_{1\leq i\leq n }\sum_{j=1}^n |a_{ij}|  
+\end{align}
+
+\section{Matrix Condition Number}
+
+The matrix Condition Number is defined as 
+
+\begin{align}
+Cond[A] = ||A||.||A^{-1}||
+\end{align}
+
+Note that for a matrix $[A]$, this number will be greater than or equal to 1. It can be shown that
+
+\begin{align}
+\frac{||\Delta X||}{||X||} \leqslant Cond[A]\dfrac{||\Delta A||}{||A||}
+\end{align}
+
+That is, the relative error of the norm of the computed solution can be as large as the relative error of the norm of the coefficients of $[A]$ multiplied by the condition number. For example, if the coefficients of $[A]$ are known to t-digit precision (i.e., rounding errors are on the order of $10^{-t}$) and $Cond[A]$ = $10^c$, the solution $[X]$ may be valid to only $t$ - $c$ digits (rounding errors $\approx$ $10^{c-t}$).
+
+%\section{Norms and Condition Number in MATLAB}
+
+%MATLAB has the following built-in functions to compute both norms and condition numbers:
+
+%\begin{Verbatim}
+%norm(X,p) and cond(X,p)
+%\end{Verbatim}
+
+%where $X$ is the vector or matrix and $p$ designates the type of norm or condition number ($1$, $2$, $inf$, or \textquoteleft$fro$\textquoteright). Note that the \texttt{cond} function is equivalent to
+
+%\begin{Verbatim}
+%>> norm(X,p) * norm(inv(X),p)
+%\end{Verbatim}
+
+%\end{document}
+\section{Pivoting}
+
+The primary reason that the foregoing technique is called \textit{naive} is that during both the elimination and the back-substitution phases, it is possible that a division by zero can occur.
+
+Therefore, before each row is normalized, it is advantageous to determine the coefficient with the largest absolute value in the column below the pivot element. The rows can then be switched so that the largest element is the pivot element. This is called \textit{partial pivoting}. If columns as well as rows are searched for the largest element and then switched, the procedure is called \textit{complete pivoting}. Complete pivoting is rarely used because most of the improvement comes from partial pivoting. As such, it also serves as a partial remedy for ill-conditioning.
+%\begin{margintable}
+%	\begin{verbatim}
+%	Aug =
+%	
+%	8    -5     0     5
+%	-5    10    -3     0
+%	0    -3    11    -3
+%	
+%	Iteration 1
+%	Aug =
+%	
+%	8   -5.0000         0    5.0000
+%	0    6.8750   -3.0000    3.1250
+%	0   -3.0000   11.0000   -3.0000
+%	
+%	Iteration 2
+%	Aug =
+%	
+%	8   -5.0000         0    5.0000
+%	0    6.8750   -3.0000    3.1250
+%	0         0    9.6909   -1.6364
+%	
+%	x =
+%	
+%	0.8630
+%	0.3809
+%	-0.1689
+%	\end{verbatim}	
+%\end{margintable}
+
+\begin{lstlisting}[language=python]
+def pivoting(A : $\mathbb{R}^{N \times N}$, B : $\mathbb{R}^N$):
+  x = zeros(N,1)
+  Aug = [A B]
+  for k = 0:N-2
+    [big,index_change] = max(abs(Aug[k:N,k]))
+    index = index_change + k - 1
+    if index != k
+      Aug[k,index,:] = Aug[index,k,:]
+    for index = k+1:N
+      ratio = Aug[index,k]/Aug[k,k]
+      Aug[index,k:B+1] = Aug[index,k:B+1] - ratio*Aug[k,k:B+1]
+  x[N] = Aug[N,N+1]/Aug[N,N]
+  for i = n-1:-1:0
+    x[i] = (Aug[i,N+1]-Aug[i,i+1:N]*x[i+1:N])/Aug[i,i]
+\end{lstlisting}
+
+%\section{Exercises}
+%\begin{enumerate}
+%    \item \textcolor{red}{TODO}
+%\end{enumerate}
+\end{document}
+

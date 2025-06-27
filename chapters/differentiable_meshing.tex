@@ -1,0 +1,60 @@
+\documentclass[book.tex]{subfiles}
+\begin{document}
+
+\chapter{Differentiable Meshing}
+
+
+\label{chap:differentiable_meshing}
+\noindent\rule{11cm}{0.4pt} \\
+\textbf{Prerequisites:} \autoref{chap:graphconvs}, \autoref{chap:equivariant_networks}, \autoref{chap:molecular_dynamics},  \autoref{chap:dft} \\
+\textbf{Difficulty Level:} ** \\
+\noindent\rule{11cm}{0.4pt}
+\vspace{5mm}
+
+Many classical numerical methods rely on the construction of an explicit mesh. The marching cubes algorithm, commonly used to construct such meshes, is not natively differentiable. Recent work has revealed how to use deep signed distance functions to create a differentiable approximation to the marching cubes method that can be used to create differentiable meshes \cite{remelli2020meshsdf}, \cite{liu2020general}..
+
+\section{The Marching Cubes Algorithm}
+
+The Marching cubes method from computer graphics provides a way to extract a mesh from a provided 3D voxel dataset. The mesh is mathematically represented by
+
+\begin{align}
+\mathcal{M} &= (V, F)
+\end{align}
+where $V$ is the set of vertices
+\begin{align}
+V &= \{v_1, v_2, \dotsc \}
+\end{align}
+and $F$ represents the set of facets.
+
+\section{Deep Signed Distance Functions}
+A signed distance function is a function
+\begin{align}
+s: \mathbb{R}^3 \to \mathbb{R}
+\end{align}
+defined as
+\begin{align}
+s(x) &= \begin{cases}
+d(x, S) & x \textrm{ outside } S \\
+-d(x, S) & x \textrm{ inside } S
+\end{cases}
+\end{align}
+
+\begin{lstlisting}
+def MeshSDFForward(z):
+  assemble $G_{3D}$
+  sample field $S = f_\theta(z, G_{3D})$
+  extract $V, F = \textrm{MarchingCubes}(S, G_{3D})$
+  return (V, F)
+\end{lstlisting}
+
+\begin{lstlisting}
+def MeshSDFBackward():
+  TODO
+\end{lstlisting}
+%"""
+%Geometric Deep Learning has recently made striking progress with the advent of continuous Deep Implicit Fields. They allow for detailed modeling of watertight surfaces of arbitrary topology while not relying on a 3D Euclidean grid, resulting in a learnable parameterization that is not limited in resolution. Unfortunately, these methods are often not suitable for applications that require an explicit mesh-based surface representation because converting an implicit field to such a representation relies on the Marching Cubes algorithm, which cannot be differentiated with respect to the underlying implicit field. In this work, we remove this limitation and introduce a differentiable way to produce explicit surface mesh representations from Deep Signed Distance Functions. Our key insight is that by reasoning on how implicit field perturbations impact local surface geometry, one can ultimately differentiate the 3D location of surface samples with respect to the underlying deep implicit field. We exploit this to define MeshSDF, an end-to-end differentiable mesh representation which can vary its topology. Weuse two different applications to validate our theoretical insight: Single-View Reconstruction via Differentiable Rendering and Physically-Driven Shape Optimization. In both cases our differentiable parameterization gives us an edge over state-of-the-art algorithms.
+%"""
+
+%References 
+
+\end{document}

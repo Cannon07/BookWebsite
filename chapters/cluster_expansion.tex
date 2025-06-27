@@ -1,0 +1,129 @@
+\documentclass[book.tex]{subfiles}
+\begin{document}
+
+\chapter{Atomic Cluster Expansions}
+\label{chap:pips}
+\noindent\rule{11cm}{0.4pt} \\
+\textbf{Prerequisites:}  \autoref{chap:molecular_hamiltonian},   \\
+\textbf{Difficulty Level:} ** \\
+\noindent\rule{11cm}{0.4pt}
+\vspace{5mm}
+
+
+%"""
+%We discuss two approaches for the construction of linear force fields for small molecules, both of which combine intuitive low body order terms (similar to the ones in classical empirical force fields) with the concept of data-driven statistical fits from machine-learned potentials. The first approach is atomic permutationally invariant polynomials (aPIP), and we show the high level of accuracy reached when aPIP is used for fitting individual molecules and for a combined training set of linear alkanes. The second approach uses the Atomic Cluster Expansion (ACE) framework which is a systematic method for the generation of body-ordered symmetric basis functions. The ACE potentials are demonstrated by fitting individual small molecules as well as combined fits of them. Furthermore, we demonstrate that our method can also be applied for challenging flexible drug-like molecules. We compare the linear body-ordered ACE model with other leading ML and classical force field approaches and demonstrate its accuracy, smoothness and its excellent transferability for properties beyond raw energy and force RMSE values. Finally, a code walk-through for ACE.jl will also occur where we show how ACE potentials for molecular and materials systems can be fitted. 
+%"""
+
+In this chapter, we study some additional techniques for constructing small molecule force fields. Most methods for representing machine learned potentials represent the potential energy surface of a molecule as a sum of atomic energy contribution terms, with each atomic contribution learned by a neural network. An alternative approach represents the potential energy surface as a linear combination of specially constructed polynomials \cite{allen2021atomic}, \cite{kovacs2021linear}.
+
+These polynomial bases can be constructed via different methods. One approach, the atomic cluster expansion, constructs a family of rotationally invariant polynomials starting from the $n$-body cluster expansion for molecular energies. Another closely related approach, atomic permutationally invariant polynomials, constructs a basis of polynomials which satisfy more general symmetries.
+
+\section{Body Centered Expansion}
+
+The body centered expansion expands the energy of an atomic system in terms of multibody interaction terms.
+\begin{align}
+    E = V_0 + \sum_i V^{(1)}_i(r_i) + \sum_{i < j} V^{(2)}(r_{ij}) + \sum_{i < j < k} V^{(3)}(r_{ij}, r_{ik}, r_{jk}) + \dotsc
+\end{align}
+
+A configuration $\sigma$ is defined as
+\begin{align}
+\sigma &= (r_{1i}, r_{2i},\dotsc,r_{ni})
+\end{align}
+to capture the full neighborhood of a point. We can define the inner product
+\begin{align}
+\langle f | g \rangle &= \int f^*(\sigma) g(\sigma) d\sigma
+\end{align}
+
+
+The main limitation of this form of expansion is that the number of terms grows as $n^k$ where $k$ is the order of the expansion.
+
+\section{Atomic cluster expansion potentials (ACE)}
+
+A force field is a function $\mathbb{R}^{3N} \to \mathbb{R}$
+\begin{align}
+f(x_1,\dotsc,x_N) = E_{QM}
+\end{align}
+This function has to reflect translational, reflection, rotational symmetries. Commonly, an additional assumption is made that the force field can be represented as the sum of atomic energies.
+\begin{align}
+    f= \sum_i E_i
+\end{align}
+We will find it useful to write down a formula for the atomic neighborhood density around a given atom. 
+\begin{align}
+    \rho_i &= \sum_j \delta(\vec{r} - \vec{r}_{ij})
+\end{align}
+We need to make a choice of one particle basis functions. 
+Let $\phi_v(r)$ be a basis set that depends only on the bond length. We can then create a cluster basis function for an atom
+\begin{align}
+\phi_{v_1}(r_{1i})\dotsc \phi_{v_n}(r_{ni})
+\end{align}
+This basis is also orthogonal and complete.
+We use
+\begin{align}
+\phi_v(r) &= \sqrt{4\pi} R_{nl}(r) Y^m_l(\hat{r})
+\end{align}
+
+We can now expand the density in this basis. The cluster basis for cluster $\alpha$ is given by products of these local basis elements
+\begin{align}
+\phi_{\alpha} &= \phi_{v_1}\dotsc \phi_{v_k}
+\end{align}
+
+It can be shown that this cluster definition leads to an orthogonal and complete basis. The energy of a system can be expanded out in this cluster basis
+
+\begin{align}
+E_i &= \sum_{\alpha} J_\alpha \phi_\alpha
+\end{align}
+where the $J_\alpha$ are coefficients. Now define the local neighborhood density of an atom as
+\begin{align}
+\rho_i(r) &= \sum_j \delta(r - r_j)
+\end{align}
+This density simply places a delta function at the location of every other atom. We then define the atomic base elements as the projection of this local density onto the local basis
+\begin{align}
+A_{i\nu} &= \langle \rho_i | \phi_v \rangle \\
+&= \int \sum_j \partial(r - r_{ij}) \varphi_\nu(r) dr 
+\end{align}
+Computing this representation is linear in the number of neighbors of an atom (assuming some distance cutoff for neighhbors). The power of this representation is that by performing the sum over neighbors up front, products of $A_{i\nu}$ contain a large number of interaction terms. This is commonly referred to as the "density trick" in the literature. We can then construct a cluster basis
+\begin{align}
+A_\alpha &= \prod_i A_{i\nu}
+\end{align}
+
+
+Note that the $A_{i\nu}$ representation is not yet rotationally invariant. Just averaging over all rotations looses information. Instead take $N$-correlations of the density $\rho^{\otimes N}$
+
+\begin{align}
+    B_{\nu i} = \int_{R \in O(3)} A_{\alpha }(R r_{ij}) dR 
+\end{align}
+Because of spherical harmonics, we can write 
+\begin{align}
+B = UA
+\end{align}
+where $U$ is a sparse matrix of Clebsch-Gordon coefficients. This generalizes to equivariant quantities as well.
+%\begin{align}
+%    Q^T \varphi \circ Q &= \varphi, Q \in O(3)
+%\end{align}
+%We expand the site energy in the ACE basis. 
+%\begin{align}
+%    A_i...
+%\end{align}
+%Use the density trick to simplify. ACE basis functions are complete. There are 3 approximation parameters. Cutoff distance, maximum correlation order, maximum polynomial degree. ACE unifies Behller-Parinello and SOAP power spectrum.
+
+One way we can think about the ACE basis is as a type of graph neural network. Messages are the one-particle basis functions evaluated on neighbors. The message passing steps performs the pooling into $A_\nu$. The ACE representation is closely linked to equivariant architectures for neural potentials.
+
+%\begin{align}
+%    \mathcal{L} = \int_{O(3)} U(Q)^T e_\alpha \prod_{\xi=1}^N \dotsc
+%\end{align}
+
+\section{Training an ACE Model}
+Unlike standard machine learned force field, the ACE architecture comes pre-formulated with a rich basis of interactions. This allows for an easier training algorithm in which parameters can be fit for the different basis terms with linear regression. 
+
+\section{Permutation Invariant Polynomials}
+
+PIPs, or permutation invariant polynomials, provide a powerful tool to model the local atomic environment of a system.
+
+As with the ACE representation, atomic permutation invariant polynomials, also have cutoffs and regularization. A set of small molecules was tested this way. The major challenge is that the traditional PIPs don't really scale well. The new structure is quite scalable. There's still some scaling issues with large numbers of neighbors. Producing high body invariants is difficult. A new basis might be needed.
+
+
+\section{Relationship with Cluster Expansions}
+
+The ACE potential draws upon inspiration from the classical cluster expansion, which can be used to calculate approximations to the partition function for $n$ interacting particles. Mathematically, ACE takes a particular choice of basis for interactions that is amenable to computational analysis.
+
+\end{document}

@@ -128,113 +128,102 @@ jobs:
           echo "Git status:"
           git status
 
-          echo "Files in chapters/:"
-          ls -la chapters/ | head -10
-
-          echo "Files in app/:"
-          ls -la app/ | head -10 2>/dev/null || echo "app/ directory not found"
-          
-          echo "Files in contents/docs/chapters/:"
-          ls -la contents/docs/chapters/ | head -10 2>/dev/null || echo "contents/docs/chapters/ directory not found"
-          
-          echo "Files in public/ (generated images):"
-          ls -la public/ | head -10 2>/dev/null || echo "public/ directory not found"
-          
-          echo "Image files in public/:"
-          find public/ -type f \( -name "*.png" -o -name "*.jpg" -o -name "*.jpeg" -o -name "*.svg" -o -name "*.gif" -o -name "*.webp" \) 2>/dev/null | head -10 || echo "No image files found in public/"
-
-          echo "🔍 SIZE ANALYSIS: Checking file and directory sizes..."
-          
+          echo "🔍 DETAILED PUBLIC DIRECTORY ANALYSIS:"
           if [ -d "public/" ]; then
-            echo "Public directory total size:"
-            du -sh public/
-            echo "Large files in public/ (>1MB):"
-            find public/ -type f -size +1M -exec ls -lh {} \; | head -10
-            echo "Total image count in public/:"
-            find public/ -type f \( -name "*.png" -o -name "*.jpg" -o -name "*.jpeg" -o -name "*.svg" -o -name "*.gif" -o -name "*.webp" \) | wc -l
-          fi
-          
-          if [ -d "contents/" ]; then
-            echo "Contents directory total size:"
-            du -sh contents/
+            echo "Public directory structure:"
+            find public/ -type d | head -20
+            echo "Sample files in public/code-blocks:"
+            find public/code-blocks -name "*.png" | head -5 2>/dev/null || echo "No PNG files found"
+            echo "Sample files in public/figures:"
+            find public/figures -name "*.png" | head -5 2>/dev/null || echo "No PNG files found"
+            
+            echo "Testing git add on specific image files:"
+            # Test adding individual files first
+            first_image=$(find public/ -name "*.png" | head -1)
+            if [ -n "$first_image" ]; then
+              echo "Testing add of: $first_image"
+              git add "$first_image" -v
+              echo "Status after adding single file:"
+              git status --porcelain | grep public
+            fi
           fi
 
-          # Add files with detailed staging info
-          echo "📦 Adding files to git..."
+          # Add files in a specific order and check each step
+          echo "📦 STEP-BY-STEP FILE ADDING:"
           
           echo "1. Adding chapters/ directory:"
           git add chapters/
+          echo "Staged chapters: $(git diff --cached --name-only | grep '^chapters/' | wc -l)"
           
           echo "2. Adding contents/ directory:"
           git add contents/
+          echo "Staged contents: $(git diff --cached --name-only | grep '^contents/' | wc -l)"
           
-          echo "3. Adding public/ directory:"
-          git add public/
-          
-          echo "4. Adding app/ directory:"
+          echo "3. Adding app/ directory:"
           git add app/
+          echo "Staged app: $(git diff --cached --name-only | grep '^app/' | wc -l)"
           
-          echo "5. Adding pipeline results:"
+          echo "4. Adding pipeline results:"
           git add pipeline_results.json
-
-          echo "📊 STAGING ANALYSIS:"
-          echo "Total staged files: $(git diff --cached --name-only | wc -l)"
-          echo "Staged file size breakdown:"
           
-          # Check sizes of different file types
+          echo "5. ATTEMPTING TO ADD PUBLIC DIRECTORY:"
+          # Try different approaches for the public directory
+          echo "Approach 1: Standard git add"
+          git add public/
+          echo "Staged public files after standard add: $(git diff --cached --name-only | grep '^public/' | wc -l)"
+          
+          if [ "$(git diff --cached --name-only | grep '^public/' | wc -l)" -eq 0 ]; then
+            echo "Standard add failed, trying force add..."
+            git add public/ --force
+            echo "Staged public files after force add: $(git diff --cached --name-only | grep '^public/' | wc -l)"
+          fi
+          
+          if [ "$(git diff --cached --name-only | grep '^public/' | wc -l)" -eq 0 ]; then
+            echo "Force add failed, trying individual subdirectories..."
+            git add public/code-blocks/ --force
+            git add public/figures/ --force
+            echo "Staged public files after subdirectory add: $(git diff --cached --name-only | grep '^public/' | wc -l)"
+          fi
+          
+          if [ "$(git diff --cached --name-only | grep '^public/' | wc -l)" -eq 0 ]; then
+            echo "All public/ add attempts failed. Checking file permissions and git status:"
+            ls -la public/
+            echo "Git check-ignore results for public directory:"
+            git check-ignore public/* || echo "No files being ignored"
+            echo "Git ls-files public directory:"
+            git ls-files public/ | head -5 || echo "No tracked files in public/"
+          fi
+
+          echo "📊 FINAL STAGING ANALYSIS:"
+          total_staged=$(git diff --cached --name-only | wc -l)
           tex_count=$(git diff --cached --name-only | grep '\.tex$' | wc -l)
           mdx_count=$(git diff --cached --name-only | grep '\.mdx$' | wc -l)
           image_count=$(git diff --cached --name-only | grep -E '\.(png|jpg|jpeg|svg|gif|webp)$' | wc -l)
-          total_count=$(git diff --cached --name-only | wc -l)
+          public_count=$(git diff --cached --name-only | grep '^public/' | wc -l)
           
           echo "📄 Raw chapters: ${tex_count} files"
           echo "🔄 Processed chapters: ${mdx_count} files"  
-          echo "🖼️  Generated images: ${image_count} files"
-          echo "📦 Total files: ${total_count}"
-          
-          # Check total size of staged changes
-          echo "💾 Total size of staged changes:"
-          git diff --cached --name-only | xargs -I {} sh -c 'test -f "{}" && ls -la "{}"' | awk '{sum += $5} END {printf "%.2f MB\n", sum/1024/1024}'
+          echo "🖼️  Public directory files: ${public_count} files"
+          echo "🎨 Image files (by extension): ${image_count} files"
+          echo "📦 Total files: ${total_staged}"
 
           if git diff --staged --quiet; then
             echo "ℹ️  No changes to commit"
           else
-            echo "🚀 Committing ${total_count} files..."
+            echo "🚀 Committing ${total_staged} files..."
             
-            # Create commit with size info
             commit_msg="📚 Auto-update from Overleaf: $(date '+%Y-%m-%d %H:%M:%S UTC')
 
             📄 Raw chapters: ${tex_count} files
             🔄 Processed chapters: ${mdx_count} files  
-            🖼️  Generated images: ${image_count} files
-            📦 Total files: ${total_count}"
+            🖼️  Public directory files: ${public_count} files
+            📦 Total files: ${total_staged}"
 
             git commit -m "${commit_msg}"
-            
             echo "✅ Commit created successfully"
-            echo "🚀 Pushing to repository..."
             
-            # Push with detailed output and timeout
-            if timeout 300 git push --verbose; then
-              echo "✅ Changes pushed successfully"
-              
-              # Verify the push worked by checking remote
-              echo "🔍 Verifying push - checking remote repository:"
-              git ls-remote origin main | head -1
-              
-            else
-              echo "❌ Push failed or timed out"
-              echo "📊 Analyzing potential issues:"
-              
-              echo "Repository size after commit:"
-              git count-objects -vH
-              
-              echo "Large files in this commit:"
-              git diff --cached --name-only | xargs -I {} sh -c 'test -f "{}" && ls -lh "{}"' | sort -rh | head -10
-              
-              echo "🔄 Attempting push with progress info:"
-              git push --progress --verbose
-            fi
+            git push --verbose
+            echo "✅ Changes pushed successfully"
           fi
 
   # Git changes check (supplements Overleaf changes)

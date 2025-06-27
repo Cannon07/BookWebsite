@@ -124,13 +124,13 @@ jobs:
         run: |
           echo "📝 Committing Overleaf changes..."
           echo "🔍 Debug: Checking what changes exist..."
-  
+
           echo "Git status:"
           git status
-  
+
           echo "Files in chapters/:"
           ls -la chapters/ | head -10
-  
+
           echo "Files in app/:"
           ls -la app/ | head -10 2>/dev/null || echo "app/ directory not found"
           
@@ -142,42 +142,100 @@ jobs:
           
           echo "Image files in public/:"
           find public/ -type f \( -name "*.png" -o -name "*.jpg" -o -name "*.jpeg" -o -name "*.svg" -o -name "*.gif" -o -name "*.webp" \) 2>/dev/null | head -10 || echo "No image files found in public/"
-  
-          # FIXED: Add all the relevant directories including processed chapters AND generated images
-          git add chapters/                    # Raw .tex files from Overleaf
-          git add app/                        # App directory changes
-          git add contents/docs/chapters/     # Processed chapter output
-          git add contents/                   # Add entire contents directory to be safe
-          git add public/                     # ADDED: Generated images and assets
-          git add pipeline_results.json      # Pipeline results
-  
-          echo "Git status after add:"
-          git status
-  
+
+          echo "🔍 SIZE ANALYSIS: Checking file and directory sizes..."
+          
+          if [ -d "public/" ]; then
+            echo "Public directory total size:"
+            du -sh public/
+            echo "Large files in public/ (>1MB):"
+            find public/ -type f -size +1M -exec ls -lh {} \; | head -10
+            echo "Total image count in public/:"
+            find public/ -type f \( -name "*.png" -o -name "*.jpg" -o -name "*.jpeg" -o -name "*.svg" -o -name "*.gif" -o -name "*.webp" \) | wc -l
+          fi
+          
+          if [ -d "contents/" ]; then
+            echo "Contents directory total size:"
+            du -sh contents/
+          fi
+
+          # Add files with detailed staging info
+          echo "📦 Adding files to git..."
+          
+          echo "1. Adding chapters/ directory:"
+          git add chapters/
+          
+          echo "2. Adding contents/ directory:"
+          git add contents/
+          
+          echo "3. Adding public/ directory:"
+          git add public/
+          
+          echo "4. Adding app/ directory:"
+          git add app/
+          
+          echo "5. Adding pipeline results:"
+          git add pipeline_results.json
+
+          echo "📊 STAGING ANALYSIS:"
+          echo "Total staged files: $(git diff --cached --name-only | wc -l)"
+          echo "Staged file size breakdown:"
+          
+          # Check sizes of different file types
+          tex_count=$(git diff --cached --name-only | grep '\.tex$' | wc -l)
+          mdx_count=$(git diff --cached --name-only | grep '\.mdx$' | wc -l)
+          image_count=$(git diff --cached --name-only | grep -E '\.(png|jpg|jpeg|svg|gif|webp)$' | wc -l)
+          total_count=$(git diff --cached --name-only | wc -l)
+          
+          echo "📄 Raw chapters: ${tex_count} files"
+          echo "🔄 Processed chapters: ${mdx_count} files"  
+          echo "🖼️  Generated images: ${image_count} files"
+          echo "📦 Total files: ${total_count}"
+          
+          # Check total size of staged changes
+          echo "💾 Total size of staged changes:"
+          git diff --cached --name-only | xargs -I {} sh -c 'test -f "{}" && ls -la "{}"' | awk '{sum += $5} END {printf "%.2f MB\n", sum/1024/1024}'
+
           if git diff --staged --quiet; then
             echo "ℹ️  No changes to commit"
           else
-            # Count different types of files for detailed commit message
-            tex_count=$(find chapters/ -name '*.tex' 2>/dev/null | wc -l || echo 0)
-            mdx_count=$(find contents/docs/chapters/ -name '*.mdx' 2>/dev/null | wc -l || echo 0)
-            image_count=$(find public/ -type f \( -name "*.png" -o -name "*.jpg" -o -name "*.jpeg" -o -name "*.svg" -o -name "*.gif" -o -name "*.webp" \) 2>/dev/null | wc -l || echo 0)
+            echo "🚀 Committing ${total_count} files..."
             
-            git commit -m "📚 Auto-update from Overleaf: $(date '+%Y-%m-%d %H:%M:%S UTC')
-  
+            # Create commit with size info
+            commit_msg="📚 Auto-update from Overleaf: $(date '+%Y-%m-%d %H:%M:%S UTC')
+
             📄 Raw chapters: ${tex_count} files
             🔄 Processed chapters: ${mdx_count} files  
-            🖼️  Generated images: ${image_count} files"
-            git push
-            echo "✅ Changes committed and pushed"
+            🖼️  Generated images: ${image_count} files
+            📦 Total files: ${total_count}"
+
+            git commit -m "${commit_msg}"
+            
+            echo "✅ Commit created successfully"
+            echo "🚀 Pushing to repository..."
+            
+            # Push with detailed output and timeout
+            if timeout 300 git push --verbose; then
+              echo "✅ Changes pushed successfully"
+              
+              # Verify the push worked by checking remote
+              echo "🔍 Verifying push - checking remote repository:"
+              git ls-remote origin main | head -1
+              
+            else
+              echo "❌ Push failed or timed out"
+              echo "📊 Analyzing potential issues:"
+              
+              echo "Repository size after commit:"
+              git count-objects -vH
+              
+              echo "Large files in this commit:"
+              git diff --cached --name-only | xargs -I {} sh -c 'test -f "{}" && ls -lh "{}"' | sort -rh | head -10
+              
+              echo "🔄 Attempting push with progress info:"
+              git push --progress --verbose
+            fi
           fi
-      
-      - name: Upload pipeline logs
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: overleaf-pipeline-logs
-          path: scripts/overleaf-monitor/data/pipeline.log
-          retention-days: 30
 
   # Git changes check (supplements Overleaf changes)
   changes:
